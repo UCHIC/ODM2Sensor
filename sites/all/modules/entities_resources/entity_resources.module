@@ -1,0 +1,223 @@
+<?php
+global $resources;
+
+$resources = array(
+  array(
+    'name' => 'site',
+    'readable_name' => 'Site'
+   ),
+  array(
+    'name' => 'sitevisit',
+    'readable_name' => 'Site Visit'
+   ),
+  array(
+    'name' => 'deployment',
+    'readable_name' => 'Deployment'
+   ),
+  array(
+    'name' => 'calibration',
+    'readable_name' => 'Calibration'
+   ),
+  array(
+    'name' => 'fieldactivity',
+    'readable_name' => 'Field Activity'
+   ),
+  array(
+    'name' => 'equipment',
+    'readable_name' => 'Equipment'
+   ),
+  array(
+    'name' => 'factoryserviceevent',
+    'readable_name' => 'Factory Service Event'
+   ),
+  array(
+    'name' => 'vendor',
+    'readable_name' => 'Vendor'
+   ),
+  array(
+    'name' => 'vendortype',
+    'readable_name' => 'Vendor Type'
+   ),
+  array(
+    'name' => 'sitegroup',
+    'readable_name' => 'Site Group'
+   ),
+  array(
+    'name' => 'sitetype',
+    'readable_name' => 'Site Type'
+   ),
+  array(
+    'name' => 'people',
+    'readable_name' => 'People'
+   ),
+  array(
+    'name' => 'deploymenttypes',
+    'readable_name' => 'Deployment Types'
+   ),
+  array(
+    'name' => 'calibrationmethod',
+    'readable_name' => 'Calibration Method'
+   ),
+  array(
+    'name' => 'calibrationstandard',
+    'readable_name' => 'Calibration Standard'
+   ),
+  array(
+    'name' => 'calibrationstandardtype',
+    'readable_name' => 'Calibration Standard Type'
+   ),
+  array(
+    'name' => 'fieldactivitytype',
+    'readable_name' => 'Field Activity Type'
+   ),
+  array(
+    'name' => 'equipmenttypes',
+    'readable_name' => 'Equipment Types'
+   ),
+  array(
+    'name' => 'equipmentmodel',
+    'readable_name' => 'Equipment Model'
+   ),
+  array(
+    'name' => 'sensoroutputvariables',
+    'readable_name' => 'Sensor Output Variables'
+  ),
+  array(
+    'name' => 'site-visit-image',
+    'readable_name' => 'Site Visit Image'
+   ),
+  array(
+    'name' => 'deploymentmeasuredvariable',
+    'readable_name' => 'Deployment Measured Variables'
+   ),
+  array(
+    'name' => 'verticaldatum',
+    'readable_name' => 'Vertical Datum'
+   ),
+);
+
+function entity_resources_permission() {
+  global $resources;
+
+  $permissions = array();
+  foreach ($resources as $resource) {
+    $permissions[$resource['name']." delete"] = array(
+      'title' => t($resource['readable_name'].": Delete"),
+      'description' => t("Delete a ".$resource['readable_name']." through the Web Service."),
+      'restrict access' => TRUE,
+    );
+  }
+
+  $permissions['site-visit-image'] = array(
+    'title' => t("Site Visit Image: Index"),
+    'description' => t("Lists a Site Visit Image through the Web Service."),
+    'restrict access' => TRUE,
+  );
+
+  $permissions['retrieve-any'] = array(
+    'title' => t("Retrieve Any Entity"),
+    'description' => t("Get an entity through the Web Service."),
+    'restrict access' => TRUE,
+  );
+
+  return $permissions;
+}
+
+
+function entities_access($op, $args) {
+  $permissionDescription = $args[0]." ".$op;
+  return user_access($permissionDescription);
+}
+
+function retrieve_entity_access($op, $args) {
+  return user_access('retrieve-any');
+}
+
+
+function entity_resources_services_resources() {
+  global $resources;
+
+  $entities = array();
+  foreach ($resources as $resource) {
+    $entities[$resource['name']] = array(
+      'delete' => array(
+        'help' => "Deletes a ".$resource['readable_name'],
+        'file' => array('file'=>'inc', 'module'=>'entity_resources'),
+        'access callback' => 'entities_access',
+        'access arguments' => array('delete', array($resource['name'])),
+        'access arguments append' => TRUE,
+        'callback' => '_delete_'.$resource['name'],
+        'args' => array(
+          array(
+            'name' => 'ID',
+            'type' => 'int',
+            'description' => 'The id of the'. $resource['readable_name']. ' to delete.',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+    );
+  }
+
+  $entities['site-visit-image'] = array(
+    'index' => array(
+      'help' => 'Retrieves a list of Site Visit images',
+      'file' => array('file'=>'inc', 'module'=>'entity_resources'),
+      'callback' => '_get_site_visit_images',
+      'access callback' => 'entities_access',
+      'access arguments' => array('index', array('site-visit-image')),
+      'access arguments append' => TRUE,
+      'args' => array(
+        array(
+          'name' => 'SiteVisitID',
+          'type' => 'int',
+          'description' => 'The id of the site visit.',
+          'source' => array('path' => '0'),
+          'optional' => FALSE,
+        ),
+      ),
+    ),
+  );
+
+  $entities['next-site-visit'] = array(
+    'index' => array(
+      'help' => 'Retrieves the next Site Visit',
+      'file' => array('file'=>'inc', 'module'=>'entity_resources'),
+      'callback' => '_get_next_site_visit',
+      'access callback' => 'retrieve_entity_access',
+      'access arguments' => array('index'),
+      'access arguments append' => TRUE,
+      'args' => array(
+        array(
+          'name' => 'SiteVisitID',
+          'type' => 'int',
+          'description' => 'The id of the site visit.',
+          'source' => array('path' => '0'),
+          'optional' => FALSE,
+        ),
+      ),
+    ),
+  );
+
+  $entities['previous-site-visit'] = array(
+    'index' => array(
+      'help' => 'Retrieves the previous Site Visit',
+      'file' => array('file'=>'inc', 'module'=>'entity_resources'),
+      'callback' => '_get_previous_site_visit',
+      'access callback' => 'retrieve_entity_access',
+      'access arguments' => array('index'),
+      'access arguments append' => TRUE,
+      'args' => array(
+        array(
+          'name' => 'SiteVisitID',
+          'type' => 'int',
+          'description' => 'The id of the site visit.',
+          'source' => array('path' => '0'),
+          'optional' => FALSE,
+        ),
+      ),
+    ),
+  );
+  return $entities;
+}
