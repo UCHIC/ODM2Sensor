@@ -1,12 +1,19 @@
 
 /* ---------------- General structure and layout ----------------------- */
 
+@font-face {
+    font-family: 'Calibri-Font'; /*a name to be used later*/
+    src: url('./CALIBRI.TTF'); /*URL to font*/
+}
+
 body {
-  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+  font-family: 'Calibri-Font';
   background-color: #fafafa;
   background: url(../images/bg.png) repeat;
   letter-spacing: 0.05em;
 }
+
+
 
 html.busy, html.busy * {  
   cursor: wait !important;  
@@ -14,7 +21,6 @@ html.busy, html.busy * {
 
 .required-asterisk {
   color: red;
-  margin-right: 5px;
   margin-left: -2px;
 }
 
@@ -350,9 +356,9 @@ nav #floating-submenu {
   list-style: none;
   position: relative;
   float: right;
-  right: 23px;
-  width: 520px;
+  right: 8.5%;
   height: 37px;
+  min-width: 64%;
   padding: 10px 8px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -415,7 +421,7 @@ nav #floating-submenu li {
 
 nav #floating-submenu li a {
   white-space:nowrap;
-  font-size: 17px;
+  font-size: 16px;
 }
 
 nav #floating-submenu li a:hover {
@@ -443,7 +449,7 @@ nav ul li a {
 }
 
 nav ul li span.link_description {
-  font-size: 12px;
+  font-size: 11px;
   display: block;
   margin-top: 1px;
   padding-left: 1px;
@@ -526,7 +532,8 @@ thead tr th{
 
 table {
   font-size: 0.857em;
-  width: 100%;
+  width:100%;
+
 }
 
 .table-container {
@@ -558,7 +565,7 @@ tr td a:hover{
 }
 
 
-tr th{
+tr th {
   vertical-align: middle;
 }
 
@@ -568,7 +575,7 @@ table tr th a:hover {
   text-decoration: none;
   color: black;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 17px;
   background-color: white;
 }
 
@@ -675,6 +682,7 @@ fieldset.form-wrapper legend {
 fieldset.collapsible legend {
   float:right;
   margin-right:50px;
+  margin-top:-10px;
   text-align:left;
 }
 

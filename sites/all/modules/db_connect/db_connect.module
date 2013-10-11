@@ -466,16 +466,42 @@ function db_connect_form_alter(&$form, &$form_state, $form_id){
   }
   // ------------ Create New Calibration ---------------------
   else if($form_id == "create_new_calibration_entityform_edit_form"){
-    
-    add_site_visit_picker($form, $form_state);
-    add_equipment_filter($form, $form_state);
+
 
     // Calibration Method
     create_list('calibrationmethods', 'CalibrationMethodID', 'CalibrationMethodName', 'field_calibration_method', $form, 1);
-    $form['field_calibration_method']['und']['#default_value'] = NULL;
+
+    // Measured Variable
+    $options = array();
+    $options[-1] = "New...";
+    db_set_active('iutah_equipment');
+    $result = db_select('MeasuredVariablePicker', 'f')
+    ->fields('f')
+    ->execute();
+    db_set_active();
+
+    for ($index = 0; $index < $result->rowCount(); $index++){
+      $item = $result->fetchObject();
+      $options[$item->DeploymentMeasuredVariableID] = $item->SensorVariableCode . " - " . $item->SensorVariableName;
+    }
+    $form['field_measured_variable']['und']['#options'] =  $options;
+    $form['field_measured_variable']['und']['#default_value'] = NULL;
 
     // Sensor Output Variable
-    create_list('sensoroutputvariables', 'SensorOutputVariableID', 'SensorVariableName', 'field_variable', $form);
+    $options = array();
+    db_set_active('iutah_equipment');
+    $result = db_select('sensoroutputvariables', 'f')
+    ->fields('f')
+    ->execute();
+    db_set_active();
+
+    for ($index = 0; $index < $result->rowCount(); $index++){
+      $item = $result->fetchObject();
+      $options[$item->SensorOutputVariableID] = $item->SensorVariableCode . " - " . $item->SensorVariableName;
+    }
+    $form['field_variable']['und']['#options'] =  $options;
+    $form['field_variable']['und']['#default_value'] = NULL;
+
 
     // Calibration Standard
     $options = array();
@@ -494,16 +520,18 @@ function db_connect_form_alter(&$form, &$form_state, $form_id){
     $form['field_calibration_standard']['und']['#options'] =  $options;
     $form['field_calibration_standard']['und']['#default_value'] = NULL;
 
+    add_site_visit_picker($form, $form_state);
+    add_equipment_filter($form, $form_state);
+    add_measured_variable_filter($form, $form_state);
+
     // Vendor
     create_list('vendors', 'VendorID', 'VendorName', 'field_vendor', $form);
 
     // Standard Type
     create_list('calibrationstandardtypecv', 'Term', 'Term', 'field_type', $form);
 
-    // Measured Variable
-    create_list('MeasuredVariablePicker', 'DeploymentMeasuredVariableID', 'SensorVariableName', 'field_measured_variable', $form,1);
-
-    // begin date
+    
+    // Mark Date fields as required
     $form['field_begin_date_time']['#attributes']['class'][]  = 'required';
     $form['field_end_date_time']['#attributes']['class'][]  = 'required';
 
@@ -529,6 +557,7 @@ function db_connect_form_alter(&$form, &$form_state, $form_id){
         ->condition('SiteVisitID', $_GET["sitevisit"], '=')
         ->orderBy('equipmentserialnumber', 'ASC')
         ->execute();
+        db_set_active();
         for ($index = 0; $index < $result->rowCount(); $index++){
           $item = $result->fetchObject();
           $options[$item->equipmentid] = $item->modelname . " (SN ". $item->equipmentserialnumber . ")";
@@ -536,9 +565,6 @@ function db_connect_form_alter(&$form, &$form_state, $form_id){
 
         $form['field_equipment_serial_number']['und']['#options'] = $options;
         $form['field_equipment_serial_number']['und']['#default_value'] = NULL;
-
-        db_set_active();
-
       }
     }
 
@@ -664,9 +690,9 @@ function db_connect_form_alter(&$form, &$form_state, $form_id){
         drupal_goto('sites-view');
       }
     }  
-   else{
+    else{
       add_site_visit_picker($form, $form_state);
-   }
+    }
     
     if (isset($_GET["sitevisit"])) {
         $form["field_site_visit"]['und']['#default_value'] = $_GET["sitevisit"];
@@ -1074,9 +1100,22 @@ function db_connect_form_alter(&$form, &$form_state, $form_id){
     $form['field_deployment']['und']['#options'] =  $options;
     $form['field_deployment']['und']['#default_value'] = NULL;
 
+
     // Sensor Output Variable
-    create_list('sensoroutputvariables', 'SensorOutputVariableID', 'SensorVariableName', 'field_sensor_output_variable', $form, 1);
-    create_list('equipmentmodels', 'ModelID', 'ModelName', 'field_model', $form);
+    $options = array();
+    $options[-1] = "New...";
+    db_set_active('iutah_equipment');
+    $result = db_select('sensoroutputvariables', 'f')
+    ->fields('f')
+    ->execute();
+    db_set_active();
+
+    for ($index = 0; $index < $result->rowCount(); $index++){
+      $item = $result->fetchObject();
+      $options[$item->SensorOutputVariableID] = $item->SensorVariableCode . " - " . $item->SensorVariableName;
+    }
+    $form['field_sensor_output_variable']['und']['#options'] =  $options;
+    $form['field_sensor_output_variable']['und']['#default_value'] = NULL;
 
     //Preloads
     if (isset($_GET["DeploymentID"])) {
@@ -1230,10 +1269,52 @@ function db_connect_equipment_callback($form, $form_state) {
   return $form['field_equipment_serial_number'];
 }
 
+// callback for ajax
+function db_connect_measured_variable_callback($form, $form_state) {
+  return $form['field_measured_variable'];
+}
+
+function add_measured_variable_filter(&$form, &$form_state){
+  // Add AJAX 
+  $form['field_measured_variable']['#prefix'] = '<div id="measured-variable-div">';
+  $form['field_measured_variable']['#suffix'] = '</div>';
+
+  $form['field_equipment_serial_number']['und']['#ajax'] = array(
+    'callback' => 'db_connect_measured_variable_callback', // function that returns new element
+    'wrapper' => 'measured-variable-div', // where to return the changes
+    'effect' => 'fade',
+  );
+
+  //Filter Measured Variables by equipment
+  if (isset($form_state['values']['field_equipment_serial_number']['und'][0]['value'])){
+    db_set_active('iutah_equipment');
+    $equipmentID = $form_state['values']['field_equipment_serial_number']['und'][0]['value'];
+    $deployment = getItem('deployments', $equipmentID, 'EquipmentID');
+
+    // Measured Variable
+    $options = array();
+    $options[-1] = "New...";
+    db_set_active('iutah_equipment');
+    $result = db_select('measuredvariablepicker', 'f')
+    ->fields('f')
+    ->execute();
+    
+    for ($index = 0; $index < $result->rowCount(); $index++){
+      $item = $result->fetchObject();
+      if($item->DeploymentID == $deployment->DeploymentID){
+           $options[$item->DeploymentMeasuredVariableID] = $item->SensorVariableCode . " - " . $item->SensorVariableName;
+      }
+      //$options[1] = $deployment->DeploymentID;
+    }
+    $form['field_measured_variable']['und']['#options'] =  $options;
+    $form['field_measured_variable']['und']['#default_value'] = NULL;
+    db_set_active();
+
+  }
+}
 
 function add_equipment_filter(&$form, &$form_state, $siteName = ""){
   // Add AJAX for Equipment Filter in Calibrations
-
   $form['field_equipment_serial_number']['#prefix'] = '<div id="equipment-div">';
   $form['field_equipment_serial_number']['#suffix'] = '</div>';
 
@@ -1294,8 +1375,6 @@ function add_site_visit_picker(&$form, &$form_state, $siteName = ""){
     'effect' => 'fade',
   );
 
-  
-
   // Filter by date
   if(isset($form_state['values']['field_site_visit_date'])){
 
@@ -1355,6 +1434,4 @@ function add_site_visit_picker(&$form, &$form_state, $siteName = ""){
       }
       $form['field_site_visit']['und']['#options'] = $options;
   }
-
-
 }

@@ -115,42 +115,6 @@ jQuery(document).ready(function ($) {
         parent.append(container);
     });
 
-    //Save the table widths
-    var widths = new Array();
-    var i = 0;
-    $('tbody tr:nth-child(1) td').each(function () {
-        widths[i] = $(this).width();
-        i++;
-    });
-
-    // Add inner container
-    var inners = $(".table-container");
-    inners.each(function(){
-        var parent = $(this).parent();
-        var container = $("<div class='outer'></div>");
-        container.append($(this));
-        parent.append(container);
-    });
-
-    // Make th have same width as td
-    i = 0;
-    $('thead > tr > th').each(function(){
-        $(this).width(widths[i] + 1);
-        i++;
-    })
-
-    
-    i = 0;
-    $('tbody tr:nth-child(1) td').each(function () {
-        $(this).width(widths[i] + 1);
-        i++;
-    });
-    
-
-    // Fix the 2 pixels offset at the last column of every table
-    $('thead tr th:last-child').each(function () {
-        $(this).width($(this).width() + 2);
-    });
 
     /* ------------- Reposition the thead so it won't overlap -----------------*/
     i = 0;
@@ -250,6 +214,11 @@ jQuery(document).ready(function ($) {
                 $('[id^=edit-field-equipment-serial-number-und', context).chosen();
                 var chosenSelect = $('#edit_field_equipment_serial_number_und_chzn', context);
                 $('#edit_field_equipment_serial_number_und_chzn').after("<span title='This is a required field.' class='required-asterisk'> *</span>");
+            }
+            if (context.attr("id") === "measured-variable-div") {
+                $('[id^=edit-field-measured-variable-und', context).chosen();
+                var chosenSelect = $('#edit-field-measured-variable-und_chzn', context);
+                $('#edit-field-measured-variable-und_chzn').after("<span title='This is a required field.' class='required-asterisk'> *</span>");
             }
         }
     };

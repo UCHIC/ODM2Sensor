@@ -32,7 +32,7 @@
 
 #login-header {
   height: 100px;
-  width: 615px;
+  width: 85%;
   margin: auto;
   margin-top: 40px;
 }
@@ -48,6 +48,7 @@ h1#login-headerTitle {
   margin-left: 20px;
   vertical-align: middle;
   font-weight: normal;
+  width: 70%;
 }
 
 .form-required, .description {
