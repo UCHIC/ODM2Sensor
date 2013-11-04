@@ -1,0 +1,82 @@
+/* General structure and layout */
+
+#login-main {
+  padding: 15px;
+  width: 850px;
+  margin: auto;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #fff;
+  margin-top: 5px;
+}
+
+#login-site_content {
+  width: 610px;
+  margin: 20px auto;
+  min-height: 300px;
+}
+
+#login-content h1 {
+  display: inline-block;
+  margin-bottom: 25px;
+  padding-right: 10px;
+  font-weight: normal;
+  font-size: 26px;
+}
+
+#login-content {
+  margin: auto;
+  width: 400px;
+}
+
+#login-header {
+  height: 100px;
+  width: 85%;
+  margin: auto;
+  margin-top: 40px;
+}
+
+#login-logo {
+  float: left;
+}
+
+h1#login-headerTitle {
+  float: left;
+  font-size: 30px;
+  margin-top: 28px;
+  margin-left: 20px;
+  vertical-align: middle;
+  font-weight: normal;
+  width: 70%;
+}
+
+.form-required, .description {
+  visibility: hidden;
+  display: none;
+}
+
+#login-content label {
+  font-weight: normal;
+  font-size: 17px;
+}
+
+#login-content .form-text {
+  width: 270px;
+}
+
+.form-item-name label {
+  display:inline;
+}
+
+.form-item-name input {
+  display:inline;
+}
+
+.form-item-pass label {
+  display:inline;
+}
+
+.form-item-pass input {
+  display:inline;
+}

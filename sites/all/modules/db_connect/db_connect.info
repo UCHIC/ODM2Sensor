@@ -1,0 +1,9 @@
+name = "Database connect"
+description = "Connect to an external database"
+dependencies[] = views
+package = "Views"
+core = 7.x
+version = "7.x-1.0-dev"
+
+files[] = db_connect.module
+files[] = db_connect.views.inc

@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * tablesorter.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function tablesorter_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#tablesorter':
+      return '<p>' . t('Add class "tablesorter" to your Table code like in example given. <table id="myTable" class="tablesorter"> .') . '</p>';
+
+    break;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function tablesorter_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/tablesorter'] = array(
+    'title' => 'Tablesorter',
+    'description' => 'Configuration for Tablesorter',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tablesorter_form'),
+    'access arguments' => array('access tablesorter content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+/**
+ * Implements hook_permission().
+ */
+function tablesorter_permission() {
+  return array(
+    'access tablesorter content' => array(
+      'title' => t('Access tablesorter for Customize.'),
+    ),
+  );
+}
+
+/**
+ * Configuration form.
+ */
+function tablesorter_form($form, &$form_state) {
+  $form['tablesorter_theme'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Theme'),
+    '#options' => array(
+      'system' => t("System's Default"),
+      'blue' => t('Blue'),
+      'green' => t('Green'),
+    ),
+    '#default_value' => variable_get('tablesorter_theme', 'blue'),
+    '#description' => t('Set the theme for header.'),
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_init().
+ */
+function tablesorter_init() {
+  $path = libraries_get_path('tablesorter');
+  drupal_add_js($path . '/jquery.tablesorter.min.js');
+  $theme = variable_get('tablesorter_theme', 'system');
+  $options = array(
+    'type' => 'file',
+    'group' => CSS_DEFAULT,
+    'basename' => 'tablesortertheme.css',
+  );
+  switch ($theme) {
+    case 'blue':
+      drupal_add_css($path . '/themes/blue/style.css', $options);
+      break;
+
+    case 'green':
+      drupal_add_css($path . '/themes/green/style.css', $options);
+      break;
+  }
+}
