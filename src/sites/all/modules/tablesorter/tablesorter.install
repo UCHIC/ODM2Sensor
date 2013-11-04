@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * tablesorter installation functions.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function tablesorter_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time.
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    $requirements['tablesorter'] = array(
+      'title' => $t('Tablesorter library'),
+      'value' => $t('Installed'),
+      'severity' => REQUIREMENT_OK,
+    );
+  }
+  else {
+    drupal_load('module', 'libraries');
+    $path = libraries_get_path('tablesorter');
+    if (!$path || !file_exists(DRUPAL_ROOT . '/' . $path . '/jquery.tablesorter.min.js')) {
+      // Since Libraries 2.x, $path is FALSE if the library does not exist.
+      $path = 'sites/all/libraries/tablesorter';
+      $requirements['tablesorter'] = array(
+        'title' => $t('Tablesorter library'),
+        'value' => $t('Missing'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('Please download <a href="@url">tablesorter plugin</a>, extract the archive and copy the contents to the following location:<br /><code>@path</code>. Make sure the main file, jquery.tablesorter.min.js, is located at<br /><code>@class</code>.', array(
+          '@url' => 'http://tablesorter.com/docs/#Download',
+          '@path' => $path,
+          '@class' => $path . '/jquery.tablesorter.min.js',
+        )),
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tablesorter_uninstall() {
+  variable_del('tablesorter_theme');
+}
