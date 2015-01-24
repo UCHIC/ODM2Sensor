@@ -1,47 +1,39 @@
-# Ignore configuration files that may contain sensitive information.
+*.py[cod]
 
-sites/*/settings*.php
+# C extensions
+*.so
 
-# Ignore paths that contain user-generated content.
-sites/*/files
-sites/*/private
-sites/*/*settings*.php
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
 
-# Ignore paths that contain generated content.
-cache/
-files/
-sites/*/files
-sites/*/private
+# Installer logs
+pip-log.txt
 
-# Ignore default text files
-.htaccess
-robots.txt
-/CHANGELOG.txt
-/COPYRIGHT.txt
-/INSTALL*.txt
-/LICENSE.txt
-/MAINTAINERS.txt
-/UPGRADE.txt
-/README.txt
-sites/all/README.txt
-sites/all/modules/README.txt
-sites/all/themes/README.txt
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
 
-# Ignore everything but the "sites" folder ( for non core developer )
-web.config
-authorize.php
-cron.php
-index.php
-install.php
-update.php
-xmlrpc.php
-/includes
-/misc
-/modules
-/profiles
-/scripts
-/themes
+# Translations
+*.mo
 
-# OSX files
-.DS_Store
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
 
+#PyCharm
+.idea

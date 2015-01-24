@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+
+    <body>
+        <div id="main">
+            <header>
+                <div id="logo">
+                    <!-- <a href="<?php echo $front_page ?>"><img src="<?php echo $base_path.$directory.'/images/iutah_logo.png' ?>" width="184" height="70" /></a> -->
+                </div>
+                <div id="user_menu">
+                    <!--
+                    <?php echo ($logged_in)? "<a class='username active' title='View your profile settings' href='{$base_path}user/{$user->uid}/edit'>{$username}</a>": "<a class='login-link' href='{$base_path}user/login'>Log in</a>"; ?>
+                    <a href="<?php echo $base_path?>user/logout">Logout</a>
+                    -->
+                </div>
+                <nav>
+                    <ul>
+                        <!--
+                        <li><a href="<?php echo $base_path?>sites-view" id="sites-menu">Sites <span class="link_description">Manage Sites</span></a></li>
+                        <li><a href="<?php echo $base_path?>visits-view" id="visits-menu" class="has-menu">Site Visits<span class="link_description">Manage Site Visits</span></a></li>
+                        <li><a href="<?php echo $base_path?>equipment-view" id="equipment-menu" class="has-menu">Equipment<span class="link_description">Manage Equipment</span></a></li>
+                        <li><a href="<?php echo $base_path?>control-vocabularies" id="vocabularies-menu">Vocabularies<span class="link_description">Manage Vocabularies</span></a></li>
+                        -->
+                    </ul>
+                    <ul id="floating-submenu">
+
+                    </ul>
+                </nav>
+            </header>
+            <div id="site_content">
+                <section id="content">
+                    {% block content %}{% endblock %}
+                </section>
+            </div>
+            <footer>
+                <!--
+                <span>Copyright © 2013 iUTAH</span>
+                <span>This material is based upon work supported by the National Science Foundation (NSF) under Grant No. XXXXXXXX.</span>
+                <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
+                -->
+            </footer>
+        </div>
+    </body>
+</html>
