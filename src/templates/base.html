@@ -1,15 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="main_style.css" />
         <title>{% block title %}{% endblock %}</title>
     </head>
 
     <body>
         <div id="main">
             <header>
+                {% if user.is_authenticated %}
+                    <h4><a href="#">{{ user.get_username }}</a></h4> <!--TODO: Make this a link to /profile/username (take user name as argument)-->
+                    <a href="{% url 'logout_user' %}">Logout</a>
+                {% endif %}
                 <div id="logo">
-                    <!-- <a href="<?php echo $front_page ?>"><img src="<?php echo $base_path.$directory.'/images/iutah_logo.png' ?>" width="184" height="70" /></a> -->
+                    <a href="{% url 'home' %}"><img src="{% static "sensordatainterface/img/iutah_logo.png" %}" width="184" height="70" /></a>
                 </div>
                 <div id="user_menu">
                     <!--
@@ -33,15 +38,13 @@
             </header>
             <div id="site_content">
                 <section id="content">
-                    {% block content %}{% endblock %}
+                   {% block content %}{% endblock %}
                 </section>
             </div>
-            <footer>
-                <!--
+            <footeR>
                 <span>Copyright © 2013 iUTAH</span>
                 <span>This material is based upon work supported by the National Science Foundation (NSF) under Grant No. XXXXXXXX.</span>
                 <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
-                -->
             </footer>
         </div>
     </body>

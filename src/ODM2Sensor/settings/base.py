@@ -18,6 +18,8 @@ SECRET_KEY = '5#3wtm#z(7iexc$k_wm458%*!t0r9izzl6&wux-toj%p9h=-ud'
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = True
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -42,6 +44,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'ODM2Sensor.urls'
 
+LOGIN_REDIRECT_URL = '/home/'
+
 WSGI_APPLICATION = 'ODM2Sensor.wsgi.application'
 
 
@@ -53,6 +57,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
     }
+    #,'equipment': {
+
+    #}
 }
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
