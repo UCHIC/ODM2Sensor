@@ -4,17 +4,19 @@
     <head>
         <link rel="stylesheet" href="main_style.css" />
         <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     </head>
 
     <body>
         <div id="main">
             <header>
                 {% if user.is_authenticated %}
-                    <h4><a href="#">{{ user.get_username }}</a></h4> <!--TODO: Make this a link to /profile/username (take user name as argument)-->
+                    <h4>{{ user.get_username }}</h4>
                     <a href="{% url 'logout_user' %}">Logout</a>
                 {% endif %}
                 <div id="logo">
-                    <a href="{% url 'home' %}"><img src="{% static "sensordatainterface/img/iutah_logo.png" %}" width="184" height="70" /></a>
+                    <a href="{% url 'home' %}"><img src="{% static "sensordatainterface/img/iutah_logo.png" %}" width="184" height="70" /><h1>GAMUT Management Database</h1></a>
                 </div>
                 <div id="user_menu">
                     <!--
@@ -47,5 +49,7 @@
                 <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
             </footer>
         </div>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     </body>
 </html>

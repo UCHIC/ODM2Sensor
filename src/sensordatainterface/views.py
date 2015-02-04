@@ -9,7 +9,7 @@ def login(request, logout_msg):
 
 @login_required(login_url='/login/')
 def home(request):
-    return render(request, 'content/home.html')
+    return render(request, 'home.html')
 
 @login_required(login_url='/login/')
 def logout_view(request):

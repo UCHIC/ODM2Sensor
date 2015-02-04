@@ -56,15 +56,25 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
-    }
-    #,'equipment': {
+    },
+    'odm2': {
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'ODM2Equipment',
+        'USER': 'Mario',
+        'PASSWORD': 'Aixax0822',
+        'HOST': 'localhost',
+        'PORT': '',
 
-    #}
+        'OPTIONS': {
+            'driver': 'SQL Server Native Client 11.0',
+            'host_is_server': True,
+        },
+    },
 }
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
 
-# Internationalization
+# Internationalisation
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
