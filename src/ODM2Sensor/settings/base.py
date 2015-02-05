@@ -55,7 +55,7 @@ WSGI_APPLICATION = 'ODM2Sensor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'NAME': 'ODM2Sensor/Internal.sqlite3',
     },
     'odm2': {
         'ENGINE': 'sql_server.pyodbc',

@@ -1,55 +1,86 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link rel="stylesheet" href="main_style.css" />
-        <title>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    </head>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static "sensordatainterface/css/main_style.css" %}" TYPE="text/css"/>
+</head>
 
-    <body>
-        <div id="main">
-            <header>
-                {% if user.is_authenticated %}
-                    <h4>{{ user.get_username }}</h4>
-                    <a href="{% url 'logout_user' %}">Logout</a>
-                {% endif %}
-                <div id="logo">
-                    <a href="{% url 'home' %}"><img src="{% static "sensordatainterface/img/iutah_logo.png" %}" width="184" height="70" /><h1>GAMUT Management Database</h1></a>
-                </div>
-                <div id="user_menu">
-                    <!--
-                    <?php echo ($logged_in)? "<a class='username active' title='View your profile settings' href='{$base_path}user/{$user->uid}/edit'>{$username}</a>": "<a class='login-link' href='{$base_path}user/login'>Log in</a>"; ?>
-                    <a href="<?php echo $base_path?>user/logout">Logout</a>
-                    -->
-                </div>
-                <nav>
-                    <ul>
-                        <!--
-                        <li><a href="<?php echo $base_path?>sites-view" id="sites-menu">Sites <span class="link_description">Manage Sites</span></a></li>
-                        <li><a href="<?php echo $base_path?>visits-view" id="visits-menu" class="has-menu">Site Visits<span class="link_description">Manage Site Visits</span></a></li>
-                        <li><a href="<?php echo $base_path?>equipment-view" id="equipment-menu" class="has-menu">Equipment<span class="link_description">Manage Equipment</span></a></li>
-                        <li><a href="<?php echo $base_path?>control-vocabularies" id="vocabularies-menu">Vocabularies<span class="link_description">Manage Vocabularies</span></a></li>
-                        -->
-                    </ul>
-                    <ul id="floating-submenu">
-
-                    </ul>
-                </nav>
-            </header>
-            <div id="site_content">
-                <section id="content">
-                   {% block content %}{% endblock %}
-                </section>
-            </div>
-            <footeR>
-                <span>Copyright © 2013 iUTAH</span>
-                <span>This material is based upon work supported by the National Science Foundation (NSF) under Grant No. XXXXXXXX.</span>
-                <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
-            </footer>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid container">
+        <div class="navbar-header" id="logo">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{% url 'home' %}"><img id="image_logo" src="{% static "sensordatainterface/img/iutah_logo.png" %}"
+                                            width="128" height="45"/></a>
         </div>
-        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    </body>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/sites/">Sites<span class="sr-only">(current)</span></a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Site
+                        Visits
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/site-visits/">Visits</a></li>
+                        <li><a href="/deployments/">Deployments</a></li>
+                        <li><a href="/calibrations/">Calibrations</a></li>
+                        <li><a href="/other-activities/">Other Activities</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/equipment/">Inventory</a></li>
+                        <li><a href="/factory-service/">Factory Service History</a></li>
+                        <li><a href="/sensor-output-variables/">Sensor Output Variables</a></li>
+                        <li><a href="/equipment-models/">Equipment Models</a></li>
+                    </ul>
+                </li>
+                <li><a href="/vocabulary/">Vocabularies</a></li>
+            </ul>
+
+            {% if user.is_authenticated %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a id="username">{{ user.get_username }}</a>
+                    </li>
+                    <li><a href="{% url 'logout_user' %}">Logout</a>
+                    </li>
+                </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+<div id="site_content" class="container">
+    <section id="content">
+        {% block content %}{% endblock %}
+    </section>
+</div>
+<div class="row">
+    <footer class="container">
+        <span>Copyright © 2013 iUTAH</span>
+        <span>This material is based upon work supported by the National Science Foundation (NSF) under Grant No. XXXXXXXX.</span>
+        <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
+    </footer>
+</div>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</body>
 </html>
