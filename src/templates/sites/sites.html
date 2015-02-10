@@ -1,5 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
     <p>Sites!</p>
-
+    <table id="data-table">
+    <thead>
+    <tr><th>Site Code</th><th>Site Name</th><th>Group Type</th><th>Site Type</th></tr>
+    </thead>
+    <tbody>
+    {% for site in Sites %}
+        <tr>
+            <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td>
+            <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
+            <td>
+                {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR"%}
+                    Logan River
+                {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
+                    Red Butte Creek
+                {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
+                    Provo River
+                {% endif %}
+            </td>
+            <td>{{ site.sitetypecv }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
 {% endblock %}

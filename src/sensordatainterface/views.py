@@ -1,8 +1,24 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.views.generic import ListView
+from models import Sites
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth import logout
+
 # Create your views here.
+
+
+# Sites generic view
+class SiteList(ListView):
+    model = Sites
+    queryset = Sites.objects.using('odm2')
+    context_object_name = 'Sites'
+    template_name = 'sites/sites.html'
+
+    @method_decorator(login_required(login_url='/login/'))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteList, self).dispatch(*args, **kwargs)
+
 
 def login(request, logout_msg):
     return render(request, 'registration/login.html', {'logout_msg': logout_msg}) #put optional messages if coming from user needs to log in or if user just logged out
@@ -10,11 +26,6 @@ def login(request, logout_msg):
 @login_required(login_url='/login/')
 def logout_view(request):
     logout(request)
-
-#Sites
-@login_required(login_url='/login/')
-def sites(request):
-    return render(request, 'sites/sites.html')
 
 #Site Visits
 @login_required(login_url='/login/')

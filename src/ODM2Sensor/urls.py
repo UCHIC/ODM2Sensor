@@ -1,17 +1,24 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import admin
 from sensordatainterface import views
+from sensordatainterface.views import SiteList
 
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ODM2Sensor.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', views.sites, name='home'),
-    url(r'^$home/', views.sites, name='home'),
-    url(r'^sites/', views.sites, name='sites'),
 
+    url(r'^admin/', include(admin.site.urls)),
+
+    #this section for generic views --will be replacing function views--
+    url(r'^$',SiteList.as_view(), name='home'),
+    url(r'^$home/', SiteList.as_view(), name='home'),
+
+    url(r'^sites/', SiteList.as_view(), name='sites'),
+
+    #end generic views
 
     url(r'^site-visits/', views.site_visits, name='site_visits'),
     url(r'^deployments/', views.deployments, name='deployments'),
