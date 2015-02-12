@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from models import Sites
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -19,6 +19,20 @@ class SiteList(ListView):
     def dispatch(self, *args, **kwargs):
         return super(SiteList, self).dispatch(*args, **kwargs)
 
+
+class SiteDetailView(DetailView):
+    model = Sites
+    context_object_name = 'SiteDetails'
+    template_name = 'sites/details.html'
+
+    @method_decorator(login_required(login_url='/login/'))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteList, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteDetailView, self).get_context_data(**kwargs)
+        context['something'] = Sites.objects.all()
+        return context
 
 def login(request, logout_msg):
     return render(request, 'registration/login.html', {'logout_msg': logout_msg}) #put optional messages if coming from user needs to log in or if user just logged out

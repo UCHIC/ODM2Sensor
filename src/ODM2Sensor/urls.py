@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import admin
 from sensordatainterface import views
-from sensordatainterface.views import SiteList
+from sensordatainterface.views import SiteList, SiteDetailView
 
 urlpatterns = patterns('',
     # Examples:
@@ -16,7 +16,8 @@ urlpatterns = patterns('',
     url(r'^$',SiteList.as_view(), name='home'),
     url(r'^$home/', SiteList.as_view(), name='home'),
 
-    url(r'^sites/', SiteList.as_view(), name='sites'),
+    url(r'^sites/details/([\w-]+)/$', SiteDetailView.as_view(), name='sites'),
+    #url(r'^sites/', SiteList.as_view(), name='sites'),
 
     #end generic views
 

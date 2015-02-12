@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    <p>Sites!</p>
+    <h1>Sites</h1>
+    <button id="new-site-btn">New Site</button>
     <table id="data-table">
     <thead>
     <tr><th>Site Code</th><th>Site Name</th><th>Group Type</th><th>Site Type</th></tr>
@@ -8,7 +9,11 @@
     <tbody>
     {% for site in Sites %}
         <tr>
-            <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td>
+            <td>
+                <a href="/sites/detail/{{ site.samplingfeatureid.samplingfeaturecode }}">
+                    {{ site.samplingfeatureid.samplingfeaturecode }}
+                </a>
+            </td>
             <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
             <td>
                 {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR"%}
