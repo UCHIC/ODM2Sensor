@@ -13,10 +13,9 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     #this section for generic views --will be replacing function views--
-    url(r'^$',SiteList.as_view(), name='home'),
-    url(r'^$home/', SiteList.as_view(), name='home'),
+    url(r'^$', SiteList.as_view(), name='home'),
 
-    url(r'^sites/details/([\w-]+)/$', SiteDetailView.as_view(), name='sites'),
+    url(r'^site-detail/(?P<slug>[-_\w]+)/$', SiteDetailView.as_view(), name='sites'),
     #url(r'^sites/', SiteList.as_view(), name='sites'),
 
     #end generic views

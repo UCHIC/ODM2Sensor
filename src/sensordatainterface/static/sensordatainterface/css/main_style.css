@@ -3,7 +3,29 @@
 }
 
 .navbar {
-    background:white;
+    background: white;
+}
+
+.title h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.title .btn {
+    margin-top: 0px;
+}
+
+.detail-mid {
+    margin-bottom: 20px;
+}
+
+.footer {
+    padding: 0px 15px;
+    text-align: justify;
+}
+
+.row {
+    margin-bottom: 20px;
 }
 
 #image_logo {
@@ -14,4 +36,50 @@
 #new-site-btn {
     float: right;
     margin: 10px 0px;
+}
+
+#map-canvas {
+    height: 400px;
+    left: -15px;
+}
+
+.edit-site-button {
+    float: right;
+    margin-left: 5px;
+}
+
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tfoot > tr > td,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th {
+    /*Site tables*/
+    border: none;
+}
+
+.dataTables_wrapper {
+    margin: 0px 15px;
+}
+
+@media (max-width: 770px) {
+    .detail-mid {
+        padding-left: 30px;
+    }
+
+    .btn {
+        margin-top: 10px;
+    }
+
+    #danger-button {
+        margin-top: 10px;
+    }
+
+    .title .btn {
+        margin-top: 10px;
+    }
+
+    .row {
+        margin-bottom: 10px;
+    }
 }

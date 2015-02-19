@@ -62,7 +62,7 @@ DATABASES = {
         'NAME': 'ODM2Equipment',
         'USER': 'Mario',
         'PASSWORD': 'Aixax0822',
-        'HOST': 'localhost',
+        'HOST': 'MANGO\SQLEXPRESS',
         'PORT': '',
 
         'OPTIONS': {

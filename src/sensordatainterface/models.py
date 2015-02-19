@@ -19,7 +19,7 @@ class ActionBy(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey('Action', db_column='ActionID')  # Field name made lowercase.
     affiliationid = models.ForeignKey('Affiliation', db_column='AffiliationID')  # Field name made lowercase.
-    isactionlead = models.BooleanField(db_column='IsActionLead')  # Field name made lowercase.
+    isactionlead = models.BooleanField(db_column='IsActionLead')#, default=False)  # Field name made lowercase. <- How to fix Warnings
     roledescription = models.TextField(db_column='RoleDescription', blank=True)  # Field name made lowercase.
 
     class Meta:
@@ -1052,7 +1052,7 @@ class SamplingFeatureAnnotation(models.Model):
         db_table = 'ODM2Annotations].[SamplingFeatureAnnotations'
 
 
-class SamplingFeatureExtensionPropertyValue(models.Model):
+class SamplingFeatureExtPropertyVal(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature',
                                           db_column='SamplingFeatureID')  # Field name made lowercase.
@@ -1328,7 +1328,7 @@ class SpectraResult(models.Model):
         db_table = 'ODM2Results].[SpectraResults'
 
 
-class TaxonomicClassifierExternalIdentifier(models.Model):
+class TaxonomicClassifierExtId(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     taxonomicclassifierid = models.ForeignKey('TaxonomicClassifier',
                                               db_column='TaxonomicClassifierID')  # Field name made lowercase.

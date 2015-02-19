@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
-from models import Sites
+from models import Sites, Result
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import logout
@@ -17,21 +17,22 @@ class SiteList(ListView):
 
     @method_decorator(login_required(login_url='/login/'))
     def dispatch(self, *args, **kwargs):
-        return super(SiteList, self).dispatch(*args, **kwargs)
+       return super(SiteList, self).dispatch(*args, **kwargs)
 
 
 class SiteDetailView(DetailView):
-    model = Sites
-    context_object_name = 'SiteDetails'
+    context_object_name = 'site'
+    queryset = Sites.objects.using('odm2').all()
+    slug_field = 'samplingfeatureid'
     template_name = 'sites/details.html'
 
     @method_decorator(login_required(login_url='/login/'))
     def dispatch(self, *args, **kwargs):
-        return super(SiteList, self).dispatch(*args, **kwargs)
+        return super(SiteDetailView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
-        context['something'] = Sites.objects.all()
+        context['variables'] = Result.objects.using('odm2').all()
         return context
 
 def login(request, logout_msg):
