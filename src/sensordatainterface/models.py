@@ -19,7 +19,8 @@ class ActionBy(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey('Action', db_column='ActionID')  # Field name made lowercase.
     affiliationid = models.ForeignKey('Affiliation', db_column='AffiliationID')  # Field name made lowercase.
-    isactionlead = models.BooleanField(db_column='IsActionLead')#, default=False)  # Field name made lowercase. <- How to fix Warnings
+    isactionlead = models.BooleanField(
+        db_column='IsActionLead')  # , default=False)  # Field name made lowercase. <- How to fix Warnings
     roledescription = models.TextField(db_column='RoleDescription', blank=True)  # Field name made lowercase.
 
     class Meta:
@@ -320,7 +321,8 @@ class DataloggerFileColumn(models.Model):
                                             null=True)  # Field name made lowercase.
     recordinginterval = models.FloatField(db_column='RecordingInterval', blank=True,
                                           null=True)  # Field name made lowercase.
-    recordingintervalunitsid = models.ForeignKey('Units', related_name='column_recordingintervalunitsid', db_column='RecordingIntervalUnitsID', blank=True,
+    recordingintervalunitsid = models.ForeignKey('Units', related_name='column_recordingintervalunitsid',
+                                                 db_column='RecordingIntervalUnitsID', blank=True,
                                                  null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV',
                                               blank=True)  # Field name made lowercase.
@@ -514,10 +516,12 @@ class MeasurementResultValue(models.Model):
 class MeasurementResult(models.Model):
     resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='measurement_xlocationunitsid', db_column='XLocationUnitsID', blank=True,
+    xlocationunitsid = models.ForeignKey('Units', related_name='measurement_xlocationunitsid',
+                                         db_column='XLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation', blank=True, null=True)  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='measurement_ylocationunitsid', db_column='YLocationUnitsID', blank=True,
+    ylocationunitsid = models.ForeignKey('Units', related_name='measurement_ylocationunitsid',
+                                         db_column='YLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation', blank=True, null=True)  # Field name made lowercase.
     zlocationunitsid = models.ForeignKey('Units', db_column='ZLocationUnitsID', blank=True,
@@ -528,7 +532,8 @@ class MeasurementResult(models.Model):
     qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
-    timeaggregationintervalunitsid = models.ForeignKey('Units', related_name='measurement_timeaggregationintervalunitsid',
+    timeaggregationintervalunitsid = models.ForeignKey('Units',
+                                                       related_name='measurement_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
@@ -580,7 +585,6 @@ class MethodExternalIdentifier(models.Model):
     class Meta:
         managed = False
         db_table = 'ODM2ExternalIdentifiers].[MethodExternalIdentifiers'
-
 
 
 class Method(models.Model):
@@ -682,9 +686,11 @@ class PointCoverageResultValue(models.Model):
     valuedatetime = models.DateTimeField(db_column='ValueDateTime')  # Field name made lowercase.
     valuedatetimeutcoffset = models.IntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation')  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='point_xlocationunitsid', db_column='XLocationUnitsID')  # Field name made lowercase.
+    xlocationunitsid = models.ForeignKey('Units', related_name='point_xlocationunitsid',
+                                         db_column='XLocationUnitsID')  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation')  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='point_ylocationunitsid', db_column='YLocationUnitsID')  # Field name made lowercase.
+    ylocationunitsid = models.ForeignKey('Units', related_name='point_ylocationunitsid',
+                                         db_column='YLocationUnitsID')  # Field name made lowercase.
     censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
     qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
 
@@ -702,11 +708,13 @@ class PointCoverageResult(models.Model):
                                            null=True)  # Field name made lowercase.
     intendedxspacing = models.FloatField(db_column='IntendedXSpacing', blank=True,
                                          null=True)  # Field name made lowercase.
-    intendedxspacingunitsid = models.ForeignKey('Units', related_name='point_intendedxspacingunitsid', db_column='IntendedXSpacingUnitsID', blank=True,
+    intendedxspacingunitsid = models.ForeignKey('Units', related_name='point_intendedxspacingunitsid',
+                                                db_column='IntendedXSpacingUnitsID', blank=True,
                                                 null=True)  # Field name made lowercase.
     intendedyspacing = models.FloatField(db_column='IntendedYSpacing', blank=True,
                                          null=True)  # Field name made lowercase.
-    intendedyspacingunitsid = models.ForeignKey('Units', related_name='point_intendedyspacingunitsid', db_column='IntendedYSpacingUnitsID', blank=True,
+    intendedyspacingunitsid = models.ForeignKey('Units', related_name='point_intendedyspacingunitsid',
+                                                db_column='IntendedYSpacingUnitsID', blank=True,
                                                 null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
@@ -753,7 +761,8 @@ class ProfileResultValue(models.Model):
     qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
-                                    related_name='profile_timeaggregationintervalunitsid', db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
+                                                       related_name='profile_timeaggregationintervalunitsid',
+                                                       db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -763,10 +772,12 @@ class ProfileResultValue(models.Model):
 class ProfileResult(models.Model):
     resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='profile_xlocationunitsid', db_column='XLocationUnitsID', blank=True,
+    xlocationunitsid = models.ForeignKey('Units', related_name='profile_xlocationunitsid', db_column='XLocationUnitsID',
+                                         blank=True,
                                          null=True)  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation', blank=True, null=True)  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='profile_ylocationunitsid', db_column='YLocationUnitsID', blank=True,
+    ylocationunitsid = models.ForeignKey('Units', related_name='profile_ylocationunitsid', db_column='YLocationUnitsID',
+                                         blank=True,
                                          null=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey('SpatialReference', db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
@@ -776,7 +787,8 @@ class ProfileResult(models.Model):
                                                 null=True)  # Field name made lowercase.
     intendedtimespacing = models.FloatField(db_column='IntendedTimeSpacing', blank=True,
                                             null=True)  # Field name made lowercase.
-    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='profile_intendedtimespacingunitsid', db_column='IntendedTimeSpacingUnitsID', blank=True,
+    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='profile_intendedtimespacingunitsid',
+                                                   db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
 
@@ -844,9 +856,11 @@ class ReferenceMaterial(models.Model):
 
 class RelatedAction(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
-    actionid = models.ForeignKey(Action, related_name='relatedactions_actionid', db_column='ActionID')  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, related_name='relatedactions_actionid',
+                                 db_column='ActionID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedactionid = models.ForeignKey(Action, related_name='relatedactions_relatedactionid', db_column='RelatedActionID')  # Field name made lowercase.
+    relatedactionid = models.ForeignKey(Action, related_name='relatedactions_relatedactionid',
+                                        db_column='RelatedActionID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -855,9 +869,11 @@ class RelatedAction(models.Model):
 
 class RelatedAnnotation(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
-    annotationid = models.ForeignKey(Annotation, related_name='relatedannonations_annotationid', db_column='AnnotationID')  # Field name made lowercase.
+    annotationid = models.ForeignKey(Annotation, related_name='relatedannonations_annotationid',
+                                     db_column='AnnotationID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedannotationid = models.ForeignKey(Annotation, related_name='relatedannotation_relatedannontationid', db_column='RelatedAnnotationID')  # Field name made lowercase.
+    relatedannotationid = models.ForeignKey(Annotation, related_name='relatedannotation_relatedannontationid',
+                                            db_column='RelatedAnnotationID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -866,9 +882,11 @@ class RelatedAnnotation(models.Model):
 
 class RelatedCitation(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
-    citationid = models.ForeignKey(Citation, related_name='relatedcitations_citationid', db_column='CitationID')  # Field name made lowercase.
+    citationid = models.ForeignKey(Citation, related_name='relatedcitations_citationid',
+                                   db_column='CitationID')  # Field name made lowercase.
     relationshiptypecv = models.IntegerField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedcitationid = models.ForeignKey(Citation,  related_name='relatedcitations_relatedcitationid', db_column='RelatedCitationID')  # Field name made lowercase.
+    relatedcitationid = models.ForeignKey(Citation, related_name='relatedcitations_relatedcitationid',
+                                          db_column='RelatedCitationID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -877,9 +895,11 @@ class RelatedCitation(models.Model):
 
 class RelatedDataset(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
-    datasetid = models.ForeignKey(Dataset, related_name='relateddatasets_datasetid', db_column='DataSetID')  # Field name made lowercase.
+    datasetid = models.ForeignKey(Dataset, related_name='relateddatasets_datasetid',
+                                  db_column='DataSetID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relateddatasetid = models.ForeignKey(Dataset,  related_name='relateddatasets_relateddatasetid', db_column='RelatedDatasetID')  # Field name made lowercase.
+    relateddatasetid = models.ForeignKey(Dataset, related_name='relateddatasets_relateddatasetid',
+                                         db_column='RelatedDatasetID')  # Field name made lowercase.
     versioncode = models.TextField(db_column='VersionCode', blank=True)  # Field name made lowercase.
 
     class Meta:
@@ -889,9 +909,11 @@ class RelatedDataset(models.Model):
 
 class RelatedEquipment(models.Model):
     relationid = models.AutoField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
-    equipmentid = models.ForeignKey(Equipment, related_name='relatedequipment_equipmentid', db_column='EquipmentID')  # Field name made lowercase.
+    equipmentid = models.ForeignKey(Equipment, related_name='relatedequipment_equipmentid',
+                                    db_column='EquipmentID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedequipmentid = models.ForeignKey(Equipment, related_name='relatedequipment_relatedequipmentid', db_column='RelatedEquipmentID')  # Field name made lowercase.
+    relatedequipmentid = models.ForeignKey(Equipment, related_name='relatedequipment_relatedequipmentid',
+                                           db_column='RelatedEquipmentID')  # Field name made lowercase.
     relationshipstartdatetime = models.DateTimeField(
         db_column='RelationshipStartDateTime')  # Field name made lowercase.
     relationshipstartdatetimeutcoffset = models.IntegerField(
@@ -909,9 +931,11 @@ class RelatedEquipment(models.Model):
 class RelatedFeatures(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature',
-                                          related_name='relatedfeatures_samplingfeatureid', db_column='SamplingFeatureID')  # Field name made lowercase.
+                                          related_name='relatedfeatures_samplingfeatureid',
+                                          db_column='SamplingFeatureID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedfeatureid = models.ForeignKey('SamplingFeature', related_name='relatedfeature_relatedfeatureid', db_column='RelatedFeatureID')  # Field name made lowercase.
+    relatedfeatureid = models.ForeignKey('SamplingFeature', related_name='relatedfeature_relatedfeatureid',
+                                         db_column='RelatedFeatureID')  # Field name made lowercase.
     spatialoffsetid = models.ForeignKey('SpatialOffsets', db_column='SpatialOffsetID', blank=True,
                                         null=True)  # Field name made lowercase.
 
@@ -935,7 +959,8 @@ class RelatedResult(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     resultid = models.ForeignKey('Result', db_column='ResultID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedresultid = models.ForeignKey('Result', related_name='relatedresults_relatedresultid', db_column='RelatedResultID')  # Field name made lowercase.
+    relatedresultid = models.ForeignKey('Result', related_name='relatedresults_relatedresultid',
+                                        db_column='RelatedResultID')  # Field name made lowercase.
     versioncode = models.TextField(db_column='VersionCode', blank=True)  # Field name made lowercase.
     relatedresultsequencenumber = models.IntegerField(db_column='RelatedResultSequenceNumber', blank=True,
                                                       null=True)  # Field name made lowercase.
@@ -1090,7 +1115,7 @@ class SamplingFeature(models.Model):
                                                   blank=True)  # Field name made lowercase.
     samplingfeaturegeotypecv = models.TextField(db_column='SamplingFeatureGeotypeCV',
                                                 blank=True)  # Field name made lowercase.
-    #featuregeometry = models.TextField(db_column='FeatureGeometry',
+    # featuregeometry = models.TextField(db_column='FeatureGeometry',
     #                                   blank=True)  # Field name made lowercase. This field type is a guess.
     elevation_m = models.FloatField(db_column='Elevation_m', blank=True, null=True)  # Field name made lowercase.
     elevationdatumcv = models.TextField(db_column='ElevationDatumCV', blank=True)  # Field name made lowercase.
@@ -1118,15 +1143,18 @@ class SectionResultValue(models.Model):
     valuedatetimeutcoffset = models.BigIntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation')  # Field name made lowercase.
     xaggregationinterval = models.FloatField(db_column='XAggregationInterval')  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='sectionresults_xlocationunitsid', db_column='XLocationUnitsID')  # Field name made lowercase.
+    xlocationunitsid = models.ForeignKey('Units', related_name='sectionresults_xlocationunitsid',
+                                         db_column='XLocationUnitsID')  # Field name made lowercase.
     zlocation = models.BigIntegerField(db_column='ZLocation')  # Field name made lowercase.
     zaggregationinterval = models.FloatField(db_column='ZAggregationInterval')  # Field name made lowercase.
-    zlocationunitsid = models.ForeignKey('Units', related_name='sectionresults_zlocationunitsid', db_column='ZLocationUnitsID')  # Field name made lowercase.
+    zlocationunitsid = models.ForeignKey('Units', related_name='sectionresults_zlocationunitsid',
+                                         db_column='ZLocationUnitsID')  # Field name made lowercase.
     censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
     qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
-    timeaggregationintervalunitsid = models.ForeignKey('Units', related_name='sectionresults_timeaggregationintervalunitsid',
+    timeaggregationintervalunitsid = models.ForeignKey('Units',
+                                                       related_name='sectionresults_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
@@ -1137,21 +1165,25 @@ class SectionResultValue(models.Model):
 class SectionResult(models.Model):
     resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation', blank=True, null=True)  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='sectionresults_ylocationunitsid', db_column='YLocationUnitsID', blank=True,
+    ylocationunitsid = models.ForeignKey('Units', related_name='sectionresults_ylocationunitsid',
+                                         db_column='YLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey('SpatialReference', db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
     intendedxspacing = models.FloatField(db_column='IntendedXSpacing', blank=True,
                                          null=True)  # Field name made lowercase.
-    intendedxspacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedxspacingunitsid', db_column='IntendedXSpacingUnitsID', blank=True,
+    intendedxspacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedxspacingunitsid',
+                                                db_column='IntendedXSpacingUnitsID', blank=True,
                                                 null=True)  # Field name made lowercase.
     intendedzspacing = models.FloatField(db_column='IntendedZSpacing', blank=True,
                                          null=True)  # Field name made lowercase.
-    intendedzspacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedzspacingunitsid', db_column='IntendedZSpacingUnitsID', blank=True,
+    intendedzspacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedzspacingunitsid',
+                                                db_column='IntendedZSpacingUnitsID', blank=True,
                                                 null=True)  # Field name made lowercase.
     intendedtimespacing = models.FloatField(db_column='IntendedTimeSpacing', blank=True,
                                             null=True)  # Field name made lowercase.
-    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedtimespacingunitsid', db_column='IntendedTimeSpacingUnitsID', blank=True,
+    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedtimespacingunitsid',
+                                                   db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
 
@@ -1292,7 +1324,8 @@ class SpectraResultValue(models.Model):
     valuedatetimeutcoffset = models.IntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
     excitationwavelength = models.FloatField(db_column='ExcitationWavelength')  # Field name made lowercase.
     emissionwavelength = models.FloatField(db_column='EmissionWavelength')  # Field name made lowercase.
-    wavelengthunitsid = models.ForeignKey('Units', related_name='spectralresultsvalues_wavelengthunitsid', db_column='WavelengthUnitsID')  # Field name made lowercase.
+    wavelengthunitsid = models.ForeignKey('Units', related_name='spectralresultsvalues_wavelengthunitsid',
+                                          db_column='WavelengthUnitsID')  # Field name made lowercase.
     censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
     qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
@@ -1307,10 +1340,12 @@ class SpectraResultValue(models.Model):
 class SpectraResult(models.Model):
     resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='spectralresults_xlocationunitsid', db_column='XLocationUnitsID', blank=True,
+    xlocationunitsid = models.ForeignKey('Units', related_name='spectralresults_xlocationunitsid',
+                                         db_column='XLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation', blank=True, null=True)  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='spectralresults_zlocationunitsid', db_column='YLocationUnitsID', blank=True,
+    ylocationunitsid = models.ForeignKey('Units', related_name='spectralresults_zlocationunitsid',
+                                         db_column='YLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation', blank=True, null=True)  # Field name made lowercase.
     zlocationunitsid = models.ForeignKey('Units', db_column='ZLocationUnitsID', blank=True,
@@ -1319,7 +1354,9 @@ class SpectraResult(models.Model):
                                            null=True)  # Field name made lowercase.
     intendedwavelengthspacing = models.FloatField(db_column='IntendedWavelengthSpacing', blank=True,
                                                   null=True)  # Field name made lowercase.
-    intendedwavelengthspacingunitsid = models.ForeignKey('Units', related_name='spectralresult_intendedwavelengthspacingunitsid', db_column='IntendedWavelengthSpacingUnitsID',
+    intendedwavelengthspacingunitsid = models.ForeignKey('Units',
+                                                         related_name='spectralresult_intendedwavelengthspacingunitsid',
+                                                         db_column='IntendedWavelengthSpacingUnitsID',
                                                          blank=True, null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
 
@@ -1391,19 +1428,23 @@ class TimeSeriesResultValue(models.Model):
 class TimeSeriesResult(models.Model):
     resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_xlocationunits', db_column='XLocationUnitsID', blank=True,
+    xlocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_xlocationunits',
+                                         db_column='XLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation', blank=True, null=True)  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_ylocationunits', db_column='YLocationUnitsID', blank=True,
+    ylocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_ylocationunits',
+                                         db_column='YLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation', blank=True, null=True)  # Field name made lowercase.
-    zlocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_zlocationunits', db_column='ZLocationUnitsID', blank=True,
+    zlocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_zlocationunits',
+                                         db_column='ZLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey(SpatialReference, db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
     intendedtimespacing = models.FloatField(db_column='IntendedTimeSpacing', blank=True,
                                             null=True)  # Field name made lowercase.
-    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='timeseriesresults_intendedtimespacingunitsid', db_column='IntendedTimeSpacingUnitsID', blank=True,
+    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='timeseriesresults_intendedtimespacingunitsid',
+                                                   db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
 
@@ -1429,11 +1470,14 @@ class TrajectoryResultValue(models.Model):
     valuedatetime = models.DateTimeField(db_column='ValueDateTime')  # Field name made lowercase.
     valuedatetimeutcoffset = models.IntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation')  # Field name made lowercase.
-    xlocationunitsid = models.ForeignKey('Units', related_name='trajectoryresultvalues_xlocationunitsid', db_column='XLocationUnitsID')  # Field name made lowercase.
+    xlocationunitsid = models.ForeignKey('Units', related_name='trajectoryresultvalues_xlocationunitsid',
+                                         db_column='XLocationUnitsID')  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation')  # Field name made lowercase.
-    ylocationunitsid = models.ForeignKey('Units', related_name='trajectoryresultvalues_ylocationunitsid', db_column='YLocationUnitsID')  # Field name made lowercase.
+    ylocationunitsid = models.ForeignKey('Units', related_name='trajectoryresultvalues_ylocationunitsid',
+                                         db_column='YLocationUnitsID')  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation')  # Field name made lowercase.
-    zlocationunitsid = models.ForeignKey('Units',  related_name='trajectoryresultvalues_zlocationunitsid', db_column='ZLocationUnitsID')  # Field name made lowercase.
+    zlocationunitsid = models.ForeignKey('Units', related_name='trajectoryresultvalues_zlocationunitsid',
+                                         db_column='ZLocationUnitsID')  # Field name made lowercase.
     trajectorydistance = models.FloatField(db_column='TrajectoryDistance')  # Field name made lowercase.
     trajectorydistanceaggregationinterval = models.FloatField(
         db_column='TrajectoryDistanceAggregationInterval')  # Field name made lowercase.
@@ -1441,7 +1485,8 @@ class TrajectoryResultValue(models.Model):
     censorcode = models.TextField(db_column='CensorCode')  # Field name made lowercase.
     qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
-    timeaggregationintervalunitsid = models.ForeignKey('Units',  related_name='trajectoryresultvalues_timeaggregationintervalunitsid',
+    timeaggregationintervalunitsid = models.ForeignKey('Units',
+                                                       related_name='trajectoryresultvalues_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
@@ -1455,11 +1500,14 @@ class TrajectoryResult(models.Model):
                                            null=True)  # Field name made lowercase.
     intendedtrajectoryspacing = models.FloatField(db_column='IntendedTrajectorySpacing', blank=True,
                                                   null=True)  # Field name made lowercase.
-    intendedtrajectoryspacingunitsid = models.ForeignKey('Units', related_name='trajectoryresults_intendedtrajectoryspacingunitsid', db_column='IntendedTrajectorySpacingUnitsID',
+    intendedtrajectoryspacingunitsid = models.ForeignKey('Units',
+                                                         related_name='trajectoryresults_intendedtrajectoryspacingunitsid',
+                                                         db_column='IntendedTrajectorySpacingUnitsID',
                                                          blank=True, null=True)  # Field name made lowercase.
     intendedtimespacing = models.FloatField(db_column='IntendedTimeSpacing', blank=True,
                                             null=True)  # Field name made lowercase.
-    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='trajectoryresults_intendedtimespacingunitsid', db_column='IntendedTimeSpacingUnitsID', blank=True,
+    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='trajectoryresults_intendedtimespacingunitsid',
+                                                   db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
 
@@ -1507,7 +1555,8 @@ class TransectResultValue(models.Model):
 class TransectResult(models.Model):
     resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation', blank=True, null=True)  # Field name made lowercase.
-    zlocationunitsid = models.ForeignKey('Units', related_name='transectresults_zlocationunitsid', db_column='ZLocationUnitsID', blank=True,
+    zlocationunitsid = models.ForeignKey('Units', related_name='transectresults_zlocationunitsid',
+                                         db_column='ZLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey(SpatialReference, db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
@@ -1517,7 +1566,8 @@ class TransectResult(models.Model):
                                                        null=True)  # Field name made lowercase.
     intendedtimespacing = models.FloatField(db_column='IntendedTimeSpacing', blank=True,
                                             null=True)  # Field name made lowercase.
-    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='transectresults_intendedtimespacingunitsid', db_column='IntendedTimeSpacingUnitsID', blank=True,
+    intendedtimespacingunitsid = models.ForeignKey('Units', related_name='transectresults_intendedtimespacingunitsid',
+                                                   db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
     aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
 

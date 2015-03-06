@@ -5,6 +5,7 @@ Django settings for ODM2Sensor project.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 

@@ -80,19 +80,23 @@
             <tr>
                 <th>Variable Name</th>
                 <th>Recorded Statistic</th>
-                <th>Value Offset</th>
-                <th>Value Multiplier</th>
+                <!--<th>Value Offset</th>
+                <th>Value Multiplier</th>-->
             </tr>
             </thead>
+            <tbody>
             {% for var in variables %}
                 <tr>
-                    <td>{{ var.resultid }}</td>
-                    <td>{{ var.resultid }}</td>
-                    <td>{{ var.resultid }}</td>
-                    <td>{{ var.resultid }}</td>
+                    <td>{{ var.variablenamecv }}</td>
+                    <td>{% for rec_stat in recorded_statistic %}
+                        {% if rec_stat.resultid.variableid.variableid == var.variableid %}
+                            {{ rec_stat.aggregationstatisticcv }}
+                        {% endif %}
+                    {% endfor %}</td>
+                    <!--<td>{# {{ var.variabletypecv }} #}</td>
+                    <td>{# {{ var.speciationcv }} #}</td> -->
                 </tr>
             {% endfor %}
-            <tbody>
             </tbody>
         </table>
     </div>

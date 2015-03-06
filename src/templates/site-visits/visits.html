@@ -1,5 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <p>Site Visits!</p>
-
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>Site Visits</h1>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <button class="btn btn-primary btn-block new-btn">New Site Visit</button>
+    </div>
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Site Name</th>
+            <th>Site Group</th>
+            <th>Crew</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for visit in SiteVisits %}
+            <tr>
+                <td><a href="/visit-detail/{{ visit.actionid.actionid }}">{{ visit.actionid.begindatetime }}</a></td>
+                <td>{{ visit.samplingfeatureid.samplingfeaturename }}</td>
+                <td>{% if visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
+                {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
+                {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}Provo River{% endif %}</td>
+                <td>{% for person in people %}
+                    {% if person.actionid == visit.actionid %}
+                        {{ person.affiliationid.personid.personfirstname }}
+                        {{ person.affiliationid.personid.personlastname }},
+                        {# {% if not forloop.last %}, {% endif %}  #}
+                    {% endif %}
+                {% endfor %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% endblock %}
