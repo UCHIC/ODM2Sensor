@@ -9,10 +9,11 @@ function removeCommas(table) {
     }
 }
 
+/* NOT NEEDED FOR NOWWWWW!!!! yaaayayayayayayyyyyyy
 window.addEventListener('load', function() {
     var table = document.getElementById('data-table');
 
     if (table) {
         removeCommas(table);
     }
-});
+});*/

@@ -1,5 +1,35 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <H1>Activities!</H1>
-
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>Field Activities</h1>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <button class="btn btn-primary btn-block new-btn">New Field Activity</button>
+    </div>
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>Begin DateTime</th>
+            <th>End DateTime</th>
+            <th>Site Visit</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for activity in FieldActivities %}
+            <tr>
+                <td><a href="/field-activity-detail/{{ activity.actionid }}">{{ activity.actionid.begindatetime }}</a></td>
+                <td>{{ activity.actionid.enddatetime }}</td>
+                <td>{{ activity.samplingfeatureid.samplingfeaturename }}, {{ activity.actionid.begindatetime }}</td>
+                <td>{{ activity.actionid.actiontypecv }}</td>
+                <td style="max-width: 500px">{% if activity.actionid.actiondescription != None %}
+                    {{ activity.actionid.actiondescription }}
+                {% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% endblock %}

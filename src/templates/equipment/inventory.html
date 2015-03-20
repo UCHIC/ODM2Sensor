@@ -1,5 +1,33 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <p>Equipment</p>
-
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>Equipment</h1>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <button class="btn btn-primary btn-block new-btn">New Equipment</button>
+    </div>
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>Serial Number</th>
+            <th>Type</th>
+            <th>Model</th>
+            <th>Manufacturer</th>
+            <th>Owner</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equipment in Inventory %}
+            <tr>
+                <td><a href="/equipment-detail/{{ equipment.equipmentid }}">{{ equipment.equipmentserialnumber }}</a></td>
+                <td>{{ equipment.equipmenttypecv }}</td>
+                <td>{{ equipment.equipmentmodelid.modelname }}</td>
+                <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                <td>{{ equipment.equipmentownerid.personfirstname }} {{ equipment.equipmentownerid.personlastname }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% endblock %}

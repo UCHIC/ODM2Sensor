@@ -24,12 +24,10 @@
                 <td>{% if visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
                 {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
                 {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}Provo River{% endif %}</td>
-                <td>{% for person in people %}
-                    {% if person.actionid == visit.actionid %}
+                <td>{% for person in visit.actionid.actionby.all %}
                         {{ person.affiliationid.personid.personfirstname }}
-                        {{ person.affiliationid.personid.personlastname }},
-                        {# {% if not forloop.last %}, {% endif %}  #}
-                    {% endif %}
+                        {{ person.affiliationid.personid.personlastname }}
+                        {% if not forloop.last %}, {% endif %}
                 {% endfor %}</td>
             </tr>
         {% endfor %}

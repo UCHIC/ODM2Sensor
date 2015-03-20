@@ -17,7 +17,7 @@ class ActionAnnotation(models.Model):
 
 class ActionBy(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
-    actionid = models.ForeignKey('Action', db_column='ActionID')  # Field name made lowercase.
+    actionid = models.ForeignKey('Action', related_name="actionby", db_column='ActionID')  # Field name made lowercase.
     affiliationid = models.ForeignKey('Affiliation', db_column='AffiliationID')  # Field name made lowercase.
     isactionlead = models.BooleanField(
         db_column='IsActionLead')  # , default=False)  # Field name made lowercase. <- How to fix Warnings
@@ -130,7 +130,7 @@ class CvTerm(models.Model):
 
 
 class CalibrationAction(models.Model):
-    actionid = models.ForeignKey(Action, db_column='ActionID', primary_key=True)  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, related_name='calibrationaction', db_column='ActionID', primary_key=True)  # Field name made lowercase.
     calibrationcheckvalue = models.FloatField(db_column='CalibrationCheckValue', blank=True,
                                               null=True)  # Field name made lowercase.
     instrumentoutputvariableid = models.ForeignKey('InstrumentOutputVariable',
@@ -457,7 +457,7 @@ class FeatureAction(models.Model):
     featureactionid = models.IntegerField(db_column='FeatureActionID', primary_key=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature',
                                           db_column='SamplingFeatureID')  # Field name made lowercase.
-    actionid = models.ForeignKey(Action, db_column='ActionID')  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, related_name="featureaction", db_column='ActionID')  # Field name made lowercase.
 
     class Meta:
         managed = False

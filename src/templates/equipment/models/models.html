@@ -1,5 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <p>Models!</p>
-
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>Equipment Models (very sexy)</h1>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <button class="btn btn-primary btn-block new-btn">New Equipment</button>
+    </div>
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Manufacturer</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for model in Models %}
+            <tr>
+                <td><a href="/models-detail/{{ model.equipmentmodelid }}">{{ model.modelname }}</a></td>
+                <td>{{ model.modelmanufacturerid.organizationname }}</td>
+                <td>{{ model.modeldescription }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% endblock %}

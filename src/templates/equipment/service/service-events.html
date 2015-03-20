@@ -1,5 +1,32 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <H1>Service!</H1>
-
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>Factory Service Events (REVIEW!)</h1>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <button class="btn btn-primary btn-block new-btn">New Factory Service Event</button>
+    </div>
+    <table id="data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Equipment Code</th>
+            <th>Equipment Type</th>
+            <th>Service Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in FactoryService %}
+            <tr>
+                <td><a href="/factory-service-detail/{{ event.actionid }}">{{ event.actionid.begindatetime }}</a></td>
+                <td>{{ event.actionid.equipmentused.equipmentid.equipmentcode }}</td>
+                <td>{{ event.actionid.equipmentused.equipmentid.equipmenttypecv }}</td>
+                <td>{{ event.actionid.actiondescription }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p style="color:red ;">No data for factory service!</p>
+    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% endblock %}
