@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load inv_extras %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
         <h1>Field Activities</h1>
@@ -20,10 +21,10 @@
         <tbody>
         {% for activity in FieldActivities %}
             <tr>
-                <td><a href="/field-activity-detail/{{ activity.actionid }}">{{ activity.actionid.begindatetime }}</a></td>
+                <td><a href="/field-activity-detail/{{ activity.actionid.actionid }}">{{ activity.actionid.begindatetime }}</a></td>
                 <td>{{ activity.actionid.enddatetime }}</td>
                 <td>{{ activity.samplingfeatureid.samplingfeaturename }}, {{ activity.actionid.begindatetime }}</td>
-                <td>{{ activity.actionid.actiontypecv }}</td>
+                <td>{{ activity.actionid.actiontypecv|separatewordsbycaps }}</td>
                 <td style="max-width: 500px">{% if activity.actionid.actiondescription != None %}
                     {{ activity.actionid.actiondescription }}
                 {% endif %}</td>

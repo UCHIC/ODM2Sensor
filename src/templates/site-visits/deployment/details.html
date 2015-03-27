@@ -1,10 +1,207 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Deployment Details</h2></div>
 
-</body>
-</html>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">View Full Visit History for Site</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Edit Deployment Description</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+        </div>
+    </div>
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <h3>Equipment Description</h3>
+            <table class="table">
+                <tr>
+                    <th>Equipment Serial Number:</th>
+                    <td>{{ Deployment.equipmentid.equipmentserialnumber }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Type:</th>
+                    <td>{{ Deployment.equipmentid.equipmenttypecv }}</td>
+                </tr>
+                <tr>
+                    <th>Model Name:</th>
+                    <td>{{ Deployment.equipmentid.equipmentmodelid.modelname }}</td>
+                </tr>
+                <tr>
+                    <th>Description:</th>
+                    <td>{{ Deployment.equipmentid.equipmentdescription }}</td>
+                </tr>
+                <tr>
+                    <th>Purchase Date:</th>
+                    <td>{{ Deployment.equipmentid.equipmentpurchasedate }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Notes:</th>
+                    <td> WUT?</td>
+                </tr>
+                <tr>
+                    <th>Link:</th>
+                    <td>{{ Deployment.equipmentid.equipmentdocumentationlink }}</td>
+                </tr>
+                <tr>
+                    <th>Owner Contact:</th>
+                    <td>{{ Deployment.equipmentid.equipmentownerid.personfirstname }} {{ deployment.equipmentid.equipmentownerid.personlastname }}</td>
+                </tr>
+                {% for affiliation in Deployment.equipmentid.equipmentownerid.affiliation.all %}
+                    {% if forloop.first %}
+                        <tr>
+                            <th>Owner Institution:</th>
+                            <td>{{ affiliation.organizationid.organizationname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Owner Address:</th>
+                            <td>{{ affiliation.primaryaddress }}</td>
+                        </tr>
+                        <tr>
+                            <th>Owner Phone:</th>
+                            <td>{{ affiliation.primaryphone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ affiliation.primaryemail }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <h3>Deployment Description</h3>
+            <table class="table">
+                <tr>
+                    <th>Site:</th>
+                    <td>{% with site=Deployment.actionid.featureaction.all|first %}
+                        {{ site.samplingfeatureid.samplingfeaturename }}
+                    {% endwith %}</td>
+                </tr>
+                <tr>
+                    <th>Deployment Begin Date:</th>
+                    <td>{{ Deployment.actionid.begindatetime }}</td>
+                </tr>
+                <tr>
+                    <th>Deployment End Date:</th>
+                    <td>{{ Deployment.actionid.enddatetime }}</td>
+                </tr>
+                <tr>
+                    <th>Deployment UTC Offset:</th>
+                    <td>{{ Deployment.actionid.begindatetimeutcoffset }}</td>
+                </tr>
+                <tr>
+                    <th>Currently Deployed:</th>
+                    <td style="color: red;">NO FIELD FOUND FOR THIS</td>
+                </tr>
+                <tr>
+                    <th>Deployment Type:</th>
+                    <td style="color: red;">NO FIELD FOUND FOR THIS</td>
+                </tr>
+                <tr>
+                    <th>Deployment Description:</th>
+                    <td>{{ Deployment.actionid.actiondescription }}</td>
+                </tr>
+                <tr>
+                    <th>Deployment Notes:</th>
+                    <td>{{ Deployment.actionid.actiondescription }} Huh?</td>
+                </tr>
+                <tr>
+                    <th>Horizontal Offset Description:</th>
+                    <td>Gonna need help</td>
+                </tr>
+                <tr>
+                    <th>Horizontal Units ID:</th>
+                    <td>Gonna need help</td>
+                </tr>
+                <tr>
+                    <th>Horizontal Offset Value:</th>
+                    <td>Gonna need help</td>
+                </tr>
+                <tr>
+                    <th>Vertical Offset Description:</th>
+                    <td>Gonna need help</td>
+
+                </tr>
+                <tr>
+                    <th>Vertical Units ID:</th>
+                    <td>Gonna need help</td>
+                </tr>
+                <tr>
+                    <th>Vertical Offset Value:</th>
+                    <td>Gonna need help</td>
+                </tr>
+                <tr>
+                    <th>Parent Equipment:</th>
+                    <td>{% for parent in Deployment.equipmentid.relatedequipment_relatedequipmentid.all %}
+                        {% if parent.relationshiptypecv == 'is_child_of' %}
+                            {{ parent.equipmentid.equipmentid }}
+                        {% endif %}
+                    {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Deployment Schematic:</th>
+                    <td>{{ Deployment.actionid.actionfilelink }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <hr class="divider">
+    <div class="row">
+        <div class="col-md-9"><h3>Measured Variables</h3></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="#">New Deployment Measured Variable</a></div>
+    </div>
+    <div class="row">
+        <table id="data-table">
+            <thead>
+            <tr>
+                <th>Variable Name</th>
+                <th>Recorded Statistic</th>
+                <th>Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for variable in Deployment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
+                {% for recordedstatistic in variable.dataloggerfilecolumn.all %}
+                    <tr>
+                        <td>{{ variable.variableid.variablenamecv }}</td>
+                        <td>{{ recordedstatistic.aggregationstatistic }}</td>
+                        <td>put icons here</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td>{{ variable.variableid.variablenamecv }}</td>
+                        <td></td>
+                        <td>put icons here</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Go to Site Visit</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">View Equipment's Deployment History</a></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="#">Next</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-left"><a class="btn btn-primary btn-block"
+                                                              href="#">Previous</a></div>
+    </div>
+
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
+
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+{% endblock %}

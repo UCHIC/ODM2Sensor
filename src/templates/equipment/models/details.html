@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Equipment Model Details</h2></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Edit Model Description</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+        </div>
+    </div>
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <table class="table">
+                <tr>
+                    <th>Name:</th>
+                    <td>{{ Model.modelname }}</td>
+                </tr>
+                <tr>
+                    <th>Part Number:</th>
+                    <td>{{ Model.modelpartnumber|default:"  -  " }}</td>
+                </tr>
+                <tr>
+                    <th>Description:</th>
+                    <td>{{ Model.modeldescription }}</td>
+                </tr>
+                <tr>
+                    <th>Manufacturer:</th>
+                    <td>{{ Model.modelmanufacturerid.organizationname }}</td>
+                </tr>
+                <tr>
+                    <th>Link:</th>
+                    <td>{{ Model.modellink|default:"Not Found." }}</td>
+                </tr>
+                <tr>
+                    <th>Model Specifications:</th>
+                    <td>{{ Model.modelspecificationsfilelink }} This should be a file!!!</td>
+                </tr>
+                <tr>
+                    <th>Notes:</th>
+                    <td>{{ Model }} Gone for good?</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
+
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+{% endblock %}

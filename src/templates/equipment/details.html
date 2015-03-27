@@ -1,10 +1,159 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Equipment Details</h2></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Edit Equipment Description</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+        </div>
+    </div>
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <h3>Equipment Description</h3>
+            <table class="table">
+                <tr>
+                    <th>Serial Number:</th>
+                    <td>{{ Equipment.equipmentserialnumber }}</td>
+                </tr>
+                <tr>
+                    <th>Model Name:</th>
+                    <td>{{ Equipment.equipmentmodelid.modelname }}</td>
+                </tr>
+                <tr>
+                    <th>Model Link:</th>
+                    <td>{{ Equipment.equipmentmodelid.modellink }}</td>
+                </tr>
+                <tr>
+                    <th>Model Description:</th>
+                    <td>{{ Equipment.equipmentmodelid.modeldescription }}</td>
+                </tr>
+                <tr>
+                    <th>Inventory Number:</th>
+                    <td>{{ Equipment.equipmentdocumentationlink }}??</td>
+                </tr>
+                <tr>
+                    <th>Purchase Date:</th>
+                    <td>{{ Equipment.equipmentpurchasedate }}</td>
+                </tr>
+                <tr>
+                    <th>Order Number:</th>
+                    <td>{{ Equipment.equipmentpurchaseordernumber }}</td>
+                </tr>
+                <tr>
+                    <th>Notes:</th>
+                    <td>{{ Equipment.equipmentdescription }}</td>
+                </tr>
+                <tr>
+                    <th>Calibration Certificate:</th>
+                    <td>{{ Equipment.equipmentypecv }} ??</td>
+                </tr>
+            </table>
+            <h3>Owner Information</h3>
+            <table class="table">
+                <tr>
+                    <th>Contact:</th>
+                    <td>{{ Equipment.equipmentownerid.personfirstname }} {{ Equipment.equipmentownerid.personlastname }}</td>
+                </tr>
+                {% for affiliation in Equipment.equipmentownerid.affiliation.all %}
+                    {% if forloop.first %}
+                        <tr>
+                            <th>Institution:</th>
+                            <td>{{ affiliation.organizationid.organizationname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{ affiliation.primaryaddress }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ affiliation.primaryphone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ affiliation.primaryemail }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <h3>Manufacturer Information</h3>
+            <table class="table">
+                <tr>
+                    <th>Name:</th>
+                    <td>{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                </tr>
+                {% for person in Equipment.equipmentmodelid.modelmanufacturerid.affiliation.all %}
+                {% if person.isprimaryorganizationcontact %}
+                    <tr>
+                        <th>Contact Name:</th>
+                        <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>{{ person.primaryaddress }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ person.primaryemail }}</td>
+                    </tr>
+                    <tr>
+                        <th>Website:</th>
+                        <td>{{ person.personlink }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{ person.primaryphone }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+             <h3>Vendor Information</h3>
+            <table class="table">
+                <tr>
+                    <th>Name:</th>
+                    <td>{{ Equipment.equipmentvendorid.organizationname }}</td>
+                </tr>
+                {% for person in Equipment.equipmentvendorid.affiliation.all %}
+                {% if person.isprimaryorganizationcontact %}
+                    <tr>
+                        <th>Contact Name:</th>
+                        <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>{{ person.primaryaddress }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ person.primaryemail }}</td>
+                    </tr>
+                    <tr>
+                        <th>Website:</th>
+                        <td>{{ person.personlink }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{ person.primaryphone }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Calibration History</a></div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Factory Service History</a></div>
+    <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Deployment History</a></div>
+    </div>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
 
-</body>
-</html>
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+{% endblock %}

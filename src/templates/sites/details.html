@@ -18,41 +18,41 @@
             <table class="table">
                 <tr>
                     <th>Site Code:</th>
-                    <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td>
+                    <td>{{ Site.samplingfeatureid.samplingfeaturecode }}</td>
                 </tr>
                 <tr>
                     <th>Site Name:</th>
-                    <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
+                    <td>{{ Site.samplingfeatureid.samplingfeaturename }}</td>
                 </tr>
                 <tr>
                     <th>Elevation:</th>
-                    <td>{{ site.samplingfeatureid.elevation_m }}</td>
+                    <td>{{ Site.samplingfeatureid.elevation_m }}</td>
                 </tr>
                 <tr>
                     <th>Latitude:</th>
-                    <td>{{ site.latitude }}</td>
+                    <td>{{ Site.latitude }}</td>
                 </tr>
                 <tr>
                     <th>Longitude:</th>
-                    <td>{{ site.longitude }}</td>
+                    <td>{{ Site.longitude }}</td>
                 </tr>
                 <tr>
                     <th>Site Type:</th>
-                    <td>{{ site.sitetypecv }}</td>
+                    <td>{{ Site.sitetypecv }}</td>
                 </tr>
                 <tr>
                     <th>Site Group:</th>
-                    <td>{% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
+                    <td>{% if Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
                         Logan River
-                    {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
+                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
                         Red Butte Creek
-                    {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
+                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
                         Provo River
                     {% endif %}</td>
                 </tr>
                 <tr>
                     <th>Lat/Long Datum:</th>
-                    <td> {{ site.latlondatumid.srsname }}</td>
+                    <td> {{ Site.latlondatumid.srsname }}</td>
                 </tr>
                 <tr>
                     <th>Vertical Datum:</th>
@@ -85,17 +85,24 @@
             </tr>
             </thead>
             <tbody>
-            {% for var in variables %}
-                <tr>
-                    <td>{{ var.variablenamecv }}</td>
-                    <td>{% for rec_stat in recorded_statistic %}
-                        {% if rec_stat.resultid.variableid.variableid == var.variableid %}
-                            {{ rec_stat.aggregationstatisticcv }}
-                        {% endif %}
-                    {% endfor %}</td>
-                    <!--<td>{# {{ var.variabletypecv }} #}</td>
-                    <td>{# {{ var.speciationcv }} #}</td> -->
-                </tr>
+
+            {% for featureaction in Site.samplingfeatureid.featureaction.all %}
+                {% for usedequipment in featureaction.actionid.equipmentused.all %}
+                    {% for outputvar in usedequipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
+
+                        <tr>
+                        <td>
+                            <a href="/measured-variable-detail/{{ outputvar.variableid.variableid }}">
+                                {{ outputvar.variableid.variablenamecv }}
+                            </a>
+                        </td>
+                        {% for stat in outputvar.dataloggerfilecolum.all %}
+                            <td>{{ stat.aggregationstatisticcv }}</td>
+                        {% empty %}
+                            <td></td>
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
             {% endfor %}
             </tbody>
         </table>
@@ -115,7 +122,7 @@
 
     <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
     <script type="text/javascript">
-        google.maps.event.addDomListener(window, 'load', initialize({{ site.latitude }}, {{ site.longitude }}));
+        google.maps.event.addDomListener(window, 'load', initialize({{ Site.latitude }}, {{ Site.longitude }}));
         console.log("Called function");
     </script>
 {% endblock %}

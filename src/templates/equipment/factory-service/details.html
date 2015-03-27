@@ -16,31 +16,31 @@
             <table class="table">
                 <tr>
                     <th>Variable Name:</th>
-                    <td>{{ OutputVariable.variableid.variablenamecv }}</td>
+                    <td>{{ Equipment.equipmentserialnumber }}</td>
                 </tr>
                 <tr>
                     <th>Variable Code:</th>
-                    <td>{{ OutputVariable.variableid.variablecode }}</td>
+                    <td>{{ Equipment.equipmentmodelid.modelname }}</td>
                 </tr>
                 <tr>
                     <th>Equipment Model Name:</th>
-                    <td><a href="#">{{ OutputVariable.modelid.modelname }}</a></td>
+                    <td>{{ Equipment.equipmentmodelid.modellink }}</td>
                 </tr>
                 <tr>
                     <th>Accuracy:</th>
-                    <td>{{ OutputVariable.instrumentaccuracy }}</td>
+                    <td>{{ Equipment.equipmentmodelid.modeldescription }}</td>
                 </tr>
                 <tr>
                     <th>Method Description:</th>
-                    <td>{{ OutputVariable.instrumentmethodid.methoddescription }}</td>
+                    <td>{{ Equipment.equipmentdocumentationlink }}??</td>
                 </tr>
                 <tr>
                     <th>Raw Output Units ID:</th>
-                    <td>{{ OutputVariable.instrumentrawoutputunitsid.unitsid|default:"  -  " }}</td>
+                    <td>{{ Equipment.equipmentpurchasedate }}</td>
                 </tr>
                 <tr>
                     <th>Resolution:</th>
-                    <td>{{ OutputVariable.instrumentresolution|default:"  -  " }}</td>
+                    <td>{{ Equipment.equipmentpurchaseordernumber }}</td>
                 </tr>
             </table>
             </div>

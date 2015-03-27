@@ -68,8 +68,8 @@ class Action(models.Model):
 
 class Affiliation(models.Model):
     affiliationid = models.IntegerField(db_column='AffiliationID', primary_key=True)  # Field name made lowercase.
-    personid = models.ForeignKey('People', db_column='PersonID')  # Field name made lowercase.
-    organizationid = models.ForeignKey('Organization', db_column='OrganizationID', blank=True,
+    personid = models.ForeignKey('People', related_name='affiliation', db_column='PersonID')  # Field name made lowercase.
+    organizationid = models.ForeignKey('Organization', related_name='affiliation', db_column='OrganizationID', blank=True,
                                        null=True)  # Field name made lowercase.
     isprimaryorganizationcontact = models.NullBooleanField(
         db_column='IsPrimaryOrganizationContact')  # Field name made lowercase.
@@ -154,7 +154,7 @@ class CalibrationReferenceEquipment(models.Model):
 
 class CalibrationStandard(models.Model):
     bridgeid = models.AutoField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
-    actionid = models.ForeignKey(CalibrationAction, db_column='ActionID')  # Field name made lowercase.
+    actionid = models.ForeignKey(CalibrationAction, related_name='calibrationstandard', db_column='ActionID')  # Field name made lowercase.
     referencematerialid = models.ForeignKey('ReferenceMaterial',
                                             db_column='ReferenceMaterialID')  # Field name made lowercase.
 
@@ -310,12 +310,13 @@ class DataloggerFileColumn(models.Model):
     dataloggerfilecolumnid = models.AutoField(db_column='DataloggerFileColumnID',
                                               primary_key=True)  # Field name made lowercase.
     resultid = models.ForeignKey('Result', db_column='ResultID', blank=True, null=True)  # Field name made lowercase.
-    dataloggerfileid = models.ForeignKey(DataloggerFile, db_column='DataLoggerFileID')  # Field name made lowercase.
-    instrumentoutputvariableid = models.ForeignKey('InstrumentOutputVariable',
+    dataloggerfileid = models.ForeignKey(DataloggerFile, related_name='dataloggerfilecolumn',
+                                         db_column='DataLoggerFileID')  # Field name made lowercase.
+    instrumentoutputvariableid = models.ForeignKey('InstrumentOutputVariable', related_name='dataloggerfilecolumn',
                                                    db_column='InstrumentOutputVariableID')  # Field name made lowercase.
     columnlabel = models.TextField(db_column='ColumnLabel')  # Field name made lowercase.
     columndescription = models.TextField(db_column='ColumnDescription', blank=True)  # Field name made lowercase.
-    measurementequation = models.TextField(db_column='MeasurementEquation', blank=True)  # Field name made lowercase.
+    measurementequation = models.TextField(db_column='MeasurementEquation',  blank=True)  # Field name made lowercase.
     scaninterval = models.FloatField(db_column='ScanInterval', blank=True, null=True)  # Field name made lowercase.
     scanintervalunitsid = models.ForeignKey('Units', db_column='ScanIntervalUnitsID', blank=True,
                                             null=True)  # Field name made lowercase.
@@ -370,7 +371,7 @@ class Equipment(models.Model):
     equipmentcode = models.TextField(db_column='EquipmentCode')  # Field name made lowercase.
     equipmentname = models.TextField(db_column='EquipmentName')  # Field name made lowercase.
     equipmenttypecv = models.TextField(db_column='EquipmentTypeCV')  # Field name made lowercase.
-    equipmentmodelid = models.ForeignKey('EquipmentModel', db_column='EquipmentModelID')  # Field name made lowercase.
+    equipmentmodelid = models.ForeignKey('EquipmentModel', related_name='equipment', db_column='EquipmentModelID')  # Field name made lowercase.
     equipmentserialnumber = models.TextField(db_column='EquipmentSerialNumber')  # Field name made lowercase.
     equipmentownerid = models.ForeignKey('People', db_column='EquipmentOwnerID')  # Field name made lowercase.
     equipmentvendorid = models.ForeignKey('Organization', db_column='EquipmentVendorID')  # Field name made lowercase.
@@ -415,8 +416,8 @@ class EquipmentModel(models.Model):
 
 class EquipmentUsed(models.Model):
     bridgeid = models.AutoField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
-    actionid = models.ForeignKey(Action, db_column='ActionID')  # Field name made lowercase.
-    equipmentid = models.ForeignKey(Equipment, db_column='EquipmentID')  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, related_name='equipmentused', db_column='ActionID')  # Field name made lowercase.
+    equipmentid = models.ForeignKey(Equipment, related_name='equipmentused', db_column='EquipmentID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -455,7 +456,7 @@ class ExternalIdentifierSystem(models.Model):
 
 class FeatureAction(models.Model):
     featureactionid = models.IntegerField(db_column='FeatureActionID', primary_key=True)  # Field name made lowercase.
-    samplingfeatureid = models.ForeignKey('SamplingFeature',
+    samplingfeatureid = models.ForeignKey('SamplingFeature', related_name="featureaction",
                                           db_column='SamplingFeatureID')  # Field name made lowercase.
     actionid = models.ForeignKey(Action, related_name="featureaction", db_column='ActionID')  # Field name made lowercase.
 
@@ -467,8 +468,8 @@ class FeatureAction(models.Model):
 class InstrumentOutputVariable(models.Model):
     instrumentoutputvariableid = models.AutoField(db_column='InstrumentOutputVariableID',
                                                   primary_key=True)  # Field name made lowercase.
-    modelid = models.ForeignKey(EquipmentModel, db_column='ModelID')  # Field name made lowercase.
-    variableid = models.ForeignKey('Variable', db_column='VariableID')  # Field name made lowercase.
+    modelid = models.ForeignKey(EquipmentModel, related_name='instrumentoutputvariable', db_column='ModelID')  # Field name made lowercase.
+    variableid = models.ForeignKey('Variable', related_name='instrumentoutputvariable', db_column='VariableID')  # Field name made lowercase.
     instrumentmethodid = models.ForeignKey('Method', db_column='InstrumentMethodID')  # Field name made lowercase.
     instrumentresolution = models.TextField(db_column='InstrumentResolution', blank=True)  # Field name made lowercase.
     instrumentaccuracy = models.TextField(db_column='InstrumentAccuracy', blank=True)  # Field name made lowercase.
@@ -816,7 +817,7 @@ class ReferenceMaterialExternalIdentifier(models.Model):
 class ReferenceMaterialValue(models.Model):
     referencematerialvalueid = models.IntegerField(db_column='ReferenceMaterialValueID',
                                                    primary_key=True)  # Field name made lowercase.
-    referencematerialid = models.ForeignKey('ReferenceMaterial',
+    referencematerialid = models.ForeignKey('ReferenceMaterial', related_name='referencematerialvalue',
                                             db_column='ReferenceMaterialID')  # Field name made lowercase.
     referencematerialvalue = models.FloatField(db_column='ReferenceMaterialValue')  # Field name made lowercase.
     referencematerialaccuracy = models.FloatField(db_column='ReferenceMaterialAccuracy', blank=True,
@@ -859,7 +860,7 @@ class RelatedAction(models.Model):
     actionid = models.ForeignKey(Action, related_name='relatedactions_actionid',
                                  db_column='ActionID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedactionid = models.ForeignKey(Action, related_name='relatedactions_relatedactionid',
+    relatedactionid = models.ForeignKey(Action, related_name='relatedaction',
                                         db_column='RelatedActionID')  # Field name made lowercase.
 
     class Meta:
@@ -1216,7 +1217,8 @@ class Simulation(models.Model):
 
 
 class Sites(models.Model):
-    samplingfeatureid = models.ForeignKey(SamplingFeature, db_column='SamplingFeatureID',
+    samplingfeatureid = models.ForeignKey(SamplingFeature, related_name='sites',
+                                          db_column='SamplingFeatureID',
                                           primary_key=True)  # Field name made lowercase.
     sitetypecv = models.TextField(db_column='SiteTypeCV')  # Field name made lowercase.
     latitude = models.FloatField(db_column='Latitude')  # Field name made lowercase.

@@ -1,10 +1,130 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Site Visit Details</h2></div>
 
-</body>
-</html>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">View Full Visit History for Site</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Edit Site Visit Description</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+        </div>
+    </div>
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right" id="map-canvas"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <h3>Site Visit Location</h3>
+            <table class="table">
+                <tr>
+                    <th>Site Code:</th>
+                    <td>{{ SiteVisit.samplingfeatureid.samplingfeaturecode }}</td>
+                </tr>
+                <tr>
+                    <th>Site Name:</th>
+                    <td>{{ SiteVisit.samplingfeatureid.samplingfeaturename }}</td>
+                </tr>
+                <tr>
+                    {% for site in SiteVisit.samplingfeatureid.sites.all %}
+                        {% if forloop.first %}
+                            <th>Latitude:</th>
+                            <td>{{ site.latitude }}</td>
+                            <tr/><tr>
+                            <th>Longitude:</th>
+                            <td>{{ site.longitude }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Elevation:</th>
+                    <td>{{ SiteVisit.samplingfeatureid.elevation_m }}</td>
+                </tr>
+            </table>
+        <h3>Site Visit Description</h3>
+            <table class="table">
+                <tr>
+                    <th>Crew: </th>
+                    <td>{% for person in SiteVisit.actionid.actionby.all %}
+                        {{ person.affiliationid.personid.personfirstname }}
+                        {{ person.affiliationid.personid.personlastname }}
+                        {% if not forloop.last %}, {% endif %}
+                {% endfor %}</td>
+                </tr>
+                <tr>
+                    <th>Begin Date Time:</th>
+                    <td>{{ SiteVisit.actionid.begindatetime }}</td>
+                </tr>
+                <tr>
+                    <th>End Date Time:</th>
+                    <td>{{ SiteVisit.actionid.enddatetime }}</td>
+                </tr>
+                <tr>
+                    <th>UTC Offset:</th>
+                    <td>{{ SiteVisit.actionid.begindatetimeutcoffset }}</td>
+                </tr>
+                <tr>
+                    <th>Environmental Observations:</th>
+                    <td style="color: red;">NO FIELD FOUND FOR THIS{{ SiteVisit.actionid.actiontypecv }}</td>
+                </tr>
+                <tr>
+                    <th>Visit Notes:</th>
+                    <td>{{ SiteVisit.actionid.actiondescription }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9"><h3>Field Activities Performed</h3></div>
+    </div>
+    <hr class="divider">
+    <div class="row">
+        <table id="data-table">
+            <thead>
+            <tr>
+                <th>Activity Type</th>
+                <th>Begin Date Time</th>
+                <th>End Date Time</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for fieldactivity in SiteVisit.actionid.relatedaction.all %}
+                 <tr>
+                    <td>{{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}</td>
+                    <td>{{ fieldactivity.actionid.begindatetime }}</td>
+                    <td>{{ fieldactivity.actionid.enddatetime }}</td>
+                    <td>{{ fieldactivity.actionid.actiondescription }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="#">Add Other Field Activity</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Add New Deployment</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Add New Calibration</a></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="#">Next</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-left"><a class="btn btn-primary btn-block"
+                                                               href="#">Previous</a></div>
+    </div>
+
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
+
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+    <script type="text/javascript">
+        {% with site=SiteVisit.samplingfeatureid.sites.all|first %}
+                google.maps.event.addDomListener(window, 'load', initialize({{ site.latitude }}, {{ site.longitude }}));
+        {% endwith %}
+    </script>
+{% endblock %}

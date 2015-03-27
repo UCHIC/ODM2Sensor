@@ -1,10 +1,176 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Calibration Details</h2></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Edit Calibration Description</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+        </div>
+    </div>
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <h3>Calibration Description</h3>
+            {% with checkval=Calibration.actionid.calibrationaction.all|first %}
+                {% with var=Calibration.equipmentid.equipmentmodelid.instrumentoutputvariable.all|first %}
+                    <table class="table">
+                        <tr>
+                            <th>Check Value Before Calibration:</th>
+                            <td>
+                                {{ checkval.calibrationcheckvalue }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Activity Begin DateTime:</th>
+                            <td>{{ Calibration.actionid.begindatetime }}</td>
+                        </tr>
+                        <tr>
+                            <th>Activity End DateTime:</th>
+                            <td>{{ Calibration.actionid.enddatetime }}</td>
+                        </tr>
+                        <tr>
+                            <th>Crew:</th>
+                            <td>
+                                {% for person in Calibration.actionid.actionby.all %}
+                                    {{ person.affiliationid.personid.personfirstname }}
+                                    {{ person.affiliationid.personid.personlastname }}
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Sensor Type:</th>
+                            <td>
+                                {{ var.variableid.variablenamecv }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Calibration Notes:</th>
+                            <td> {{ Calibration.actionid.actiondescription }}</td>
+                        </tr>
+                        <tr>
+                            <th>Method Name:</th>
+                            <td>{{ var.instrumentmethodid.methodname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Calibration Method Description:</th>
+                            <td>{{ var.instrumentmethodid.methoddescription }}</td>
+                        </tr>
+                        {% with calibbrationStd=checkval.calibrationstandard.all|first %}
+                            <tr>
+                                <th>Calibration Standard ID:</th>
+                                <td>
+                                    {{ calibbrationStd.referencematerialid.referencematerialid }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Calibration Standard Type:</th>
+                                <td>{{ calibbrationStd.referencematerialid.referencematerialmediumcv }}</td>
+                            </tr>
+                            {% with referencevalue=calibbrationStd.referencematerialid.referencematerialvalue.all|first %}
+                                <tr>
+                                    <th>Calibration Standard Value:</th>
+                                    <td>{{ referencevalue.referencematerialvalue }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Calibration Standard Units:</th>
+                                    <td>{{ referencevalue.unitsid.unitsname }}</td>
+                                </tr>
+                            {% endwith %}
+                            <tr>
+                                <th>Calibration File:</th>
+                                <td>{{ Calibration.actionid.actionfilelink }}</td>
+                            </tr>
+                        {% endwith %}
 
-</body>
-</html>
+                    </table>
+                    <h3>Equipment Description</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Serial Number:</th>
+                            <td>{{ Calibration.equipmentid.equipmentserialnumber }}</td>
+                        </tr>
+                        <tr>
+                            <th>Model Name:</th>
+                            <td>{{ Calibration.equipmentid.equipmentmodelid.modelname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Model Description:</th>
+                            <td>{{ Calibration.equipmentid.equipmentmodelid.modeldescription }}</td>
+                        </tr>
+                        <tr>
+                            <th>Model Link:</th>
+                            <td>{{ Calibration.equipmentid.equipmentmodelid.modellink }}</td>
+                        </tr>
+                        <tr>
+                            <th>Purchase Date:</th>
+                            <td>{{ Calibration.equipmentid.equipmentpurchasedate }}</td>
+                        </tr>
+                    </table>
+                    <h3>Owner Description</h3>
+                    <table class="table">
+                        {% for affiliation in Calibration.equipmentid.equipmentownerid.affiliation.all %}
+                            {% if forloop.first %}
+                                <tr>
+                                    <th>Institution:</th>
+                                    <td>{{ affiliation.organizationid.organizationname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact:</th>
+                                    <td>{{ Calibration.equipmentid.equipmentownerid.personfirstname }} {{ Calibration.equipmentid.equipmentownerid.personlastname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Owner Address:</th>
+                                    <td>{{ affiliation.primaryaddress }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Owner Phone:</th>
+                                    <td>{{ affiliation.primaryphone }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ affiliation.primaryemail }}</td>
+                                </tr>
+                            {% endif %}
+                        {% empty %}
+                            <tr>
+                                <th>Institution:</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Contact:</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Owner Address:</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Owner Phone:</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endwith %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Go to Site Visit</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">View Equipment's Calibration History</a></div>
+    </div>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
+
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+{% endblock %}
