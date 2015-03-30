@@ -4,7 +4,7 @@ ODM2_configs = {
     'ENGINE': 'sql_server.pyodbc',
     'NAME': 'DBNAME',
     'USER': 'USERNAME',
-    'PASSWORD': 'PASSWORD',
+    'PASSWORD': 'PASSWORDEX',
     'HOST': 'HOST/HOSTNAME',
     'PORT': '',
 
