@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from sensordatainterface.views import GenericListView, GenericDetailView
+from sensordatainterface.views import GenericListView
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     MaintenanceAction, InstrumentOutputVariable
 from django.core.urlresolvers import reverse_lazy

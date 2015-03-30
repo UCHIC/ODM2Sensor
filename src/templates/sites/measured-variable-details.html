@@ -20,19 +20,19 @@
             <table class="table">
                 <tr>
                     <th>Variable Name:</th>
-                    <td>{{ MeasuredVariable.variablenamecv|default:"  -  " }}</td>
+                    <td>{{ MeasuredVariable.variableid.variablenamecv|default:"  -  " }}</td>
                 </tr>
                 <tr>
                     <th>Code:</th>
-                    <td>{{ MeasuredVariable.variablecode|default:"  -  " }}</td>
+                    <td>{{ MeasuredVariable.variableid.variablecode|default:"  -  " }}</td>
                 </tr>
                     <tr>
                         <th>Equation Used:</th>
-                        <td>{{ MeasuredVariable.instrumentoutputvariable.all.0.dataloggerfilecolumn.all.0|default:"  -  " }}</td>
+                        <td>{{ MeasuredVariable.dataloggerfilecolumn.all.0|default:"  -  " }}</td>
                     </tr>
                     <tr>
                         <th>Recorded Statistic:</th>
-                        <td>{{ MeasuredVariable.instrumentoutputvariable.all.0.dataloggerfilecolumn.all.0|default:"  -  " }}</td>
+                        <td>{{ MeasuredVariable.dataloggerfilecolumn.all.0|default:"  -  " }}</td>
                     </tr>
                 <tr>
                     <th>Notes:</th>

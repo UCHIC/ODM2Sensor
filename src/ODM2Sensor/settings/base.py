@@ -9,13 +9,14 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 
+from ODM2Sensor.settings.settings import *
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5#3wtm#z(7iexc$k_wm458%*!t0r9izzl6&wux-toj%p9h=-ud'
+SECRET_KEY = ODM2_configs
 
 ALLOWED_HOSTS = []
 
@@ -59,16 +60,16 @@ DATABASES = {
         'NAME': 'ODM2Sensor/Internal.sqlite3',
     },
     'odm2': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'ODM2Equipment',
-        'USER': 'Mario',
-        'PASSWORD': 'Aixax0822',
-        'HOST': 'MANGO\SQLEXPRESS',
-        'PORT': '',
+        'ENGINE': ODM2_configs['ENGINE'],
+        'NAME': ODM2_configs['NAME'],
+        'USER': ODM2_configs['USER'],
+        'PASSWORD': ODM2_configs['PASSWORD'],
+        'HOST': ODM2_configs['HOST'],
+        'PORT': ODM2_configs['PORT'],
 
         'OPTIONS': {
-            'driver': 'SQL Server Native Client 11.0',
-            'host_is_server': True,
+            'driver': ODM2_configs['OPTIONS']['driver'],
+            'host_is_server': ODM2_configs['OPTIONS']['host_is_server'],
         },
     },
 }
