@@ -1,8 +1,8 @@
 # This is an example. Insert sensitive data depending on environment
 ODM2_configs = {
     'ENGINE': 'sql_server.pyodbc',
-    'NAME': 'newName',
-    'USER': 'newUser',
+    'NAME': 'newerName',
+    'USER': 'newerUser',
     'PASSWORD': 'DbPaSsWoRd123',
     'HOST': 'MACHINE/HOSTNAME',
     'PORT': '8000',

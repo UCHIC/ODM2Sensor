@@ -14,6 +14,7 @@ from ODM2Sensor.settings.settings import *
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
+#TEST CHANGE DELETE THIS COMMENT
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret_key
