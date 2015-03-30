@@ -15,6 +15,7 @@ from ODM2Sensor.settings.settings import *
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 #TEST CHANGE DELETE THIS COMMENT
+#another change delete as well ...
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret_key
