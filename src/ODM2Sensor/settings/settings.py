@@ -1,14 +1,14 @@
 # This is an example. Insert sensitive data depending on environment
 ODM2_configs = {
     'ENGINE': 'sql_server.pyodbc',
-    'NAME': 'newerName',
-    'USER': 'newerUser',
-    'PASSWORD': 'DbPaSsWoRd123',
-    'HOST': 'MACHINE/HOSTNAME',
-    'PORT': '8000',
+        'NAME': 'ODM2Equipment',
+        'USER': 'Mario',
+        'PASSWORD': 'defaultPass123',
+        'HOST': 'MANGO\SQLEXPRESS',
+        'PORT': '',
 
     'OPTIONS': {
-            'driver': 'DRIVER NAME AND VERSION',
+            'driver': 'SQL Server Native Client 11.0',
             'host_is_server': True,
         },
 }
