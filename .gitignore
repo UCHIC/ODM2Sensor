@@ -37,3 +37,6 @@ nosetests.xml
 
 #PyCharm
 .idea
+
+# Database and secret key file
+src/ODM2Sensor/settings/settings.py

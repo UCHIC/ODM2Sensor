@@ -16,7 +16,7 @@ from ODM2Sensor.settings.settings import *
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ODM2_configs
+SECRET_KEY = secret_key
 
 ALLOWED_HOSTS = []
 
