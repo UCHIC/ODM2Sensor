@@ -23,7 +23,7 @@
             {% for site in calibration.actionid.featureaction.all %}
                 <tr>
                     <td>
-                        <a href="/calibration-detail/{{ calibration.actionid.actionid }}">
+                        <a href="{% url 'calibration_detail' calibration.actionid.actionid %}">
                             {{ calibration.actionid.begindatetime }}
                         </a>
                     </td>

@@ -21,7 +21,7 @@
         <tbody>
         {% for activity in FieldActivities %}
             <tr>
-                <td><a href="/field-activity-detail/{{ activity.actionid.actionid }}">{{ activity.actionid.begindatetime }}</a></td>
+                <td><a href="{% url 'field_activity_detail' activity.actionid.actionid %}">{{ activity.actionid.begindatetime }}</a></td>
                 <td>{{ activity.actionid.enddatetime }}</td>
                 <td>{{ activity.samplingfeatureid.samplingfeaturename }}, {{ activity.actionid.begindatetime }}</td>
                 <td>{{ activity.actionid.actiontypecv|separatewordsbycaps }}</td>

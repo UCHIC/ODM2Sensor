@@ -92,7 +92,7 @@
 
                         <tr>
                         <td>
-                            <a href="/measured-variable-detail/{{ outputvar.instrumentoutputvariableid }}/{{ featureaction.samplingfeatureid.samplingfeatureid }}">
+                            <a href="{% url 'measured_variable_detail' outputvar.instrumentoutputvariableid  featureaction.samplingfeatureid.samplingfeatureid %}">
                                 {{ outputvar.variableid.variablenamecv }}
                             </a>
                         </td>

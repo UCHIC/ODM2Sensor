@@ -1,10 +1,14 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
 from django.contrib import admin
 
+admin.autodiscover()
+BASE_URL = settings.SITE_URL[1:]
+
 urlpatterns = patterns('',
-                       url(r'^admin/', include(admin.site.urls)),
-                       url(r'', include('sensordatainterface.urls.lists_urls')),
-                       url(r'', include('sensordatainterface.urls.detail_urls')),
+                       url(r'^'+BASE_URL+'admin/', include(admin.site.urls)),
+                       url(r'^'+BASE_URL, include('sensordatainterface.urls.lists_urls')),
+                       url(r'^'+BASE_URL, include('sensordatainterface.urls.detail_urls')),
 
                        # Add edit/update urls
 
@@ -12,7 +16,7 @@ urlpatterns = patterns('',
                        #url(r'^vocabulary/', views.vocabulary, name='vocabularies'),
 
                        # Login and Logout URLS
-                       url(r'^login/', 'django.contrib.auth.views.login', name='login'),
-                       url(r'^logout_user/', 'django.contrib.auth.views.logout', {'next_page': '/login/'},
+                       url(r'^'+BASE_URL+'login/', 'django.contrib.auth.views.login', name='login'),
+                       url(r'^'+BASE_URL+'logout_user/', 'django.contrib.auth.views.logout', {'next_page': settings.SITE_URL+'login/'},
                            name='logout_user'),
 )

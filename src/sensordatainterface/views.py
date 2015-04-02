@@ -4,17 +4,22 @@ from sensordatainterface.models import InstrumentOutputVariable
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import logout
+from django.conf import settings
+
+
+LOGIN_URL = settings.SITE_URL + 'login/'
+print LOGIN_URL
 
 # Lists View Generic
 class GenericListView(ListView):
-    @method_decorator(login_required(login_url='/login/'))
+    @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(GenericListView, self).dispatch(*args, **kwargs)
 
 
 # Detail View Generic.
 class GenericDetailView(DetailView):
-    @method_decorator(login_required(login_url='/login/'))
+    @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(GenericDetailView, self).dispatch(*args, **kwargs)
 
@@ -32,7 +37,7 @@ class DeploymentMeasVariableDetailView(DetailView):
 
 
 
-    @method_decorator(login_required(login_url='/login/'))
+    @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(DeploymentMeasVariableDetailView, self).dispatch(*args, **kwargs)
 
@@ -43,6 +48,6 @@ def login(request, logout_msg):
         'logout_msg': logout_msg})  # put optional messages if coming from user needs to log in or if user just logged out
 
 
-@login_required(login_url='/login/')
+@login_required(login_url=LOGIN_URL)
 def logout_view(request):
     logout(request)

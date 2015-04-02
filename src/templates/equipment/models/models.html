@@ -18,7 +18,7 @@
         <tbody>
         {% for model in Models %}
             <tr>
-                <td><a href="/models-detail/{{ model.equipmentmodelid }}">{{ model.modelname }}</a></td>
+                <td><a href="{% url 'models_detail' model.equipmentmodelid %}">{{ model.modelname }}</a></td>
                 <td>{{ model.modelmanufacturerid.organizationname }}</td>
                 <td>{{ model.modeldescription }}</td>
             </tr>

@@ -20,7 +20,7 @@
         <tbody>
         {% for equipment in Inventory %}
             <tr>
-                <td><a href="/equipment-detail/{{ equipment.equipmentid }}">{{ equipment.equipmentserialnumber }}</a></td>
+                <td><a href="{% url 'equipment_detail' equipment.equipmentid %}">{{ equipment.equipmentserialnumber }}</a></td>
                 <td>{{ equipment.equipmenttypecv }}</td>
                 <td>{{ equipment.equipmentmodelid.modelname }}</td>
                 <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>

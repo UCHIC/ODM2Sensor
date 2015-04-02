@@ -23,7 +23,7 @@
             {% for site in deployment.actionid.featureaction.all %}
                 <tr>
                     <td>
-                        <a href="/deployment-detail/{{ deployment.actionid.actionid }}">{{ deployment.actionid.begindatetime }}<br/>to
+                        <a href="{% url 'deployment_detail' deployment.actionid.actionid %}">{{ deployment.actionid.begindatetime }}<br/>to
                             {% if deployment.actionid.enddatetime ==  None %}present{% else %}
                                 {{ deployment.actionid.enddatetime }}{% endif %}</a></td>
                     <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>

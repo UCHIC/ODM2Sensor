@@ -20,7 +20,7 @@
         <tbody>
         {% for visit in SiteVisits %}
             <tr>
-                <td><a href="/visit-detail/{{ visit.actionid.actionid }}">{{ visit.actionid.begindatetime }}</a></td>
+                <td><a href="{% url 'site_visit_detail' visit.actionid.actionid %}">{{ visit.actionid.begindatetime }}</a></td>
                 <td>{{ visit.samplingfeatureid.samplingfeaturename }}</td>
                 <td>{% if visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
                 {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
