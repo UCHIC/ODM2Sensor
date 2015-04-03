@@ -1,3 +1,4 @@
+import django
 from ODM2Sensor.settings.base import *
 
 DEBUG = True
@@ -9,6 +10,6 @@ SITE_URL = os.environ['APPL_VIRTUAL_PATH'] + '/'
 STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 STATIC_URL = SITE_URL + 'static/'
 
+LOGIN_REDIRECT_URL = SITE_URL + 'home/'
 
-import django
 django.setup()

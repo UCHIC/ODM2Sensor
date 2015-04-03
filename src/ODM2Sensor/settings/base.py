@@ -48,8 +48,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'ODM2Sensor.urls'
 
-LOGIN_REDIRECT_URL = '/home/'
-
 WSGI_APPLICATION = 'ODM2Sensor.wsgi.application'
 
 
