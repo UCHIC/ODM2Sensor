@@ -10,7 +10,7 @@ urlpatterns = patterns('',
                        # Site Generic View
                        url(r'^$',
                            GenericListView.as_view(
-                               queryset=Sites.objects.using('odm2'),
+                               queryset=Sites.objects.all(),
                                context_object_name='Sites',
                                template_name='sites/sites.html'), name='home'),
 
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
                        # Site Visits Generic View
                        url(r'^site-visits/',
                            GenericListView.as_view(
-                               queryset=FeatureAction.objects.using('odm2').filter(actionid__actiontypecv='SiteVisit'),
+                               queryset=FeatureAction.objects.filter(actionid__actiontypecv='SiteVisit'),
                                context_object_name='SiteVisits',
                                template_name='site-visits/visits.html'
                            ),
@@ -29,7 +29,7 @@ urlpatterns = patterns('',
                        # Deployments Generic View
                        url(r'^deployments/',
                            GenericListView.as_view(
-                               queryset=EquipmentUsed.objects.using('odm2').filter(
+                               queryset=EquipmentUsed.objects.filter(
                                    Q(actionid__actiontypecv='EquipmentDeployment')
                                    | Q(actionid__actiontypecv='InstrumentDeployment')
                                ),
@@ -41,7 +41,7 @@ urlpatterns = patterns('',
                        # Calibrations Generic Views
                        url(r'^calibrations/',
                            GenericListView.as_view(
-                               queryset=EquipmentUsed.objects.using('odm2').filter(
+                               queryset=EquipmentUsed.objects.filter(
                                    Q(actionid__actiontypecv='InstrumentCalibration')
                                    & Q(actionid__calibrationaction__isnull=False)
                                ),
@@ -53,7 +53,7 @@ urlpatterns = patterns('',
                        #Field Activities Generic View
                        url(r'^other-activities/',
                            GenericListView.as_view(
-                               queryset=FeatureAction.objects.using('odm2').all(),
+                               queryset=FeatureAction.objects.all(),
                                context_object_name='FieldActivities',
                                template_name='site-visits/field-activities/activities.html'
                            ),
@@ -62,7 +62,7 @@ urlpatterns = patterns('',
                        #Inventory Generic View
                        url(r'^equipment/',
                            GenericListView.as_view(
-                               queryset=Equipment.objects.using('odm2').all(),
+                               queryset=Equipment.objects.all(),
                                context_object_name='Inventory',
                                template_name='equipment/inventory.html'
                            ),
@@ -71,7 +71,7 @@ urlpatterns = patterns('',
                        #Factory Service Generic View
                        url(r'^factory-service/',
                            GenericListView.as_view(
-                               queryset=MaintenanceAction.objects.using('odm2').filter(isfactoryservice=True),
+                               queryset=MaintenanceAction.objects.filter(isfactoryservice=True),
                                context_object_name='FactoryService',
                                template_name='equipment/factory-service/service-events.html'
                            ),
@@ -80,7 +80,7 @@ urlpatterns = patterns('',
                        #Sensor Output Variables Generic View
                        url(r'^sensor-output-variables/',
                            GenericListView.as_view(
-                               queryset=InstrumentOutputVariable.objects.using('odm2').all(),
+                               queryset=InstrumentOutputVariable.objects.all(),
                                context_object_name='OutputVariables',
                                template_name='equipment/sensor-output-variables/variables.html'
                            ),
@@ -89,7 +89,7 @@ urlpatterns = patterns('',
                        #Equipment Models Generic View
                        url(r'^equipment-models/',
                            GenericListView.as_view(
-                               queryset=EquipmentModel.objects.using('odm2').all(),
+                               queryset=EquipmentModel.objects.all(),
                                context_object_name='Models',
                                template_name='equipment/models/models.html'
                            ),

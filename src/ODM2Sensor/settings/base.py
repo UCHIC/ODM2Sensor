@@ -50,15 +50,10 @@ ROOT_URLCONF = 'ODM2Sensor.urls'
 
 WSGI_APPLICATION = 'ODM2Sensor.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ODM2Sensor/Internal.sqlite3',
-    },
     'odm2': {
         'ENGINE': ODM2_configs['ENGINE'],
         'NAME': ODM2_configs['NAME'],
@@ -72,7 +67,13 @@ DATABASES = {
             'host_is_server': ODM2_configs['OPTIONS']['host_is_server'],
         },
     },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'ODM2Sensor/Internal.sqlite3',
+    },
 }
+
+DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter',]
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
 

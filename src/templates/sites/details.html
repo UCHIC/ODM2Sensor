@@ -75,6 +75,7 @@
     </div>
     <hr class="divider">
     <div class="row">
+
         <table id="data-table">
             <thead>
             <tr>
@@ -92,7 +93,7 @@
 
                         <tr>
                         <td>
-                            <a href="{% url 'measured_variable_detail' outputvar.instrumentoutputvariableid  featureaction.samplingfeatureid.samplingfeatureid %}">
+                            <a href="{% url 'measured_variable_detail' outputvar.variableid.variableid usedequipment.bridgeid %}">
                                 {{ outputvar.variableid.variablenamecv }}
                             </a>
                         </td>
@@ -108,8 +109,8 @@
         </table>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="#">View Deployed Equipment</a></div>
+{#        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"#}
+{#                                                               href="{% url 'site_deployment_detail' Site.samplingfeatureid.samplingfeatureid %}">View Deployed Equipment</a></div>#}
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
                                                                href="#">View Site Visits</a></div>
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
