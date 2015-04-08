@@ -60,11 +60,11 @@
                 </tr>
                 <tr>
                     <th>State:</th>
-                    <td> Utah <span style="color:red;">How can this be calculated?</span></td>
+                    <td id="site-state"></td>
                 </tr>
                 <tr>
                     <th>County:</th>
-                    <td> County?</td>
+                    <td id="site-county"></td>
                 </tr>
             </table>
         </div>
@@ -124,6 +124,5 @@
     <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
     <script type="text/javascript">
         google.maps.event.addDomListener(window, 'load', initialize({{ Site.latitude }}, {{ Site.longitude }}));
-        console.log("Called function");
     </script>
 {% endblock %}
