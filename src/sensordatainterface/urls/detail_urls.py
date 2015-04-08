@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from sensordatainterface.views import GenericDetailView, DeploymentMeasVariableDetailView, DeployedEquipmentBySite
+from sensordatainterface.views import GenericDetailView, DeploymentMeasVariableDetailView
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     InstrumentOutputVariable
 import datetime
@@ -88,7 +88,5 @@ urlpatterns = patterns('',
                            DeploymentMeasVariableDetailView.as_view(),
                            name='measured_variable_detail'),
 
-                       url(r'^deployments/site/(?P<filter_id>[-_\w]+)/$',
-                           DeployedEquipmentBySite.as_view(),
-                           name='deployments_by_site'),
+
 )

@@ -2,7 +2,10 @@
 {% load static %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Deployments</h1>
+        <h1>Deployments
+            {% if site_name %} for {{ site_name.samplingfeaturename }}
+            {% elif equipment_name %} for Equipment {{ equipment_name.equipmentname }}
+            {% endif %}</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <button class="btn btn-primary btn-block new-btn">New Deployment</button>
@@ -24,8 +27,7 @@
                 <tr>
                     <td>
                         <a href="{% url 'deployment_detail' deployment.actionid.actionid %}">{{ deployment.actionid.begindatetime }}<br/>to
-                            {% if deployment.actionid.enddatetime ==  None %}present{% else %}
-                                {{ deployment.actionid.enddatetime }}{% endif %}</a></td>
+                                {{ deployment.actionid.enddatetime|default:"present" }}</a></td>
                     <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
                     <td>{{ deployment.equipmentid.equipmentserialnumber }}</td>
                     <td>{{ deployment.equipmentid.equipmenttypecv }}</td>

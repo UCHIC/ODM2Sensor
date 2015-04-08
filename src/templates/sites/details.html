@@ -109,10 +109,10 @@
         </table>
     </div>
     <div class="row">
-{#        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"#}
-{#                                                               href="{% url 'site_deployment_detail' Site.samplingfeatureid.samplingfeatureid %}">View Deployed Equipment</a></div>#}
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="{% url 'deployments_by_site' 'current' Site.samplingfeatureid.samplingfeatureid %}">View Deployed Equipment</a></div>
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">View Site Visits</a></div>
+                                                               href="{% url 'site_visits_by_site' Site.samplingfeatureid.samplingfeatureid %}">View Site Visits</a></div>
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
                                                                href="#">New Site Visit</a></div>
     </div>

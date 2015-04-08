@@ -62,7 +62,8 @@
                 </tr>
                 <tr>
                     <th>Site Name:</th>
-                    <td>{{ Activity.samplingfeatureid.samplingfeaturename }}</td>  <!--make link later-->
+                    <td>{{ Activity.samplingfeatureid.samplingfeaturename }}</td>
+                    <!--make link later-->
                 </tr>
                 <tr>
                     <th>Site Type:</th>
@@ -83,7 +84,8 @@
     </div>
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">Go to Site Visit</a></div>
+                                                               href="{% url 'site_visit_detail' Activity.actionid.actionid %}">Go
+            to Site Visit</a></div>
     </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">

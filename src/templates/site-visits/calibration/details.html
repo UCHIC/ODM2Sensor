@@ -91,7 +91,7 @@
                     <table class="table">
                         <tr>
                             <th>Serial Number:</th>
-                            <td>{{ Calibration.equipmentid.equipmentserialnumber }}</td>
+                            <td><a href="{% url 'equipment_detail' Calibration.equipmentid.equipmentid %}">{{ Calibration.equipmentid.equipmentserialnumber }}</a></td>
                         </tr>
                         <tr>
                             <th>Model Name:</th>
@@ -132,7 +132,7 @@
                                 </tr>
                                 <tr>
                                     <th>Email:</th>
-                                    <td>{{ affiliation.primaryemail }}</td>
+                                    <td><a href="mailto:{{ affiliation.primaryemail }}"> {{ affiliation.primaryemail }}</a></td>
                                 </tr>
                             {% endif %}
                         {% empty %}
@@ -166,7 +166,7 @@
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
                                                                href="#">Go to Site Visit</a></div>
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">View Equipment's Calibration History</a></div>
+                                                               href="{% url 'calibrations_by_equipment'  Calibration.equipmentid.equipmentid%}">View Equipment's Calibration History</a></div>
     </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">

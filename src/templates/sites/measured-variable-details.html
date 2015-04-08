@@ -67,11 +67,7 @@
     <div class="row">
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
             <a class="btn btn-block btn-primary"
-               {% if MeasuredVariable.modelid.equipment.all.0.equipmentused.all.0.actionid.actionid %}
-                onclick="window.location = '../../deployment-detail/{{ MeasuredVariable.modelid.equipment.all.0.equipmentused.all.0.actionid.actionid }}/'"
-                {% else %}
-                onclick="alert('No Deployment For This Variable')"
-               {% endif %}>Go
+                    href="{% url 'deployment_detail' deployment.actionid.actionid %}">Go
                 to Deployment</a>
         </div>
     </div>
