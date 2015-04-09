@@ -88,4 +88,5 @@ USE_I18N = False
 
 USE_L10N = True
 
-USE_TZ = True
+#Deactivated since UTC Offset is handled in the database. See https://docs.djangoproject.com/en/dev/topics/i18n/timezones/ to use automatic time zones.
+USE_TZ = False

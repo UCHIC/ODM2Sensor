@@ -9,7 +9,7 @@ urlpatterns = patterns('',
                        # Site detail
                        url(r'^site-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Site',
-                           queryset=Sites.objects.all(),
+                           model=Sites,
                            slug_field='samplingfeatureid',
                            template_name='sites/details.html'),
                            name='site_detail'),
@@ -17,7 +17,7 @@ urlpatterns = patterns('',
                        # Site Visit detail
                        url(r'^visit-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='SiteVisit',
-                           queryset=FeatureAction.objects.all(),
+                           model=FeatureAction,
                            slug_field='actionid',
                            template_name='site-visits/details.html'),
                            name='site_visit_detail'),
@@ -37,7 +37,7 @@ urlpatterns = patterns('',
                        # Calibration detail
                        url(r'^calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Calibration',
-                           queryset=EquipmentUsed.objects.all(),
+                           model=EquipmentUsed,
                            slug_field='actionid',
                            template_name='site-visits/calibration/details.html'),
                            name='calibration_detail'),
@@ -45,7 +45,7 @@ urlpatterns = patterns('',
                        # Field Activity detail
                        url(r'^field-activity-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Activity',
-                           queryset=FeatureAction.objects.all(),
+                           model=FeatureAction,
                            slug_field='actionid',
                            template_name='site-visits/field-activities/details.html'),
                            name='field_activity_detail'),
@@ -53,7 +53,7 @@ urlpatterns = patterns('',
                        # Equipment detail
                        url(r'^equipment-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Equipment',
-                           queryset=Equipment.objects.all(),
+                           model=Equipment,
                            slug_field='equipmentid',
                            template_name='equipment/details.html'),
                            name='equipment_detail'),
@@ -61,7 +61,7 @@ urlpatterns = patterns('',
                        # to do: Factory Service detail - no detail pages for reference.
                        # url(r'^factory-service-detail/(?P<slug>[-_\w]+)/$', SiteDetailView.as_view(
                        #         context_object_name='FactoryService',
-                       #         queryset=Equipment.objects.all(),
+                       #         model=Equipment,
                        #         slug_field='equipmentid',
                        #         template_name='equipment/details.html'),
                        #         name='equipment-detail'),
@@ -69,7 +69,7 @@ urlpatterns = patterns('',
                        # Sensor Output Variable detail
                        url(r'^output-variable-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='OutputVariable',
-                           queryset=InstrumentOutputVariable.objects.all(),
+                           model=InstrumentOutputVariable,
                            slug_field='variableid',
                            template_name='equipment/sensor-output-variables/details.html'),
                            name='output_variable_detail'),
@@ -77,7 +77,7 @@ urlpatterns = patterns('',
                        # Models detail
                        url(r'^models-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Model',
-                           queryset=EquipmentModel.objects.all(),
+                           model=EquipmentModel,
                            slug_field='equipmentmodelid',
                            template_name='equipment/models/details.html'),
                            name='models_detail'),

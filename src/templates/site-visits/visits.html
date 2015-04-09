@@ -19,18 +19,20 @@
         </thead>
         <tbody>
         {% for visit in SiteVisits %}
+            {% for samplingfeature in visit.featureaction.all %}
             <tr>
-                <td><a href="{% url 'site_visit_detail' visit.actionid.actionid %}">{{ visit.actionid.begindatetime }}</a></td>
-                <td>{{ visit.samplingfeatureid.samplingfeaturename }}</td>
-                <td>{% if visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
-                {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
-                {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}Provo River{% endif %}</td>
-                <td>{% for person in visit.actionid.actionby.all %}
+                <td><a href="{% url 'site_visit_detail' visit.actionid %}">{{ visit.begindatetime }}</a></td>
+                <td>{{ samplingfeature.samplingfeatureid.samplingfeaturename }}</td>
+                <td>{% if samplingfeature.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
+                {% elif samplingfeature.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
+                {% elif samplingfeature.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}Provo River{% endif %}</td>
+                <td>{% for person in visit.actionby.all %}
                         {{ person.affiliationid.personid.personfirstname }}
                         {{ person.affiliationid.personid.personlastname }}
                         {% if not forloop.last %}, {% endif %}
                 {% endfor %}</td>
             </tr>
+                {% endfor %}
         {% endfor %}
         </tbody>
     </table>

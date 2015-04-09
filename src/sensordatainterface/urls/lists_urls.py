@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from sensordatainterface.views import GenericListView, EquipmentDeploymentsBySite, SiteVisitsBySite, EquipmentDeployments
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
-    MaintenanceAction, InstrumentOutputVariable
+    MaintenanceAction, InstrumentOutputVariable, Action
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import RedirectView
 from django.db.models import Q
@@ -10,7 +10,7 @@ urlpatterns = patterns('',
                        # Site Generic View
                        url(r'^$',
                            GenericListView.as_view(
-                               queryset=Sites.objects.all(),
+                               model=Sites,
                                context_object_name='Sites',
                                template_name='sites/sites.html'), name='home'),
 
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
                        # Site Visits Generic View
                        url(r'^site-visits/$',
                            GenericListView.as_view(
-                               queryset=FeatureAction.objects.filter(actionid__actiontypecv='SiteVisit'),
+                               queryset=Action.objects.filter(actiontypecv='SiteVisit'),
                                context_object_name='SiteVisits',
                                template_name='site-visits/visits.html'
                            ),
@@ -53,7 +53,7 @@ urlpatterns = patterns('',
                        #Field Activities Generic View
                        url(r'^other-activities/$',
                            GenericListView.as_view(
-                               queryset=FeatureAction.objects.all(),
+                               model=FeatureAction,#change to  Action/RelatedAction
                                context_object_name='FieldActivities',
                                template_name='site-visits/field-activities/activities.html'
                            ),
@@ -62,7 +62,7 @@ urlpatterns = patterns('',
                        #Inventory Generic View
                        url(r'^equipment/$',
                            GenericListView.as_view(
-                               queryset=Equipment.objects.all(),
+                               model=Equipment,
                                context_object_name='Inventory',
                                template_name='equipment/inventory.html'
                            ),
@@ -80,7 +80,7 @@ urlpatterns = patterns('',
                        #Sensor Output Variables Generic View
                        url(r'^sensor-output-variables/$',
                            GenericListView.as_view(
-                               queryset=InstrumentOutputVariable.objects.all(),
+                               model=InstrumentOutputVariable,
                                context_object_name='OutputVariables',
                                template_name='equipment/sensor-output-variables/variables.html'
                            ),
@@ -89,7 +89,7 @@ urlpatterns = patterns('',
                        #Equipment Models Generic View
                        url(r'^equipment-models/$',
                            GenericListView.as_view(
-                               queryset=EquipmentModel.objects.all(),
+                               model=EquipmentModel,
                                context_object_name='Models',
                                template_name='equipment/models/models.html'
                            ),

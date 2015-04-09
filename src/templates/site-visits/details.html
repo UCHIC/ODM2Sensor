@@ -97,9 +97,8 @@
             {% for fieldactivity in SiteVisit.actionid.relatedaction.all %}
                 <tr>
                     <td>
-                        <a href="{% url 'field_activity_detail' SiteVisit.actionid.actionid %}"> {{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}
-                    </td>
-                    </a>
+                        <a href="{% url 'field_activity_detail' fieldactivity.actionid.actionid %}"> {{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}
+                    </a></td>
                     <td>{{ fieldactivity.actionid.begindatetime }}</td>
                     <td>{{ fieldactivity.actionid.enddatetime }}</td>
                     <td>{{ fieldactivity.actionid.actiondescription }}</td>

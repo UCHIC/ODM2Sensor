@@ -10,7 +10,6 @@ from django.db.models import Q
 
 
 LOGIN_URL = settings.SITE_URL + 'login/'
-print LOGIN_URL
 
 # Lists View Generic
 class GenericListView(ListView):
