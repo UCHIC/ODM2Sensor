@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Vendor Details</h2></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="#">Edit Vendor Description</a></div>
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+        </div>
+    </div>
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <table class="table">
+                <tr>
+                    <th>Name:</th>
+                    <td>{{ Vendor.organizationname }}</td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td>{{ Vendor.organizationtypecv }}</td>
+                </tr>
+                <tr>
+                    <th>Code:</th>
+                    <td>{{ Vendor.organizationcode }}</td>
+                </tr>
+                {% for contact in Vendor.affiliation.all %}
+                    {% if contact.isprimaryorganizationcontact == 1 %}
+                        <tr>
+                            <th>Contact Name:</th>
+                            <td>{{ contact.personid.personfirstname }} {{ contact.personid.personlastname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{ contact.primaryaddress }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ contact.primaryphone }} </td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{% if contact.primaryemail != 'unknown' and contact.primaryemail != None %}
+                                <a href="mailto:{{ contact.primaryemail }}">
+                                    {{ contact.primaryemail }}
+                                </a>
+                            {% else %}
+                                {{ contact.primaryemail|default:" - " }}
+                            {% endif %}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                <tr>
+                    <th>Website:</th>
+                    <td><a target="_blank"
+                           href="{% if 'http' not in Vendor.organizationlink %}http://{% endif %}{{ Vendor.organizationlink }}">{{ Vendor.organizationlink }}</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9"><h3>Equipment from this vendor</h3></div>
+    </div>
+    <hr class="divider">
+
+    <div class="row">
+        <table id="data-table">
+            <thead>
+            <tr>
+                <th>Serial Number</th>
+                <th>Type</th>
+                <th>Model</th>
+                <th>Manufacturer</th>
+                <th>Owner</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for equipment in Vendor.equipment.all %}
+                <tr>
+                    <td>
+                        <a href="{% url 'equipment_detail' equipment.equipmentid %}">
+                            {{ equipment.equipmentserialnumber }}
+                        </a></td>
+                    <td>{{ equipment.equipmenttypecv }}</td>
+                    <td>{{ equipment.equipmentmodelid.modelname }}</td>
+                    <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                    <td>{{ equipment.equipmentownerid.personfirstname }} {{ equipment.equipmentownerid.personlastname }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
+
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+{% endblock %}

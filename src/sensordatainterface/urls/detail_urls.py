@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from sensordatainterface.views import GenericDetailView, DeploymentMeasVariableDetailView
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
-    InstrumentOutputVariable
+    InstrumentOutputVariable, Organization
 import datetime
 from django.db.models import Q
 
@@ -80,6 +80,13 @@ urlpatterns = patterns('',
                            slug_field='equipmentmodelid',
                            template_name='equipment/models/details.html'),
                            name='models_detail'),
+
+                       url(r'^vendor-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                           context_object_name='Vendor',
+                           model=Organization,
+                           slug_field='organizationid',
+                           template_name='equipment/models/vendor-detail.html'),
+                           name='vendor_detail'),
 
                        # Following detail urls are not in the main navigation (i.e. in the navbar)
                        # Measured Variable detail

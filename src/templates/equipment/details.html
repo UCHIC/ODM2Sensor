@@ -78,13 +78,14 @@
                 {% endfor %}
             </table>
             <h3>Manufacturer Information</h3>
+
             <table class="table">
                 <tr>
                     <th>Name:</th>
                     <td>{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 </tr>
-
                 {% for person in Equipment.equipmentmodelid.modelmanufacturerid.affiliation.all %}
+
                     {% if person.isprimaryorganizationcontact == 1 %}
                         <tr>
                             <th>Contact Name:</th>
@@ -100,15 +101,9 @@
                                 <a href="mailto:{{ person.primaryemail }}">
                                     {{ person.primaryemail }}
                                 </a>
-                                {% else %}
-                                 {{ person.primaryemail|default:" - " }}
-                                {% endif %}
-                                </td>
-                        </tr>
-                        <tr>
-                            <th>Website:</th>
-                            <td>
-                                <a href="{{ person.personlink }}"> {{ person.personlink|default:"  -  " }}</a>
+                            {% else %}
+                                {{ person.primaryemail|default:" - " }}
+                            {% endif %}
                             </td>
                         </tr>
                         <tr>
@@ -117,6 +112,14 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+                <tr>
+                    <th>Website:</th>
+                    <td>
+                        <a target="_blank" href="{% if "http" not in Equipment.equipmentmodelid.modelmanufacturerid.organizationlink %}
+                        http://{% endif %}{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink }}/">
+                            {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink|default:"  -  " }}</a>
+                    </td>
+                </tr>
             </table>
             <h3>Vendor Information</h3>
             <table class="table">
@@ -140,13 +143,9 @@
                                 <a href="mailto:{{ person.primaryemail }}">
                                     {{ person.primaryemail }}
                                 </a>
-                                {% else %}
-                                 {{ person.primaryemail|default:" - " }}
-                                {% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>Website:</th>
-                            <td><a href="{{ person.personlink|default:"#" }}"> {{ person.personlink|default:"  -  " }}</a></td>
+                            {% else %}
+                                {{ person.primaryemail|default:" - " }}
+                            {% endif %}</td>
                         </tr>
                         <tr>
                             <th>Phone:</th>
@@ -154,6 +153,14 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+             <tr>
+                            <th>Website:</th>
+                            <td>
+                                <a target="_blank" href="{% if "http" not in Equipment.equipmentmodelid.modelmanufacturerid.organizationlink %}
+                        http://{% endif %}{{ Equipment.equipmentvendorid.organizationlink }}/">
+                            {{ Equipment.equipmentvendorid.organizationlink|default:"  -  " }}</a>
+                            </td>
+                        </tr>
             </table>
         </div>
     </div>
@@ -163,6 +170,7 @@
             History</a></div>
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
                                                                href="
+
                                                                        {# View is made for this, see:  FactoryServiceByEquipment #}">Factory
             Service History</a></div>
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"

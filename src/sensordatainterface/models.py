@@ -374,7 +374,7 @@ class Equipment(models.Model):
     equipmentmodelid = models.ForeignKey('EquipmentModel', related_name='equipment', db_column='EquipmentModelID')  # Field name made lowercase.
     equipmentserialnumber = models.TextField(db_column='EquipmentSerialNumber')  # Field name made lowercase.
     equipmentownerid = models.ForeignKey('People', db_column='EquipmentOwnerID')  # Field name made lowercase.
-    equipmentvendorid = models.ForeignKey('Organization', db_column='EquipmentVendorID')  # Field name made lowercase.
+    equipmentvendorid = models.ForeignKey('Organization', related_name='equipment', db_column='EquipmentVendorID')  # Field name made lowercase.
     equipmentpurchasedate = models.DateTimeField(db_column='EquipmentPurchaseDate')  # Field name made lowercase.
     equipmentpurchaseordernumber = models.TextField(db_column='EquipmentPurchaseOrderNumber',
                                                     blank=True)  # Field name made lowercase.

@@ -28,7 +28,7 @@
                 </tr>
                 <tr>
                     <th>Manufacturer:</th>
-                    <td>{{ Model.modelmanufacturerid.organizationname }}</td>
+                    <td><a href="{% url 'vendor_detail' Model.modelmanufacturerid.organizationid %}">{{ Model.modelmanufacturerid.organizationname }}</a></td>
                 </tr>
                 <tr>
                     <th>Link:</th>

@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <th>Equipment Model Name:</th>
-                    <td><a href="#">{{ OutputVariable.modelid.modelname }}</a></td>
+                    <td><a href="{% url 'models_detail' OutputVariable.modelid.equipmentmodelid %}">{{ OutputVariable.modelid.modelname }}</a></td>
                 </tr>
                 <tr>
                     <th>Accuracy:</th>

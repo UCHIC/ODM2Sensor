@@ -1,6 +1,5 @@
 $(document).ready(function () {
-    var dataTable = $('#data-table');
-    dataTable.DataTable();
+    $('#data-table').DataTable();
 });
 
 
