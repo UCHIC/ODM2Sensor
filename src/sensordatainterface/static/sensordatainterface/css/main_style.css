@@ -2,6 +2,10 @@
     text-decoration: none;
 }
 
+#data-table {
+      width: 100%;
+}
+
 .navbar {
     background: white;
 }

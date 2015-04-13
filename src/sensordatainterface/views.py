@@ -18,7 +18,6 @@ class GenericListView(ListView):
         return super(GenericListView, self).dispatch(*args, **kwargs)
 
 
-
 # Detail View Generic.
 class GenericDetailView(DetailView):
     @method_decorator(login_required(login_url=LOGIN_URL))
@@ -39,10 +38,13 @@ class DeploymentMeasVariableDetailView(DetailView):
         context['deployment'] = EquipmentUsed.objects.get(pk=self.kwargs['equipmentused'])
         context['equipment'] = context['deployment'].equipmentid
         context['model'] = context['equipment'].equipmentmodelid
-        context['output_variable'] = InstrumentOutputVariable.objects.filter(modelid=context['model'], variableid=self.object.pk).get()
-        context['datalogger_file_column'] = DataloggerFileColumn.objects.filter(instrumentoutputvariableid=context['output_variable'])
+        context['output_variable'] = InstrumentOutputVariable.objects.filter(modelid=context['model'],
+                                                                             variableid=self.object.pk).get()
+        context['datalogger_file_column'] = DataloggerFileColumn.objects.filter(
+            instrumentoutputvariableid=context['output_variable'])
 
         return context
+
 
 # Deployed Equipment By Site detail view
 class EquipmentDeploymentsBySite(ListView):
@@ -56,7 +58,7 @@ class EquipmentDeploymentsBySite(ListView):
                 actionid__enddatetime__isnull=True
             )
         else:
-             self.equipment = EquipmentUsed.objects.filter(
+            self.equipment = EquipmentUsed.objects.filter(
                 actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
             )
         return self.equipment
@@ -70,6 +72,7 @@ class EquipmentDeploymentsBySite(ListView):
     def dispatch(self, *args, **kwargs):
         return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
 
+
 class SiteVisitsBySite(ListView):
     context_object_name = 'SiteVisits'
     template_name = 'site-visits/visits.html'
@@ -78,7 +81,7 @@ class SiteVisitsBySite(ListView):
         self.site_visits = FeatureAction.objects.filter(
             actionid__actiontypecv='SiteVisit',
             samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-            )
+        )
         return self.site_visits
 
     def get_context_data(self, **kwargs):
@@ -90,6 +93,7 @@ class SiteVisitsBySite(ListView):
     def dispatch(self, *args, **kwargs):
         return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
 
+
 class EquipmentDeployments(ListView):
     context_object_name = 'Deployments'
     template_name = 'site-visits/deployment/deployments.html'
@@ -97,14 +101,14 @@ class EquipmentDeployments(ListView):
     def get_queryset(self):
         self.deployments = EquipmentUsed.objects.filter(
             (Q(actionid__actiontypecv='EquipmentDeployment') |
-            Q(actionid__actiontypecv='InstrumentDeployment')),
+             Q(actionid__actiontypecv='InstrumentDeployment')),
             equipmentid=self.kwargs['equipment_id']
         )
         return self.deployments
 
     def get_context_data(self, **kwargs):
         context = super(EquipmentDeployments, self).get_context_data(**kwargs)
-        context ['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
+        context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
@@ -119,14 +123,14 @@ class EquipmentCalibartions(ListView):
     def get_queryset(self):
         self.calibrations = EquipmentUsed.objects.filter(
             (Q(actionid__actiontypecv='InstrumentCalibration') &
-            Q(actionid__calibrationaction__isnull=False)),
+             Q(actionid__calibrationaction__isnull=False)),
             equipmentid=self.kwargs['equipment_id']
         )
         return self.calibrations
 
     def get_context_data(self, **kwargs):
         context = super(EquipmentCalibartions, self).get_context_data(**kwargs)
-        context ['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
+        context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
@@ -134,6 +138,18 @@ class EquipmentCalibartions(ListView):
         return super(EquipmentCalibartions, self).dispatch(*args, **kwargs)
 
 
+# class FactoryServiceByEquipment(ListView):
+#     context_object_name = 'FactoryService'
+#     template_name = 'equipment/factory-service/details.html'
+#
+#     def get_queryset(self):
+#         self.service = 0 #NO detail page to take as reference
+#
+#         return self.service
+#
+#     @method_decorator(login_required(login_url=LOGIN_URL))
+#     def dispatch(self, *args, **kwargs):
+#         return super(FactoryServiceByEquipment, self).dispatch(*args, **kwargs)
 
 
 # Log in/Log out.

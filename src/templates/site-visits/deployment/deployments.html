@@ -26,8 +26,10 @@
             {% for site in deployment.actionid.featureaction.all %}
                 <tr>
                     <td>
-                        <a href="{% url 'deployment_detail' deployment.actionid.actionid %}">{{ deployment.actionid.begindatetime }}<br/>to
-                                {{ deployment.actionid.enddatetime|default:"present" }}</a></td>
+                        <a href="{% url 'deployment_detail' deployment.actionid.actionid %}">
+                            {{ deployment.actionid.begindatetime }}<br/>to
+                            {{ deployment.actionid.enddatetime|default:"present" }}
+                        </a></td>
                     <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
                     <td>{{ deployment.equipmentid.equipmentserialnumber }}</td>
                     <td>{{ deployment.equipmentid.equipmenttypecv }}</td>

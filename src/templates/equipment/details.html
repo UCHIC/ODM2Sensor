@@ -21,7 +21,9 @@
                 </tr>
                 <tr>
                     <th>Model Name:</th>
-                    <td>{{ Equipment.equipmentmodelid.modelname }}</td>
+                    <td>
+                        <a href="{% url 'models_detail' Equipment.equipmentmodelid.equipmentmodelid %}">{{ Equipment.equipmentmodelid.modelname }}</a>
+                    </td>
                 </tr>
                 <tr>
                     <th>Model Link:</th>
@@ -42,10 +44,6 @@
                 <tr>
                     <th>Order Number:</th>
                     <td>{{ Equipment.equipmentpurchaseordernumber }}</td>
-                </tr>
-                <tr>
-                    <th>Notes:</th>
-                    <td>{{ Equipment.equipmentdescription }}</td>
                 </tr>
                 <tr>
                     <th>Calibration Certificate:</th>
@@ -74,7 +72,7 @@
                         </tr>
                         <tr>
                             <th>Email:</th>
-                            <td>{{ affiliation.primaryemail }}</td>
+                            <td><a href="mailto:{{ affiliation.primaryemail }}"> {{ affiliation.primaryemail }}</a></td>
                         </tr>
                     {% endif %}
                 {% endfor %}
@@ -85,59 +83,75 @@
                     <th>Name:</th>
                     <td>{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 </tr>
+
                 {% for person in Equipment.equipmentmodelid.modelmanufacturerid.affiliation.all %}
-                {% if person.isprimaryorganizationcontact %}
-                    <tr>
-                        <th>Contact Name:</th>
-                        <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
-                    </tr>
-                    <tr>
-                        <th>Address:</th>
-                        <td>{{ person.primaryaddress }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email:</th>
-                        <td>{{ person.primaryemail }}</td>
-                    </tr>
-                    <tr>
-                        <th>Website:</th>
-                        <td>{{ person.personlink }}</td>
-                    </tr>
-                    <tr>
-                        <th>Phone:</th>
-                        <td>{{ person.primaryphone }}</td>
-                    </tr>
+                    {% if person.isprimaryorganizationcontact == 1 %}
+                        <tr>
+                            <th>Contact Name:</th>
+                            <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{ person.primaryaddress }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{% if person.primaryemail != 'unknown' %}
+                                <a href="mailto:{{ person.primaryemail }}">
+                                    {{ person.primaryemail }}
+                                </a>
+                                {% else %}
+                                 {{ person.primaryemail|default:" - " }}
+                                {% endif %}
+                                </td>
+                        </tr>
+                        <tr>
+                            <th>Website:</th>
+                            <td>
+                                <a href="{{ person.personlink }}"> {{ person.personlink|default:"  -  " }}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ person.primaryphone }}</td>
+                        </tr>
                     {% endif %}
                 {% endfor %}
             </table>
-             <h3>Vendor Information</h3>
+            <h3>Vendor Information</h3>
             <table class="table">
                 <tr>
                     <th>Name:</th>
                     <td>{{ Equipment.equipmentvendorid.organizationname }}</td>
                 </tr>
                 {% for person in Equipment.equipmentvendorid.affiliation.all %}
-                {% if person.isprimaryorganizationcontact %}
-                    <tr>
-                        <th>Contact Name:</th>
-                        <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
-                    </tr>
-                    <tr>
-                        <th>Address:</th>
-                        <td>{{ person.primaryaddress }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email:</th>
-                        <td>{{ person.primaryemail }}</td>
-                    </tr>
-                    <tr>
-                        <th>Website:</th>
-                        <td>{{ person.personlink }}</td>
-                    </tr>
-                    <tr>
-                        <th>Phone:</th>
-                        <td>{{ person.primaryphone }}</td>
-                    </tr>
+                    {% if person.isprimaryorganizationcontact %}
+                        <tr>
+                            <th>Contact Name:</th>
+                            <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{ person.primaryaddress }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{% if person.primaryemail != 'unknown' %}
+                                <a href="mailto:{{ person.primaryemail }}">
+                                    {{ person.primaryemail }}
+                                </a>
+                                {% else %}
+                                 {{ person.primaryemail|default:" - " }}
+                                {% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Website:</th>
+                            <td><a href="{{ person.personlink|default:"#" }}"> {{ person.personlink|default:"  -  " }}</a></td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ person.primaryphone }}</td>
+                        </tr>
                     {% endif %}
                 {% endfor %}
             </table>
@@ -145,11 +159,15 @@
     </div>
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">Calibration History</a></div>
+                                                               href="{% url 'calibrations_by_equipment' Equipment.equipmentid %}">Calibration
+            History</a></div>
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">Factory Service History</a></div>
-    <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">Deployment History</a></div>
+                                                               href="
+                                                                       {# View is made for this, see:  FactoryServiceByEquipment #}">Factory
+            Service History</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="{% url 'deployments_by_equipment' Equipment.equipmentid %}">Deployment
+            History</a></div>
     </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">

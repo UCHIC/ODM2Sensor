@@ -27,8 +27,7 @@ urlpatterns = patterns('',
                            context_object_name='Deployment',
                            queryset=EquipmentUsed.objects.filter(
                                Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__isnull=True) |
-                               Q(
-                                   equipmentid__equipmentownerid__affiliation__affiliationenddate__lt=datetime.datetime.now())
+                               Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__lt=datetime.datetime.now())
                            ),
                            slug_field='actionid',
                            template_name='site-visits/deployment/details.html'),

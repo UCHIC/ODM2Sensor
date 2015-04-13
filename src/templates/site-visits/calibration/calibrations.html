@@ -2,7 +2,9 @@
 {% load static %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Calibrations</h1>
+        <h1>Calibrations
+            {% if equipment_name %} for Equipment {{ equipment_name.equipmentserialnumber }}
+            {% endif %}</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <button class="btn btn-primary btn-block new-btn">New Calibration</button>

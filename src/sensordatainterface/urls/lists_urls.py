@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
-from sensordatainterface.views import GenericListView, EquipmentDeploymentsBySite, SiteVisitsBySite, EquipmentDeployments
+from sensordatainterface.views import GenericListView, EquipmentDeploymentsBySite, SiteVisitsBySite, \
+    EquipmentDeployments, EquipmentCalibartions
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     MaintenanceAction, InstrumentOutputVariable, Action
 from django.core.urlresolvers import reverse_lazy
@@ -20,7 +21,7 @@ urlpatterns = patterns('',
                        # Site Visits Generic View
                        url(r'^site-visits/$',
                            GenericListView.as_view(
-                               queryset=Action.objects.filter(actiontypecv='SiteVisit'),
+                               queryset=FeatureAction.objects.filter(actionid__actiontypecv='SiteVisit'),
                                context_object_name='SiteVisits',
                                template_name='site-visits/visits.html'
                            ),
@@ -51,9 +52,12 @@ urlpatterns = patterns('',
                            name='calibrations'),
 
                        #Field Activities Generic View
-                       url(r'^other-activities/$',
+                       url(r'^other-activities/$', #!!!
                            GenericListView.as_view(
-                               model=FeatureAction,#change to  Action/RelatedAction
+                               queryset=Action.objects.filter(
+                                   relatedaction__relationshiptypecv='is_child_of',
+                                   relatedaction__relatedactionid__actiontypecv='SiteVisit'
+                               ),
                                context_object_name='FieldActivities',
                                template_name='site-visits/field-activities/activities.html'
                            ),
@@ -108,6 +112,6 @@ urlpatterns = patterns('',
                            name='deployments_by_equipment'),
 
                        url(r'^calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
-                           EquipmentDeployments.as_view(),
+                           EquipmentCalibartions.as_view(),
                            name='calibrations_by_equipment'),
 )

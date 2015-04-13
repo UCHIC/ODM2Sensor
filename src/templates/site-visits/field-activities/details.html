@@ -49,10 +49,6 @@
                         {{ Activity.actionid.actiondescription }}
                     </td>
                 </tr>
-                <tr>
-                    <th>Notes:</th>
-                    <td> SAME AS ABOVE. DELETE?</td>
-                </tr>
             </table>
             <h3>Site Description</h3>
             <table class="table">
@@ -62,8 +58,9 @@
                 </tr>
                 <tr>
                     <th>Site Name:</th>
-                    <td>{{ Activity.samplingfeatureid.samplingfeaturename }}</td>
-                    <!--make link later-->
+                    <td><a href="{% url 'site_detail' Activity.samplingfeatureid.samplingfeatureid %}">
+                        {{ Activity.samplingfeatureid.samplingfeaturename }}
+                    </a></td>
                 </tr>
                 <tr>
                     <th>Site Type:</th>
@@ -84,8 +81,11 @@
     </div>
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'site_visit_detail' Activity.actionid.actionid %}">Go
-            to Site Visit</a></div>
+                {% for related in Activity.actionid.relatedaction.all %}
+                    {% if related.relationshiptypecv == 'is_child_of' %}
+                            href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                    {% endif %}
+               {% endfor %}">Go to Site Visit</a></div>
     </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">

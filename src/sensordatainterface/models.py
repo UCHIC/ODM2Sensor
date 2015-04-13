@@ -857,10 +857,10 @@ class ReferenceMaterial(models.Model):
 
 class RelatedAction(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
-    actionid = models.ForeignKey(Action, related_name='relatedactions_actionid',
+    actionid = models.ForeignKey(Action, related_name='relatedaction',
                                  db_column='ActionID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
-    relatedactionid = models.ForeignKey(Action, related_name='relatedaction',
+    relatedactionid = models.ForeignKey(Action, related_name='parent_relatedaction',
                                         db_column='RelatedActionID')  # Field name made lowercase.
 
     class Meta:

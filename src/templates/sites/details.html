@@ -88,6 +88,8 @@
             <tbody>
 
             {% for featureaction in Site.samplingfeatureid.featureaction.all %}
+                {# This is if the variables are supposed to be currently deployed #}
+                {% if featureaction.actionid.enddatetime == None %}
                 {% for usedequipment in featureaction.actionid.equipmentused.all %}
                     {% for outputvar in usedequipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
 
@@ -104,6 +106,7 @@
                         {% endfor %}
                     {% endfor %}
                 {% endfor %}
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

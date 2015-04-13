@@ -77,16 +77,14 @@ DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter',]
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
 
-# Internationalisation
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True #This might not need to be disabled anymore.
+USE_I18N = True
 
 USE_L10N = True
 
-#Deactivated since UTC Offset is handled in the database. See https://docs.djangoproject.com/en/dev/topics/i18n/timezones/ to use automatic time zones.
+# Deactivated since UTC Offset is handled in the database.
+# See https://docs.djangoproject.com/en/dev/topics/i18n/timezones/ to use automatic time zones.
 USE_TZ = False

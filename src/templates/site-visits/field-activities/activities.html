@@ -18,19 +18,20 @@
             <th>Description</th>
         </tr>
         </thead>
-        <tbody>
+       <tbody>
         {% for activity in FieldActivities %}
+            {% for samplingfeature in activity.featureaction.all %}
             <tr>
-                <td><a href="{% url 'field_activity_detail' activity.actionid.actionid %}">{{ activity.actionid.begindatetime }}</a></td>
-                <td>{{ activity.actionid.enddatetime }}</td>
-                <td>{{ activity.samplingfeatureid.samplingfeaturename }}, {{ activity.actionid.begindatetime }}</td>
-                <td>{{ activity.actionid.actiontypecv|separatewordsbycaps }}</td>
-                <td style="max-width: 500px">{% if activity.actionid.actiondescription != None %}
-                    {{ activity.actionid.actiondescription }}
+                <td><a href="{% url 'field_activity_detail' activity.actionid %}">{{ activity.begindatetime }}</a></td>
+                <td>{{ activity.enddatetime }}</td>
+                <td>{{ samplingfeature.samplingfeatureid.samplingfeaturename }}, {{ activity.begindatetime }}</td>
+                <td>{{ activity.actiontypecv|separatewordsbycaps }}</td>
+                <td style="max-width: 500px">{% if activity.actiondescription != None %}
+                    {{ activity.actiondescription }}
                 {% endif %}</td>
             </tr>
+                {% endfor %}
         {% endfor %}
         </tbody>
     </table>
-    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% endblock %}
