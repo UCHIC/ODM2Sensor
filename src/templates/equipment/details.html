@@ -149,14 +149,14 @@
                         </tr>
                         <tr>
                             <th>Phone:</th>
-                            <td>{{ person.primaryphone }}</td>
+                            <td>{{ person.primaryphone }} </td>
                         </tr>
                     {% endif %}
                 {% endfor %}
              <tr>
                             <th>Website:</th>
                             <td>
-                                <a target="_blank" href="{% if "http" not in Equipment.equipmentmodelid.modelmanufacturerid.organizationlink %}
+                                <a target="_blank" href="{% if "http:" not in Equipment.equipmentvendorid.organizationlink %}
                         http://{% endif %}{{ Equipment.equipmentvendorid.organizationlink }}/">
                             {{ Equipment.equipmentvendorid.organizationlink|default:"  -  " }}</a>
                             </td>
