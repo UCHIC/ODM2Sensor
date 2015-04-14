@@ -56,13 +56,13 @@
                 </li>
                 <li id="vocabulary-nav"><a href="{% url 'home' %}">Vocabularies</a></li><!--Change to vocabularies when appropiate-->
             </ul>
-
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <a id="username">{{ user.get_full_name }}</a>
                     </li>
-                    <li><a href="{% url 'logout_user' %}">Logout</a>
+                    <li>
+                        <a href="{% url 'logout_user' %}">Logout</a>
                     </li>
                 </ul>
             {% endif %}
