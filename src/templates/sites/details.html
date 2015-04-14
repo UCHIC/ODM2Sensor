@@ -56,7 +56,7 @@
                 </tr>
                 <tr>
                     <th>Vertical Datum:</th>
-                    <td style="color:red;">Vertical Datum field not nound in database</td>
+                    <td>{{ Site.samplingfeatureid.elevationdatumcv }}</td>
                 </tr>
                 <tr>
                     <th>State:</th>
@@ -89,7 +89,8 @@
 
             {% for featureaction in Site.samplingfeatureid.featureaction.all %}
                 {# This is if the variables are supposed to be currently deployed #}
-                {% if featureaction.actionid.enddatetime == None %}
+                {% if not featureaction.actionid.enddatetime %}
+                {% if featureaction.actionid.actiontypecv == 'InstrumentDeployment' or featureaction.actionid.actionttype == 'EquipmentDeployment'%}
                 {% for usedequipment in featureaction.actionid.equipmentused.all %}
                     {% for outputvar in usedequipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
 
@@ -106,7 +107,7 @@
                         {% endfor %}
                     {% endfor %}
                 {% endfor %}
-                {% endif %}
+                {% endif %}{% endif %}
             {% endfor %}
             </tbody>
         </table>

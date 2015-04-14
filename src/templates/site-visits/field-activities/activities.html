@@ -26,7 +26,7 @@
                 <td>{{ activity.enddatetime }}</td>
                 <td>{{ samplingfeature.samplingfeatureid.samplingfeaturename }}, {{ activity.begindatetime }}</td>
                 <td>{{ activity.actiontypecv|separatewordsbycaps }}</td>
-                <td style="max-width: 500px">{% if activity.actiondescription != None %}
+                <td style="max-width: 500px">{% if activity.actiondescription %}
                     {{ activity.actiondescription }}
                 {% endif %}</td>
             </tr>

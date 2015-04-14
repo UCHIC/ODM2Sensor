@@ -30,9 +30,9 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'home' %}">Sites<span class="sr-only">(current)</span></a></li>
+                <li class="" id="sites-nav"><a href="{% url 'home' %}">Sites<span class="sr-only">(current)</span></a></li>
 
-                <li class="dropdown">
+                <li class="dropdown" id="visits-nav">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Site
                         Visits
                         <span class="caret"></span></a>
@@ -43,17 +43,17 @@
                         <li><a href="{% url 'field_activities' %}">Other Activities</a></li>
                     </ul>
                 </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Equipment
+                <li class="dropdown" id="inventory-nav">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Inventory
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="{% url 'equipment' %}">Inventory</a></li>
+                        <li><a href="{% url 'equipment' %}">Equipment</a></li>
                         <li><a href="{% url 'factory_service' %}">Factory Service History</a></li>
                         <li><a href="{% url 'sensor_output' %}">Sensor Output Variables</a></li>
                         <li><a href="{% url 'models' %}">Equipment Models</a></li>
                     </ul>
                 </li>
-                <li><a href="{% url 'home' %}">Vocabularies</a></li><!--Change to vocabularies when appropiate-->
+                <li id="vocabulary-nav"><a href="{% url 'home' %}">Vocabularies</a></li><!--Change to vocabularies when appropiate-->
             </ul>
 
             {% if user.is_authenticated %}
@@ -84,5 +84,6 @@
 <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
 <script src="{% static "sensordatainterface/js/datatable.js" %}"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 </body>
 </html>

@@ -8,3 +8,19 @@ function removeCommas(table) {
         console.log(data);
     }
 }
+
+function setNavActive() {
+    $(".active").removeClass("active");
+
+    var currentPath = window.location.pathname;
+
+    if (currentPath.indexOf("inventory") > 0) {
+        $("#inventory-nav").addClass("active");
+    } else if (currentPath.indexOf("sites") > 0) {
+        $("#sites-nav").addClass("active");
+    } else if (currentPath.indexOf("site-visits") > 0) {
+        $("#visits-nav").addClass("active");
+    }
+}
+
+setNavActive();

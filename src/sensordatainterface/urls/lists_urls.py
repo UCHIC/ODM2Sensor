@@ -9,17 +9,17 @@ from django.db.models import Q
 
 urlpatterns = patterns('',
                        # Site Generic View
-                       url(r'^$',
+                       url(r'^sites/$',
                            GenericListView.as_view(
                                model=Sites,
                                context_object_name='Sites',
                                template_name='sites/sites.html'), name='home'),
 
-                       url(r'^home/', RedirectView.as_view(url=reverse_lazy('home')), name='home_login'),
-                       url(r'^sites/', RedirectView.as_view(url=reverse_lazy('home')), name='sites'),
+                       url(r'^home/$', RedirectView.as_view(url=reverse_lazy('home')), name='home_login'),
+                       url(r'^$', RedirectView.as_view(url=reverse_lazy('home')), name='sites'),
 
                        # Site Visits Generic View
-                       url(r'^site-visits/$',
+                       url(r'^site-visits/site-visits/$',
                            GenericListView.as_view(
                                queryset=FeatureAction.objects.filter(actionid__actiontypecv='SiteVisit'),
                                context_object_name='SiteVisits',
@@ -28,7 +28,7 @@ urlpatterns = patterns('',
                            name='site_visits'),
 
                        # Deployments Generic View
-                       url(r'^deployments/$',
+                       url(r'^site-visits/deployments/$',
                            GenericListView.as_view(
                                queryset=EquipmentUsed.objects.filter(
                                    Q(actionid__actiontypecv='EquipmentDeployment')
@@ -40,7 +40,7 @@ urlpatterns = patterns('',
                            name='deployments'),
 
                        # Calibrations Generic Views
-                       url(r'^calibrations/$',
+                       url(r'^site-visits/calibrations/$',
                            GenericListView.as_view(
                                queryset=EquipmentUsed.objects.filter(
                                    Q(actionid__actiontypecv='InstrumentCalibration')
@@ -52,7 +52,7 @@ urlpatterns = patterns('',
                            name='calibrations'),
 
                        #Field Activities Generic View
-                       url(r'^other-activities/$', #!!!
+                       url(r'^site-visits/other-activities/$', #!!!
                            GenericListView.as_view(
                                queryset=Action.objects.filter(
                                    relatedaction__relationshiptypecv='is_child_of',
@@ -64,7 +64,7 @@ urlpatterns = patterns('',
                            name='field_activities'),
 
                        #Inventory Generic View
-                       url(r'^equipment/$',
+                       url(r'^inventory/equipment/$',
                            GenericListView.as_view(
                                model=Equipment,
                                context_object_name='Inventory',
@@ -73,7 +73,7 @@ urlpatterns = patterns('',
                            name='equipment'),
 
                        #Factory Service Generic View
-                       url(r'^factory-service/$',
+                       url(r'^inventory/factory-service/$',
                            GenericListView.as_view(
                                queryset=MaintenanceAction.objects.filter(isfactoryservice=True),
                                context_object_name='FactoryService',
@@ -82,7 +82,7 @@ urlpatterns = patterns('',
                            name='factory_service'),
 
                        #Sensor Output Variables Generic View
-                       url(r'^sensor-output-variables/$',
+                       url(r'^inventory/sensor-output-variables/$',
                            GenericListView.as_view(
                                model=InstrumentOutputVariable,
                                context_object_name='OutputVariables',
@@ -91,7 +91,7 @@ urlpatterns = patterns('',
                            name='sensor_output'),
 
                        #Equipment Models Generic View
-                       url(r'^equipment-models/$',
+                       url(r'^inventory/equipment-models/$',
                            GenericListView.as_view(
                                model=EquipmentModel,
                                context_object_name='Models',
@@ -99,19 +99,19 @@ urlpatterns = patterns('',
                            ),
                            name='models'),
 
-                       url(r'^deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
+                       url(r'^site-visits/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
                            EquipmentDeploymentsBySite.as_view(),
                            name='deployments_by_site'),
 
-                       url(r'^site-visits/site/(?P<site_id>[-_\w]+)/$',
+                       url(r'^site-visits/site-visits/site/(?P<site_id>[-_\w]+)/$',
                            SiteVisitsBySite.as_view(),
                            name='site_visits_by_site'),
 
-                       url(r'^deployments/equipment/(?P<equipment_id>[-_\w]+)/$',
+                       url(r'^site-visits/deployments/equipment/(?P<equipment_id>[-_\w]+)/$',
                            EquipmentDeployments.as_view(),
                            name='deployments_by_equipment'),
 
-                       url(r'^calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
+                       url(r'^site-visits/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
                            EquipmentCalibartions.as_view(),
                            name='calibrations_by_equipment'),
 )

@@ -42,7 +42,7 @@
                         </tr>
                         <tr>
                             <th>Email:</th>
-                            <td>{% if contact.primaryemail != 'unknown' and contact.primaryemail != None %}
+                            <td>{% if contact.primaryemail != 'unknown' and contact.primaryemail %}
                                 <a href="mailto:{{ contact.primaryemail }}">
                                     {{ contact.primaryemail }}
                                 </a>

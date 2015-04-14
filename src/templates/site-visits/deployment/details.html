@@ -43,10 +43,6 @@
                     <td>{{ Deployment.equipmentid.equipmentpurchasedate }}</td>
                 </tr>
                 <tr>
-                    <th>Equipment Notes:</th>
-                    <td> WUT?</td>
-                </tr>
-                <tr>
                     <th>Link:</th>
                     <td>{{ Deployment.equipmentid.equipmentdocumentationlink }}</td>
                 </tr>
@@ -102,43 +98,40 @@
                     <td>{% if Deployment.actionid.enddatetime %} No {% else %} Yes {% endif %}</td>
                 </tr>
                 <tr>
-                    <th>Deployment Type:</th>
-                    <td style="color: red;">NO FIELD FOUND FOR THIS</td>
-                </tr>
-                <tr>
                     <th>Deployment Description:</th>
                     <td>{{ Deployment.actionid.actiondescription }}</td>
                 </tr>
                 <tr>
                     <th>Horizontal Offset Description:</th>
-                    <td>Gonna need help</td>
+                    <td> ?? </td>
                 </tr>
                 <tr>
                     <th>Horizontal Units ID:</th>
-                    <td>Gonna need help</td>
+                    <td> ?? </td>
                 </tr>
                 <tr>
                     <th>Horizontal Offset Value:</th>
-                    <td>Gonna need help</td>
+                    <td> ?? </td>
                 </tr>
                 <tr>
                     <th>Vertical Offset Description:</th>
-                    <td>Gonna need help</td>
+                    <td> ?? </td>
 
                 </tr>
                 <tr>
                     <th>Vertical Units ID:</th>
-                    <td>Gonna need help</td>
+                    <td> ?? </td>
                 </tr>
                 <tr>
                     <th>Vertical Offset Value:</th>
-                    <td>Gonna need help</td>
+                    <td> ?? </td>
                 </tr>
                 <tr>
                     <th>Parent Equipment:</th>
-                    <td>{% for parent in Deployment.equipmentid.relatedequipment_relatedequipmentid.all %} {# Check #}
+                    <td>{% for parent in Deployment.equipmentid.relatedequipment_equipmentid.all %} {# Check #}
                         {% if parent.relationshiptypecv == 'is_child_of' %}
-                            {{ parent.equipmentid.equipmentid }}
+                            <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                {{ parent.relatedequipmentid.equipmentname }}</a>
                         {% endif %}
                     {% endfor %}
                     </td>
