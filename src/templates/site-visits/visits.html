@@ -12,15 +12,17 @@
         <thead>
         <tr>
             <th>Date</th>
+            <th>Site Code</th>
             <th>Site Name</th>
             <th>Site Group</th>
-            <th>Crew</th>
+            <th>People</th>
         </tr>
         </thead>
         <tbody>
         {% for visit in SiteVisits %}
             <tr>
                 <td><a href="{% url 'site_visit_detail' visit.actionid.actionid %}">{{ visit.actionid.begindatetime }}</a></td>
+            <td>{{ visit.samplingfeatureid.samplingfeaturecode }}</td>
                 <td>{{ visit.samplingfeatureid.samplingfeaturename }}</td>
                 <td>{% if visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
                 {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek

@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Factory Service Events</h1>
+        <h1>Factory Service Table</h1>
         <p style="color:red;">No data in database for testing</p>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
@@ -14,7 +14,7 @@
             <th>Date</th>
             <th>Equipment Code</th>
             <th>Equipment Type</th>
-            <th>Service Description</th>
+            <th>Equipment Serial Number</th>
         </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@
                 <td><a href="/factory-service-detail/{{ event.actionid }}">{{ event.actionid.begindatetime }}</a></td>
                 <td>{{ event.actionid.equipmentused.equipmentid.equipmentcode }}</td>
                 <td>{{ event.actionid.equipmentused.equipmentid.equipmenttypecv }}</td>
-                <td>{{ event.actionid.actiondescription }}</td>
+                <td>{{ event.actionid.equipmentused.equipmentid.equipmentserialnumber }}</td>
             </tr>
         {% endfor %}
         </tbody>

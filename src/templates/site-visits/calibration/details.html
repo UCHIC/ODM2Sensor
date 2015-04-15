@@ -13,165 +13,206 @@
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
-            <h3>Calibration Description</h3>
-            {% with checkval=Calibration.actionid.calibrationaction.all|first %}
-                {% with var=Calibration.equipmentid.equipmentmodelid.instrumentoutputvariable.all|first %}
-                    <table class="table">
-                        <tr>
-                            <th>Check Value Before Calibration:</th>
-                            <td>
-                                {{ checkval.calibrationcheckvalue }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Activity Begin DateTime:</th>
-                            <td>{{ Calibration.actionid.begindatetime }}</td>
-                        </tr>
-                        <tr>
-                            <th>Activity End DateTime:</th>
-                            <td>{{ Calibration.actionid.enddatetime }}</td>
-                        </tr>
-                        <tr>
-                            <th>Crew:</th>
-                            <td>
-                                {% for person in Calibration.actionid.actionby.all %}
-                                    {{ person.affiliationid.personid.personfirstname }}
-                                    {{ person.affiliationid.personid.personlastname }}
-                                    {% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Sensor Type:</th>
-                            <td>
-                                {{ var.variableid.variablenamecv }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Calibration Notes:</th>
-                            <td> {{ Calibration.actionid.actiondescription }}</td>
-                        </tr>
-                        <tr>
-                            <th>Method Name:</th>
-                            <td>{{ var.instrumentmethodid.methodname }}</td>
-                        </tr>
-                        <tr>
-                            <th>Calibration Method Description:</th>
-                            <td>{{ var.instrumentmethodid.methoddescription }}</td>
-                        </tr>
-                        {% with calibbrationStd=checkval.calibrationstandard.all|first %}
-                            <tr>
-                                <th>Calibration Standard ID:</th>
-                                <td>
-                                    {{ calibbrationStd.referencematerialid.referencematerialid }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Calibration Standard Type:</th>
-                                <td>{{ calibbrationStd.referencematerialid.referencematerialmediumcv }}</td>
-                            </tr>
-                            {% with referencevalue=calibbrationStd.referencematerialid.referencematerialvalue.all|first %}
-                                <tr>
-                                    <th>Calibration Standard Value:</th>
-                                    <td>{{ referencevalue.referencematerialvalue }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Calibration Standard Units:</th>
-                                    <td>{{ referencevalue.unitsid.unitsname }}</td>
-                                </tr>
-                            {% endwith %}
-                            <tr>
-                                <th>Calibration File:</th>
-                                <td>{{ Calibration.actionid.actionfilelink }}</td>
-                            </tr>
-                        {% endwith %}
+            <h3>Equipment Description</h3>
+            <table class="table">
+                <tr>
+                    <th>Equipment Serial Number:</th>
+                    <td>
+                        <a href="{% url 'equipment_detail' Calibration.equipmentid.equipmentid %}">{{ Calibration.equipmentid.equipmentserialnumber }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Equipment Code:</th>
+                    <td>{{ Calibration.equipmentid.equipmentcode }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Name:</th>
+                    <td>{{ Calibration.equipmentid.equipmentname }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Type:</th>
+                    <td>{{ Calibration.equipmentid.equipmenttypecv }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Model Name:</th>
+                    <td><a href="{% url 'models_detail' Calibration.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                        {{ Calibration.equipmentid.equipmentmodelid.modelname }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Manufacturer Name:</th>
+                    <td>{{ Calibration.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                </tr>
+                <tr>
+                    <th>Owner Name:</th>
+                    <td>{{ Calibration.equipmentid.equipmentownerid.personfirstname }} {{ Calibration.equipmentid.equipmentownerid.personlastname }}</td>
+                </tr>
 
-                    </table>
-                    <h3>Equipment Description</h3>
-                    <table class="table">
+            </table>
+            <h3>Calibration Description</h3>
+            <table class="table">
+                <tr>
+                    <th>Activity Begin DateTime:</th>
+                    <td>{{ Calibration.actionid.begindatetime }}</td>
+                </tr>
+                <tr>
+                    <th>Activity End DateTime:</th>
+                    <td>{{ Calibration.actionid.enddatetime|default:"present" }}</td>
+                </tr>
+                <tr>
+                    <th>UTC Offset:</th>
+                    <td>{{ Calibration.actionid.begindatetimeutcoffset }}</td>
+                </tr>
+                <tr>
+                    <th>Action Description:</th>
+                    <td> {{ Calibration.actionid.actiondescription }}</td>
+                </tr>
+                {#calibrationactions is one to one with actions #}
+                {% with variable=Calibration.actionid.calibrationaction.all.0 %}
+                    <tr>
+                        <th>Variable Code:</th>
+                        <td> {{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
+                    </tr>
+                    <tr>
+                        <th>Variable Name:</th>
+                        <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
+                    </tr>
+                    <tr>
+                        <th>Check Value:</th>
+                        <td>
+                            {{ variable.calibrationcheckvalue|default:" -- " }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Calibration Equation:</th>
+                        <td>
+                            {{ variable.calibrationequation|default:" -- " }}
+                        </td>
+                    </tr>
+                {% endwith %}
+                <tr>
+                    <th>Calibration Link:</th>
+                    <td>{{ Calibration.actionid.actionfilelink|default:" -- " }}</td>
+                </tr>
+            </table>
+            <h3>Reference Material</h3>
+            <table class="table">
+                {% with calibrationactions=Calibration.actionid.calibrationaction.all.0 %}
+                    {% for referencematerial in calibrationactions.calibrationstandard.all %}
                         <tr>
-                            <th>Serial Number:</th>
-                            <td><a href="{% url 'equipment_detail' Calibration.equipmentid.equipmentid %}">{{ Calibration.equipmentid.equipmentserialnumber }}</a></td>
+                            <th>Reference Material Medium:</th>
+                            <td>{{ referencematerial.referencematerialid.referencematerialmediumcv|default:" -- " }}</td>
+                            {# Detail Pages for later... #}
+                        </tr>
+
+                        <tr>
+                            <th>Organization Name:</th>
+                            <td>{{ referencematerial.referencematerialid.referencematerialorganizationid.organizationname|default:" -- " }}</td>
                         </tr>
                         <tr>
-                            <th>Model Name:</th>
-                            <td>{{ Calibration.equipmentid.equipmentmodelid.modelname }}</td>
+                            <th>Reference Material Code:</th>
+                            <td>{{ referencematerial.referencematerialid.referencematerialcode|default:" -- " }}</td>
                         </tr>
                         <tr>
-                            <th>Model Description:</th>
-                            <td>{{ Calibration.equipmentid.equipmentmodelid.modeldescription }}</td>
-                        </tr>
-                        <tr>
-                            <th>Model Link:</th>
-                            <td>{{ Calibration.equipmentid.equipmentmodelid.modellink }}</td>
+                            <th>Reference Material Lot Code:</th>
+                            <td>{{ referencematerial.referencematerialid.referencemateriallotcode|default:" -- " }}</td>
                         </tr>
                         <tr>
                             <th>Purchase Date:</th>
-                            <td>{{ Calibration.equipmentid.equipmentpurchasedate }}</td>
+                            <td>{{ referencematerial.referencematerialid.referencematerialpurchasedate|default:" -- " }}</td>
                         </tr>
-                    </table>
-                    <h3>Owner Description</h3>
-                    <table class="table">
-                        {% for affiliation in Calibration.equipmentid.equipmentownerid.affiliation.all %}
-                            {% if forloop.first %}
-                                <tr>
-                                    <th>Institution:</th>
-                                    <td>{{ affiliation.organizationid.organizationname }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Contact:</th>
-                                    <td>{{ Calibration.equipmentid.equipmentownerid.personfirstname }} {{ Calibration.equipmentid.equipmentownerid.personlastname }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Owner Address:</th>
-                                    <td>{{ affiliation.primaryaddress }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Owner Phone:</th>
-                                    <td>{{ affiliation.primaryphone }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email:</th>
-                                    <td><a href="mailto:{{ affiliation.primaryemail }}"> {{ affiliation.primaryemail }}</a></td>
-                                </tr>
+                        <tr>
+                            <th>Expiration Date:</th>
+                            <td>{{ referencematerial.referencematerialid.referencematerialexpirationdate|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Certificate Link:</th>
+                            <td>{% if referencematerial.referencematerialid.referencematerialcertificatelink %}
+                                <a href="{{ referencematerial.referencematerialid.referencematerialcertificatelink }}">
+                                    {# check for correct link format #}
+                                    {{ referencematerial.referencematerialid.referencematerialcertificatelink }}</a>
+                            {% else %}
+                                --
                             {% endif %}
-                        {% empty %}
-                            <tr>
-                                <th>Institution:</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Contact:</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Owner Address:</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Owner Phone:</th>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Email:</th>
-                                <td></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                            </td>
+                            {% for materialvalue in referencematerial.referencematerialid.referencematerialvalue.all %}
+                                </tr>
+                                <tr>
+                                    <th>Value:</th>
+                                    <td>{{ materialvalue.referencematerialvalue|default:" -- " }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Value Accuracy:</th>
+                                    <td>{{ materialvalue.referencematerialaccuracy|default:" -- " }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Units:</th>
+                                    <td>{{ materialvalue.unitsid.unitsname|default:" -- " }}</td>
+                                </tr>
+                            {% endfor %}
+                         {% empty %}
+                                <tr>
+                                    <td>No Reference Material information for this calibration.</td>
+                                </tr>
+                    {% endfor %}
                 {% endwith %}
-            {% endwith %}
+            </table>
+        <h3>Reference Equipment</h3>
+            <table class="table">
+                {% with calibrationactions=Calibration.actionid.calibrationaction.all.0 %}
+                    {% for referenceequipment in calibrationactions.calibrationreferenceequipment.all %}
+                        <tr>
+                            <th>Equipment Serial Number:</th>
+                            <td><a href="{% url 'equipment_detail' referenceequipment.equipmentid.equipmentid %}">
+                            {{ referenceequipment.equipmentid.equipmentserialnumber|default:" -- " }}</a></td>
+                        </tr>
+
+                        <tr>
+                            <th>Equipment Code:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentcode|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Equipment Name:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentname|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Equipment Type:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmenttypecv|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Manufacturer Name:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Equipment Model Name:</th>
+                            <td><a href="{% url 'equipment_detail' referenceequipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                {{ referenceequipment.equipmentid.equipmentmodelid.modelname|default:" -- " }}</a></td>
+                        </tr>
+                        <tr>
+                            <th>Owner Name:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentownerid.personfirstname }} {{ referenceequipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}</td>
+                        </tr>
+
+                         {% empty %}
+                                <tr>
+                                    <td>No Reference Equipment information for this calibration.</td>
+                                </tr>
+                    {% endfor %}
+                {% endwith %}
+            </table>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                       {% for related in Calibration.actionid.relatedaction.all %}
-                        {% if related.relationshiptypecv == 'is_child_of' %}
-                            href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                {% for related in Calibration.actionid.relatedaction.all %}
+                    {% if related.relationshiptypecv == 'is_child_of' %}
+                                                               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
                     {% endif %}
-               {% endfor %}>Go to Site Visit</a></div>
+                {% endfor %}>Go to Site Visit</a></div>
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right">
             <a class="btn btn-primary btn-block"
-                href="{% url 'calibrations_by_equipment' Calibration.equipmentid.equipmentid %}">View Equipment's Calibration History</a>
+               href="{% url 'calibrations_by_equipment' Calibration.equipmentid.equipmentid %}">View Equipment's
+                Calibration History</a>
         </div>
     </div>
     <script type="text/javascript"

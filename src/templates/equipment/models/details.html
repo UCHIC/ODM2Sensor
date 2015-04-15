@@ -15,28 +15,46 @@
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
             <table class="table">
                 <tr>
-                    <th>Name:</th>
+                    <th>Model Name:</th>
                     <td>{{ Model.modelname }}</td>
                 </tr>
                 <tr>
-                    <th>Part Number:</th>
-                    <td>{{ Model.modelpartnumber|default:"  -  " }}</td>
+                    <th>Model Part Number:</th>
+                    <td>{{ Model.modelpartnumber|default:" -- " }}</td>
                 </tr>
                 <tr>
-                    <th>Description:</th>
+                    <th>Manufacturer Name:</th>
+                    <td><a href="{% url 'vendor_detail' Model.modelmanufacturerid.organizationid %}">
+                        {{ Model.modelmanufacturerid.organizationname }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Manufacturer Website:</th>
+                    <td><a target="_blank" href="{{ Model.modelmanufacturerid.organizationlink }}">
+                        {{ Model.modelmanufacturerid.organizationlink }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Model Description:</th>
                     <td>{{ Model.modeldescription }}</td>
                 </tr>
                 <tr>
-                    <th>Manufacturer:</th>
-                    <td><a href="{% url 'vendor_detail' Model.modelmanufacturerid.organizationid %}">{{ Model.modelmanufacturerid.organizationname }}</a></td>
+                    <th>Is Instrument:</th>
+                    <td>
+                        {% if model.isinstrument == 1 %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
-                    <th>Link:</th>
-                    <td>{{ Model.modellink|default:"Not Found." }}</td>
+                    <th>Model SepcificationsFile Link:</th>
+                    <td>{{ Model.modelspecificationsfilelink|default:" -- " }}</td>
                 </tr>
                 <tr>
-                    <th>Model Specifications:</th>
-                    <td>{{ Model.modelspecificationsfilelink }} This should be a file!!!</td>
+                    <th>Model Link:</th>
+                    <td>{{ Model.modellink|default:" -- "  }} {# This should be a file!!!#}</td>
                 </tr>
             </table>
         </div>

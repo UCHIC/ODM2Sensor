@@ -53,6 +53,11 @@
     margin-left: 5px;
 }
 
+#data-table tr {background-color: #f6f6f6; }
+#data-table tr:nth-child(even) {background-color: #FFF}
+
+#data-table thead th {background: #fff;}
+
 .table > tbody > tr > td,
 .table > tbody > tr > th,
 .table > tfoot > tr > td,

@@ -3,7 +3,7 @@
 {% load inv_extras %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Field Activities</h1>
+        <h1>Actions Table</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <button class="btn btn-primary btn-block new-btn">New Field Activity</button>
@@ -11,26 +11,37 @@
     <table id="data-table">
         <thead>
         <tr>
-            <th>Begin DateTime</th>
-            <th>End DateTime</th>
-            <th>Site Visit</th>
-            <th>Type</th>
-            <th>Description</th>
+            <th>Date</th>
+            <th>Site Code</th>
+            <th>Site Name</th>
+            <th>Site Group</th>
+            <th>Action Type</th>
+            <th>Action Description</th>
         </tr>
         </thead>
-       <tbody>
+        <tbody>
         {% for activity in FieldActivities %}
             {% for samplingfeature in activity.featureaction.all %}
-            <tr>
-                <td><a href="{% url 'field_activity_detail' activity.actionid %}">{{ activity.begindatetime }}</a></td>
-                <td>{{ activity.enddatetime }}</td>
-                <td>{{ samplingfeature.samplingfeatureid.samplingfeaturename }}, {{ activity.begindatetime }}</td>
-                <td>{{ activity.actiontypecv|separatewordsbycaps }}</td>
-                <td style="max-width: 500px">{% if activity.actiondescription %}
-                    {{ activity.actiondescription }}
-                {% endif %}</td>
-            </tr>
-                {% endfor %}
+                <tr>
+                    <td><a href="{% url 'field_activity_detail' activity.actionid %}">{{ activity.begindatetime }}</a>
+                    </td>
+                    <td>{{ samplingfeature.samplingfeatureid.samplingfeaturecode }}</td>
+                    <td>{{ samplingfeature.samplingfeatureid.samplingfeaturename }}</td>
+                    <td>
+                        {% if samplingfeature.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
+                            Logan River
+                        {% elif samplingfeature.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
+                            Red Butte Creek
+                        {% elif samplingfeature.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
+                            Provo River
+                        {% endif %}
+                    </td>
+                    <td>{{ activity.actiontypecv|separatewordsbycaps }}</td>
+                    <td style="max-width: 500px">{% if activity.actiondescription %}
+                        {{ activity.actiondescription }}
+                    {% endif %}</td>
+                </tr>
+            {% endfor %}
         {% endfor %}
         </tbody>
     </table>

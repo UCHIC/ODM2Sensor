@@ -16,8 +16,34 @@
             <h3>Equipment Description</h3>
             <table class="table">
                 <tr>
-                    <th>Serial Number:</th>
+                    <th>Equipment Serial Number:</th>
                     <td>{{ Equipment.equipmentserialnumber }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Type:</th>
+                    <td>{{ Equipment.equipmenttypecv }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Code:</th>
+                    <td>{{ Equipment.equipmentcode }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Name:</th>
+                    <td>{{ Equipment.equipmentname }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Description:</th>
+                    <td>{{ Equipment.equipmentdescription|default:" -- " }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Link:</th>
+                    <td>{% if Equipment.equipmentmodelid.modellink %}
+                        <a href="{{ Equipment.equipmentmodelid.modellink }}">
+                            {{ Equipment.equipmentmodelid.modellink }}</a>
+                    {% else %}
+                        --
+                    {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <th>Model Name:</th>
@@ -26,36 +52,37 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Model Link:</th>
-                    <td>{{ Equipment.equipmentmodelid.modellink }}</td>
-                </tr>
-                <tr>
                     <th>Model Description:</th>
                     <td>{{ Equipment.equipmentmodelid.modeldescription }}</td>
-                </tr>
-                <tr>
-                    <th>Inventory Number:</th>
-                    <td>{{ Equipment.equipmentdocumentationlink }}??</td>
                 </tr>
                 <tr>
                     <th>Purchase Date:</th>
                     <td>{{ Equipment.equipmentpurchasedate }}</td>
                 </tr>
                 <tr>
-                    <th>Order Number:</th>
+                    <th>Purchase Order Number:</th>
                     <td>{{ Equipment.equipmentpurchaseordernumber }}</td>
                 </tr>
                 <tr>
-                    <th>Calibration Certificate:</th>
-                    <td>{{ Equipment.equipmentypecv }} ??</td>
+                    <th>Documentation Link:</th>
+                    {# a file? #}
+                    <td>{% if Equipment.equipmentdocumentationlink %}
+                        <a href="{{ Equipment.equipmentdocumentationlink }}">
+                            {{ Equipment.equipmentdocumentationlink }}</a>
+                    {% else %}
+                        --
+                    {% endif %}
+                    </td>
                 </tr>
+
             </table>
-            <h3>Owner Information</h3>
+            <h3>Owner</h3>
             <table class="table">
                 <tr>
-                    <th>Contact:</th>
+                    <th>Name:</th>
                     <td>{{ Equipment.equipmentownerid.personfirstname }} {{ Equipment.equipmentownerid.personlastname }}</td>
                 </tr>
+            {# start deleting from here in case this is not needed#}
                 {% for affiliation in Equipment.equipmentownerid.affiliation.all %}
                     {% if forloop.first %}
                         <tr>
@@ -76,6 +103,7 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+            {# end delete #}
             </table>
             <h3>Manufacturer Information</h3>
 
@@ -84,6 +112,7 @@
                     <th>Name:</th>
                     <td>{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 </tr>
+            {# start deleting from here in case this is not needed#}
                 {% for person in Equipment.equipmentmodelid.modelmanufacturerid.affiliation.all %}
 
                     {% if person.isprimaryorganizationcontact == 1 %}
@@ -112,12 +141,14 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+            {# end delete #}
                 <tr>
                     <th>Website:</th>
                     <td>
-                        <a target="_blank" href="{% if "http" not in Equipment.equipmentmodelid.modelmanufacturerid.organizationlink %}
+                        <a target="_blank"
+                           href="{% if "http" not in Equipment.equipmentmodelid.modelmanufacturerid.organizationlink %}
                         http://{% endif %}{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink }}/">
-                            {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink|default:"  -  " }}</a>
+                            {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink|default:" -- " }}</a>
                     </td>
                 </tr>
             </table>
@@ -127,6 +158,7 @@
                     <th>Name:</th>
                     <td>{{ Equipment.equipmentvendorid.organizationname }}</td>
                 </tr>
+            {# start deleting from here in case this is not needed#}
                 {% for person in Equipment.equipmentvendorid.affiliation.all %}
                     {% if person.isprimaryorganizationcontact %}
                         <tr>
@@ -153,14 +185,15 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
-             <tr>
-                            <th>Website:</th>
-                            <td>
-                                <a target="_blank" href="{% if "http:" not in Equipment.equipmentvendorid.organizationlink %}
+            {# end delete #}
+                <tr>
+                    <th>Website:</th>
+                    <td>
+                        <a target="_blank" href="{% if "http:" not in Equipment.equipmentvendorid.organizationlink %}
                         http://{% endif %}{{ Equipment.equipmentvendorid.organizationlink }}/">
-                            {{ Equipment.equipmentvendorid.organizationlink|default:"  -  " }}</a>
-                            </td>
-                        </tr>
+                            {{ Equipment.equipmentvendorid.organizationlink|default:" -- " }}</a>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -170,6 +203,7 @@
             History</a></div>
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
                                                                href="
+
 
                                                                        {# View is made for this, see:  FactoryServiceByEquipment #}">Factory
             Service History</a></div>

@@ -15,37 +15,53 @@
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
             <table class="table">
                 <tr>
-                    <th>Variable Name:</th>
-                    <td>{{ OutputVariable.variableid.variablenamecv }}</td>
-                </tr>
-                <tr>
                     <th>Variable Code:</th>
                     <td>{{ OutputVariable.variableid.variablecode }}</td>
                 </tr>
                 <tr>
-                    <th>Equipment Model Name:</th>
-                    <td><a href="{% url 'models_detail' OutputVariable.modelid.equipmentmodelid %}">{{ OutputVariable.modelid.modelname }}</a></td>
+                    <th>Variable Name:</th>
+                    <td>{{ OutputVariable.variableid.variablenamecv }}</td>
                 </tr>
                 <tr>
-                    <th>Accuracy:</th>
-                    <td>{{ OutputVariable.instrumentaccuracy }}</td>
+                    <th>Equipment Model Name:</th>
+                    <td>
+                        <a href="{% url 'models_detail' OutputVariable.modelid.equipmentmodelid %}">{{ OutputVariable.modelid.modelname }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Instrument Resolution:</th>
+                    <td>{{ OutputVariable.instrumentresolution|default:" -- " }}</td>
+                </tr>
+                <tr>
+                    <th>Instrument Accuracy:</th>
+                    <td>{{ OutputVariable.instrumentaccuracy|default:" -- " }}</td>
+                </tr>
+                <tr>
+                    <th>Instrument Raw Output Units:</th>
+                    <td>{{ OutputVariable.instrumentrawoutputunitsid.unitsname|default:" -- " }}</td>
+                </tr>
+                <tr>
+                    <th>Method Code:</th>
+                    <td>{{ OutputVariable.instrumentmethodid.methodcode }}</td>
+                </tr>
+                <tr>
+                    <th>Method Name:</th>
+                    <td>{{ OutputVariable.instrumentmethodid.methodname }}</td>
                 </tr>
                 <tr>
                     <th>Method Description:</th>
                     <td>{{ OutputVariable.instrumentmethodid.methoddescription }}</td>
                 </tr>
+
                 <tr>
-                    <th>Raw Output Units ID:</th>
-                    <td>{{ OutputVariable.instrumentrawoutputunitsid.unitsid|default:"  -  " }}</td>
-                </tr>
-                <tr>
-                    <th>Resolution:</th>
-                    <td>{{ OutputVariable.instrumentresolution|default:"  -  " }}</td>
+                    <th>Method Link:</th>
+                    <td><a href="{{ OutputVariable.instrumentmethodid.methodlink }}">
+                        {{ OutputVariable.instrumentmethodid.methodlink }}</a></td>
                 </tr>
             </table>
-            </div>
+        </div>
     </div>
-        <script type="text/javascript"
+    <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>
 

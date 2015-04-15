@@ -32,27 +32,27 @@
                     <th>Site Name:</th>
                     <td>{{ SiteVisit.samplingfeatureid.samplingfeaturename }}</td>
                 </tr>
-                <tr>
-                    {% for site in SiteVisit.samplingfeatureid.sites.all %}
-                        {% if forloop.first %}
-                            <th>Latitude:</th>
-                            <td>{{ site.latitude }}</td>
-                            <tr/>
-                            <tr>
-                            <th>Longitude:</th>
-                            <td>{{ site.longitude }}</td>
-                        {% endif %}
-                    {% endfor %}
-                    </tr>
-                <tr>
-                    <th>Elevation:</th>
-                    <td>{{ SiteVisit.samplingfeatureid.elevation_m }}</td>
-                </tr>
+{#                <tr>#}
+{#                    {% for site in SiteVisit.samplingfeatureid.sites.all %}#}
+{#                        {% if forloop.first %}#}
+{#                            <th>Latitude:</th>#}
+{#                            <td>{{ site.latitude }}</td>#}
+{#                            <tr/>#}
+{#                            <tr>#}
+{#                            <th>Longitude:</th>#}
+{#                            <td>{{ site.longitude }}</td>#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{#                    </tr>#}
+{#                <tr>#}
+{#                    <th>Elevation:</th>#}
+{#                    <td>{{ SiteVisit.samplingfeatureid.elevation_m }}</td>#}
+{#                </tr>#}
             </table>
             <h3>Site Visit Description</h3>
             <table class="table">
                 <tr>
-                    <th>Crew:</th>
+                    <th>People:</th>
                     <td>{% for person in SiteVisit.actionid.actionby.all %}
                         {{ person.affiliationid.personid.personfirstname }}
                         {{ person.affiliationid.personid.personlastname }}
@@ -65,25 +65,21 @@
                 </tr>
                 <tr>
                     <th>End Date Time:</th>
-                    <td>{{ SiteVisit.actionid.enddatetime }}</td>
+                    <td>{{ SiteVisit.actionid.enddatetime|default:"present" }}</td>
                 </tr>
                 <tr>
                     <th>UTC Offset:</th>
                     <td>{{ SiteVisit.actionid.begindatetimeutcoffset }}</td>
                 </tr>
                 <tr>
-                    <th>Environmental Observations:</th>
-                    <td style="color: red;">NO FIELD FOUND FOR THIS{{ SiteVisit.actionid.actiontypecv }}</td>
-                </tr>
-                <tr>
-                    <th>Visit Notes:</th>
+                    <th>Action Description:</th>
                     <td>{{ SiteVisit.actionid.actiondescription }}</td>
                 </tr>
             </table>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9"><h3>Field Activities Performed</h3></div>
+        <div class="col-md-9"><h3>Related Actions Table</h3></div>
     </div>
     <hr class="divider">
 
@@ -106,7 +102,7 @@
                             {{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}
                         </a></td>
                     <td>{{ fieldactivity.actionid.begindatetime }}</td>
-                    <td>{{ fieldactivity.actionid.enddatetime }}</td>
+                    <td>{{ fieldactivity.actionid.enddatetime|default:"present" }}</td>
                     <td>{{ fieldactivity.actionid.actiondescription }}</td>
                 </tr>
             {% endfor %}

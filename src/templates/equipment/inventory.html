@@ -10,10 +10,11 @@
     <table id="data-table">
         <thead>
         <tr>
-            <th>Serial Number</th>
-            <th>Type</th>
-            <th>Model</th>
-            <th>Manufacturer</th>
+            <th>Equipment Serial Number</th>
+            <th>Equipment Type</th>
+            <th>Equipment Code</th>
+            <th>Equipment Model</th>
+            <th>Manufacturer Name</th>
             <th>Owner</th>
         </tr>
         </thead>
@@ -22,6 +23,7 @@
             <tr>
                 <td><a href="{% url 'equipment_detail' equipment.equipmentid %}">{{ equipment.equipmentserialnumber }}</a></td>
                 <td>{{ equipment.equipmenttypecv }}</td>
+                <td>{{ equipment.equipmentcode }}</td>
                 <td>{{ equipment.equipmentmodelid.modelname }}</td>
                 <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 <td>{{ equipment.equipmentownerid.personfirstname }} {{ equipment.equipmentownerid.personlastname }}</td>

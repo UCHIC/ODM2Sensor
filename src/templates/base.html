@@ -31,7 +31,8 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <ul class="nav navbar-nav">
-                <li class="" id="sites-nav"><a href="{% url 'home' %}">Sites<span class="sr-only">(current)</span></a></li>
+                <li class="" id="sites-nav"><a href="{% url 'home' %}">Sites<span class="sr-only">(current)</span></a>
+                </li>
 
                 <li class="dropdown" id="visits-nav">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Site
@@ -54,7 +55,8 @@
                         <li><a href="{% url 'models' %}">Equipment Models</a></li>
                     </ul>
                 </li>
-                <li id="vocabulary-nav"><a href="{% url 'home' %}">Vocabularies</a></li><!--Change to vocabularies when appropiate-->
+                <li id="vocabulary-nav"><a href="{% url 'home' %}">Vocabularies</a></li>
+                <!--Change to vocabularies when appropiate-->
             </ul>
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">

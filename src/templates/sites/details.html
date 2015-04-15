@@ -25,8 +25,16 @@
                     <td>{{ Site.samplingfeatureid.samplingfeaturename }}</td>
                 </tr>
                 <tr>
+                    <th>Site Type:</th>
+                    <td>{{ Site.sitetypecv }}</td>
+                </tr>
+                <tr>
                     <th>Elevation:</th>
                     <td>{{ Site.samplingfeatureid.elevation_m }}</td>
+                </tr>
+                <tr>
+                    <th>Elevation Datum:</th>
+                    <td>{{ Site.samplingfeatureid.elevationdatumcv }}</td>
                 </tr>
                 <tr>
                     <th>Latitude:</th>
@@ -37,40 +45,36 @@
                     <td>{{ Site.longitude }}</td>
                 </tr>
                 <tr>
-                    <th>Site Type:</th>
-                    <td>{{ Site.sitetypecv }}</td>
+                    <th>Spatial Reference:</th>
+                    <td>{{ Site.spatialreferenceid.srsname }} - No relationship found for this</td>
                 </tr>
-                <tr>
-                    <th>Site Group:</th>
-                    <td>{% if Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
-                        Logan River
-                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
-                        Red Butte Creek
-                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
-                        Provo River
-                    {% endif %}</td>
-                </tr>
-                <tr>
-                    <th>Lat/Long Datum:</th>
-                    <td> {{ Site.latlondatumid.srsname }}</td>
-                </tr>
-                <tr>
-                    <th>Vertical Datum:</th>
-                    <td>{{ Site.samplingfeatureid.elevationdatumcv }}</td>
-                </tr>
-                <tr>
-                    <th>State:</th>
-                    <td id="site-state"></td>
-                </tr>
-                <tr>
-                    <th>County:</th>
-                    <td id="site-county"></td>
-                </tr>
+{#                <tr>#}
+{#                    <th>Site Group:</th>#}
+{#                    <td>{% if Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}#}
+{#                        Logan River#}
+{#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}#}
+{#                        Red Butte Creek#}
+{#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}#}
+{#                        Provo River#}
+{#                    {% endif %}</td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <th>Lat/Long Datum:</th>#}
+{#                    <td> {{ Site.latlondatumid.srsname }}</td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <th>State:</th>#}
+{#                    <td id="site-state"></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <th>County:</th>#}
+{#                    <td id="site-county"></td>#}
+{#                </tr>#}
             </table>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9"><h3>Deployment Measured Variables</h3></div>
+        <div class="col-md-9"><h3>Instrument Output Variables Table</h3></div>
         <div class="col-md-3"><a class="btn btn-primary btn-block" href="#">New Deployment Measured Variable</a></div>
     </div>
     <hr class="divider">
@@ -79,10 +83,11 @@
         <table id="data-table">
             <thead>
             <tr>
+                <th>Variable Code</th>
                 <th>Variable Name</th>
-                <th>Recorded Statistic</th>
-                <!--<th>Value Offset</th>
-                <th>Value Multiplier</th>-->
+                <th>Model Name</th>
+                <th>Method Code</th>
+                <th>Method Name</th>
             </tr>
             </thead>
             <tbody>
@@ -97,14 +102,19 @@
                         <tr>
                         <td>
                             <a href="{% url 'measured_variable_detail' outputvar.variableid.variableid usedequipment.bridgeid %}">
-                                {{ outputvar.variableid.variablenamecv }}
+                                {{ outputvar.variableid.variablecode }}
                             </a>
                         </td>
-                        {% for stat in outputvar.dataloggerfilecolum.all %}
-                            <td>{{ stat.aggregationstatisticcv }}</td>
-                        {% empty %}
-                            <td></td>
-                        {% endfor %}
+                        <td>{{ outputvar.variableid.variablenamecv }}</td>
+                        <td>{{ usedequipment.equipmentid.equipmentmodelid.modelname }}</td>
+                        <td>{{ outputvar.instrumentmethodid.methodcode }}</td>
+                        <td>{{ outputvar.instrumentmethodid.methodname }}</td>
+                        </tr>
+{#                        {% for stat in outputvar.dataloggerfilecolum.all %}#}
+{#                            <td>{{ stat.aggregationstatisticcv }}</td>#}
+{#                        {% empty %}#}
+{#                            <td></td>#}
+{#                        {% endfor %}#}
                     {% endfor %}
                 {% endfor %}
                 {% endif %}{% endif %}

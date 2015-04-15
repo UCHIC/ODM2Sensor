@@ -20,46 +20,46 @@
             <table class="table">
                 <tr>
                     <th>Variable Name:</th>
-                    <td>{{ MeasuredVariable.variablenamecv|default:"  -  " }}</td>
+                    <td>{{ MeasuredVariable.variablenamecv|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Code:</th>
-                    <td>{{ MeasuredVariable.variablecode|default:"  -  " }}</td>
+                    <td>{{ MeasuredVariable.variablecode|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Equation Used:</th>
-                    <td>{{ datalogger_file_column.measurementequation|default:"  -  " }}</td>
+                    <td>{{ datalogger_file_column.measurementequation|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Recorded Statistic:</th>
-                    <td>{{ datalogger_file_column.aggregationstatisticcv|default:"  -  " }}</td>
+                    <td>{{ datalogger_file_column.aggregationstatisticcv|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Notes:</th>
-                    <td>{{ datalogger_file_column.columndescription|default:"  -  " }}</td>
+                    <td>{{ datalogger_file_column.columndescription|default:" -- " }}</td>
                 </tr>
             </table>
             <h2>Sensor Description</h2>
             <table class="table">
                 <tr>
                     <th>Model Name:</th>
-                    <td>{{ model.modelname|default:"  -  " }}</td>
+                    <td>{{ model.modelname|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Model Description:</th>
-                    <td>{{ model.modeldescription|default:"  -  " }}</td>
+                    <td>{{ model.modeldescription|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Resolution:</th>
-                    <td>{{ output_variable.instrumentresolution|default:"  -  " }}</td>
+                    <td>{{ output_variable.instrumentresolution|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Accuracy:</th>
-                    <td>{{ output_variable.instrumentaccuracy|default:"  -  " }}</td>
+                    <td>{{ output_variable.instrumentaccuracy|default:" -- " }}</td>
                 </tr>
                 <tr>
                     <th>Method Description:</th>
-                    <td>{{ output_variable.instrumentmethodid.methoddescription|default:"  -  " }}</td>
+                    <td>{{ output_variable.instrumentmethodid.methoddescription|default:" -- " }}</td>
                 </tr>
             </table>
         </div>
@@ -67,7 +67,7 @@
     <div class="row">
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
             <a class="btn btn-block btn-primary"
-                    href="{% url 'deployment_detail' deployment.actionid.actionid %}">Go
+{#                    href="{% url 'deployment_detail' deployment.actionid.actionid 10 %}"#}>Go {# need to determine site from here... #}
                 to Deployment</a>
         </div>
     </div>

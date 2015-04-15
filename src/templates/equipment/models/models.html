@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Equipment Models</h1>
+        <h1>Equipment Models Table</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <button class="btn btn-primary btn-block new-btn">New Equipment</button>
@@ -10,15 +10,17 @@
     <table id="data-table">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Manufacturer</th>
-            <th>Description</th>
+            <th>Equipment Model Name</th>
+            <th>Equipment Part Number</th>
+            <th>Manufacturer Name</th>
+            <th>Equipment Model Description</th>
         </tr>
         </thead>
         <tbody>
         {% for model in Models %}
             <tr>
                 <td><a href="{% url 'models_detail' model.equipmentmodelid %}">{{ model.modelname }}</a></td>
+                <td>{{ model.modelpartnumber }}</td>
                 <td>{{ model.modelmanufacturerid.organizationname }}</td>
                 <td>{{ model.modeldescription }}</td>
             </tr>

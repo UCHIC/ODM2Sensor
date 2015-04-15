@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Sensor Output Variables</h1>
+        <h1>Sensor Output Variables Table</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <button class="btn btn-primary btn-block new-btn">New Equipment</button>
@@ -13,20 +13,20 @@
             <th>Variable Code</th>
             <th>Variable Name</th>
             <th>Model Name</th>
-            <th>Method Description</th>
+            <th>Method Code</th>
+            <th>Method Name</th>
         </tr>
         </thead>
         <tbody>
         {% for variable in OutputVariables %}
             <tr>
-                <td>{{ variable.variableid.variablecode }}</td>
-                <td>
-                    <a href="{% url 'output_variable_detail' variable.instrumentoutputvariableid %}">
-                        {{ variable.variableid.variablenamecv }}
-                    </a>
-                </td>
+                <td><a href="{% url 'output_variable_detail' variable.instrumentoutputvariableid %}">
+                    {{ variable.variableid.variablecode }}
+                </a></td>
+                <td>{{ variable.variableid.variablenamecv }}</td>
                 <td>{{ variable.modelid.modelname }}</td>
-                <td>{{ variable.instrumentmethodid.methoddescription }}</td>
+                <td>{{ variable.instrumentmethodid.methodcode }}</td>
+                <td>{{ variable.instrumentmethodid.methodname }}</td>
             </tr>
         {% endfor %}
         </tbody>

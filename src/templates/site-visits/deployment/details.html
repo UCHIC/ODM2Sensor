@@ -18,7 +18,7 @@
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
-            <h3>Equipment Description</h3>
+            <h3>Equipment</h3>
             <table class="table">
                 <tr>
                     <th>Equipment Serial Number:</th>
@@ -26,71 +26,87 @@
                         {{ Deployment.equipmentid.equipmentserialnumber }}</a></td>
                 </tr>
                 <tr>
+                    <th>Equipment Code:</th>
+                    <td>{{ Deployment.equipmentid.equipmentcode }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Name:</th>
+                    <td>{{ Deployment.equipmentid.equipmentname }}</td>
+                </tr>
+                <tr>
                     <th>Equipment Type:</th>
                     <td>{{ Deployment.equipmentid.equipmenttypecv }}</td>
                 </tr>
                 <tr>
-                    <th>Model Name:</th>
+                    <th>Equipment Model Name:</th>
                     <td><a href="{% url 'models_detail' Deployment.equipmentid.equipmentmodelid.equipmentmodelid %}">
                         {{ Deployment.equipmentid.equipmentmodelid.modelname }}</a></td>
                 </tr>
                 <tr>
-                    <th>Description:</th>
-                    <td>{{ Deployment.equipmentid.equipmentdescription }}</td>
+                    <th>Equipment Manufacturer:</th>
+                    <td>
+                        {{ Deployment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 </tr>
                 <tr>
-                    <th>Purchase Date:</th>
-                    <td>{{ Deployment.equipmentid.equipmentpurchasedate }}</td>
+                    <th>Owner Name:</th>
+                    <td>{{ Deployment.equipmentid.equipmentownerid.personfirstname }} {{ Deployment.equipmentid.equipmentownerid.personlastname }}</td>
                 </tr>
-                <tr>
-                    <th>Link:</th>
-                    <td>{{ Deployment.equipmentid.equipmentdocumentationlink }}</td>
-                </tr>
-                <tr>
-                    <th>Owner Contact:</th>
-                    <td>{{ Deployment.equipmentid.equipmentownerid.personfirstname }} {{ deployment.equipmentid.equipmentownerid.personlastname }}</td>
-                </tr>
-                {% for affiliation in Deployment.equipmentid.equipmentownerid.affiliation.all %}
-                    {% if forloop.first %}
-                        <tr>
-                            <th>Owner Institution:</th>
-                            <td>{{ affiliation.organizationid.organizationname }}</td>
-                        </tr>
-                        <tr>
-                            <th>Owner Address:</th>
-                            <td>{{ affiliation.primaryaddress }}</td>
-                        </tr>
-                        <tr>
-                            <th>Owner Phone:</th>
-                            <td>{{ affiliation.primaryphone }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email:</th>
-                            <td>{{ affiliation.primaryemail }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
+                {#                <tr>#}
+                {#                    <th>Description:</th>#}
+                {#                    <td>{{ Deployment.equipmentid.equipmentdescription }}</td>#}
+                {#                </tr>#}
+                {#                <tr>#}
+                {#                    <th>Purchase Date:</th>#}
+                {#                    <td>{{ Deployment.equipmentid.equipmentpurchasedate }}</td>#}
+                {#                </tr>#}
+                {#                <tr>#}
+                {#                    <th>Link:</th>#}
+                {#                    <td>{{ Deployment.equipmentid.equipmentdocumentationlink }}</td>#}
+                {#                </tr>#}
+
+                {#                {% for affiliation in Deployment.equipmentid.equipmentownerid.affiliation.all %}#}
+                {#                    {% if forloop.first %}#}
+                {#                        <tr>#}
+                {#                            <th>Owner Institution:</th>#}
+                {#                            <td>{{ affiliation.organizationid.organizationname }}</td>#}
+                {#                        </tr>#}
+                {#                        <tr>#}
+                {#                            <th>Owner Address:</th>#}
+                {#                            <td>{{ affiliation.primaryaddress }}</td>#}
+                {#                        </tr>#}
+                {#                        <tr>#}
+                {#                            <th>Owner Phone:</th>#}
+                {#                            <td>{{ affiliation.primaryphone }}</td>#}
+                {#                        </tr>#}
+                {#                        <tr>#}
+                {#                            <th>Email:</th>#}
+                {#                            <td>{{ affiliation.primaryemail }}</td>#}
+                {#                        </tr>#}
+                {#                    {% endif %}#}
+                {#                {% endfor %}#}
             </table>
-            <h3>Deployment Description</h3>
+            <h3>Deployment</h3>
             <table class="table">
                 <tr>
-                    <th>Site:</th>
-                    <td>{% with site=Deployment.actionid.featureaction.all|first %}
-                        <a href="{% url 'site_detail' site.samplingfeatureid.samplingfeatureid %}">
-                            {{ site.samplingfeatureid.samplingfeaturename }}
-                        </a>
-                    {% endwith %}</td>
+                    <th>Site Code:</th>
+                    <td><a href="{% url 'site_detail' Site.samplingfeatureid.samplingfeatureid %}">
+                        {{ Site.samplingfeatureid.samplingfeaturecode }}</a>
+                    </td>
                 </tr>
                 <tr>
-                    <th>Deployment Begin Date:</th>
+                    <th>Site Name:</th>
+                    <td>{{ Site.samplingfeatureid.samplingfeaturename }}</td>
+                </tr>
+                <tr>
+                    <th>Begin Date Time:</th>
                     <td>{{ Deployment.actionid.begindatetime }}</td>
                 </tr>
                 <tr>
-                    <th>Deployment End Date:</th>
-                    <td>{{ Deployment.actionid.enddatetime }}</td>
+                    <th>End Date Time:</th>
+                    <td>{{ Deployment.actionid.enddatetime|default:"present" }}</td>
                 </tr>
                 <tr>
-                    <th>Deployment UTC Offset:</th>
+                    <th>UTC Offset:</th>
                     <td>{{ Deployment.actionid.begindatetimeutcoffset }}</td>
                 </tr>
                 <tr>
@@ -98,54 +114,41 @@
                     <td>{% if Deployment.actionid.enddatetime %} No {% else %} Yes {% endif %}</td>
                 </tr>
                 <tr>
-                    <th>Deployment Description:</th>
-                    <td>{{ Deployment.actionid.actiondescription }}</td>
+                    <th>Action Description:</th>
+                    <td>{{ Deployment.actionid.actiondescription|default:" -- " }}</td>
                 </tr>
                 <tr>
-                    <th>Horizontal Offset Description:</th>
-                    <td> ?? </td>
+                    <th>Action Link:</th>
+                    <td>{{ Deployment.actionid.actionfilelink|default:" -- " }}</td>
                 </tr>
-                <tr>
-                    <th>Horizontal Units ID:</th>
-                    <td> ?? </td>
-                </tr>
-                <tr>
-                    <th>Horizontal Offset Value:</th>
-                    <td> ?? </td>
-                </tr>
-                <tr>
-                    <th>Vertical Offset Description:</th>
-                    <td> ?? </td>
+                {#                <tr>#}
+                {#                    <th>Deployment Schematic:</th>#}
+                {#                    <td>{{ Deployment.actionid.actionfilelink }}</td>#}
+                {#                </tr>#}
+            </table>
+            <h3>Related Equipment</h3>
+            <table class="table">
+                {% for parent in Deployment.equipmentid.relatedequipment_equipmentid.all %}
+                    {% if parent.relationshiptypecv == 'is_child_of' %}
+                        <tr>
+                            <th>Equipment Serial Number:</th>
+                            <td><a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>RelationshipType:</th>
+                            <td>{{ parent.relationshiptypecv }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
 
-                </tr>
-                <tr>
-                    <th>Vertical Units ID:</th>
-                    <td> ?? </td>
-                </tr>
-                <tr>
-                    <th>Vertical Offset Value:</th>
-                    <td> ?? </td>
-                </tr>
-                <tr>
-                    <th>Parent Equipment:</th>
-                    <td>{% for parent in Deployment.equipmentid.relatedequipment_equipmentid.all %} {# Check #}
-                        {% if parent.relationshiptypecv == 'is_child_of' %}
-                            <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
-                                {{ parent.relatedequipmentid.equipmentname }}</a>
-                        {% endif %}
-                    {% endfor %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Deployment Schematic:</th>
-                    <td>{{ Deployment.actionid.actionfilelink }}</td>
-                </tr>
             </table>
         </div>
     </div>
     <hr class="divider">
     <div class="row">
-        <div class="col-md-9"><h3>Measured Variables</h3></div>
+        <div class="col-md-9"><h3>Instrument Measured Variable Table</h3></div>
     </div>
     <div class="row">
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
@@ -155,9 +158,11 @@
         <table id="data-table">
             <thead>
             <tr>
+                <th>Variable Code</th>
                 <th>Variable Name</th>
-                <th>Recorded Statistic</th>
-                <th>Operations</th>
+                <th>Model Name</th>
+                <th>Method Code</th>
+                <th>Method Name</th>
             </tr>
             </thead>
             <tbody>
@@ -165,15 +170,12 @@
                 <tr>
                     <td>
                         <a href="{% url 'measured_variable_detail' variable.variableid.variableid Deployment.bridgeid %}">
-                            {{ variable.variableid.variablenamecv }}</a>
+                            {{ variable.variableid.variablecode }}</a>
                     </td>
-                    {% for recordedstatistic in variable.dataloggerfilecolumn.all %}
-                        <td>{{ recordedstatistic.aggregationstatistic }}</td>
-                        <td>put icons here</td>
-                    {% empty %}
-                        <td></td>
-                        <td>put icons here</td>
-                    {% endfor %}
+                <td>{{ variable.variableid.variablenamecv }}</td>
+                <td>{{ variable.modelid.modelname }}</td>
+                <td>{{ variable.instrumentmethodid.methodcode }}</td>
+                <td>{{ variable.instrumentmethodid.methodname }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -184,9 +186,9 @@
             <a class="btn btn-primary btn-block"
                     {% for related in Deployment.actionid.relatedaction.all %}
                         {% if related.relationshiptypecv == 'is_child_of' %}
-                            href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                    {% endif %}
-               {% endfor %}>Go to Site Visit</a></div>
+               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                        {% endif %}
+                    {% endfor %}>Go to Site Visit</a></div>
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right">
             <a class="btn btn-primary btn-block"
                href="{% url 'deployments_by_equipment' Deployment.equipmentid.equipmentid %}">View Equipment's

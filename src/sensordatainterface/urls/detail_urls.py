@@ -1,8 +1,7 @@
 from django.conf.urls import patterns, url
-from sensordatainterface.views import GenericDetailView, DeploymentMeasVariableDetailView
+from sensordatainterface.views import GenericDetailView, DeploymentMeasVariableDetailView, DeploymentDetail
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     InstrumentOutputVariable, Organization
-import datetime
 from django.db.models import Q
 
 urlpatterns = patterns('',
@@ -23,15 +22,8 @@ urlpatterns = patterns('',
                            name='site_visit_detail'),
 
                        # Deployment detail
-                       url(r'^site-visits/deployment-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
-                           context_object_name='Deployment',
-                           queryset=EquipmentUsed.objects.filter(
-                               Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__isnull=True) |
-                               Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__lt=datetime.datetime.now())
-                           ),
-                           slug_field='actionid',
-                           template_name='site-visits/deployment/details.html'),
-                           name='deployment_detail'),
+                       url(r'^site-visits/deployment-detail/(?P<slug>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
+                           DeploymentDetail.as_view(), name='deployment_detail'),
 
                        # Calibration detail
                        url(r'^site-visits/calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(

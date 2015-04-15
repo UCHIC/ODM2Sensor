@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import logout
 from django.conf import settings
 from django.db.models import Q
+import datetime
 
 
 LOGIN_URL = settings.SITE_URL + 'login/'
@@ -24,6 +25,26 @@ class GenericDetailView(DetailView):
     def dispatch(self, *args, **kwargs):
         return super(GenericDetailView, self).dispatch(*args, **kwargs)
 
+# Deployment Details needs it's own view since it depends on samplingfeatureid and equipmentid
+class DeploymentDetail(DetailView):
+    queryset = EquipmentUsed.objects.filter(
+        Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__isnull=True) |
+        Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__lt=datetime.datetime.now()))
+    slug_field = 'actionid'
+    context_object_name = 'Deployment'
+    template_name = 'site-visits/deployment/details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DeploymentDetail, self).get_context_data(**kwargs)
+        context['Site'] = FeatureAction.objects.get(
+            actionid__actionid=self.kwargs['slug'],
+            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
+        )
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(DeploymentDetail, self).dispatch(*args, **kwargs)
 
 # Deployment Measured Variable detail view
 class DeploymentMeasVariableDetailView(DetailView):
@@ -71,7 +92,6 @@ class EquipmentDeploymentsBySite(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
-
 
 class SiteVisitsBySite(ListView):
     context_object_name = 'SiteVisits'

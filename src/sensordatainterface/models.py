@@ -144,7 +144,7 @@ class CalibrationAction(models.Model):
 
 class CalibrationReferenceEquipment(models.Model):
     bridgeid = models.AutoField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
-    actionid = models.ForeignKey(CalibrationAction, db_column='ActionID')  # Field name made lowercase.
+    actionid = models.ForeignKey(CalibrationAction, related_name='calibrationreferenceequipment', db_column='ActionID')  # Field name made lowercase.
     equipmentid = models.ForeignKey('Equipment', db_column='EquipmentID')  # Field name made lowercase.
 
     class Meta:

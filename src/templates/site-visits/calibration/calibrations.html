@@ -13,11 +13,10 @@
         <thead>
         <tr>
             <th>Date</th>
-            <th>Equipment SN</th>
+            <th>Equipment Serial Number</th>
+            <th>Equipment Type</th>
+            <th>Manufacturer Name</th>
             <th>Equipment Model Name</th>
-            <th>Site Name</th>
-            <th>Site Group</th>
-            <th>Crew</th>
         </tr>
         </thead>
         <tbody>
@@ -30,18 +29,9 @@
                         </a>
                     </td>
                     <td>{{ calibration.equipmentid.equipmentserialnumber }}</td>
+                    <td>{{ calibration.equipmentid.equipmenttypecv }}</td>
+                    <td>{{ calibration.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                     <td>{{ calibration.equipmentid.equipmentmodelid.modelname }}</td>
-                    <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
-                    <td>
-                    {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River
-                    {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
-                    {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}Provo River{% endif %}</td>
-                    <td>{% for person in calibration.actionid.actionby.all %}
-                        {{ person.affiliationid.personid.personfirstname }}
-                        {{ person.affiliationid.personid.personlastname }}
-                        {% if not forloop.last %}, {% endif %}
-                {% endfor %}</td>
-
                 </tr>
             {% endfor %}
         {% endfor %}
