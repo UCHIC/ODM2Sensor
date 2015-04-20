@@ -11,12 +11,6 @@ PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 
 from ODM2Sensor.settings.settings import *
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-
-#TEST CHANGE DELETE THIS COMMENT
-#another change delete as well ...
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret_key
 
@@ -26,15 +20,23 @@ APPEND_SLASH = True
 
 # Application definition
 
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'sensordatainterface',
+PREREQ_APPS = (
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
 )
+
+PROJECT_APPS = (
+        'sensordatainterface',
+)
+
+
+TEST_RUNNER = 'sensordatainterface.tests.custom_runner.init_schemas.SQLServerDiscoverRunner'
+
+INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,14 +68,16 @@ DATABASES = {
             'driver': ODM2_configs['OPTIONS']['driver'],
             'host_is_server': ODM2_configs['OPTIONS']['host_is_server'],
         },
+        'TEST_DEPENDENCIES': []
     },
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'ODM2Sensor/Internal.sqlite3',
+        'TEST_DEPENDENCIES': ['odm2']
     },
 }
 
-DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter',]
+DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter', ]
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
 
