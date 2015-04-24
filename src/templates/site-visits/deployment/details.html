@@ -89,13 +89,13 @@
             <table class="table">
                 <tr>
                     <th>Site Code:</th>
-                    <td><a href="{% url 'site_detail' Site.samplingfeatureid.samplingfeatureid %}">
-                        {{ Site.samplingfeatureid.samplingfeaturecode }}</a>
+                    <td><a href="{% url 'site_detail' Deployment.actionid.featureaction.all.0.samplingfeatureid.samplingfeatureid %}">
+                        {{ Deployment.actionid.featureaction.all.0.samplingfeatureid.samplingfeaturecode }}</a>
                     </td>
                 </tr>
                 <tr>
                     <th>Site Name:</th>
-                    <td>{{ Site.samplingfeatureid.samplingfeaturename }}</td>
+                    <td>{{ Deployment.actionid.featureaction.all.0.samplingfeatureid.samplingfeaturename }}</td>
                 </tr>
                 <tr>
                     <th>Begin Date Time:</th>

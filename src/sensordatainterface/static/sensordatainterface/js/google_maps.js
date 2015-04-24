@@ -1,8 +1,8 @@
 function initialize(lat, long) {
     var mapOptions = {
         center: new google.maps.LatLng(lat, long),
-        zoom: 16,
-        mapTypeId: google.maps.MapTypeId.SATELLITE,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.TERRAIN,
         zoomControl: true,
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL

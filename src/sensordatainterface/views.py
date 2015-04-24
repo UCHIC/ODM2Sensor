@@ -34,13 +34,13 @@ class DeploymentDetail(DetailView):
     context_object_name = 'Deployment'
     template_name = 'site-visits/deployment/details.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(DeploymentDetail, self).get_context_data(**kwargs)
-        context['Site'] = FeatureAction.objects.get(
-            actionid__actionid=self.kwargs['slug'],
-            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-        )
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(DeploymentDetail, self).get_context_data(**kwargs)
+    #     context['Site'] = FeatureAction.objects.get(
+    #         actionid__actionid=self.kwargs['slug'],
+    #         samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
+    #     )
+    #     return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):

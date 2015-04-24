@@ -22,7 +22,7 @@ urlpatterns = patterns('',
                            name='site_visit_detail'),
 
                        # Deployment detail
-                       url(r'^site-visits/deployment-detail/(?P<slug>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
+                       url(r'^site-visits/deployment-detail/(?P<slug>[-_\w]+)/$',
                            DeploymentDetail.as_view(), name='deployment_detail'),
 
                        # Calibration detail
