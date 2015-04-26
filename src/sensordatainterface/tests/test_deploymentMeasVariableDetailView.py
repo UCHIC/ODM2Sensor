@@ -291,3 +291,7 @@ class TestDeploymentMeasVariableDetailView(TestCase):
         Units.objects.all().delete()
         Method.objects.all().delete()
         InstrumentOutputVariable.objects.all().delete()
+        People.objects.all().delete()
+        Equipment.objects.all().delete()
+        Action.objects.all().delete()
+        EquipmentUsed.objects.all().delete()

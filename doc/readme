@@ -1,0 +1,7 @@
+To run tests:
+    - Pull project from repository.
+    - Create virtual environment, activate it and install required apps. Link to project.
+    For more info visit: https://docs.djangoproject.com/en/1.8/intro/install/
+    - To run tests, navigate to where the manage.py file is in the project (usually under src).
+    - Run command: 'python manage.py test' (w/o quotes) to run test
+    - Run command: 'python manage.py runserver' to start web server
