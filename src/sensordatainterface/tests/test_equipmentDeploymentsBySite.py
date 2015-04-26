@@ -155,7 +155,7 @@ class TestEquipmentDeploymentsBySite(TestCase):
 
         EquipmentUsed.objects.create(
             bridgeid=100,
-            actionid=action100,
+            actionid=action100ended,
             equipmentid=equipment1
         )
 
@@ -174,7 +174,7 @@ class TestEquipmentDeploymentsBySite(TestCase):
         EquipmentUsed.objects.create(
             bridgeid=250,
             actionid=non_deployment_action250,
-            equipmentid=equipment1
+            equipmentid=equipment2
         )
 
         EquipmentUsed.objects.create(
@@ -218,43 +218,52 @@ class TestEquipmentDeploymentsBySite(TestCase):
 
 
         FeatureAction.objects.create(
-            bridgeid=100,
+            featureactionid=100,
             actionid=action100ended,
             samplingfeatureid=samplingfeature100
         )
 
         FeatureAction.objects.create(
-            bridgeid=150,
+            featureactionid=150,
             actionid=action150,
             samplingfeatureid=samplingfeature100
         )
 
         FeatureAction.objects.create(
-            bridgeid=200,
+            featureactionid=200,
             actionid=action200ended,
             samplingfeatureid=samplingfeature150
         )
 
         FeatureAction.objects.create(
-            bridgeid=250,
+            featureactionid=250,
             actionid=non_deployment_action250,
             samplingfeatureid=samplingfeature150
         )
 
         FeatureAction.objects.create(
-            bridgeid=300,
+            featureactionid=300,
             actionid=action300,
             samplingfeatureid=samplingfeature150
         )
 
-#TODO: test deployments for samplingfeature 100 with currently deployed equipment and samplingfeature 150 with all deployments
     def test_get_context_data_current(self):
-        deployed_equipments = EquipmentUsed.objects.filter(equipmentid=1)
-        invalid_equipment = EquipmentUsed.objects.filter(~Q(equipmentid=1))
+        deployed_equipments = EquipmentUsed.objects.filter(
+            Q(actionid__enddatetime__isnull=True),
+            actionid__featureaction__samplingfeatureid=100
+        )
+        invalid_equipment_used = EquipmentUsed.objects.filter(
+            ~Q(actionid__enddatetime__isnull=True) |
+            ~Q(actionid__featureaction__samplingfeatureid=100)
+        )
+
+        valid_equipment = [obj.equipmentid for obj in deployed_equipments]
+
         invalid_actions = Action.objects.filter(
             ~Q(actiontypecv='InstrumentDeployment'),
             ~Q(actiontypecv='EquipmentDeployment')
         )
+
         actions = Action.objects.filter(Q(actiontypecv='InstrumentDeployment') | Q(actiontypecv='EquipmentDeployment'))
 
         request = RequestFactory().get('site-visits/deployments/site/current/100',)
@@ -268,26 +277,34 @@ class TestEquipmentDeploymentsBySite(TestCase):
 
         for deployment in context:
             self.assertIn(deployment, deployed_equipments)
-            self.assertNotIn(deployment, invalid_equipment)
+            self.assertNotIn(deployment, invalid_equipment_used)
             self.assertIn(deployment.actionid, actions)
             self.assertNotIn(deployment.actionid, invalid_actions)
-        self.assertEqual(deployment.equipmentname, 'ClimateSensor')
+            self.assertIn(deployment.equipmentid, valid_equipment)
 
     def test_get_context_data_all(self):
-        deployed_equipments = EquipmentUsed.objects.filter(equipmentid=1)
-        invalid_equipment = EquipmentUsed.objects.filter(~Q(equipmentid=1))
+        deployed_equipments = EquipmentUsed.objects.filter(
+            actionid__featureaction__samplingfeatureid=150
+        )
+        invalid_equipment = EquipmentUsed.objects.filter(
+            ~Q(actionid__featureaction__samplingfeatureid=150)
+        )
+
+        valid_equipment = [obj.equipmentid for obj in deployed_equipments]
+
         invalid_actions = Action.objects.filter(
             ~Q(actiontypecv='InstrumentDeployment'),
             ~Q(actiontypecv='EquipmentDeployment')
         )
+
         actions = Action.objects.filter(Q(actiontypecv='InstrumentDeployment') | Q(actiontypecv='EquipmentDeployment'))
 
-        request = RequestFactory().get('site-visits/deployments/site/current/100',)
+        request = RequestFactory().get('site-visits/deployments/site/current/150',)
         request.user = helper_classes.User()
 
         view = EquipmentDeploymentsBySite.as_view()
 
-        response = view(request, name='deployment_by_site', current='current', site_id=100)
+        response = view(request, name='deployment_by_site', current='all', site_id=150)
         context = response.context_data['Deployments']
         site_name = response.context_data['site_name']
 
@@ -296,7 +313,7 @@ class TestEquipmentDeploymentsBySite(TestCase):
             self.assertNotIn(deployment, invalid_equipment)
             self.assertIn(deployment.actionid, actions)
             self.assertNotIn(deployment.actionid, invalid_actions)
-        self.assertEqual(deployment.equipmentname, 'ClimateSensor')
+            self.assertIn(deployment.equipmentid, valid_equipment)
 
     def tearDown(self):
         EquipmentUsed.objects.all().delete()
@@ -306,3 +323,5 @@ class TestEquipmentDeploymentsBySite(TestCase):
         People.objects.all().delete()
         EquipmentModel.objects.all().delete()
         Organization.objects.all().delete()
+        SamplingFeature.objects.all().delete()
+        FeatureAction.objects.all().delete()

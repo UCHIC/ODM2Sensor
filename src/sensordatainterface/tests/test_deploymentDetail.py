@@ -157,11 +157,3 @@ class TestDeploymentDetail(TestCase):
         People.objects.all().delete()
         EquipmentModel.objects.all().delete()
         Organization.objects.all().delete()
-
-
-
-def setup_view(view, request, *args, **kwargs):
-    view.request = request
-    view.args = args
-    view.kwargs = kwargs
-    return view

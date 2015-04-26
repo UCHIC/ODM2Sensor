@@ -75,11 +75,13 @@ class EquipmentDeploymentsBySite(ListView):
     def get_queryset(self):
         if self.kwargs['current'] == 'current':
             self.equipment = EquipmentUsed.objects.filter(
+                (Q(actionid__actiontypecv='EquipmentDeployment') | Q(actionid__actiontypecv='InstrumentDeployment')),
                 actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id'],
                 actionid__enddatetime__isnull=True
             )
         else:
             self.equipment = EquipmentUsed.objects.filter(
+                (Q(actionid__actiontypecv='EquipmentDeployment') | Q(actionid__actiontypecv='InstrumentDeployment')),
                 actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
             )
         return self.equipment

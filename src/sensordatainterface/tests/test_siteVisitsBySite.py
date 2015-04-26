@@ -1,5 +1,8 @@
 from django.test import TestCase
-from sensordatainterface.models import SamplingFeature, Method, Action, FeatureAction
+from sensordatainterface.models import SamplingFeature, Method, Action, FeatureAction, EquipmentUsed
+from django.test import RequestFactory
+from sensordatainterface.views import SiteVisitsBySite
+from django.db.models import Q
 import datetime
 import helper_classes
 
@@ -91,14 +94,40 @@ class TestSiteVisitsBySite(TestCase):
             actionid = non_site_visit_action
         )
 
-    def test_get_queryset(self):
-        self.fail()
-
     def test_get_context_data(self):
-        self.fail()
+        valid_feature_actions = FeatureAction.objects.filter(
+            actionid__featureaction__samplingfeatureid=150
+        )
+        invalid_feature_actions = FeatureAction.objects.filter(
+            ~Q(actionid__featureaction__samplingfeatureid=150)
+        )
 
-    def test_dispatch(self):
-        self.fail()
+        valid_actions = [obj.actionid for obj in valid_feature_actions]
+        valid_samplingfeatures = [obj.samplingfeatureid for obj in valid_feature_actions]
+
+        invalid_actions = Action.objects.filter(
+            ~Q(actiontypecv='SiteVisit')
+        )
+
+        actions = Action.objects.filter(actiontypecv='SiteVisit')
+
+        request = RequestFactory().get('site-visits/site-visits/site/150',)
+        request.user = helper_classes.User()
+
+        view = SiteVisitsBySite.as_view()
+
+        response = view(request, name='site_visits_by_site', site_id=150)
+        context = response.context_data['SiteVisits']
+        site_name = response.context_data['site_name']
+
+        for site_visit in context:
+            self.assertIn(site_visit, valid_feature_actions)
+            self.assertNotIn(site_visit, invalid_feature_actions)
+            self.assertIn(site_visit.actionid, valid_actions)
+            self.assertIn(site_visit.actionid, actions)
+            self.assertNotIn(site_visit.actionid, invalid_actions)
+            self.assertIn(site_visit.samplingfeatureid, valid_samplingfeatures)
+            self.assertEqual(site_name.samplingfeaturename, 'Logan River Aquatic')
 
     def tearDown(self):
         SamplingFeature.objects.all().delete()
