@@ -1,21 +1,13 @@
 from django.test import TestCase
 from sensordatainterface.urls import lists_urls, detail_urls
+from sensordatainterface.views import DeploymentDetail
 from sensordatainterface.models import Sites, Action, EquipmentModel, SamplingFeature, SpatialReference, \
     FeatureAction, Method, People, Organization, Equipment, EquipmentUsed, CalibrationAction, Variable, Units, \
     InstrumentOutputVariable, RelatedAction
 from django.conf import settings
 import datetime
+import helper_classes
 
-class User:
-    def is_authenticated(self):
-        return True
-
-class Request:
-    def __init__(self, method, path):
-        self.user = User()
-        self.method = method
-        self.path = path
-        self.pk = 100
 
 class TestURLs(TestCase):
     def test_site_url(self):
@@ -1974,16 +1966,14 @@ class TestURLs(TestCase):
         Organization.objects.all().delete()
         EquipmentModel.objects.all().delete()
 
-        # TODO: add tests for additional views.
-
 def getListObjects(url, url_name, ):
-    request = Request('GET', settings.SITE_URL + url)
+    request = helper_classes.Request('GET', settings.SITE_URL + url)
     url = urlIndexHelper(lists_urls.urlpatterns, url_name)
     response = url.callback(request)
     return response.context_data['object_list'], response
 
 def getDetailObject(url, url_name, slug):
-    request = Request('GET', settings.SITE_URL + url)
+    request = helper_classes.Request('GET', settings.SITE_URL + url)
     url = urlIndexHelper(detail_urls.urlpatterns, url_name)
     response = url.callback(request, slug=slug)
     return response.context_data['object'], response
