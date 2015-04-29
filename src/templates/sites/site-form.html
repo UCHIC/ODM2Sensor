@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>ALOHAAAAAA</h1>
-    <form action="{% url 'create_site' %}" method="post">
+    <form class="input-group" action="{% url 'create_site' %}" method="post">
         {% csrf_token %}
         <input type="hidden" value="{{ action }}" name="action">
         <input type="hidden" value="{{ site_id }}" name="site_id">
-        <table class="form-table">
+        <table class="table form-table form-group">
             {{ SampFeatForm.as_table }}
             {{ SiteForm.as_table }}
             <tr>
                 <th></th>
-                <td><input type="submit" value="{{ action }} Site"></td>
+                <td><input class="btn btn-primary"type="submit" value="{{ action|capfirst }} Site"></td>
             </tr>
         </table>
     </form>

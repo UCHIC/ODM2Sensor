@@ -2,19 +2,14 @@
 {% load static %}
 {% block content %}
     <div class="row title">
-    {% if messages %}
-            {% for message in messages %}
-                <div{% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
-                {{ message }}
-                </div>
-        {% endfor %}
-        {% endif %}
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Site Details</h2></div>
 
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'create_site' Site.samplingfeatureid.samplingfeatureid %}">Edit Site Description</a></div>
+            <a class="btn btn-primary btn-block"
+               href="{% url 'create_site' Site.samplingfeatureid.samplingfeatureid %}">Edit Site Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'delete_site' Site.samplingfeatureid.samplingfeatureid %}">Delete</a>
+            <a class="btn btn-danger btn-block" data-toggle="confirmation" id="danger-button"
+               href="{% url 'delete_site' Site.samplingfeatureid.samplingfeatureid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">
@@ -55,28 +50,28 @@
                     <th>Spatial Reference:</th>
                     <td>{{ Site.spatialreferenceid.srsname }} - No relationship found for this</td>
                 </tr>
-{#                <tr>#}
-{#                    <th>Site Group:</th>#}
-{#                    <td>{% if Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}#}
-{#                        Logan River#}
-{#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}#}
-{#                        Red Butte Creek#}
-{#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}#}
-{#                        Provo River#}
-{#                    {% endif %}</td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Lat/Long Datum:</th>#}
-{#                    <td> {{ Site.latlondatumid.srsname }}</td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>State:</th>#}
-{#                    <td id="site-state"></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>County:</th>#}
-{#                    <td id="site-county"></td>#}
-{#                </tr>#}
+                {#                <tr>#}
+                {#                    <th>Site Group:</th>#}
+                {#                    <td>{% if Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}#}
+                {#                        Logan River#}
+                {#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}#}
+                {#                        Red Butte Creek#}
+                {#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}#}
+                {#                        Provo River#}
+                {#                    {% endif %}</td>#}
+                {#                </tr>#}
+                {#                <tr>#}
+                {#                    <th>Lat/Long Datum:</th>#}
+                {#                    <td> {{ Site.latlondatumid.srsname }}</td>#}
+                {#                </tr>#}
+                {#                <tr>#}
+                {#                    <th>State:</th>#}
+                {#                    <td id="site-state"></td>#}
+                {#                </tr>#}
+                {#                <tr>#}
+                {#                    <th>County:</th>#}
+                {#                    <td id="site-county"></td>#}
+                {#                </tr>#}
             </table>
         </div>
     </div>
@@ -102,38 +97,40 @@
             {% for featureaction in Site.samplingfeatureid.featureaction.all %}
                 {# This is if the variables are supposed to be currently deployed #}
                 {% if not featureaction.actionid.enddatetime %}
-                {% if featureaction.actionid.actiontypecv == 'InstrumentDeployment' or featureaction.actionid.actionttype == 'EquipmentDeployment'%}
-                {% for usedequipment in featureaction.actionid.equipmentused.all %}
-                    {% for outputvar in usedequipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
+                    {% if featureaction.actionid.actiontypecv == 'InstrumentDeployment' or featureaction.actionid.actionttype == 'EquipmentDeployment' %}
+                        {% for usedequipment in featureaction.actionid.equipmentused.all %}
+                            {% for outputvar in usedequipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
 
-                        <tr>
-                        <td>
-                            <a href="{% url 'measured_variable_detail' outputvar.variableid.variableid usedequipment.bridgeid %}">
-                                {{ outputvar.variableid.variablecode }}
-                            </a>
-                        </td>
-                        <td>{{ outputvar.variableid.variablenamecv }}</td>
-                        <td>{{ usedequipment.equipmentid.equipmentmodelid.modelname }}</td>
-                        <td>{{ outputvar.instrumentmethodid.methodcode }}</td>
-                        <td>{{ outputvar.instrumentmethodid.methodname }}</td>
-                        </tr>
-{#                        {% for stat in outputvar.dataloggerfilecolum.all %}#}
-{#                            <td>{{ stat.aggregationstatisticcv }}</td>#}
-{#                        {% empty %}#}
-{#                            <td></td>#}
-{#                        {% endfor %}#}
-                    {% endfor %}
-                {% endfor %}
-                {% endif %}{% endif %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'measured_variable_detail' outputvar.variableid.variableid usedequipment.bridgeid %}">
+                                            {{ outputvar.variableid.variablecode }}
+                                        </a>
+                                    </td>
+                                    <td>{{ outputvar.variableid.variablenamecv }}</td>
+                                    <td>{{ usedequipment.equipmentid.equipmentmodelid.modelname }}</td>
+                                    <td>{{ outputvar.instrumentmethodid.methodcode }}</td>
+                                    <td>{{ outputvar.instrumentmethodid.methodname }}</td>
+                                </tr>
+                                {#                        {% for stat in outputvar.dataloggerfilecolum.all %}#}
+                                {#                            <td>{{ stat.aggregationstatisticcv }}</td>#}
+                                {#                        {% empty %}#}
+                                {#                            <td></td>#}
+                                {#                        {% endfor %}#}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}{% endif %}
             {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="row">
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="{% url 'deployments_by_site' 'current' Site.samplingfeatureid.samplingfeatureid %}">View Deployed Equipment</a></div>
+                                                               href="{% url 'deployments_by_site' 'current' Site.samplingfeatureid.samplingfeatureid %}">View
+            Deployed Equipment</a></div>
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'site_visits_by_site' Site.samplingfeatureid.samplingfeatureid %}">View Site Visits</a></div>
+                                                               href="{% url 'site_visits_by_site' Site.samplingfeatureid.samplingfeatureid %}">View
+            Site Visits</a></div>
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
                                                                href="#">New Site Visit</a></div>
     </div>

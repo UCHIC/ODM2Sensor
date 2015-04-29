@@ -225,8 +225,10 @@ def edit_site(request, site_id):
 @login_required(login_url=LOGIN_URL)
 def delete_site(request, site_id):
     Sites.objects.get(pk=site_id).delete()
-    SamplingFeature.objects.get(pk=site_id).delete()
-    messages.add_message(request, messages.SUCCESS, 'Site '+site_id+' deleted succesfully')
+    samplingfeature = SamplingFeature.objects.get(pk=site_id)
+    sp_code = samplingfeature.samplingfeaturecode
+    samplingfeature.delete()
+    messages.add_message(request, messages.SUCCESS, 'Site '+sp_code+' deleted succesfully')
     return HttpResponseRedirect(reverse('home'))
 
 # Log in/Log out.

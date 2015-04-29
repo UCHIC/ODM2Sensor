@@ -1,15 +1,13 @@
 body {
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .alert {
-    margin: 6px;
-    margin-top: -1.7%;
+    margin-top: -1.1%;
     border-radius: 0px;
-    width: 145%;
-    margin-left: -34%;
+    width: 100%;
     padding: 3px;
-    padding-left: 73%;
+    padding-left: 45%;
 }
 
 #username {
@@ -124,6 +122,7 @@ body {
     width: 40%;
     text-align: right;
     padding-right: 3%;
+    vertical-align: inherit;
 }
 
 .form-table tr {

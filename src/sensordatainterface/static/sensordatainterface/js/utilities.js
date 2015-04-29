@@ -23,4 +23,14 @@ function setNavActive() {
     }
 }
 
+$(document).ready(function () {
+    //$('[data-toggle="confirmation"]').confirmation({
+    //    placement: 'bottom',
+    //    title: 'Are you sure you want to delete?',
+    //    popout: true
+    //})
+    $('input').addClass('form-control');
+    $('select').addClass('form-control');
+});
+
 setNavActive();
