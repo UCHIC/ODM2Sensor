@@ -21,18 +21,17 @@ APPEND_SLASH = True
 # Application definition
 
 PREREQ_APPS = (
-        'django.contrib.admin',
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 )
 
 PROJECT_APPS = (
-        'sensordatainterface',
+    'sensordatainterface',
 )
-
 
 TEST_RUNNER = 'sensordatainterface.tests.custom_runner.init_schemas.SQLServerDiscoverRunner'
 
@@ -78,6 +77,15 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter', ]
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'OPTIONS': {
+#             'context_processors': 'django.contrib.messages.context_processors.messages'
+#         },
+#     },
+# ]
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
 

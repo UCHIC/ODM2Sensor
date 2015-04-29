@@ -36,7 +36,6 @@ class SamplingFeatureForm(ModelForm):
         # What to do with samplingfeaturegetypecv?
 
 class SiteForm(ModelForm):
-
     latlondatumid = SpatialReferenceChoiceField(queryset=SpatialReference.objects.all(), label='Spatial Reference')
     # sitetypecv = ModelChoiceField(queryset=CV_SiteType.objects.all(), to_field_name='term') # Currently CV tables are outdated
 

@@ -1,9 +1,23 @@
+body {
+    overflow: hidden;
+}
+
+.alert {
+    margin: 6px;
+    margin-top: -1.7%;
+    border-radius: 0px;
+    width: 145%;
+    margin-left: -34%;
+    padding: 3px;
+    padding-left: 73%;
+}
+
 #username {
     text-decoration: none;
 }
 
 #data-table {
-      width: 100%;
+    width: 100%;
 }
 
 .navbar {
@@ -53,10 +67,17 @@
     margin-left: 5px;
 }
 
-#data-table tr {background-color: #f6f6f6; }
-#data-table tr:nth-child(even) {background-color: #FFF}
+#data-table tr {
+    background-color: #f6f6f6;
+}
 
-#data-table thead th {background: #fff;}
+#data-table tr:nth-child(even) {
+    background-color: #FFF
+}
+
+#data-table thead th {
+    background: #fff;
+}
 
 .table > tbody > tr > td,
 .table > tbody > tr > th,
@@ -95,7 +116,7 @@
 }
 
 /* temporary style for forms */
-.form-table input, .form-table textarea, .form-table select{
+.form-table input, .form-table textarea, .form-table select {
     width: 500px;
 }
 
@@ -111,7 +132,7 @@
 
 form input[type=submit] {
     width: 115px;
-    float:right;
+    float: right;
 }
 
 .errorlist {

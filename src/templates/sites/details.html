@@ -2,6 +2,13 @@
 {% load static %}
 {% block content %}
     <div class="row title">
+    {% if messages %}
+            {% for message in messages %}
+                <div{% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                {{ message }}
+                </div>
+        {% endfor %}
+        {% endif %}
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Site Details</h2></div>
 
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">

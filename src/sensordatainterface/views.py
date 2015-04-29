@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.conf import settings
+from django.contrib import messages
 from django.db.models import Q
 import datetime
 
@@ -176,9 +177,10 @@ class EquipmentCalibartions(ListView):
 #     def dispatch(self, *args, **kwargs):
 #         return super(FactoryServiceByEquipment, self).dispatch(*args, **kwargs)
 
+@login_required(login_url=LOGIN_URL)
 def edit_site(request, site_id):
     if request.method == 'POST':
-        if request.POST['action'] == 'Update':
+        if request.POST['action'] == 'update':
             samplingfeature = SamplingFeature.objects.get(pk=request.POST['site_id'])
             site = Sites.objects.get(pk=request.POST['site_id'])
             SampFeatForm = SamplingFeatureForm(request.POST, instance=samplingfeature)
@@ -199,6 +201,7 @@ def edit_site(request, site_id):
             site.latlondatumid = SitesForm.cleaned_data['latlondatumid']
             site.save()
 
+            messages.add_message(request, messages.SUCCESS, 'Site '+request.POST['action']+'d successfully')
             return HttpResponseRedirect(reverse('site_detail', args=[samplingfeature.samplingfeatureid])) #change args by id of object created.
 
     elif site_id:
@@ -207,11 +210,11 @@ def edit_site(request, site_id):
         SampFeatForm = SamplingFeatureForm(instance=samplingfeature)
         SitesForm = SiteForm(instance=site)
         SitesForm.initial['latlondatumid'] = site.latlondatumid.spatialreferenceid
-        action = 'Update'
+        action = 'update'
     else:
         SampFeatForm = SamplingFeatureForm()
         SitesForm = SiteForm()
-        action = 'Create'
+        action = 'create'
 
     return render(
         request,
@@ -219,9 +222,11 @@ def edit_site(request, site_id):
         {'SampFeatForm': SampFeatForm, 'SiteForm': SitesForm, 'action': action, 'site_id': site_id}
     )
 
+@login_required(login_url=LOGIN_URL)
 def delete_site(request, site_id):
     Sites.objects.get(pk=site_id).delete()
     SamplingFeature.objects.get(pk=site_id).delete()
+    messages.add_message(request, messages.SUCCESS, 'Site '+site_id+' deleted succesfully')
     return HttpResponseRedirect(reverse('home'))
 
 # Log in/Log out.
