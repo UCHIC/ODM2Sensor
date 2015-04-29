@@ -11,7 +11,7 @@ class ActionAnnotation(models.Model):
     annotationid = models.ForeignKey('Annotation', db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Annotations].[ActionAnnotations'
 
 
@@ -24,7 +24,7 @@ class ActionBy(models.Model):
     roledescription = models.TextField(db_column='RoleDescription', blank=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Core].[ActionBy'
 
 
@@ -34,7 +34,7 @@ class ActionDirective(models.Model):
     directiveid = models.ForeignKey('Directive', db_column='DirectiveID')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2LabAnalyses].[ActionDirectives'
 
 
@@ -45,7 +45,7 @@ class ActionExtensionPropertyValue(models.Model):
     propertyvalue = models.TextField(db_column='PropertyValue')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2ExtensionProperties].[ActionExtensionPropertyValues'
 
 
@@ -62,7 +62,7 @@ class Action(models.Model):
     actionfilelink = models.TextField(db_column='ActionFileLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Core].[Actions'
 
 
@@ -82,7 +82,7 @@ class Affiliation(models.Model):
     personlink = models.TextField(db_column='PersonLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Core].[Affiliations'
 
 
@@ -102,7 +102,7 @@ class Annotation(models.Model):
                                    null=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Annotations].[Annotations'
 
 
@@ -113,7 +113,7 @@ class AuthorList(models.Model):
     authororder = models.IntegerField(db_column='AuthorOrder')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Provenance].[AuthorLists'
 
 
@@ -125,7 +125,7 @@ class CvTerm(models.Model):
     sourcevocabulary = models.TextField(db_column='SourceVocabulary', blank=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2CV].[CVTerms'
 
 
@@ -138,7 +138,7 @@ class CalibrationAction(models.Model):
     calibrationequation = models.TextField(db_column='CalibrationEquation', blank=True)  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Equipment].[CalibrationActions'
 
 
@@ -148,7 +148,7 @@ class CalibrationReferenceEquipment(models.Model):
     equipmentid = models.ForeignKey('Equipment', db_column='EquipmentID')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Equipment].[CalibrationReferenceEquipment'
 
 
@@ -159,7 +159,7 @@ class CalibrationStandard(models.Model):
                                             db_column='ReferenceMaterialID')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Equipment].[CalibrationStandards'
 
 
@@ -169,7 +169,7 @@ class CategoricalResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        #managed = False
+        managed = False
         db_table = 'ODM2Annotations].[CategoricalResultValueAnnotations'
 
 
@@ -1107,7 +1107,7 @@ class SamplingFeatureExternalIdentifier(models.Model):
 
 
 class SamplingFeature(models.Model):
-    samplingfeatureid = models.IntegerField(db_column='SamplingFeatureID',
+    samplingfeatureid = models.AutoField(db_column='SamplingFeatureID',
                                             primary_key=True)  # Field name made lowercase.
     samplingfeaturetypecv = models.TextField(db_column='SamplingFeatureTypeCV')  # Field name made lowercase.
     samplingfeaturecode = models.TextField(db_column='SamplingFeatureCode')  # Field name made lowercase.

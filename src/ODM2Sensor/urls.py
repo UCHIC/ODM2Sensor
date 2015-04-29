@@ -9,6 +9,7 @@ urlpatterns = patterns('',
                        url(r'^'+BASE_URL+'admin/', include(admin.site.urls)),
                        url(r'^'+BASE_URL, include('sensordatainterface.urls.lists_urls')),
                        url(r'^'+BASE_URL, include('sensordatainterface.urls.detail_urls')),
+                       url(r'^'+BASE_URL, include('sensordatainterface.urls.edit_urls')),
 
                        # Add edit/update urls
 

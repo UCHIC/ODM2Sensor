@@ -93,3 +93,28 @@
         margin-bottom: 10px;
     }
 }
+
+/* temporary style for forms */
+.form-table input, .form-table textarea, .form-table select{
+    width: 500px;
+}
+
+.form-table th {
+    width: 40%;
+    text-align: right;
+    padding-right: 3%;
+}
+
+.form-table tr {
+    margin-bottom: 3%;
+}
+
+form input[type=submit] {
+    width: 115px;
+    float:right;
+}
+
+.errorlist {
+    color: red;
+    list-style-type: none;
+}

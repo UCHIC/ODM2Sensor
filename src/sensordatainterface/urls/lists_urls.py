@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from sensordatainterface.views import GenericListView, EquipmentDeploymentsBySite, SiteVisitsBySite, \
     EquipmentDeployments, EquipmentCalibartions
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>ALOHAAAAAA</h1>
+    <form action="{% url 'create_site' %}" method="post">
+        {% csrf_token %}
+        <table class="form-table">
+            {{ SampFeatForm.as_table }}
+            {{ SiteForm.as_table }}
+{#            {% for field in SiteForm %}#}
+{##}
+{#                {% if "Latlondatumid" in field.label_tag  %}#}
+{#                    <tr>#}
+{#                <th>{{ field.label_tag }}</th>#}
+{#                <td>{{ field.errors }} {{ field.field }}</td></tr>#}
+{#                    {% else %}#}
+{#                <tr>#}
+{#                <th>{{ field.label_tag }}</th>#}
+{#                <td>{{ field.errors }} {{ field }}</td></tr>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+            <tr>
+                <th></th>
+                <td><input type="submit" value="Create Site"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

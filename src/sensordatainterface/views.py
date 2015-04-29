@@ -1,9 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from sensordatainterface.models import InstrumentOutputVariable, Variable, EquipmentUsed, DataloggerFileColumn, \
-    SamplingFeature, FeatureAction, Equipment
+    SamplingFeature, FeatureAction, Equipment, Sites
+from sensordatainterface.forms import SamplingFeatureForm, SiteForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.conf import settings
 from django.db.models import Q
@@ -173,6 +176,45 @@ class EquipmentCalibartions(ListView):
 #     def dispatch(self, *args, **kwargs):
 #         return super(FactoryServiceByEquipment, self).dispatch(*args, **kwargs)
 
+def edit_site(request):
+    if request.method == 'POST':
+        SampFeatForm = SamplingFeatureForm(request.POST)
+        SitesForm = SiteForm(request.POST)
+
+        if SampFeatForm.is_valid() and SitesForm.is_valid():
+            #IDENTITY_INSERT error solved by changing samplingfeatureid for SamplingFeatures to AutoField in models.py
+            samplingfeature = SamplingFeature(
+                samplingfeaturetypecv = 'Site',
+                samplingfeaturecode = SampFeatForm.cleaned_data['samplingfeaturecode'],
+                samplingfeaturename = SampFeatForm.cleaned_data['samplingfeaturename'],
+                samplingfeaturedescription = SampFeatForm.cleaned_data['samplingfeaturedescription'],
+                samplingfeaturegeotypecv = SampFeatForm.cleaned_data['samplingfeaturegeotypecv'],
+                # featuregeometry =  SampFeatForm.cleaned_data['samplingfeatureid'],
+                elevation_m = SampFeatForm.cleaned_data['elevation_m'],
+                elevationdatumcv = SampFeatForm.cleaned_data['elevationdatumcv'],
+            )
+
+
+            #samplingfeature = SampFeatForm.save()
+
+            site = Sites(
+                samplingfeatureid = samplingfeature,
+                sitetypecv = SitesForm.cleaned_data['sitetypecv'],
+                latitude = SitesForm.cleaned_data['latitude'],
+                longitude = SitesForm.cleaned_data['longitude'],
+                latlondatumid = SitesForm.cleaned_data['latlondatumid'],
+            )
+
+            # samplingfeature.save()
+            site.save()
+
+            return HttpResponseRedirect(reverse('site_detail', args=[samplingfeature.samplingfeatureid])) #change args by id of object created.
+
+    else:
+        SampFeatForm = SamplingFeatureForm()
+        SitesForm = SiteForm()
+
+    return render(request, 'sites/site-form.html', {'SampFeatForm': SampFeatForm, 'SiteForm': SitesForm})
 
 # Log in/Log out.
 def login(request, logout_msg):
