@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Model{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_model' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'models_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'models' %}{% endblock %}

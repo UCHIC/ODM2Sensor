@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{# Template form only for simple forms #}
+{% block content %}
+    <div class="row"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
+        {% block item_name %}{% endblock %}</h1></div>
+    <div class="row">
+        <form class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"
+              method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ action }}" name="action">
+            <input type="hidden" value="{{ item_id }}" name="item_id">
+            <table class="table form-table form-group">
+            {% for render_form in render_forms %}
+                {{ render_form.as_table }}
+            {% endfor %}
+                <tr>
+                    <th></th>
+                    <td>
+                        <div class="row">
+                            <a class="btn btn-default col-xs-12 col-sm-12"
+                                    {% if item_id %}
+                               href="{% block detail_cancel_url %}{% endblock %}"
+                                    {% else %}
+                               href="{% block list_cancel_url %}{% endblock %}"
+                                    {% endif %}>
+                                Cancel
+                            </a>
+                            <input class="btn btn-primary col-xs-12 col-sm-12" type="submit"
+                                   value="{{ action|capfirst }} {% block button_value %}{% endblock %}">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+{% endblock %}

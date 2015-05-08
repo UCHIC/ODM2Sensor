@@ -5,9 +5,11 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Equipment Details</h2></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Edit Equipment Description</a></div>
+            <a class="btn btn-primary btn-block"
+               href="{% url 'create_equipment' Equipment.equipmentid %}">Edit Equipment Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button"
+               data-href="{% url 'delete_equipment' Equipment.equipmentid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">

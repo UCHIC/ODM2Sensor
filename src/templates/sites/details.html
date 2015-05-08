@@ -8,8 +8,8 @@
             <a class="btn btn-primary btn-block"
                href="{% url 'create_site' Site.samplingfeatureid.samplingfeatureid %}">Edit Site Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" data-toggle="confirmation" id="danger-button"
-               href="{% url 'delete_site' Site.samplingfeatureid.samplingfeatureid %}">Delete</a>
+            <a class="btn btn-danger btn-block" data-toggle="confirmation-popout" data-placement="bottom" id="danger-button"
+               data-href="{% url 'delete_site' Site.samplingfeatureid.samplingfeatureid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">
@@ -48,7 +48,7 @@
                 </tr>
                 <tr>
                     <th>Spatial Reference:</th>
-                    <td>{{ Site.spatialreferenceid.srsname }} - No relationship found for this</td>
+                    <td>{{ Site.latlondatumid.srsname }}</td>
                 </tr>
                 {#                <tr>#}
                 {#                    <th>Site Group:</th>#}

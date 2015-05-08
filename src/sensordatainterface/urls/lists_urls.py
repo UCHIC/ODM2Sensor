@@ -55,6 +55,11 @@ urlpatterns = patterns('',
                        url(r'^site-visits/other-activities/$', #!!!
                            GenericListView.as_view(
                                queryset=Action.objects.filter(
+                                   (
+                                       ~Q(actiontypecv='EquipmentDeployment') &
+                                       ~Q(actiontypecv='InstrumentDeployment') &
+                                       ~Q(actiontypecv='InstrumentCalibration')
+                                   ),
                                    relatedaction__relationshiptypecv='is_child_of',
                                    relatedaction__relatedactionid__actiontypecv='SiteVisit'
                                ),

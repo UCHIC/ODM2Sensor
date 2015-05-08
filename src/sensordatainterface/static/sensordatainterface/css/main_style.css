@@ -1,13 +1,14 @@
 body {
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
 }
 
 .alert {
-    margin-top: -1.1%;
+    margin-top: 0%;
     border-radius: 0px;
     width: 100%;
     padding: 3px;
     padding-left: 45%;
+    margin-bottom: 0px;
 }
 
 #username {
@@ -19,7 +20,8 @@ body {
 }
 
 .navbar {
-    background: white;
+    background: #f5f5f5;
+    margin-bottom: 0px;
 }
 
 .title h2 {
@@ -35,15 +37,22 @@ body {
     margin-bottom: 20px;
 }
 
+.row {
+    margin-bottom: 15px;
+}
+
+.divider {
+    margin-bottom: 0px
+}
+
 .footer {
     padding: 0px 15px;
     margin-right: 0px;
     text-align: justify;
-}
-
-.row {
-    margin-bottom: 20px;
-}
+    background: #f5f5f5;
+    margin-bottom: -15px;
+    padding-bottom: 5%;
+    padding-top: 1.7%;}
 
 #image_logo {
     padding: 0.6px 9px;
@@ -85,6 +94,7 @@ body {
 .table > thead > tr > th {
     /*Site tables*/
     border: none;
+    vertical-align: middle;
 }
 
 .dataTables_wrapper {
@@ -113,16 +123,17 @@ body {
     }
 }
 
+
 /* temporary style for forms */
-.form-table input, .form-table textarea, .form-table select {
-    width: 500px;
+.form-table input, .form-table textarea, .select-two {
+    width: 85%;
 }
 
 .form-table th {
-    width: 40%;
+    width: 20%;
     text-align: right;
     padding-right: 3%;
-    vertical-align: inherit;
+    vertical-align: middle;;
 }
 
 .form-table tr {
@@ -134,7 +145,39 @@ form input[type=submit] {
     float: right;
 }
 
+input[type=checkbox], input[type=radio] {
+  height: 20px;
+  width: 25%;
+}
+
 .errorlist {
     color: red;
     list-style-type: none;
+}
+
+input.btn.btn-primary.form-control {
+  width: 66%;
+}
+
+table a.btn.btn-default {
+  margin-right: 2%;
+  width: 17%;
+  float: left;
+}
+
+.form-table label {
+  margin-bottom: 0px;
+}
+
+.form-table th {
+    vertical-align: middle;
+}
+
+.input-group .form-control {
+  width: 85%;
+}
+
+.form-table .row {
+  margin-left: 0px;
+  margin-right: 0px;
 }

@@ -24,13 +24,35 @@ function setNavActive() {
 }
 
 $(document).ready(function () {
-    //$('[data-toggle="confirmation"]').confirmation({
-    //    placement: 'bottom',
-    //    title: 'Are you sure you want to delete?',
-    //    popout: true
-    //})
+    /*http://ethaizone.github.io/Bootstrap-Confirmation/*/
+    $('#danger-button').confirmation({
+        placement: 'bottom',
+        title: 'Are you sure you want to delete?',
+        popout: true,
+        btnCancelClass: 'btn-default',
+        onCancel: function (){
+            $('#danger-button').confirmation('hide');
+        }
+    });
+
+    /* http://xdsoft.net/jqplugins/datetimepicker/ */
+    $('#id_equipmentpurchasedate').datetimepicker({
+        format: 'm/d/Y H:i'
+    });
+
+    $("[name='begindatetime']").datetimepicker({
+        format: 'm/d/Y H:i'
+    });
+
+    $("[name='enddatetime']").datetimepicker({
+        format: 'm/d/Y H:i'
+    });
+
     $('input').addClass('form-control');
-    $('select').addClass('form-control');
+    $("[type='checkbox']").removeClass('form-control');
+    $('select').addClass('select-two');
+    $('textarea').addClass('form-control');
+    $(".select-two").select2();
 });
 
 setNavActive();

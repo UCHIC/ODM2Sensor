@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Factory Service{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_factory_service' %}{% endblock %}
+{% block detail_cancel_url %} {% url 'equipment_detail' 1 %}{% endblock %} {# change to detail pages for factory service #}
+{% block list_cancel_url %}{% url 'factory_service' %}{% endblock %}

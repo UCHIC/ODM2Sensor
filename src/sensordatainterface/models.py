@@ -50,7 +50,7 @@ class ActionExtensionPropertyValue(models.Model):
 
 
 class Action(models.Model):
-    actionid = models.IntegerField(db_column='ActionID', primary_key=True)  # Field name made lowercase.
+    actionid = models.AutoField(db_column='ActionID', primary_key=True)  # Field name made lowercase.
     actiontypecv = models.TextField(db_column='ActionTypeCV')  # Field name made lowercase.
     methodid = models.ForeignKey('Method', db_column='MethodID')  # Field name made lowercase.
     begindatetime = models.DateTimeField(db_column='BeginDateTime')  # Field name made lowercase.

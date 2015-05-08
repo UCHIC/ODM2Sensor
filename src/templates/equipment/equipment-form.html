@@ -1,0 +1,41 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Equipment{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_equipment' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'equipment_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'equipment' %}{% endblock %}
+
+{#{% extends "base.html" %}#}
+{#{% block content %}#}
+{#    <div class="row"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }} Equipment</h1></div>#}
+{#    <div class="row">#}
+{#        <form class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% url 'create_equipment' %}"#}
+{#              method="post">#}
+{#            {% csrf_token %}#}
+{#            <input type="hidden" value="{{ action }}" name="action">#}
+{#            <input type="hidden" value="{{ equipment_id }}" name="equipment_id">#}
+{#            <table class="table form-table form-group">#}
+{#                {{ equipment_form.as_table }}#}
+{#                <tr>#}
+{#                    <th></th>#}
+{#                    <td>#}
+{##}
+{#                        <div class="row">#}
+{#                            <a class="btn btn-default col-xs-12 col-sm-12"#}
+{#                                    {% if equipment_id %}#}
+{#                               href="{% url 'equipment_detail' equipment_id %}"#}
+{#                                    {% else %}#}
+{#                               href="{% url 'equipment' %}"#}
+{#                                    {% endif %}>#}
+{#                                Cancel#}
+{#                            </a>#}
+{#                            <input class="btn btn-default col-xs-12 col-sm-12" type="submit"#}
+{#                                   value="{{ action|capfirst }} Equipment">#}
+{#                        </div>#}
+{#                    </td>#}
+{#                </tr>#}
+{#            </table>#}
+{#        </form>#}
+{#    </div>#}
+{#{% endblock %}#}
+
+{# Using template inheritance to reuse code #}
