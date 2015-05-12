@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Vendor{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_vendor' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'vendor_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'vocabularies' %}?tab=vendor{% endblock %}

@@ -67,7 +67,7 @@ class Action(models.Model):
 
 
 class Affiliation(models.Model):
-    affiliationid = models.IntegerField(db_column='AffiliationID', primary_key=True)  # Field name made lowercase.
+    affiliationid = models.AutoField(db_column='AffiliationID', primary_key=True)  # Field name made lowercase.
     personid = models.ForeignKey('People', related_name='affiliation', db_column='PersonID')  # Field name made lowercase.
     organizationid = models.ForeignKey('Organization', related_name='affiliation', db_column='OrganizationID', blank=True,
                                        null=True)  # Field name made lowercase.
@@ -482,7 +482,7 @@ class InstrumentOutputVariable(models.Model):
 
 
 class MaintenanceAction(models.Model):
-    actionid = models.ForeignKey(Action, db_column='ActionID', primary_key=True)  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, db_column='ActionID', related_name='maintenanceaction', primary_key=True)  # Field name made lowercase.
     isfactoryservice = models.BooleanField(db_column='IsFactoryService', default=None)  # Field name made lowercase.
     maintenancecode = models.TextField(db_column='MaintenanceCode', blank=True)  # Field name made lowercase.
     maintenancereason = models.TextField(db_column='MaintenanceReason', blank=True)  # Field name made lowercase.
@@ -630,7 +630,7 @@ class Models(models.Model):
 
 
 class Organization(models.Model):
-    organizationid = models.IntegerField(db_column='OrganizationID', primary_key=True)  # Field name made lowercase.
+    organizationid = models.AutoField(db_column='OrganizationID', primary_key=True)  # Field name made lowercase.
     organizationtypecv = models.TextField(db_column='OrganizationTypeCV')  # Field name made lowercase.
     organizationcode = models.TextField(db_column='OrganizationCode')  # Field name made lowercase.
     organizationname = models.TextField(db_column='OrganizationName')  # Field name made lowercase.
@@ -646,7 +646,7 @@ class Organization(models.Model):
 
 
 class People(models.Model):
-    personid = models.IntegerField(db_column='PersonID', primary_key=True)  # Field name made lowercase.
+    personid = models.AutoField(db_column='PersonID', primary_key=True)  # Field name made lowercase.
     personfirstname = models.TextField(db_column='PersonFirstName')  # Field name made lowercase.
     personmiddlename = models.TextField(db_column='PersonMiddleName', blank=True)  # Field name made lowercase.
     personlastname = models.TextField(db_column='PersonLastName')  # Field name made lowercase.

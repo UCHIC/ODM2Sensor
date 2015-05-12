@@ -1,5 +1,81 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Vacubalaries!</h1>
-
+    <h1>Control Vocabularies</h1>
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" id="initial_tab">
+                <a href="#site" aria-controls="site" role="tab" data-toggle="tab">Site</a>
+            </li>
+            <li role="presentation">
+                <a href="#equipment" aria-controls="equipment" role="tab" data-toggle="tab">Equipment</a>
+            </li>
+            <li role="presentation">
+                <a href="#activity" aria-controls="activity" role="tab" data-toggle="tab">Field Activity</a></li>
+            <li role="presentation">
+                <a href="#deployment" aria-controls="deployment" role="tab" data-toggle="tab">Deployment</a>
+            </li>
+            <li role="presentation">
+                <a href="#calibration" aria-controls="calibration" role="tab" data-toggle="tab">Calibration</a>
+            </li>
+            <li role="presentation">
+                <a href="#vendor" aria-controls="vendor" role="tab" data-toggle="tab">Vendor</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active" id="site">
+                <p>Site CV Content</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="equipment">
+                <p>More CV Content</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="activity">
+                <p>Even More</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="deployment">
+                <p>CV</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="calibration">
+                <p>Test</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="vendor">
+                <div class="col-xs-12 col-sm-6 col-md-7"><h1>Vendors</h1></div>
+                <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+                    <a class="btn btn-primary new-btn" href="{% url 'create_vendor' %}">New Vendor</a>
+                </div>
+                <table id="data-table">
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        {# isn't this vendor? #}
+                        <th>Website</th>
+                        <th>Phone</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for vendor in Vendors %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'vendor_detail' vendor.organizationid %}">
+                                    {{ vendor.organizationcode }}
+                                </a>
+                            </td>
+                            <td>{{ vendor.organizationname }}</td>
+                            <td>{{ vendor.organizationtypecv }}</td>
+                            <td>{{ vendor.organizationlink }}</td>
+                            <td>
+                                {% for aff in vendor.affiliation.all %}
+                                    {% if aff.isprimaryorganizationcontact and aff.primaryphone %}
+                                            {{ aff.primaryphone }}{% if not forloop.last %}, {% endif %} {# how should this number be handled? #}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

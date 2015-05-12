@@ -1,6 +1,5 @@
 from django.conf.urls import patterns, url
-from sensordatainterface.views import GenericListView, EquipmentDeploymentsBySite, SiteVisitsBySite, \
-    EquipmentDeployments, EquipmentCalibartions
+from sensordatainterface.views.list_views import *
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     MaintenanceAction, InstrumentOutputVariable, Action
 from django.core.urlresolvers import reverse_lazy
@@ -80,7 +79,7 @@ urlpatterns = patterns('',
                        #Factory Service Generic View
                        url(r'^inventory/factory-service/$',
                            GenericListView.as_view(
-                               queryset=MaintenanceAction.objects.filter(isfactoryservice=True),
+                               queryset=EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True),
                                context_object_name='FactoryService',
                                template_name='equipment/factory-service/service-events.html'
                            ),
@@ -119,4 +118,10 @@ urlpatterns = patterns('',
                        url(r'^site-visits/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
                            EquipmentCalibartions.as_view(),
                            name='calibrations_by_equipment'),
+
+                       url(r'^control-vocabularies/(?:(?P<initial_tab>\d+)/)?$',
+                           Vocabularies.as_view(),
+                           name='vocabularies'),
+
+
 )

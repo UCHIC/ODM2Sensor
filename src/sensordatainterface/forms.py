@@ -241,20 +241,20 @@ class PersonForm(ModelForm):
             'personlastname': _('Last Name')
         }
 
-class OrganizationForm(ModelForm):
-    class Meta:
-        model = Organization
-        fields = [
-            'organizationname',
-        ]
-
-        widgets = {
-            'organizationname': TextInput
-        }
-
-        labels = {
-            'organizationname': _("Organization")
-        }
+# class OrganizationForm(ModelForm):
+#     class Meta:
+#         model = Organization
+#         fields = [
+#             'organizationname',
+#         ]
+#
+#         widgets = {
+#             'organizationname': TextInput
+#         }
+#
+#         labels = {
+#             'organizationname': _("Organization")
+#         }
 
 class AffiliationForm(ModelForm):
     organizationid = OrganizationChoiceField(
@@ -266,6 +266,7 @@ class AffiliationForm(ModelForm):
     class Meta:
         model = Affiliation
         fields = [
+            'isprimaryorganizationcontact',
             'primaryaddress',
             'primaryphone',# gotta set the affiliation start date to current date.`
             'primaryemail',
@@ -278,12 +279,37 @@ class AffiliationForm(ModelForm):
         }
 
         labels = {
+            'isprimaryorganizationcontact': _('Is Primary Organization Contact'),
             'primaryaddress': _('Address'),
             'primaryphone': _('Phone Number'),
             'primaryemail': _('Email'),
         }
 
+class VendorForm(ModelForm):
+    class Meta:
+        model = Organization
+        fields = [
+            'organizationtypecv',
+            'organizationcode',
+            'organizationname',
+            'organizationdescription',
+            'organizationlink',
+        ]
 
+        widgets = {
+            'organizationtypecv': TextInput,
+            'organizationcode': TextInput,
+            'organizationname': TextInput,
+            'organizationlink': TextInput,
+        }
+
+        labels = {
+            'organizationtypecv': _('Type'),
+            'organizationcode': _('Code'),
+            'organizationname': _('Name'),
+            'organizationdescription': _('Description'),
+            'organizationlink': _('Website'),
+        }
 
 
 

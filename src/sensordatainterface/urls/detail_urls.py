@@ -1,8 +1,7 @@
 from django.conf.urls import patterns, url
-from sensordatainterface.views import GenericDetailView, DeploymentMeasVariableDetailView, DeploymentDetail
+from sensordatainterface.views.detail_views import *
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     InstrumentOutputVariable, Organization
-from django.db.models import Q
 
 urlpatterns = patterns('',
                        # Site detail

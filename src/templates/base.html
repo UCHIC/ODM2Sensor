@@ -58,8 +58,7 @@
                         <li><a href="{% url 'models' %}">Equipment Models</a></li>
                     </ul>
                 </li>
-                <li id="vocabulary-nav"><a href="{% url 'home' %}">Vocabularies</a></li>
-                <!--Change to vocabularies when appropiate-->
+                <li id="vocabulary-nav"><a href="{% url 'vocabularies' %}">Vocabularies</a></li>
             </ul>
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">

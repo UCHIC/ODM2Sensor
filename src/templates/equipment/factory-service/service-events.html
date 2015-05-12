@@ -3,7 +3,6 @@
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
         <h1>Factory Service Table</h1>
-        <p style="color:red;">No data in database for testing</p>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <a class="btn btn-primary btn-block new-btn" href="{% url 'create_factory_service' %}">New Factory Service Event</a>
@@ -20,10 +19,10 @@
         <tbody>
         {% for event in FactoryService %}
             <tr>
-                <td><a href="/factory-service-detail/{{ event.actionid }}">{{ event.actionid.begindatetime }}</a></td>
-                <td>{{ event.actionid.equipmentused.equipmentid.equipmentcode }}</td>
-                <td>{{ event.actionid.equipmentused.equipmentid.equipmenttypecv }}</td>
-                <td>{{ event.actionid.equipmentused.equipmentid.equipmentserialnumber }}</td>
+                <td><a href="/factory-service-detail/{{ event.actionid.actionid }}">{{ event.actionid.begindatetime }}</a></td>
+                <td>{{ event.equipmentid.equipmentcode }}</td>
+                <td>{{ event.equipmentid.equipmenttypecv }}</td>
+                <td>{{ event.equipmentid.equipmentserialnumber }}</td>
             </tr>
         {% endfor %}
         </tbody>

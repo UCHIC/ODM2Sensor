@@ -1,178 +1,19 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-from sensordatainterface.models import *
+from sensordatainterface.base_views import *
 from sensordatainterface.forms import *
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth import logout
-from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.db.models import Q
 from copy import deepcopy
-import datetime
 
 
-LOGIN_URL = settings.SITE_URL + 'login/'
-
-# Lists View Generic
-class GenericListView(ListView):
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(GenericListView, self).dispatch(*args, **kwargs)
-
-
-# Detail View Generic.
-class GenericDetailView(DetailView):
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(GenericDetailView, self).dispatch(*args, **kwargs)
-
-
-# Deployment Details needs it's own view since it depends on samplingfeatureid and equipmentid
-class DeploymentDetail(DetailView):
-    queryset = EquipmentUsed.objects.filter(
-        Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__isnull=True) |
-        Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__lt=datetime.datetime.now()))
-    slug_field = 'actionid'
-    context_object_name = 'Deployment'
-    template_name = 'site-visits/deployment/details.html'
-
-    # def get_context_data(self, **kwargs):
-    # context = super(DeploymentDetail, self).get_context_data(**kwargs)
-    # context['Site'] = FeatureAction.objects.get(
-    # actionid__actionid=self.kwargs['slug'],
-    #         samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-    #     )
-    #     return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(DeploymentDetail, self).dispatch(*args, **kwargs)
-
-
-# Deployment Measured Variable detail view
-class DeploymentMeasVariableDetailView(DetailView):
-    context_object_name = 'MeasuredVariable'
-    model = Variable
-    template_name = 'sites/measured-variable-details.html'
-    queryset = Variable.objects
-
-    def get_context_data(self, **kwargs):
-        context = super(DeploymentMeasVariableDetailView, self).get_context_data(**kwargs)
-
-        context['deployment'] = EquipmentUsed.objects.get(pk=self.kwargs['equipmentused'])
-        context['equipment'] = context['deployment'].equipmentid
-        context['model'] = context['equipment'].equipmentmodelid
-        context['output_variable'] = InstrumentOutputVariable.objects.filter(modelid=context['model'],
-                                                                             variableid=self.object.pk).get()
-        context['datalogger_file_column'] = DataloggerFileColumn.objects.filter(
-            instrumentoutputvariableid=context['output_variable'])
-
-        return context
-
-
-# Deployed Equipment By Site detail view
-class EquipmentDeploymentsBySite(ListView):
-    context_object_name = 'Deployments'
-    template_name = 'site-visits/deployment/deployments.html'
-
-    def get_queryset(self):
-        if self.kwargs['current'] == 'current':
-            self.equipment = EquipmentUsed.objects.filter(
-                (Q(actionid__actiontypecv='EquipmentDeployment') | Q(actionid__actiontypecv='InstrumentDeployment')),
-                actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id'],
-                actionid__enddatetime__isnull=True
-            )
-        else:
-            self.equipment = EquipmentUsed.objects.filter(
-                (Q(actionid__actiontypecv='EquipmentDeployment') | Q(actionid__actiontypecv='InstrumentDeployment')),
-                actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-            )
-        return self.equipment
-
-    def get_context_data(self, **kwargs):
-        context = super(EquipmentDeploymentsBySite, self).get_context_data(**kwargs)
-        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
-
-
-class SiteVisitsBySite(ListView):
-    context_object_name = 'SiteVisits'
-    template_name = 'site-visits/visits.html'
-
-    def get_queryset(self):
-        self.site_visits = FeatureAction.objects.filter(
-            actionid__actiontypecv='SiteVisit',
-            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-        )
-        return self.site_visits
-
-    def get_context_data(self, **kwargs):
-        context = super(SiteVisitsBySite, self).get_context_data(**kwargs)
-        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
-
-
-class EquipmentDeployments(ListView):
-    context_object_name = 'Deployments'
-    template_name = 'site-visits/deployment/deployments.html'
-
-    def get_queryset(self):
-        self.deployments = EquipmentUsed.objects.filter(
-            (Q(actionid__actiontypecv='EquipmentDeployment') |
-             Q(actionid__actiontypecv='InstrumentDeployment')),
-            equipmentid=self.kwargs['equipment_id']
-        )
-        return self.deployments
-
-    def get_context_data(self, **kwargs):
-        context = super(EquipmentDeployments, self).get_context_data(**kwargs)
-        context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentDeployments, self).dispatch(*args, **kwargs)
-
-
-class EquipmentCalibartions(ListView):
-    context_object_name = 'Calibrations'
-    template_name = 'site-visits/calibration/calibrations.html'
-
-    def get_queryset(self):
-        self.calibrations = EquipmentUsed.objects.filter(
-            (Q(actionid__actiontypecv='InstrumentCalibration') &
-             Q(actionid__calibrationaction__isnull=False)),
-            equipmentid=self.kwargs['equipment_id']
-        )
-        return self.calibrations
-
-    def get_context_data(self, **kwargs):
-        context = super(EquipmentCalibartions, self).get_context_data(**kwargs)
-        context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentCalibartions, self).dispatch(*args, **kwargs)
 
 @login_required(login_url=LOGIN_URL)
 def edit_site(request, site_id):
     action = 'create'
     if request.method == 'POST':
         if request.POST['action'] == 'update':
-            samplingfeature = SamplingFeature.objects.get(pk=request.POST['site_id'])
-            site = Sites.objects.get(pk=request.POST['site_id'])
+            samplingfeature = SamplingFeature.objects.get(pk=request.POST['item_id'])
+            site = Sites.objects.get(pk=request.POST['item_id'])
             SampFeatForm = SamplingFeatureForm(request.POST, instance=samplingfeature)
             SitesForm = SiteForm(request.POST, instance=site)
         else:
@@ -209,7 +50,7 @@ def edit_site(request, site_id):
     return render(
         request,
         'sites/site-form.html',
-        { 'render_forms': [SampFeatForm, SitesForm], 'action': action, 'site_id': site_id}
+        { 'render_forms': [SampFeatForm, SitesForm], 'action': action, 'item_id': site_id}
     )
 
 
@@ -310,24 +151,16 @@ def delete_factory_service_event(request, action_id):
     return HttpResponseRedirect(reverse('factory_service'))
 
 
-# Log in/Log out.
-def login(request, logout_msg):
-    return render(request, 'registration/login.html', {
-        'logout_msg': logout_msg})  # put optional messages if coming from user needs to log in or if user just logged out
-
-
-@login_required(login_url=LOGIN_URL)
-def logout_view(request):
-    logout(request)
-
-
 # Helpers
 def edit_models(request, model_object, FormClass, modifications, model_name, redirect_url, m_id, model_id, template):
     """ Helper function to create simple models. With this function forms that involve only one model will be
     faster """
     action = 'create'
+    response = None
     if request.method == 'POST':
-        return set_submitted_data(request, model_object, FormClass, modifications, model_name, redirect_url, m_id)
+        response, model_form = set_submitted_data(request, model_object, FormClass, modifications, model_name, redirect_url, m_id)
+        action = request.POST['action']
+        model_id = request.POST['item_id']
 
     elif model_id:
         model_form = set_update_form(model_object, model_id, FormClass, modifications)
@@ -335,11 +168,13 @@ def edit_models(request, model_object, FormClass, modifications, model_name, red
     else:
         model_form = FormClass()
 
-    return render(
-        request,
-        template,
-        {'render_forms': [model_form], 'action': action, 'item_id': model_id}
-    )
+    if not response:
+        response = render(
+            request,
+            template,
+            {'render_forms': [model_form], 'action': action, 'item_id': model_id}
+        )
+    return response
 
 
 def set_submitted_data(request, model_object, FormClass, modification, model_name, redirect_url, m_id):
@@ -356,7 +191,9 @@ def set_submitted_data(request, model_object, FormClass, modification, model_nam
         model.save()
         messages.add_message(request, messages.SUCCESS,
                              model_name + ' ' + request.POST['action'] + 'd successfully')
-        return HttpResponseRedirect(reverse(redirect_url, args=[getattr(model, m_id)]))
+        return HttpResponseRedirect(reverse(redirect_url, args=[getattr(model, m_id)])), model_form
+
+    return None, model_form
 
 
 def set_update_form(model_object, model_id, FormClass, modifications):
@@ -392,3 +229,72 @@ def edit_model(request, model_id):
                  'equipmentmodelid', model_id, 'equipment/models/model-form.html']
 
     return edit_models(*arguments)
+
+@login_required(login_url=LOGIN_URL)
+def edit_person(request, affiliation_id):
+    action = 'create'
+    if request.method == 'POST':
+        if request.POST['action'] == 'update':
+            affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
+
+            person_form = PersonForm(request.POST, instance=affiliation.personid)
+            # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
+            affiliation_form = AffiliationForm(request.POST, instance=affiliation)
+        else:
+            person_form = PersonForm(request.POST)
+            affiliation_form = AffiliationForm(request.POST)
+            # organization_form = OrganizationForm(request.POST)
+
+        if person_form.is_valid() and affiliation_form.is_valid(): # and organization_form.is_valid():
+            person = person_form.save()
+            # organization = organization_form.save()
+
+            affiliation = affiliation_form.save(commit=False)
+            affiliation.personid = person
+            # affiliation.organizationid = organization
+            affiliation.affiliationstartdate = datetime.datetime.now()
+            affiliation.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
+            return HttpResponseRedirect(
+                reverse('site_detail', args=[1])# Change to person detail page (to-be-created...)
+            )
+    elif affiliation_id:
+        affiliation = Affiliation.objects.get(pk=affiliation_id)
+        person_form = PersonForm(instance=affiliation.personid)
+        # organization_form = OrganizationForm(instance=affiliation.organizationid)
+        affiliation_form = AffiliationForm(instance=affiliation)
+        affiliation_form.initial['organizationid'] = affiliation.organizationid
+        action = 'update'
+
+    else:
+        person_form = PersonForm()
+        organization_form = Organization()
+        affiliation_form = AffiliationForm()
+
+    return render(
+        request,
+        'vocabulary/person-form.html',
+        {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
+
+    )
+
+@login_required(login_url=LOGIN_URL)
+def delete_person(request, affiliation_id):
+    affiliation = Affiliation.objects.get(pk=affiliation_id)
+    person_name = affiliation.personid.personfirstname + " " + affiliation.personid.personlastname
+    affiliation.personid.delete()
+    affiliation.organizationid.delete()
+    affiliation.delete()
+    messages.add_message(request, messages.SUCCESS, 'Person '+person_name+' removed from the system')
+    return HttpResponseRedirect(reverse('equipment'))
+
+@login_required(login_url=LOGIN_URL)
+def edit_vendor(request, oranization_id):
+    modifications = {}
+    arguments = [request, Organization.objects, VendorForm, modifications, 'Vendor', 'vendor_detail',
+                 'organizationid', oranization_id, 'vocabulary/vendor-form.html']
+    return edit_models(*arguments)
+
+def delete_vendor(request, oranization_id):
+    pass

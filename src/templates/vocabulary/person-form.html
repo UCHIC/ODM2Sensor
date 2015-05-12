@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Person{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_person' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'site_detail' 1 %}{% endblock %} {# change for person detail #}
+{% block list_cancel_url %}{% url 'sites' %}{% endblock %} {# change for person list #}
