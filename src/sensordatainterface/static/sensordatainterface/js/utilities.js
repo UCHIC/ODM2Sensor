@@ -47,30 +47,12 @@ function setInitialTab($) {
 }
 
 function initVocabulariesTabs($) {
-    $('#site').find('a').click(function (e) {
-        $(this).tab('show')
-    });
-
-    $('#equipment').click(function (e) {
-        $(this).tab('show')
-    });
-
-    $('#activity').find('a').click(function (e) {
-        $(this).tab('show')
-    });
-
-    $('#deployment').find('a').click(function (e) {
-        $(this).tab('show')
-    });
-
-    $('#calibration').find('a').click(function (e) {
-        $(this).tab('show')
-    });
-
-    $('#vendor').find('a').click(function (e) {
-        $(this).tab('show')
-    });
-
+    $('#site').find('a').click(function (e) { $(this).tab('show') });
+    $('#equipment').click(function (e) { $(this).tab('show') });
+    $('#activity').find('a').click(function (e) { $(this).tab('show') });
+    $('#deployment').find('a').click(function (e) { $(this).tab('show') });
+    $('#calibration').find('a').click(function (e) { $(this).tab('show') });
+    $('#vendor').find('a').click(function (e) { $(this).tab('show') });
     setInitialTab($);
 }
 
@@ -87,17 +69,9 @@ $(document).ready(function () {
     });
 
     /* http://xdsoft.net/jqplugins/datetimepicker/ */
-    $('#id_equipmentpurchasedate').datetimepicker({
-        format: 'm/d/Y H:i'
-    });
-
-    $("[name='begindatetime']").datetimepicker({
-        format: 'm/d/Y H:i'
-    });
-
-    $("[name='enddatetime']").datetimepicker({
-        format: 'm/d/Y H:i'
-    });
+    $('#id_equipmentpurchasedate').datetimepicker({ format: 'm/d/Y H:i' });
+    $("[name='begindatetime']").datetimepicker({ format: 'm/d/Y H:i' });
+    $("[name='enddatetime']").datetimepicker({ format: 'm/d/Y H:i' });
 
     $('input').addClass('form-control');
     $("[type='checkbox']").removeClass('form-control');
