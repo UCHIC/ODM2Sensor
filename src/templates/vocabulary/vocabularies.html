@@ -26,10 +26,11 @@
                 <p>Site CV Content</p>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="equipment">
-                <p>More CV Content</p>
+                {% include "equipment/models/models-snippet.html" %}
+                {% include "equipment/sensor-output-variables/output-vars-snippet.html" %}
             </div>
             <div role="tabpanel" class="tab-pane fade" id="activity">
-                <p>Even More</p>
+                {% include "vocabulary/person-snippet.html" %}
             </div>
             <div role="tabpanel" class="tab-pane fade" id="deployment">
                 <p>CV</p>
@@ -42,7 +43,7 @@
                 <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
                     <a class="btn btn-primary new-btn" href="{% url 'create_vendor' %}">New Vendor</a>
                 </div>
-                <table id="data-table">
+                <table class="data-table">
                     <thead>
                     <tr>
                         <th>Code</th>

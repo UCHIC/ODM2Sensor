@@ -1,0 +1,39 @@
+<div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7">
+            <h1>Sites</h1>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary new-btn" href="{% url 'create_person' %}">Initiate sequence to spawn a brand new humanoid.</a>
+        </div>
+    </div>
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Organization</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for person in People %}
+            <tr>
+                <td>
+                    <a href="{% url 'site_detail' person.affiliationid %}">
+                        {{ person.personid.personfirstname }} {{ person.personid.personlastname }}
+                    </a>
+                </td>
+                <td>{{ person.organizationid.organizationname }}</td>
+                <td>{{ person.primaryaddress }}</td>
+                <td>{{ person.primaryphone  }}</td>
+                <td>{{ person.primaryemail }}</td>
+                <td>
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
