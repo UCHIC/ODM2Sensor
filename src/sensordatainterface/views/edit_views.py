@@ -253,6 +253,7 @@ def edit_person(request, affiliation_id):
             affiliation.personid = person
             # affiliation.organizationid = organization
             affiliation.affiliationstartdate = datetime.datetime.now()
+            affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
             affiliation.save()
 
             messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
@@ -287,14 +288,81 @@ def delete_person(request, affiliation_id):
     affiliation.organizationid.delete()
     affiliation.delete()
     messages.add_message(request, messages.SUCCESS, 'Person '+person_name+' removed from the system')
-    return HttpResponseRedirect(reverse('equipment'))
+    return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
 
 @login_required(login_url=LOGIN_URL)
-def edit_vendor(request, oranization_id):
+def edit_vendor(request, organization_id):
     modifications = {}
     arguments = [request, Organization.objects, VendorForm, modifications, 'Vendor', 'vendor_detail',
-                 'organizationid', oranization_id, 'vocabulary/vendor-form.html']
+                 'organizationid', organization_id, 'vocabulary/vendor-form.html']
     return edit_models(*arguments)
 
-def delete_vendor(request, oranization_id):
+def delete_vendor(request, organization_id):
+    organization = Organization.objects.get(pk=organization_id)
+    Affiliation.objects.filter(organizationid=organization).delete()
+    organization_name = organization.organizationname
+    organization.delete()
+    messages.add_message(request, messages.SUCCESS, 'Organization '+organization_name+' removed successfully.')
+    return HttpResponseRedirect(reverse('vocabularies')+'?tab=vendor')
+
+
+def edit_calibration_standard(request, standard_id):
+    action = 'create'
+    if request.method == 'POST':
+        if request.POST['action'] == 'update':
+            affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
+
+            person_form = PersonForm(request.POST, instance=affiliation.personid)
+            # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
+            affiliation_form = AffiliationForm(request.POST, instance=affiliation)
+        else:
+            person_form = PersonForm(request.POST)
+            affiliation_form = AffiliationForm(request.POST)
+            # organization_form = OrganizationForm(request.POST)
+
+        if person_form.is_valid() and affiliation_form.is_valid(): # and organization_form.is_valid():
+            person = person_form.save()
+            # organization = organization_form.save()
+
+            affiliation = affiliation_form.save(commit=False)
+            affiliation.personid = person
+            # affiliation.organizationid = organization
+            affiliation.affiliationstartdate = datetime.datetime.now()
+            affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
+            affiliation.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
+            return HttpResponseRedirect(
+                reverse('site_detail', args=[1])# Change to person detail page (to-be-created...)
+            )
+    elif affiliation_id:
+        affiliation = Affiliation.objects.get(pk=affiliation_id)
+        person_form = PersonForm(instance=affiliation.personid)
+        # organization_form = OrganizationForm(instance=affiliation.organizationid)
+        affiliation_form = AffiliationForm(instance=affiliation)
+        affiliation_form.initial['organizationid'] = affiliation.organizationid
+        action = 'update'
+
+    else:
+        person_form = PersonForm()
+        organization_form = Organization()
+        affiliation_form = AffiliationForm()
+
+    return render(
+        request,
+        'vocabulary/person-form.html',
+        {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
+
+    )
+
+
+def delete_calibration_standard(request, standard_id):
+    pass
+
+
+def edit_calibration_method(request, method_id):
+    pass
+
+
+def delete_calibration_method(request, method_id):
     pass

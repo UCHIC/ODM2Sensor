@@ -1,6 +1,7 @@
-from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, BooleanField
+from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput
 from sensordatainterface.models import SamplingFeature, Sites, SpatialReference, Equipment, Organization, \
-    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation
+    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, CalibrationStandard,\
+    ReferenceMaterial, ReferenceMaterialValue, Variable, Units
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -27,6 +28,11 @@ class PeopleChoiceField(ModelChoiceField):
 class MethodChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.methodname
+
+
+class UnitChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.unitsname
 
 
 class EquipmentChoiceField(ModelChoiceField):
@@ -310,6 +316,59 @@ class VendorForm(ModelForm):
             'organizationdescription': _('Description'),
             'organizationlink': _('Website'),
         }
+
+class CalibrationStandardForm(ModelForm):
+    class Meta:
+        model = CalibrationStandard
+
+class ReferenceMaterialForm(ModelForm):
+    referencematerialorganizationid = OrganizationChoiceField(
+        queryset=Organization.objects.all(),
+        label='Vendor',
+        empty_label='Choose a Vendor'
+    )
+
+    class Meta:
+        model = ReferenceMaterial
+        fields = [
+            'referencematerialpurchasedate',
+            'referencemateriallotcode',
+            'referencematerialexpirationdate'
+        ]
+
+        widgets = {
+            'referencematerialpurchasedate': DateTimeInput,
+            'referencemateriallotcode': TextInput,
+            'referencematerialexpirationdate': DateTimeInput,
+        }
+
+        labels = {
+            'referencematerialpurchasedate': _('Purchase Date'),
+            'referencemateriallotcode': _('Lot Code'),
+            'referencematerialexpirationdate': _('Expiration Date')
+        }
+
+class ReferenceMaterialValueForm(ModelForm):
+    unitsid = UnitChoiceField(
+        queryset=Units.objects.all(),
+        label='Units',
+        empty_label='Choose a Unit'
+    )
+
+    class Meta:
+        model = ReferenceMaterialValue
+        fields = [
+            'referencematerialvalue',
+        ]
+
+class VariableForm(ModelForm):
+    class Meta:
+        model = Variable
+        fields = [
+            'variabletypecv'
+        ]
+
+
 
 
 
