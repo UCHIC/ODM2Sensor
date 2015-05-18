@@ -1,0 +1,44 @@
+<div class="row title">
+    <div class="col-xs-12 col-sm-6 col-md-7">
+    <h2>Calibration Standards</h2>
+</div>
+<div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+{#    <a class="btn btn-primary btn-block new-btn" href="{% url 'create_calibration_standard' %}">New Calibration Standard</a>#}
+</div>
+</div>
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>Type</th>
+        <th>Units</th>
+        <th>Value</th>
+        <th>Vendor Name</th>
+        <th>Purchased</th>
+        <th>Lot Code</th>
+        <th>Expires</th>
+        <th>Operations</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for standard in CalibrationStandards %}
+        <tr>
+        {% for reference in standard.referencematerialid.referencematerialvalue.all %}
+            <td>{{ reference.variableid.variabletypecv }}</td>
+            <td>{{ reference.unitsid.unitsname }}</td>
+            <td>{{ reference.referencematerialvalue }}</td>
+            <td>{{ reference.referencematerialid.referencematerialorganizationid.organizationname }}</td>
+            <td>{{ reference.referencematerialid.referencematerialpurchasedate }}</td>
+            <td>{{ reference.referencematerialid.referencemateriallotcode }}</td>
+            <td>{{ reference.referencematerialid.referencematerialexpirationdate }}</td>
+            <td>
+{#            <a class="icon-link" href="{% url 'create_calibration_standard' 1 %}">#}
+{#                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                </a>#}
+{#                <a class="icon-link delete-icon" data-href="{% url 'delete_calibration_standard' 1 %}">#}
+{#                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                </a></td>#}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

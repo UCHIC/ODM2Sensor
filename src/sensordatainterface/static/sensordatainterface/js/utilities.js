@@ -18,7 +18,7 @@ function setNavActive() {
         $("#sites-nav").addClass("active");
     } else if (currentPath.indexOf("site-visits") > 0) {
         $("#visits-nav").addClass("active");
-    }else if (currentPath.indexOf("control-vocabularies") > 0) {
+    } else if (currentPath.indexOf("control-vocabularies") > 0) {
         $("#vocabulary-nav").addClass("active");
     }
 }
@@ -35,6 +35,17 @@ function getUrlParameters(param) {
     }
 }
 
+function changeTab(tab) {
+    var href = window.location.href;
+    var getStart = href.indexOf('?');
+    if (getStart !== -1) {
+        href = href.substr(0, getStart);
+    }
+    //window.location.href = href + '?tab='+tab; causes reload :(
+    var stateObj = { tab: tab }
+    history.replaceState(stateObj, tab, '?tab='+tab);
+}
+
 function setInitialTab($) {
     var currentTab = getUrlParameters('tab');
     if (currentTab) {
@@ -47,12 +58,6 @@ function setInitialTab($) {
 }
 
 function initVocabulariesTabs($) {
-    $('#site').find('a').click(function (e) { $(this).tab('show') });
-    $('#equipment').click(function (e) { $(this).tab('show') });
-    $('#activity').find('a').click(function (e) { $(this).tab('show') });
-    $('#deployment').find('a').click(function (e) { $(this).tab('show') });
-    $('#calibration').find('a').click(function (e) { $(this).tab('show') });
-    $('#vendor').find('a').click(function (e) { $(this).tab('show') });
     setInitialTab($);
 }
 
@@ -68,10 +73,19 @@ $(document).ready(function () {
         }
     });
 
+    $('.delete-icon').confirmation({
+        placement: 'left',
+        title: 'Are you sure?',
+        btnCancelClass: 'btn-default',
+        onCancel: function () {
+            $('.delete-icon').confirmation('hide');
+        }
+    });
+
     /* http://xdsoft.net/jqplugins/datetimepicker/ */
-    $('#id_equipmentpurchasedate').datetimepicker({ format: 'm/d/Y H:i' });
-    $("[name='begindatetime']").datetimepicker({ format: 'm/d/Y H:i' });
-    $("[name='enddatetime']").datetimepicker({ format: 'm/d/Y H:i' });
+    $('#id_equipmentpurchasedate').datetimepicker({format: 'm/d/Y H:i'});
+    $("[name='begindatetime']").datetimepicker({format: 'm/d/Y H:i'});
+    $("[name='enddatetime']").datetimepicker({format: 'm/d/Y H:i'});
 
     $('input').addClass('form-control');
     $("[type='checkbox']").removeClass('form-control');
@@ -83,3 +97,4 @@ $(document).ready(function () {
 });
 
 setNavActive();
+

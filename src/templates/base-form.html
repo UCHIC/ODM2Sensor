@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {# Template form only for simple forms #}
 {% block content %}
-    <div class="row"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
+    <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
         {% block item_name %}{% endblock %}</h1></div>
     <div class="row">
         <form class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"

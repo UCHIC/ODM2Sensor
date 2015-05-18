@@ -1,26 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
+
     {% if form.errors %}
-        <p class="login_error">Your username and password didn't match. Please try again.</p>
+        <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <p>Your username and password didn't match. Please try again.</p>
+        </div>
     {% endif %}
     {% if optional_msg %}
+        <div class="alert alert-danger" role="alert">
         <p>{{ optional_msg }}</p>
+        </div>
     {% endif %}
 
     <form method="post" id="login_form" action="{% url 'login' %}">
         {% csrf_token %}
-        <table>
-            <tr>
-                <td>{{ form.username.label_tag }}</td>
-                <td>{{ form.username }}</td>
-            </tr>
-            <tr>
-                <td>{{ form.password.label_tag }}</td>
-                <td>{{ form.password }}</td>
-            </tr>
-        </table>
-
-        <input type="submit" value="login"/>
+        <div class="row" id="login_section">
+            <h2>Equipment Management System</h2>
+            <p>Please login</p>
+            <table>
+                <tr>
+                    <td>{{ form.username.label_tag }}</td>
+                    <td>{{ form.username }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.password.label_tag }}</td>
+                    <td>{{ form.password }}</td>
+                </tr>
+            </table>
+            <input type="submit" value="login"/>
+        </div>
         <input type="hidden" name="next" value="{{ next }}"/>
     </form>
 

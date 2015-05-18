@@ -3,15 +3,15 @@
 {% load inv_extras %}
 {% block content %}
     <div class="row title">
-        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Site Visit Details</h2></div>
+        <div class="col-xs-12 col-sm-4 col-md-4"><h2>Site Visit Details</h2></div>
 
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
             <a class="btn btn-primary btn-block"
                href="{% url 'site_visits_by_site' SiteVisit.samplingfeatureid.samplingfeatureid %}">View Full Visit
                 History for Site</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="#">Edit Site Visit Description</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+        <div class="col-xs-12 col-sm-8 col-md-2 pull-right">
             <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
         </div>
     </div>
@@ -84,7 +84,7 @@
     <hr class="divider">
 
     <div class="row">
-        <table id="data-table">
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Activity Type</th>
@@ -111,16 +111,16 @@
     </div>
     <div class="row">
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="#">Add Other Field Activity</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="#">Add Another Field Activity</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
                                                                href="#">Add New Deployment</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
                                                                href="#">Add New Calibration</a></div>
     </div>
     <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-block btn-primary"
+        <div class="col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block btn-primary"
                                                                href="#">Next</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-left"><a class="btn btn-primary btn-block"
+        <div class="col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-primary btn-block"
                                                               href="#">Previous</a></div>
     </div>
 

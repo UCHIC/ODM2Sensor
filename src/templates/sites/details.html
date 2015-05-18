@@ -50,28 +50,6 @@
                     <th>Spatial Reference:</th>
                     <td>{{ Site.latlondatumid.srsname }}</td>
                 </tr>
-                {#                <tr>#}
-                {#                    <th>Site Group:</th>#}
-                {#                    <td>{% if Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}#}
-                {#                        Logan River#}
-                {#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}#}
-                {#                        Red Butte Creek#}
-                {#                    {% elif Site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}#}
-                {#                        Provo River#}
-                {#                    {% endif %}</td>#}
-                {#                </tr>#}
-                {#                <tr>#}
-                {#                    <th>Lat/Long Datum:</th>#}
-                {#                    <td> {{ Site.latlondatumid.srsname }}</td>#}
-                {#                </tr>#}
-                {#                <tr>#}
-                {#                    <th>State:</th>#}
-                {#                    <td id="site-state"></td>#}
-                {#                </tr>#}
-                {#                <tr>#}
-                {#                    <th>County:</th>#}
-                {#                    <td id="site-county"></td>#}
-                {#                </tr>#}
             </table>
         </div>
     </div>
@@ -82,7 +60,7 @@
     <hr class="divider">
     <div class="row">
 
-        <table id="data-table">
+        <table class="data-table">
             <thead>
             <tr>
                 <th>Variable Code</th>

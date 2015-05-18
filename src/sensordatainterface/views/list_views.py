@@ -112,6 +112,11 @@ class Vocabularies(ListView):
     def get_context_data(self, **kwargs):
         context = super(Vocabularies, self).get_context_data(**kwargs)
         context['Vendors'] = Organization.objects.all()
+        context['Models'] = EquipmentModel.objects.all()
+        context['OutputVariables'] = InstrumentOutputVariable.objects.all()
+        context['People'] = Affiliation.objects.filter(personid__isnull=False)
+        context['CalibrationStandards'] = CalibrationStandard.objects.filter(actionid__isnull=False)
+        context['CalibrationMethods'] = Method.objects.filter(action__actiontypecv='InstrumentCalibration')
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))

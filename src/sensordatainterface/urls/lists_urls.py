@@ -119,7 +119,7 @@ urlpatterns = patterns('',
                            EquipmentCalibartions.as_view(),
                            name='calibrations_by_equipment'),
 
-                       url(r'^control-vocabularies/(?:(?P<initial_tab>\d+)/)?$',
+                       url(r'^control-vocabularies/$',
                            Vocabularies.as_view(),
                            name='vocabularies'),
 
