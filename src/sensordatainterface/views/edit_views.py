@@ -308,53 +308,63 @@ def delete_vendor(request, organization_id):
 
 def edit_calibration_standard(request, standard_id):
     action = 'create'
-    if request.method == 'POST':
-        if request.POST['action'] == 'update':
-            affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
-
-            person_form = PersonForm(request.POST, instance=affiliation.personid)
-            # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
-            affiliation_form = AffiliationForm(request.POST, instance=affiliation)
-        else:
-            person_form = PersonForm(request.POST)
-            affiliation_form = AffiliationForm(request.POST)
-            # organization_form = OrganizationForm(request.POST)
-
-        if person_form.is_valid() and affiliation_form.is_valid(): # and organization_form.is_valid():
-            person = person_form.save()
-            # organization = organization_form.save()
-
-            affiliation = affiliation_form.save(commit=False)
-            affiliation.personid = person
-            # affiliation.organizationid = organization
-            affiliation.affiliationstartdate = datetime.datetime.now()
-            affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
-            affiliation.save()
-
-            messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
-            return HttpResponseRedirect(
-                reverse('site_detail', args=[1])# Change to person detail page (to-be-created...)
-            )
-    elif affiliation_id:
-        affiliation = Affiliation.objects.get(pk=affiliation_id)
-        person_form = PersonForm(instance=affiliation.personid)
-        # organization_form = OrganizationForm(instance=affiliation.organizationid)
-        affiliation_form = AffiliationForm(instance=affiliation)
-        affiliation_form.initial['organizationid'] = affiliation.organizationid
-        action = 'update'
-
-    else:
-        person_form = PersonForm()
-        organization_form = Organization()
-        affiliation_form = AffiliationForm()
-
-    return render(
-        request,
-        'vocabulary/person-form.html',
-        {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
-
-    )
-
+    # if request.method == 'POST':
+    #     if request.POST['action'] == 'update':
+    #         calibration_standard = CalibrationStandard.objects.get(pk=standard_id)
+    #
+    #         variable = Variable.objects.get(pk=)
+    #
+    #
+    #
+    #         affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
+    #
+    #         person_form = PersonForm(request.POST, instance=affiliation.personid)
+    #         # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
+    #         affiliation_form = AffiliationForm(request.POST, instance=affiliation)
+    #
+    #
+    #
+    #     else:
+    #         calib_std_form = CalibrationStandardForm(request.POST)
+    #         person_form = PersonForm(request.POST)
+    #         affiliation_form = AffiliationForm(request.POST)
+    #         # organization_form = OrganizationForm(request.POST)
+    #
+    #     if person_form.is_valid() and affiliation_form.is_valid(): # and organization_form.is_valid():
+    #         person = person_form.save()
+    #         # organization = organization_form.save()
+    #
+    #         affiliation = affiliation_form.save(commit=False)
+    #         affiliation.personid = person
+    #         # affiliation.organizationid = organization
+    #         affiliation.affiliationstartdate = datetime.datetime.now()
+    #         affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
+    #         affiliation.save()
+    #
+    #         messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
+    #         return HttpResponseRedirect(
+    #             reverse('site_detail', args=[1])# Change to person detail page (to-be-created...)
+    #         )
+    # elif standard_id:
+    #     affiliation = Affiliation.objects.get(pk=standard_id)
+    #     person_form = PersonForm(instance=affiliation.personid)
+    #     # organization_form = OrganizationForm(instance=affiliation.organizationid)
+    #     affiliation_form = AffiliationForm(instance=affiliation)
+    #     affiliation_form.initial['organizationid'] = affiliation.organizationid
+    #     action = 'update'
+    #
+    # else:
+    #     person_form = PersonForm()
+    #     organization_form = Organization()
+    #     affiliation_form = AffiliationForm()
+    #
+    # return render(
+    #     request,
+    #     'vocabulary/person-form.html',
+    #     {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
+    #
+    # )
+    pass
 
 def delete_calibration_standard(request, standard_id):
     pass

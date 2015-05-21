@@ -63,7 +63,11 @@
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">
                     <li>
+                        {% if user.get_full_name %}
                         <a id="username">{{ user.get_full_name }}</a>
+                            {% else %}
+                            <a id="username">{{ user }}</a>
+                            {% endif %}
                     </li>
                     <li>
                         <a href="{% url 'logout_user' %}">Logout</a>

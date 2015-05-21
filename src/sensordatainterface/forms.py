@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput
 from sensordatainterface.models import SamplingFeature, Sites, SpatialReference, Equipment, Organization, \
-    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, CalibrationStandard,\
+    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, CalibrationStandard, \
     ReferenceMaterial, ReferenceMaterialValue, Variable, Units
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,7 +37,12 @@ class UnitChoiceField(ModelChoiceField):
 
 class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.equipmentcode+": "+obj.equipmentserialnumber
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber
+
+
+class ActionChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.actiondescription
 
 
 class SamplingFeatureForm(ModelForm):
@@ -98,7 +103,7 @@ class SiteForm(ModelForm):
 
 class EquipmentForm(ModelForm):
     equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Vendor',
-                                          empty_label='Choose a Vendor')
+                                                empty_label='Choose a Vendor')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
@@ -135,7 +140,7 @@ class EquipmentForm(ModelForm):
 
 class EquipmentModelForm(ModelForm):
     modelmanufacturerid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Manufacturer',
-                                            empty_label='Choose a Manufacturer')
+                                                  empty_label='Choose a Manufacturer')
 
     class Meta:
         model = EquipmentModel
@@ -224,6 +229,7 @@ class EquipmentUsedForm(ModelForm):
         label='Equipment',
         empty_label='Choose an Equipment'
     )
+
     class Meta:
         model = EquipmentUsed
         exclude = [
@@ -247,6 +253,7 @@ class PersonForm(ModelForm):
             'personlastname': _('Last Name')
         }
 
+
 # class OrganizationForm(ModelForm):
 #     class Meta:
 #         model = Organization
@@ -264,17 +271,18 @@ class PersonForm(ModelForm):
 
 class AffiliationForm(ModelForm):
     organizationid = OrganizationChoiceField(
-        queryset=Organization.objects.all(),# this select will show all organizations and an option to create a new one.
-        label = 'Organization',
+        queryset=Organization.objects.all(),
+        # this select will show all organizations and an option to create a new one.
+        label='Organization',
         empty_label='Choose an Organization'
-        )
+    )
 
     class Meta:
         model = Affiliation
         fields = [
             'isprimaryorganizationcontact',
             'primaryaddress',
-            'primaryphone',# gotta set the affiliation start date to current date.`
+            'primaryphone',  # gotta set the affiliation start date to current date.`
             'primaryemail',
         ]
 
@@ -290,6 +298,7 @@ class AffiliationForm(ModelForm):
             'primaryphone': _('Phone Number'),
             'primaryemail': _('Email'),
         }
+
 
 class VendorForm(ModelForm):
     class Meta:
@@ -317,9 +326,17 @@ class VendorForm(ModelForm):
             'organizationlink': _('Website'),
         }
 
+
 class CalibrationStandardForm(ModelForm):
+    actionid = ActionChoiceField(
+        queryset=Action.objects.filter(actiontypecv='InstrumentCalibration', calibrationaction__isnull=False),
+        label='Action',
+        empty_label='Choose an Action'
+    )
+
     class Meta:
         model = CalibrationStandard
+
 
 class ReferenceMaterialForm(ModelForm):
     referencematerialorganizationid = OrganizationChoiceField(
@@ -348,6 +365,7 @@ class ReferenceMaterialForm(ModelForm):
             'referencematerialexpirationdate': _('Expiration Date')
         }
 
+
 class ReferenceMaterialValueForm(ModelForm):
     unitsid = UnitChoiceField(
         queryset=Units.objects.all(),
@@ -361,49 +379,10 @@ class ReferenceMaterialValueForm(ModelForm):
             'referencematerialvalue',
         ]
 
+
 class VariableForm(ModelForm):
     class Meta:
         model = Variable
         fields = [
             'variabletypecv'
         ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
