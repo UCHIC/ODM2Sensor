@@ -280,3 +280,35 @@ label {
 .form-table label {
   text-align: right;
 }
+
+.bootstrap-datetimepicker-widget ul {
+    padding-left: 0px;
+}
+
+.bootstrap-datetimepicker-widget ul a.btn {
+    width: 100%;
+}
+
+.input-append.date .add-on i{
+    top: 9px;
+    right: 30px;
+}
+
+.select2-container--default 
+.select2-selection--single 
+.select2-selection__arrow {
+    width: 45px;
+}
+
+.bootstrap-datetimepicker-widget {
+    margin-top: 23px;
+    margin-left: -248px;
+}
+
+.bootstrap-datetimepicker-widget:before {
+  left: 216;
+}
+
+.bootstrap-datetimepicker-widget:after {
+  left: 217;
+}

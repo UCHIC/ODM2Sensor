@@ -42,7 +42,7 @@ function changeTab(tab) {
         href = href.substr(0, getStart);
     }
     //window.location.href = href + '?tab='+tab; causes reload :(
-    var stateObj = { tab: tab }
+    var stateObj = { tab: tab };
     history.replaceState(stateObj, tab, '?tab='+tab);
 }
 
@@ -82,10 +82,32 @@ $(document).ready(function () {
         }
     });
 
-    /* http://xdsoft.net/jqplugins/datetimepicker/ */
-    $('#id_equipmentpurchasedate').datetimepicker({format: 'm/d/Y H:i'});
-    $("[name='begindatetime']").datetimepicker({format: 'm/d/Y H:i'});
-    $("[name='enddatetime']").datetimepicker({format: 'm/d/Y H:i'});
+    /* http://tarruda.github.io/bootstrap-datetimepicker/ */
+    var dateElements = [];
+    dateElements.push($('#id_equipmentpurchasedate'));
+    dateElements.push($("[name='begindatetime']"));
+    dateElements.push($("[name='enddatetime']"));
+    dateElements.push($("[name='referencematerialpurchasedate']"));
+    dateElements.push($("[name='referencematerialexpirationdate']"));
+
+    dateElements.forEach(function(element) {
+        element.wrap("<div class='datetimepicker input-append date'></div");
+        element.removeClass('form-control');
+        element.after(
+            $("<span class='add-on'><i data-time-icon='glyphicon glyphicon-time' data-date-icon='glyphicon glyphicon-calendar'></i></span>")
+        );
+
+    });
+
+    //format: 'm/d/Y H:i'
+    $('.datetimepicker').datetimepicker({
+        format: 'MM/dd/yyyy hh:mm:ss'
+    });
+
+    var button = $(".timepicker-picker a");
+    button.addClass('btn-default');
+    button.find('.icon-chevron-up').addClass('glyphicon glyphicon-chevron-up');
+    button.find('.icon-chevron-down').addClass('glyphicon glyphicon-chevron-down');
 
     $('input').addClass('form-control');
     $("[type='checkbox']").removeClass('form-control');
@@ -94,6 +116,8 @@ $(document).ready(function () {
     $(".select-two").select2();
 
     initVocabulariesTabs($);
+
+
 });
 
 setNavActive();
