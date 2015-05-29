@@ -116,7 +116,7 @@ class Vocabularies(ListView):
         context['OutputVariables'] = InstrumentOutputVariable.objects.all()
         context['People'] = Affiliation.objects.filter(personid__isnull=False)
         context['CalibrationStandards'] = CalibrationStandard.objects.filter(actionid__isnull=False)
-        context['CalibrationMethods'] = Method.objects.filter(action__actiontypecv='InstrumentCalibration')
+        context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='InstrumentCalibration') # calibrationmethodquestion
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))

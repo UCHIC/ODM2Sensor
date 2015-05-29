@@ -589,7 +589,7 @@ class MethodExternalIdentifier(models.Model):
 
 
 class Method(models.Model):
-    methodid = models.IntegerField(db_column='MethodID', primary_key=True)  # Field name made lowercase.
+    methodid = models.AutoField(db_column='MethodID', primary_key=True)  # Field name made lowercase.
     methodtypecv = models.TextField(db_column='MethodTypeCV')  # Field name made lowercase.
     methodcode = models.TextField(db_column='MethodCode')  # Field name made lowercase.
     methodname = models.TextField(db_column='MethodName')  # Field name made lowercase.
@@ -833,7 +833,7 @@ class ReferenceMaterialValue(models.Model):
 
 
 class ReferenceMaterial(models.Model):
-    referencematerialid = models.IntegerField(db_column='ReferenceMaterialID',
+    referencematerialid = models.AutoField(db_column='ReferenceMaterialID',
                                               primary_key=True)  # Field name made lowercase.
     referencematerialmediumcv = models.TextField(db_column='ReferenceMaterialMediumCV')  # Field name made lowercase.
     referencematerialorganizationid = models.ForeignKey(Organization,

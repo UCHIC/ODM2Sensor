@@ -3,7 +3,7 @@
     <h2>Calibration Standards</h2>
 </div>
 <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-{#    <a class="btn btn-primary btn-block new-btn" href="{% url 'create_calibration_standard' %}">New Calibration Standard</a>#}
+    <a class="btn btn-primary btn-block new-btn" href="{% url 'create_calibration_standard' %}">New Calibration Standard</a>
 </div>
 </div>
 <table class="data-table">
@@ -31,12 +31,12 @@
             <td>{{ reference.referencematerialid.referencemateriallotcode }}</td>
             <td>{{ reference.referencematerialid.referencematerialexpirationdate }}</td>
             <td>
-{#            <a class="icon-link" href="{% url 'create_calibration_standard' 1 %}">#}
-{#                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
-{#                </a>#}
-{#                <a class="icon-link delete-icon" data-href="{% url 'delete_calibration_standard' 1 %}">#}
-{#                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
-{#                </a></td>#}
+            <a class="icon-link" href="{% url 'create_calibration_standard' reference.referencematerialvalueid %}">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+                <a class="icon-link delete-icon" data-href="{% url 'delete_calibration_standard' reference.referencematerialvalueid %}">
+                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                </a></td>
         {% endfor %}
         </tr>
     {% endfor %}

@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput
 from sensordatainterface.models import SamplingFeature, Sites, SpatialReference, Equipment, Organization, \
-    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, CalibrationStandard, \
+    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, \
     ReferenceMaterial, ReferenceMaterialValue, Variable, Units
 from django.utils.translation import ugettext_lazy as _
 
@@ -40,9 +40,9 @@ class EquipmentChoiceField(ModelChoiceField):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber
 
 
-class ActionChoiceField(ModelChoiceField):
+class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.actiondescription
+        return obj.variablenamecv
 
 
 class SamplingFeatureForm(ModelForm):
@@ -71,9 +71,6 @@ class SamplingFeatureForm(ModelForm):
             'elevation_m': _('Elevation'),
             'elevationdatumcv': _('ElevationDatum'),
         }
-        # set samplingfeaturetypecv to site.
-        # create SampingFeature first and then add it to samplingfeatureid in the site to be created.
-        # What to do with samplingfeaturegetypecv?
 
 
 class SiteForm(ModelForm):
@@ -327,17 +324,6 @@ class VendorForm(ModelForm):
         }
 
 
-class CalibrationStandardForm(ModelForm):
-    actionid = ActionChoiceField(
-        queryset=Action.objects.filter(actiontypecv='InstrumentCalibration', calibrationaction__isnull=False),
-        label='Action',
-        empty_label='Choose an Action'
-    )
-
-    class Meta:
-        model = CalibrationStandard
-
-
 class ReferenceMaterialForm(ModelForm):
     referencematerialorganizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
@@ -367,6 +353,11 @@ class ReferenceMaterialForm(ModelForm):
 
 
 class ReferenceMaterialValueForm(ModelForm):
+    variableid = VariableChoiceField(
+        queryset=Variable.objects.all(),
+        label='Variables',
+        empty_label='Choose a Variable'
+    )
     unitsid = UnitChoiceField(
         queryset=Units.objects.all(),
         label='Units',
@@ -378,11 +369,47 @@ class ReferenceMaterialValueForm(ModelForm):
         fields = [
             'referencematerialvalue',
         ]
+        widgets = {
+            'referencematerialvalue': NumberInput
+        }
+        labels = {
+            'referencematerialvalue': 'Reference Material Value'
+        }
 
 
-class VariableForm(ModelForm):
+# class VariableForm(ModelForm):
+#     class Meta:
+#         model = Variable
+#         fields = [
+#             'variabletypecv'
+#         ]
+
+class MethodForm(ModelForm):
+    organizationid = OrganizationChoiceField(
+        queryset=Organization.objects.all(),
+        label='Organization',
+        empty_label='Choose an Organization'
+    )
+
     class Meta:
-        model = Variable
+        model = Method
         fields = [
-            'variabletypecv'
+            'methodcode',
+            'methodname',
+            'methodtypecv',
+            'methoddescription',
+            'methodlink'
         ]
+        widgets = {
+            'methodcode': TextInput,
+            'methodlink': TextInput,
+            'methodtypecv': TextInput,
+            'methodname': TextInput,
+        }
+        labels = {
+            'methodcode': _('Method Code'),
+            'methodname': _('Method Name'),
+            'methodtypecv': _('Method Type'),
+            'methoddescription': _('Description'),
+            'methodlink': _('Method Link')
+        }

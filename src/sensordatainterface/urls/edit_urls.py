@@ -38,13 +38,13 @@ urlpatterns = patterns('',
                         url(r'^vocabulary/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
                         name='delete_person'),
 
-                        url(r'^vocabulary/create-calibration-standard/(?:(?P<oranization_id>\d+)/)?$', edit_views.edit_calibration_standard,
+                        url(r'^vocabulary/create-calibration-standard/(?:(?P<reference_val_id>\d+)/)?$', edit_views.edit_calibration_standard,
                         name='create_calibration_standard'),
-                        url(r'^vocabulary/delete-calibration-standard/(?P<oranization_id>\d+)/$', edit_views.delete_calibration_standard,
+                        url(r'^vocabulary/delete-calibration-standard/(?P<reference_val_id>\d+)/$', edit_views.delete_calibration_standard,
                         name='delete_calibration_standard'),
 
-                        url(r'^vocabulary/create-calibration-standard/(?:(?P<oranization_id>\d+)/)?$', edit_views.edit_calibration_method,
+                        url(r'^vocabulary/create-calibration-method/(?:(?P<method_id>\d+)/)?$', edit_views.edit_calibration_method,
                         name='create_calibration_method'),
-                        url(r'^vocabulary/delete-calibration-standard/(?P<oranization_id>\d+)/$', edit_views.delete_calibration_method,
+                        url(r'^vocabulary/delete-calibration-method/(?P<method_id>\d+)/$', edit_views.delete_calibration_method,
                         name='delete_calibration_method'),
 )

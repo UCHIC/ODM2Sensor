@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Calibration Method{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_calibration_method' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'vocabularies' %}?tab=calibration{% endblock %}
+{% block list_cancel_url %}{% url 'vocabularies' %}?tab=calibration{% endblock %}

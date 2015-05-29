@@ -85,7 +85,6 @@ def edit_factory_service_event(request, action_id):
             equipment.actionid = action_model
             equipment.save()
 
-
             messages.add_message(request, messages.SUCCESS,
                                  'Factory Service Event ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(
@@ -191,7 +190,15 @@ def set_submitted_data(request, model_object, FormClass, modification, model_nam
         model.save()
         messages.add_message(request, messages.SUCCESS,
                              model_name + ' ' + request.POST['action'] + 'd successfully')
-        return HttpResponseRedirect(reverse(redirect_url, args=[getattr(model, m_id)])), model_form
+
+        if model_name != 'Method':
+            success_arguments = [getattr(model, m_id)]
+            tab_option = ''
+        else:
+            success_arguments = []
+            tab_option = '?tab=calibration'
+
+        return HttpResponseRedirect(reverse(redirect_url, args=success_arguments)+tab_option), model_form
 
     return None, model_form
 
@@ -258,7 +265,7 @@ def edit_person(request, affiliation_id):
 
             messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
             return HttpResponseRedirect(
-                reverse('site_detail', args=[1])# Change to person detail page (to-be-created...)
+                reverse('person_detail', args=[affiliation.affiliationid])# Change to person detail page (to-be-created...)
             )
     elif affiliation_id:
         affiliation = Affiliation.objects.get(pk=affiliation_id)
@@ -285,7 +292,6 @@ def delete_person(request, affiliation_id):
     affiliation = Affiliation.objects.get(pk=affiliation_id)
     person_name = affiliation.personid.personfirstname + " " + affiliation.personid.personlastname
     affiliation.personid.delete()
-    affiliation.organizationid.delete()
     affiliation.delete()
     messages.add_message(request, messages.SUCCESS, 'Person '+person_name+' removed from the system')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
@@ -306,73 +312,80 @@ def delete_vendor(request, organization_id):
     return HttpResponseRedirect(reverse('vocabularies')+'?tab=vendor')
 
 
-def edit_calibration_standard(request, standard_id):
+def edit_calibration_standard(request, reference_val_id):
     action = 'create'
-    # if request.method == 'POST':
-    #     if request.POST['action'] == 'update':
-    #         calibration_standard = CalibrationStandard.objects.get(pk=standard_id)
-    #
-    #         variable = Variable.objects.get(pk=)
-    #
-    #
-    #
-    #         affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
-    #
-    #         person_form = PersonForm(request.POST, instance=affiliation.personid)
-    #         # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
-    #         affiliation_form = AffiliationForm(request.POST, instance=affiliation)
-    #
-    #
-    #
-    #     else:
-    #         calib_std_form = CalibrationStandardForm(request.POST)
-    #         person_form = PersonForm(request.POST)
-    #         affiliation_form = AffiliationForm(request.POST)
-    #         # organization_form = OrganizationForm(request.POST)
-    #
-    #     if person_form.is_valid() and affiliation_form.is_valid(): # and organization_form.is_valid():
-    #         person = person_form.save()
-    #         # organization = organization_form.save()
-    #
-    #         affiliation = affiliation_form.save(commit=False)
-    #         affiliation.personid = person
-    #         # affiliation.organizationid = organization
-    #         affiliation.affiliationstartdate = datetime.datetime.now()
-    #         affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
-    #         affiliation.save()
-    #
-    #         messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
-    #         return HttpResponseRedirect(
-    #             reverse('site_detail', args=[1])# Change to person detail page (to-be-created...)
-    #         )
-    # elif standard_id:
-    #     affiliation = Affiliation.objects.get(pk=standard_id)
-    #     person_form = PersonForm(instance=affiliation.personid)
-    #     # organization_form = OrganizationForm(instance=affiliation.organizationid)
-    #     affiliation_form = AffiliationForm(instance=affiliation)
-    #     affiliation_form.initial['organizationid'] = affiliation.organizationid
-    #     action = 'update'
-    #
-    # else:
-    #     person_form = PersonForm()
-    #     organization_form = Organization()
-    #     affiliation_form = AffiliationForm()
-    #
-    # return render(
-    #     request,
-    #     'vocabulary/person-form.html',
-    #     {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
-    #
-    # )
-    pass
+    if request.method == 'POST':
+        if request.POST['action'] == 'update':
+            reference_mat_val = ReferenceMaterialValue.objects.get(pk=request.POST['item_id'])
+            reference_mat = ReferenceMaterial.objects.get(pk=reference_mat_val.referencematerialid.referencematerialid)
 
-def delete_calibration_standard(request, standard_id):
-    pass
+            reference_mat_value_form = ReferenceMaterialValueForm(request.POST, instance=reference_mat_val)
+            reference_mat_form = ReferenceMaterialForm(request.POST, instance=reference_mat)
+
+        else:
+            reference_mat_form = ReferenceMaterialForm(request.POST)
+            reference_mat_value_form = ReferenceMaterialValueForm(request.POST)
+
+        if reference_mat_form.is_valid() and reference_mat_value_form.is_valid():
+            reference_mat = reference_mat_form.save(commit=False)
+            #reference_mat.referencematerialid = ReferenceMaterial.objects.all().count() + 1
+            reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data['referencematerialorganizationid']
+            reference_mat.save()
+
+            reference_mat_val = reference_mat_value_form.save(commit=False)
+            reference_mat_val.referencematerialid = reference_mat
+            reference_mat_val.variableid = reference_mat_value_form.cleaned_data['variableid']
+            reference_mat_val.unitsid = reference_mat_value_form.cleaned_data['unitsid']
+            reference_mat_val.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Calibration Standard '+request.POST['action']+'d successfully')
+            return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
+
+    elif reference_val_id:
+        reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
+        reference_mat_value_form = ReferenceMaterialValueForm(instance=reference_mat_val)
+        reference_mat_value_form.initial['variableid'] = reference_mat_val.variableid
+        reference_mat_value_form.initial['unitsid'] = reference_mat_val.unitsid
+
+        reference_mat = ReferenceMaterial.objects.get(pk=reference_mat_val.referencematerialid.referencematerialid)
+        reference_mat_form = ReferenceMaterialForm(instance=reference_mat)
+        reference_mat_form.initial['referencematerialorganizationid'] = reference_mat.referencematerialorganizationid
+
+        action = 'update'
+
+    else:
+        reference_mat_form = ReferenceMaterialForm()
+        reference_mat_value_form = ReferenceMaterialValueForm()
+
+    return render(
+        request,
+        'vocabulary/calibration-standard-from.html',
+        { 'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id }
+
+    )
+
+def delete_calibration_standard(request, reference_val_id):
+    reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
+    reference = reference_mat_val.variableid.variabletypecv + "(" + str(reference_mat_val.referencematerialvalue) + ")"
+    reference_mat_val.referencematerialid.delete() # deletereferencematerialquestion
+    reference_mat_val.delete()
+    messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + "deleted successfully")
+    return HttpResponseRedirect(reverse('vocabularies')+'?tab=calibration')
 
 
 def edit_calibration_method(request, method_id):
-    pass
+    modifications = {
+        'organizationid': ['organizationid'],
+    }
+    arguments = [request, Method.objects, MethodForm, modifications, 'Method', 'vocabularies',
+                 'methodid', method_id, 'vocabulary/calibration-method-form.html']
+
+    return edit_models(*arguments)
 
 
 def delete_calibration_method(request, method_id):
-    pass
+    method = Method.objects.get(pk=method_id)
+    method_name = method.methodname
+    method.delete()
+    messages.add_message(request, messages.SUCCESS, 'Method '+method_name+' succesfully deleted')
+    return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
