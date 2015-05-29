@@ -73,14 +73,45 @@ $(document).ready(function () {
         }
     });
 
-    $('.delete-icon').confirmation({
-        placement: 'left',
-        title: 'Are you sure?',
-        btnCancelClass: 'btn-default',
-        onCancel: function () {
-            $('.delete-icon').confirmation('hide');
-        }
+
+    set_delete_icon();
+
+    $('.dataTables_paginate').click(function(){
+       set_delete_icon();
     });
+
+    $('.dataTables_filter').find('input[type="search"]').change(function() {
+       set_delete_icon();
+    });
+
+    function set_delete_icon() {
+        $('.delete-icon').confirmation({
+            placement: 'left',
+            title: 'Are you sure?',
+            btnCancelClass: 'btn-default',
+            onCancel: function () {
+                $('.delete-icon').confirmation('hide');
+            },
+            onConfirm: function() {
+                var tableClicked = $(this).parents('.dataTables_wrapper').attr('id');
+                var table = $('#'+tableClicked);
+                var searchText = table.find('input[type="search"]')[0].value;
+
+                sessionStorage.setItem('tableClicked', tableClicked);
+
+                if (searchText != "") {
+                    sessionStorage.setItem('searchTerm', searchText);
+                } else {
+                    var tablePage = table.find('.paginate_button.current')[0].getAttribute('data-dt-idx');
+                    sessionStorage.setItem('tablePage', tablePage);
+                }
+
+            }
+        });
+    }
+
+
+
 
     /* http://tarruda.github.io/bootstrap-datetimepicker/ */
     var dateElements = [];

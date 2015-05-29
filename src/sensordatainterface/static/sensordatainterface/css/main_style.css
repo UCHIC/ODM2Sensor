@@ -204,6 +204,7 @@ table a.btn.btn-default {
 }
 
 .glyphicon {
+    cursor: pointer;
 }
 
 a.icon-link {
