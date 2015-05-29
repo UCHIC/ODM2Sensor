@@ -98,11 +98,14 @@ $(document).ready(function () {
                 var searchText = table.find('input[type="search"]')[0].value;
 
                 sessionStorage.setItem('tableClicked', tableClicked);
+                var tablePage = table.find('.paginate_button.current')[0].getAttribute('data-dt-idx');
 
                 if (searchText != "") {
                     sessionStorage.setItem('searchTerm', searchText);
+                    if (tablePage > 0) {
+                        sessionStorage.setItem('tablePage', tablePage);
+                    }
                 } else {
-                    var tablePage = table.find('.paginate_button.current')[0].getAttribute('data-dt-idx');
                     sessionStorage.setItem('tablePage', tablePage);
                 }
 

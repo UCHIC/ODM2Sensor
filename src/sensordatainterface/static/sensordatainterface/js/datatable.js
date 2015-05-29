@@ -11,9 +11,10 @@ $(document).ready(function () {
         if (sessionStorage.getItem('searchTerm')) {
             var searchTerm = sessionStorage.getItem('searchTerm');
             selectedTable.find('input[type="search"]').val(searchTerm).keyup();
-            //sessionStorage.removeItem('searchTerm');
+            sessionStorage.removeItem('searchTerm');
         }
-        else if (sessionStorage.getItem('tablePage')) {
+
+        if (sessionStorage.getItem('tablePage')) {
             tableNode.fnPageChange(parseInt(sessionStorage.getItem('tablePage')) - 1);
             sessionStorage.removeItem('tablePage');
         }

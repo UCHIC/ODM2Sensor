@@ -386,6 +386,6 @@ def edit_calibration_method(request, method_id):
 def delete_calibration_method(request, method_id):
     method = Method.objects.get(pk=method_id)
     method_name = method.methodname
-    method.delete()
+    #method.delete()
     messages.add_message(request, messages.SUCCESS, 'Method '+method_name+' succesfully deleted')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')

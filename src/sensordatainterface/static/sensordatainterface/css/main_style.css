@@ -15,9 +15,10 @@ body {
     border-radius: 0px;
     width: 170%;
     padding: 3px;
-    padding-left: 68%;
+    padding-left: 20%;
     margin-bottom: 0px;
-    margin-left: -25%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #username {
