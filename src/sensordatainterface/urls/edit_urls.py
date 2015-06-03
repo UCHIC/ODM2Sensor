@@ -23,6 +23,17 @@ urlpatterns = patterns('',
                         url(r'^inventory/delete-factory-service/(?P<action_id>\d+)/$', edit_views.delete_factory_service_event,
                         name='delete_factory_service'),
 
+                        url(r'^inventory/create-sensor-output-variable/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable,
+                        name='create_output_variable'),
+                        url(r'^inventory/delete-sensor-output-variable/(?P<outputvar_id>\d+)/$', edit_views.delete_output_variable,
+                        name='delete_output_variable'),
+
+                        url(r'^inventory/create-sensor-output-variable/site/(?P<site_id>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
+                        name='create_output_variable_site'),
+
+                       url(r'^inventory/create-sensor-output-variable/deployment/(?P<site_id>\d+)/(?P<deployment>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
+                        name='create_output_variable_deployment'),
+
                         url(r'^vocabulary/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
                         name='create_person'),
                         url(r'^vocabulary/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,

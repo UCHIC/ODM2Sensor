@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from copy import deepcopy
-
+from django import forms
 
 
 @login_required(login_url=LOGIN_URL)
@@ -21,7 +21,7 @@ def edit_site(request, site_id):
             SitesForm = SiteForm(request.POST)
 
         if SampFeatForm.is_valid() and SitesForm.is_valid():
-            #IDENTITY_INSERT error solved by changing samplingfeatureid for SamplingFeatures to AutoField in models.py
+            # IDENTITY_INSERT error solved by changing samplingfeatureid for SamplingFeatures to AutoField in models.py
             samplingfeature = SampFeatForm.save(commit=False)
             samplingfeature.samplingfeaturetypecv = 'Site'
             samplingfeature.save()
@@ -33,7 +33,8 @@ def edit_site(request, site_id):
 
             messages.add_message(request, messages.SUCCESS, 'Site ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(
-                reverse('site_detail', args=[samplingfeature.samplingfeatureid]))  #change args by id of object created.
+                reverse('site_detail',
+                        args=[samplingfeature.samplingfeatureid]))  # change args by id of object created.
 
     elif site_id:
         samplingfeature = SamplingFeature.objects.get(pk=site_id)
@@ -50,7 +51,7 @@ def edit_site(request, site_id):
     return render(
         request,
         'sites/site-form.html',
-        { 'render_forms': [SampFeatForm, SitesForm], 'action': action, 'item_id': site_id}
+        {'render_forms': [SampFeatForm, SitesForm], 'action': action, 'item_id': site_id}
     )
 
 
@@ -89,7 +90,7 @@ def edit_factory_service_event(request, action_id):
                                  'Factory Service Event ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(
                 reverse('site_detail', args=[action_model.actionid])
-            )#change to factory detail url
+            )  # change to factory detail url
 
     elif action_id:
         action_model = Action.objects.get(pk=action_id)
@@ -110,7 +111,7 @@ def edit_factory_service_event(request, action_id):
     return render(
         request,
         'equipment/factory-service/factory-service-form.html',
-        {'render_forms': [action_form, maintenance_form, equipment_form], 'action': action, 'item_id': action_id }
+        {'render_forms': [action_form, maintenance_form, equipment_form], 'action': action, 'item_id': action_id}
     )
 
 
@@ -141,6 +142,7 @@ def delete_model(request, model_id):
     messages.add_message(request, messages.SUCCESS, 'Model ' + model_name + ' deleted successfully')
     return HttpResponseRedirect(reverse('models'))
 
+
 @login_required(login_url=LOGIN_URL)
 def delete_factory_service_event(request, action_id):
     EquipmentUsed.objects.get(actionid=action_id).delete()
@@ -157,7 +159,8 @@ def edit_models(request, model_object, FormClass, modifications, model_name, red
     action = 'create'
     response = None
     if request.method == 'POST':
-        response, model_form = set_submitted_data(request, model_object, FormClass, modifications, model_name, redirect_url, m_id)
+        response, model_form = set_submitted_data(request, model_object, FormClass, modifications, model_name,
+                                                  redirect_url, m_id)
         action = request.POST['action']
         model_id = request.POST['item_id']
 
@@ -198,7 +201,7 @@ def set_submitted_data(request, model_object, FormClass, modification, model_nam
             success_arguments = []
             tab_option = '?tab=calibration'
 
-        return HttpResponseRedirect(reverse(redirect_url, args=success_arguments)+tab_option), model_form
+        return HttpResponseRedirect(reverse(redirect_url, args=success_arguments) + tab_option), model_form
 
     return None, model_form
 
@@ -237,6 +240,7 @@ def edit_model(request, model_id):
 
     return edit_models(*arguments)
 
+
 @login_required(login_url=LOGIN_URL)
 def edit_person(request, affiliation_id):
     action = 'create'
@@ -252,7 +256,7 @@ def edit_person(request, affiliation_id):
             affiliation_form = AffiliationForm(request.POST)
             # organization_form = OrganizationForm(request.POST)
 
-        if person_form.is_valid() and affiliation_form.is_valid(): # and organization_form.is_valid():
+        if person_form.is_valid() and affiliation_form.is_valid():  # and organization_form.is_valid():
             person = person_form.save()
             # organization = organization_form.save()
 
@@ -263,9 +267,11 @@ def edit_person(request, affiliation_id):
             affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
             affiliation.save()
 
-            messages.add_message(request, messages.SUCCESS, 'Person record '+request.POST['action']+'d successfully')
+            messages.add_message(request, messages.SUCCESS,
+                                 'Person record ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(
-                reverse('person_detail', args=[affiliation.affiliationid])# Change to person detail page (to-be-created...)
+                reverse('person_detail', args=[affiliation.affiliationid])
+                # Change to person detail page (to-be-created...)
             )
     elif affiliation_id:
         affiliation = Affiliation.objects.get(pk=affiliation_id)
@@ -287,14 +293,16 @@ def edit_person(request, affiliation_id):
 
     )
 
+
 @login_required(login_url=LOGIN_URL)
 def delete_person(request, affiliation_id):
     affiliation = Affiliation.objects.get(pk=affiliation_id)
     person_name = affiliation.personid.personfirstname + " " + affiliation.personid.personlastname
     affiliation.personid.delete()
     affiliation.delete()
-    messages.add_message(request, messages.SUCCESS, 'Person '+person_name+' removed from the system')
+    messages.add_message(request, messages.SUCCESS, 'Person ' + person_name + ' removed from the system')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
+
 
 @login_required(login_url=LOGIN_URL)
 def edit_vendor(request, organization_id):
@@ -303,13 +311,14 @@ def edit_vendor(request, organization_id):
                  'organizationid', organization_id, 'vocabulary/vendor-form.html']
     return edit_models(*arguments)
 
+
 def delete_vendor(request, organization_id):
     organization = Organization.objects.get(pk=organization_id)
     Affiliation.objects.filter(organizationid=organization).delete()
     organization_name = organization.organizationname
     organization.delete()
-    messages.add_message(request, messages.SUCCESS, 'Organization '+organization_name+' removed successfully.')
-    return HttpResponseRedirect(reverse('vocabularies')+'?tab=vendor')
+    messages.add_message(request, messages.SUCCESS, 'Organization ' + organization_name + ' removed successfully.')
+    return HttpResponseRedirect(reverse('vocabularies') + '?tab=vendor')
 
 
 def edit_calibration_standard(request, reference_val_id):
@@ -328,8 +337,9 @@ def edit_calibration_standard(request, reference_val_id):
 
         if reference_mat_form.is_valid() and reference_mat_value_form.is_valid():
             reference_mat = reference_mat_form.save(commit=False)
-            #reference_mat.referencematerialid = ReferenceMaterial.objects.all().count() + 1
-            reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data['referencematerialorganizationid']
+            # reference_mat.referencematerialid = ReferenceMaterial.objects.all().count() + 1
+            reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data[
+                'referencematerialorganizationid']
             reference_mat.save()
 
             reference_mat_val = reference_mat_value_form.save(commit=False)
@@ -338,7 +348,8 @@ def edit_calibration_standard(request, reference_val_id):
             reference_mat_val.unitsid = reference_mat_value_form.cleaned_data['unitsid']
             reference_mat_val.save()
 
-            messages.add_message(request, messages.SUCCESS, 'Calibration Standard '+request.POST['action']+'d successfully')
+            messages.add_message(request, messages.SUCCESS,
+                                 'Calibration Standard ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
 
     elif reference_val_id:
@@ -360,17 +371,18 @@ def edit_calibration_standard(request, reference_val_id):
     return render(
         request,
         'vocabulary/calibration-standard-from.html',
-        { 'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id }
+        {'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id}
 
     )
+
 
 def delete_calibration_standard(request, reference_val_id):
     reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
     reference = reference_mat_val.variableid.variabletypecv + "(" + str(reference_mat_val.referencematerialvalue) + ")"
-    reference_mat_val.referencematerialid.delete() # deletereferencematerialquestion
+    reference_mat_val.referencematerialid.delete()  # deletereferencematerialquestion
     reference_mat_val.delete()
     messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + "deleted successfully")
-    return HttpResponseRedirect(reverse('vocabularies')+'?tab=calibration')
+    return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
 
 
 def edit_calibration_method(request, method_id):
@@ -386,6 +398,110 @@ def edit_calibration_method(request, method_id):
 def delete_calibration_method(request, method_id):
     method = Method.objects.get(pk=method_id)
     method_name = method.methodname
-    #method.delete()
-    messages.add_message(request, messages.SUCCESS, 'Method '+method_name+' succesfully deleted')
+    method.delete()
+    messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' succesfully deleted')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
+
+
+def edit_output_variable(request, outputvar_id):
+    modifications = {
+        'instrumentmethodid': ['instrumentmethodid', 'methodid'],
+        'modelid': ['modelid'],
+        'variableid': ['variableid'],
+        'instrumentrawoutputunitsid': ['instrumentrawoutputunitsid', 'unitsid'],
+    }
+    arguments = [request, InstrumentOutputVariable.objects, OutputVariableForm, modifications,
+                 'Instrument Output Variables', 'output_variable_detail', 'instrumentoutputvariableid', outputvar_id,
+                 'equipment/sensor-output-variables/output-variable-form.html']
+
+    return edit_models(*arguments)
+
+
+def delete_output_variable(request, outputvar_id):
+    output_var = InstrumentOutputVariable.objects.get(pk=outputvar_id)
+    output_var_name = output_var.variableid.variablecode
+    output_var.delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'Instrument Output Variable for variable ' + output_var_name + ' succesfully deleted')
+    return HttpResponseRedirect(reverse('sensor_output'))
+
+
+def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
+    # This function is going to use results table in database for relationships.
+    # As it is, it needs some fixing.
+    specific_name = ' at ' + SamplingFeature.objects.get(pk=site_id).samplingfeaturename
+    action = 'create'
+    if request.method == 'POST':
+        if request.POST['action'] == 'update':
+            outputvar = InstrumentOutputVariable.objects.get(pk=request.POST['item_id'])
+            outputvar_form = SiteDeploymentMeasuredVariableForm(request.POST, instance=outputvar)
+
+        else:
+            outputvar_form = SiteDeploymentMeasuredVariableForm(request.POST)
+
+        if outputvar_form.is_valid():
+            outputvar = outputvar_form.save(commit=False)
+            equipment_used = EquipmentUsed.objects.get(pk=request.POST['deployments'])
+            outputvar.modelid = equipment_used.equipmentid.equipmentmodelid
+            outputvar.variableid = outputvar_form.cleaned_data['variableid']
+            outputvar.instrumentrawoutputunitsid = outputvar_form.cleaned_data['instrumentrawoutputunitsid']
+            outputvar.instrumentmethodid = outputvar_form.cleaned_data['instrumentmethodid']
+            outputvar.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 'Output Variable ' + request.POST['action'] + 'd successfully')
+            if deployment == None:
+                return HttpResponseRedirect(reverse('site_detail', args=[site_id]))
+            else:
+                equipment_used = EquipmentUsed.objects.get(pk=deployment)
+                return HttpResponseRedirect(reverse('deployment_detail', args=[equipment_used.actionid.actionid]))
+
+    elif outputvar_id:
+        outputvar = InstrumentOutputVariable.objects.get(pk=outputvar_id)
+        outputvar_form = OutputVariableForm(instance=outputvar)
+        outputvar_form.initial['variableid'] = outputvar.variableid
+        outputvar_form.initial['instrumentrawoutputunitsid'] = outputvar.instrumentrawoutputunitsid
+        outputvar_form.initial['instrumentmethodid'] = outputvar.instrumentmethodid
+        if deployment == None:
+            outputvar_form.fields['deployments'] = DeploymentChoiceField(
+                queryset=EquipmentUsed.objects.filter(
+                    (Q(actionid__actiontypecv='InstrumentDeployment') | Q(actionid__actiontypecv='EquipmentDeployment')),
+                    actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
+                ),
+                label='Deployment',
+                empty_label='Choose a Deployment'
+            )
+            outputvar_form.initial['deployments'] = EquipmentUsed.objects.filter(
+                equipmentid__equipmentmodelid=outputvar.modelid,
+                equipmentid__equipmentused__actionid__featureaction__samplingfeatureid=site_id
+                ).first()
+            render_form = 'sites/site-output-variable-form.html'
+        else:
+            outputvar_form.fields['deployments'] = forms.CharField(widget=forms.HiddenInput(), label='deployments', initial=deployment)
+            render_form = 'site-visits/deployment/deployment-output-variable-form.html'
+
+        action = 'update'
+
+    else:
+        outputvar_form = SiteDeploymentMeasuredVariableForm()
+        if deployment == None:
+            outputvar_form.fields['deployments'] = DeploymentChoiceField(
+                queryset=EquipmentUsed.objects.filter(
+                    (Q(actionid__actiontypecv='InstrumentDeployment') | Q(actionid__actiontypecv='EquipmentDeployment')),
+                    actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
+                ),
+                label='Deployment',
+                empty_label='Choose a Deployment'
+            )
+            render_form = 'sites/site-output-variable-form.html'
+        else:
+            outputvar_form.fields['deployments'] = forms.CharField(widget=forms.HiddenInput(), label='deployments', initial=deployment)
+            render_form = 'site-visits/deployment/deployment-output-variable-form.html'
+
+    return render(
+        request,
+        render_form,
+        {'render_forms': [outputvar_form], 'action': action, 'item_id': outputvar_id, 'specific_name': specific_name,
+         'site_id': site_id, 'deployment_id': deployment }
+
+    )

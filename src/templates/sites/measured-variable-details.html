@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% load static %}
-{% load inv_extras %}
 {% block content %}
 
     <!-- This view of deployment measured variables might need a better ORM query or it's own detail view.
@@ -8,72 +6,13 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Detailed Deployment Measured Variable</h2></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Edit Variable Description</a></div>
+            <a class="btn btn-primary btn-block"
+               href="{% url 'create_output_variable_site' site_id.samplingfeatureid MeasuredVariable.instrumentoutputvariableid  %}">Edit Variable
+                Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button"
+               data-href="{% url 'delete_output_variable' MeasuredVariable.instrumentoutputvariableid %}">Delete</a>
         </div>
     </div>
-    <div class="row detail-mid">
-        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
-        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
-            <h2>Variable Description</h2>
-            <table class="table">
-                <tr>
-                    <th>Variable Name:</th>
-                    <td>{{ MeasuredVariable.variablenamecv|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Code:</th>
-                    <td>{{ MeasuredVariable.variablecode|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Equation Used:</th>
-                    <td>{{ datalogger_file_column.measurementequation|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Recorded Statistic:</th>
-                    <td>{{ datalogger_file_column.aggregationstatisticcv|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Notes:</th>
-                    <td>{{ datalogger_file_column.columndescription|default:" -- " }}</td>
-                </tr>
-            </table>
-            <h2>Sensor Description</h2>
-            <table class="table">
-                <tr>
-                    <th>Model Name:</th>
-                    <td>{{ model.modelname|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Model Description:</th>
-                    <td>{{ model.modeldescription|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Resolution:</th>
-                    <td>{{ output_variable.instrumentresolution|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Accuracy:</th>
-                    <td>{{ output_variable.instrumentaccuracy|default:" -- " }}</td>
-                </tr>
-                <tr>
-                    <th>Method Description:</th>
-                    <td>{{ output_variable.instrumentmethodid.methoddescription|default:" -- " }}</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
-            <a class="btn btn-block btn-primary"
-{#                    href="{% url 'deployment_detail' deployment.actionid.actionid 10 %}"#}>Go {# need to determine site from here... #}
-                to Deployment</a>
-        </div>
-    </div>
-    <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
-    </script>
-
-    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+    {% include "sites/measured-variable-detail-snippet.html" %}
 {% endblock %}

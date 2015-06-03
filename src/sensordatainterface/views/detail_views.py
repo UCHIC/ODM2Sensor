@@ -35,19 +35,18 @@ class DeploymentDetail(DetailView):
 # Deployment Measured Variable detail view
 class DeploymentMeasVariableDetailView(DetailView):
     context_object_name = 'MeasuredVariable'
-    model = Variable
+    model = InstrumentOutputVariable
     template_name = 'sites/measured-variable-details.html'
-    queryset = Variable.objects
+    queryset = InstrumentOutputVariable.objects
 
     def get_context_data(self, **kwargs):
         context = super(DeploymentMeasVariableDetailView, self).get_context_data(**kwargs)
-
+        context['site_id'] = FeatureAction.objects.get(pk=self.kwargs['featureaction']).samplingfeatureid
         context['deployment'] = EquipmentUsed.objects.get(pk=self.kwargs['equipmentused'])
         context['equipment'] = context['deployment'].equipmentid
         context['model'] = context['equipment'].equipmentmodelid
-        context['output_variable'] = InstrumentOutputVariable.objects.filter(modelid=context['model'],
-                                                                             variableid=self.object.pk).get()
+
         context['datalogger_file_column'] = DataloggerFileColumn.objects.filter(
-            instrumentoutputvariableid=context['output_variable'])
+            instrumentoutputvariableid=context['MeasuredVariable'])
 
         return context

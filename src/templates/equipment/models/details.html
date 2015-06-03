@@ -5,9 +5,11 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Equipment Model Details</h2></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'create_model' Model.equipmentmodelid %}">Edit Model Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_model' Model.equipmentmodelid %}">Edit Model
+                Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_model' Model.equipmentmodelid %}">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button"
+               data-href="{% url 'delete_model' Model.equipmentmodelid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">
@@ -54,7 +56,7 @@
                 </tr>
                 <tr>
                     <th>Model Link:</th>
-                    <td>{{ Model.modellink|default:" -- "  }} {# This should be a file!!!#}</td>
+                    <td>{{ Model.modellink|default:" -- " }} {# This should be a file!!!#}</td>
                 </tr>
             </table>
         </div>

@@ -1,7 +1,7 @@
-from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput
+from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, HiddenInput
 from sensordatainterface.models import SamplingFeature, Sites, SpatialReference, Equipment, Organization, \
     EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, \
-    ReferenceMaterial, ReferenceMaterialValue, Variable, Units
+    ReferenceMaterial, ReferenceMaterialValue, Variable, Units, InstrumentOutputVariable
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -44,6 +44,9 @@ class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.variablenamecv
 
+class DeploymentChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return str(obj.actionid.begindatetime)+": "+obj.equipmentid.equipmentname
 
 class SamplingFeatureForm(ModelForm):
     class Meta:
@@ -412,4 +415,79 @@ class MethodForm(ModelForm):
             'methodtypecv': _('Method Type'),
             'methoddescription': _('Description'),
             'methodlink': _('Method Link')
+        }
+
+
+class OutputVariableForm(ModelForm):
+    instrumentmethodid = MethodChoiceField(
+        queryset=Method.objects.all(),
+        label='Method',
+        empty_label='Choose a Method'
+    )
+    variableid = VariableChoiceField(
+        queryset=Variable.objects.all(),
+        label='Variable',
+        empty_label='Choose a Variable'
+    )
+    modelid = EquipmentModelChoiceField(
+        queryset=EquipmentModel.objects.all(),
+        label='Model',
+        empty_label='Choose a Model'
+    )
+    instrumentrawoutputunitsid = UnitChoiceField(
+        queryset=Units.objects.all(),
+        label='Unit',
+        empty_label='Choose a Unit'
+    )
+
+    class Meta:
+        model = InstrumentOutputVariable
+        fields = [
+            'variableid',
+            'modelid',
+            'instrumentresolution',
+            'instrumentaccuracy',
+            'instrumentrawoutputunitsid',
+        ]
+        widgets = {
+            'instrumentresolution': TextInput,
+            'instrumentaccuracy': TextInput
+        }
+        labels = {
+            'instrumentresolution': _('Instrument Resolution'),
+            'instrumentaccuracy': _('Instrument Accuracy')
+        }
+
+class SiteDeploymentMeasuredVariableForm(ModelForm):
+    instrumentmethodid = MethodChoiceField(
+        queryset=Method.objects.all(),
+        label='Method',
+        empty_label='Choose a Method'
+    )
+    variableid = VariableChoiceField(
+        queryset=Variable.objects.all(),
+        label='Variable',
+        empty_label='Choose a Variable'
+    )
+    instrumentrawoutputunitsid = UnitChoiceField(
+        queryset=Units.objects.all(),
+        label='Unit',
+        empty_label='Choose a Unit'
+    )
+
+    class Meta:
+        model = InstrumentOutputVariable
+        fields = [
+            'variableid',
+            'instrumentresolution',
+            'instrumentaccuracy',
+            'instrumentrawoutputunitsid',
+        ]
+        widgets = {
+            'instrumentresolution': TextInput,
+            'instrumentaccuracy': TextInput,
+        }
+        labels = {
+            'instrumentresolution': _('Instrument Resolution'),
+            'instrumentaccuracy': _('Instrument Accuracy')
         }

@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block item_name %}{% block button_value %}Instrument Output Variable{% endblock %}{{ specific_name }}{% endblock %}
+{% block submit_url %}{% url 'create_output_variable_deployment' site_id deployment_id %}{% endblock %}
+{% block detail_cancel_url %}{% url 'output_variable_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'sensor_output' %}{% endblock %}

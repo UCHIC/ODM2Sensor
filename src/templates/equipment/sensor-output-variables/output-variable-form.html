@@ -1,0 +1,5 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Instrument Output Variable{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_output_variable' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'output_variable_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'sensor_output' %}{% endblock %}

@@ -1,0 +1,66 @@
+{% load static %}
+{% load inv_extras %}
+
+<div class="row detail-mid">
+    <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+    <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+        <h2>Variable Description</h2>
+        <table class="table">
+            <tr>
+                <th>Variable Name:</th>
+                <td>{{ MeasuredVariable.variableid.variablenamecv|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Code:</th>
+                <td>{{ MeasuredVariable.variableid.variablecode|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Equation Used:</th>
+                <td>{{ datalogger_file_column.measurementequation|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Recorded Statistic:</th>
+                <td>{{ datalogger_file_column.aggregationstatisticcv|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Notes:</th>
+                <td>{{ datalogger_file_column.columndescription|default:" -- " }}</td>
+            </tr>
+        </table>
+        <h2>Sensor Description</h2>
+        <table class="table">
+            <tr>
+                <th>Model Name:</th>
+                <td>{{ model.modelname|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Model Description:</th>
+                <td>{{ model.modeldescription|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Resolution:</th>
+                <td>{{ MeasuredVariable.instrumentresolution|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Accuracy:</th>
+                <td>{{ MeasuredVariable.instrumentaccuracy|default:" -- " }}</td>
+            </tr>
+            <tr>
+                <th>Method Description:</th>
+                <td>{{ MeasuredVariable.instrumentmethodid.methoddescription|default:" -- " }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
+        <a class="btn btn-block btn-primary"
+           href="{% url 'deployment_detail' deployment.actionid.actionid %}">Go
+            to Deployment</a>
+    </div>
+</div>
+<script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+</script>
+
+<script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>

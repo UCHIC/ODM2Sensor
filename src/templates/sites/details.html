@@ -8,7 +8,8 @@
             <a class="btn btn-primary btn-block"
                href="{% url 'create_site' Site.samplingfeatureid.samplingfeatureid %}">Edit Site Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" data-toggle="confirmation-popout" data-placement="bottom" id="danger-button"
+            <a class="btn btn-danger btn-block" data-toggle="confirmation-popout" data-placement="bottom"
+               id="danger-button"
                data-href="{% url 'delete_site' Site.samplingfeatureid.samplingfeatureid %}">Delete</a>
         </div>
     </div>
@@ -55,7 +56,9 @@
     </div>
     <div class="row">
         <div class="col-md-9"><h3>Instrument Output Variables Table</h3></div>
-        <div class="col-md-3"><a class="btn btn-primary btn-block" href="#">New Deployment Measured Variable</a></div>
+        <div class="col-md-3"><a class="btn btn-primary btn-block"
+                                 href="{% url 'create_output_variable_site' Site.samplingfeatureid.samplingfeatureid %}">New
+            Deployment Measured Variable</a></div>
     </div>
     <hr class="divider">
     <div class="row">
@@ -81,7 +84,7 @@
 
                                 <tr>
                                     <td>
-                                        <a href="{% url 'measured_variable_detail' outputvar.variableid.variableid usedequipment.bridgeid %}">
+                                        <a href="{% url 'measured_variable_detail' outputvar.instrumentoutputvariableid usedequipment.bridgeid featureaction.featureactionid %}">
                                             {{ outputvar.variableid.variablecode }}
                                         </a>
                                     </td>
