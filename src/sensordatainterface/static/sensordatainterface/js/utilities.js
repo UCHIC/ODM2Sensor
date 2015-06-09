@@ -61,7 +61,7 @@ function initVocabulariesTabs($) {
     setInitialTab($);
 }
 
-$(document).ready(function () {
+function setDeleteConfirmation() {
     /*http://ethaizone.github.io/Bootstrap-Confirmation/*/
     $('#danger-button').confirmation({
         placement: 'bottom',
@@ -72,50 +72,38 @@ $(document).ready(function () {
             $('#danger-button').confirmation('hide');
         }
     });
+}
 
+function set_delete_icon() {
+    $('.delete-icon').confirmation({
+        placement: 'left',
+        title: 'Are you sure?',
+        btnCancelClass: 'btn-default',
+        onCancel: function () {
+            $('.delete-icon').confirmation('hide');
+        },
+        onConfirm: function() {
+            var tableClicked = $(this).parents('.dataTables_wrapper').attr('id');
+            var table = $('#'+tableClicked);
+            var searchText = table.find('input[type="search"]')[0].value;
 
-    set_delete_icon();
+            sessionStorage.setItem('tableClicked', tableClicked);
+            var tablePage = table.find('.paginate_button.current')[0].getAttribute('data-dt-idx');
 
-    $('.dataTables_paginate').click(function(){
-       set_delete_icon();
-    });
-
-    $('.dataTables_filter').find('input[type="search"]').change(function() {
-       set_delete_icon();
-    });
-
-    function set_delete_icon() {
-        $('.delete-icon').confirmation({
-            placement: 'left',
-            title: 'Are you sure?',
-            btnCancelClass: 'btn-default',
-            onCancel: function () {
-                $('.delete-icon').confirmation('hide');
-            },
-            onConfirm: function() {
-                var tableClicked = $(this).parents('.dataTables_wrapper').attr('id');
-                var table = $('#'+tableClicked);
-                var searchText = table.find('input[type="search"]')[0].value;
-
-                sessionStorage.setItem('tableClicked', tableClicked);
-                var tablePage = table.find('.paginate_button.current')[0].getAttribute('data-dt-idx');
-
-                if (searchText != "") {
-                    sessionStorage.setItem('searchTerm', searchText);
-                    if (tablePage > 0) {
-                        sessionStorage.setItem('tablePage', tablePage);
-                    }
-                } else {
+            if (searchText != "") {
+                sessionStorage.setItem('searchTerm', searchText);
+                if (tablePage > 0) {
                     sessionStorage.setItem('tablePage', tablePage);
                 }
-
+            } else {
+                sessionStorage.setItem('tablePage', tablePage);
             }
-        });
-    }
 
+        }
+    });
+}
 
-
-
+function setDateTimePicker() {
     /* http://tarruda.github.io/bootstrap-datetimepicker/ */
     var dateElements = [];
     dateElements.push($('#id_equipmentpurchasedate'));
@@ -142,17 +130,56 @@ $(document).ready(function () {
     button.addClass('btn-default');
     button.find('.icon-chevron-up').addClass('glyphicon glyphicon-chevron-up');
     button.find('.icon-chevron-down').addClass('glyphicon glyphicon-chevron-down');
+}
 
+function setFormFields() {
     $('input').addClass('form-control');
     $("[type='checkbox']").removeClass('form-control');
-    $('select').addClass('select-two');
     $('textarea').addClass('form-control');
+    $('select').addClass('select-two');
+
     $(".select-two").select2();
+}
+
+$(document).ready(function () {
+    setNavActive();
+
+    setDeleteConfirmation();
+
+    set_delete_icon();
+
+    $('.dataTables_paginate').click(function(){
+       set_delete_icon();
+    });
+
+    $('.dataTables_filter').find('input[type="search"]').change(function() {
+       set_delete_icon();
+    });
+
+    setDateTimePicker();
+
+    setFormFields();
 
     initVocabulariesTabs($);
-
-
 });
 
-setNavActive();
+// Action Form stuff
 
+function addActionForm(that) {
+    var button = $(that).parents('tbody');
+    var form = $('#action-form').children();
+
+    form.clone().insertBefore(button);
+    button.prev().prepend('<tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>');
+    $(".select2-container").remove();
+    $(".select-two").select2();
+    //format: 'm/d/Y H:i'
+    $('.datetimepicker').datetimepicker({
+        format: 'MM/dd/yyyy hh:mm:ss'
+    });
+    $(".select2-container").attr('style', 'width:85%');
+}
+
+function deleteActionForm(that) {
+    $(that).parents('tbody').remove();
+}

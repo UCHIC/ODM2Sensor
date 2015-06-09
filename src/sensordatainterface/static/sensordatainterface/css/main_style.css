@@ -2,8 +2,8 @@ html, body {
   height: 100%;
 }
 
-body {
-    overflow-x: hidden;
+html {
+     overflow-y: scroll;
 }
 
 .title {
@@ -310,4 +310,8 @@ label {
 
 .bootstrap-datetimepicker-widget:after {
   left: 217;
+}
+
+#action-form {
+    display: none;
 }

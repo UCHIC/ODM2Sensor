@@ -58,4 +58,9 @@ urlpatterns = patterns('',
                         name='create_calibration_method'),
                         url(r'^vocabulary/delete-calibration-method/(?P<method_id>\d+)/$', edit_views.delete_calibration_method,
                         name='delete_calibration_method'),
+
+                        url(r'^site-visits/create-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
+                        name='create_site_visit'),
+                        # url(r'^vocabulary/delete-calibration-method/(?P<method_id>\d+)/$', edit_views.delete_calibration_method,
+                        # name='delete_calibration_method'),
 )

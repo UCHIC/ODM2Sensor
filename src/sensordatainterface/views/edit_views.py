@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from copy import deepcopy
 from django import forms
+from django.forms.formsets import formset_factory
 
 
 @login_required(login_url=LOGIN_URL)
@@ -14,21 +15,22 @@ def edit_site(request, site_id):
         if request.POST['action'] == 'update':
             samplingfeature = SamplingFeature.objects.get(pk=request.POST['item_id'])
             site = Sites.objects.get(pk=request.POST['item_id'])
-            SampFeatForm = SamplingFeatureForm(request.POST, instance=samplingfeature)
-            SitesForm = SiteForm(request.POST, instance=site)
-        else:
-            SampFeatForm = SamplingFeatureForm(request.POST)
-            SitesForm = SiteForm(request.POST)
+            samp_feat_form = SamplingFeatureForm(request.POST, instance=samplingfeature)
+            sites_form = SiteForm(request.POST, instance=site)
 
-        if SampFeatForm.is_valid() and SitesForm.is_valid():
+        else:
+            samp_feat_form = SamplingFeatureForm(request.POST)
+            sites_form = SiteForm(request.POST)
+
+        if samp_feat_form.is_valid() and sites_form.is_valid():
             # IDENTITY_INSERT error solved by changing samplingfeatureid for SamplingFeatures to AutoField in models.py
-            samplingfeature = SampFeatForm.save(commit=False)
+            samplingfeature = samp_feat_form.save(commit=False)
             samplingfeature.samplingfeaturetypecv = 'Site'
             samplingfeature.save()
 
-            site = SitesForm.save(commit=False)
+            site = sites_form.save(commit=False)
             site.samplingfeatureid = samplingfeature
-            site.latlondatumid = SitesForm.cleaned_data['latlondatumid']
+            site.latlondatumid = sites_form.cleaned_data['latlondatumid']
             site.save()
 
             messages.add_message(request, messages.SUCCESS, 'Site ' + request.POST['action'] + 'd successfully')
@@ -39,19 +41,19 @@ def edit_site(request, site_id):
     elif site_id:
         samplingfeature = SamplingFeature.objects.get(pk=site_id)
         site = Sites.objects.get(pk=site_id)
-        SampFeatForm = SamplingFeatureForm(instance=samplingfeature)
-        SitesForm = SiteForm(instance=site)
-        SitesForm.initial['latlondatumid'] = site.latlondatumid.spatialreferenceid
+        samp_feat_form = SamplingFeatureForm(instance=samplingfeature)
+        sites_form = SiteForm(instance=site)
+        sites_form.initial['latlondatumid'] = site.latlondatumid.spatialreferenceid
         action = 'update'
 
     else:
-        SampFeatForm = SamplingFeatureForm()
-        SitesForm = SiteForm()
+        samp_feat_form = SamplingFeatureForm()
+        sites_form = SiteForm()
 
     return render(
         request,
         'sites/site-form.html',
-        {'render_forms': [SampFeatForm, SitesForm], 'action': action, 'item_id': site_id}
+        {'render_forms': [samp_feat_form, sites_form], 'action': action, 'item_id': site_id}
     )
 
 
@@ -63,11 +65,11 @@ def edit_factory_service_event(request, action_id):
             action_model = Action.objects.get(pk=request.POST['item_id'])
             maintenance = MaintenanceAction.objects.get(pk=request.POST['item_id'])
             equipment_used = EquipmentUsed.objects.get(actionid=request.POST['item_id'])
-            action_form = ActionForm(request.POST, instance=action_model)
+            action_form = FactoryServiceActionForm(request.POST, instance=action_model)
             maintenance_form = MaintenanceActionForm(request.POST, instance=maintenance)
             equipment_form = EquipmentUsedForm(request.POST, instance=equipment_used)
         else:
-            action_form = ActionForm(request.POST)
+            action_form = FactoryServiceActionForm(request.POST)
             maintenance_form = MaintenanceActionForm(request.POST)
             equipment_form = EquipmentUsedForm(request.POST)
 
@@ -96,7 +98,7 @@ def edit_factory_service_event(request, action_id):
         action_model = Action.objects.get(pk=action_id)
         maintenance = MaintenanceAction.objects.get(pk=action_id)
         equipment_used = EquipmentUsed.objects.get(actionid=action_id)
-        action_form = ActionForm(instance=action_model)
+        action_form = FactoryServiceActionForm(instance=action_model)
         maintenance_form = MaintenanceActionForm(instance=maintenance)
         equipment_form = EquipmentUsedForm(instance=equipment_used)
         action_form.initial['methodid'] = action_model.methodid
@@ -104,7 +106,7 @@ def edit_factory_service_event(request, action_id):
         action = 'update'
 
     else:
-        action_form = ActionForm()
+        action_form = FactoryServiceActionForm()
         maintenance_form = MaintenanceActionForm()
         equipment_form = EquipmentUsedForm()
 
@@ -450,7 +452,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
             messages.add_message(request, messages.SUCCESS,
                                  'Output Variable ' + request.POST['action'] + 'd successfully')
-            if deployment == None:
+            if deployment is None:
                 return HttpResponseRedirect(reverse('site_detail', args=[site_id]))
             else:
                 equipment_used = EquipmentUsed.objects.get(pk=deployment)
@@ -462,7 +464,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
         outputvar_form.initial['variableid'] = outputvar.variableid
         outputvar_form.initial['instrumentrawoutputunitsid'] = outputvar.instrumentrawoutputunitsid
         outputvar_form.initial['instrumentmethodid'] = outputvar.instrumentmethodid
-        if deployment == None:
+        if deployment is None:
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (Q(actionid__actiontypecv='InstrumentDeployment') | Q(actionid__actiontypecv='EquipmentDeployment')),
@@ -484,7 +486,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
     else:
         outputvar_form = SiteDeploymentMeasuredVariableForm()
-        if deployment == None:
+        if deployment is None:
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (Q(actionid__actiontypecv='InstrumentDeployment') | Q(actionid__actiontypecv='EquipmentDeployment')),
@@ -504,4 +506,27 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
         {'render_forms': [outputvar_form], 'action': action, 'item_id': outputvar_id, 'specific_name': specific_name,
          'site_id': site_id, 'deployment_id': deployment }
 
+    )
+
+
+@login_required(login_url=LOGIN_URL)
+def edit_site_visit(request, action_id):
+    action = 'create'
+    if request.method == 'POST':
+        pass
+
+    else:
+        sampling_feature_form = FeatureActionForm()
+        site_visit_form = SiteVisitForm()
+        crew_form = CrewForm()
+
+        action_form = ActionForm()
+
+        # add additional fields and put classes to make visible depending on action type.
+
+
+    return render(
+        request,
+        'site-visits/actions-form.html',
+        {'render_forms': [sampling_feature_form, site_visit_form, crew_form ], 'actions_form': action_form, 'action': action, 'item_id': action_id}
     )

@@ -1,13 +1,17 @@
-from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, HiddenInput
-from sensordatainterface.models import SamplingFeature, Sites, SpatialReference, Equipment, Organization, \
-    EquipmentModel, People, Action, MaintenanceAction, Method, EquipmentUsed, Affiliation, \
-    ReferenceMaterial, ReferenceMaterialValue, Variable, Units, InstrumentOutputVariable
+from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple\
+    , ModelMultipleChoiceField
+from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 
 
 class SpatialReferenceChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.srsname
+
+
+class SamplingFeatureChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.samplingfeaturename
 
 
 class OrganizationChoiceField(ModelChoiceField):
@@ -21,6 +25,10 @@ class EquipmentModelChoiceField(ModelChoiceField):
 
 
 class PeopleChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.personfirstname + " " + obj.personlastname
+
+class PeopleMultipleChoice(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.personfirstname + " " + obj.personlastname
 
@@ -44,9 +52,11 @@ class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.variablenamecv
 
+
 class DeploymentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return str(obj.actionid.begindatetime)+": "+obj.equipmentid.equipmentname
+
 
 class SamplingFeatureForm(ModelForm):
     class Meta:
@@ -166,60 +176,6 @@ class EquipmentModelForm(ModelForm):
             'isinstrument': _('Is Instrument'),
             'modellink': _('Model Link'),
             'modelspecificationsfilelink': _('Specifications File'),
-        }
-
-
-class ActionForm(ModelForm):
-    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
-                                 empty_label='Choose a Method')
-
-    class Meta:
-        model = Action
-        fields = [
-            'begindatetime',
-            'begindatetimeutcoffset',
-            'enddatetime',
-            'enddatetimeutcoffset',
-            'actiondescription',
-            'actionfilelink',
-        ]
-
-        widgets = {
-            'begindatetime': DateTimeInput,
-            'begindatetimeutcoffset': NumberInput,
-            'enddatetime': DateTimeInput,
-            'enddatetimeutcoffset': NumberInput,
-            'actionfilelink': TextInput,
-        }
-
-        labels = {
-            'begindatetime': _('Begin Time'),
-            'begindatetimeutcoffset': _('Begin UTC Offset'),
-            'enddatetime': _('End Time'),
-            'enddatetimeutcoffset': _('End UTC Offset'),
-            'actionfilelink': _('Action File'),
-            'actiondescription': _('Description')
-        }
-
-
-class MaintenanceActionForm(ModelForm):
-    class Meta:
-        model = MaintenanceAction
-        fields = [
-            # 'isfactoryservice' YES
-            'maintenancecode',
-            'maintenancereason',
-        ]
-
-        widgets = {
-            # 'isfactoryservice': BooleanField,
-            'maintenancecode': TextInput,
-        }
-
-        labels = {
-            # 'isfactoryservice': _('Is Factory Service')
-            'maintenancecode': _('Maintenance Code'),
-            'maintenancereason': _('Maintenance Reason')
         }
 
 
@@ -458,6 +414,7 @@ class OutputVariableForm(ModelForm):
             'instrumentaccuracy': _('Instrument Accuracy')
         }
 
+
 class SiteDeploymentMeasuredVariableForm(ModelForm):
     instrumentmethodid = MethodChoiceField(
         queryset=Method.objects.all(),
@@ -490,4 +447,153 @@ class SiteDeploymentMeasuredVariableForm(ModelForm):
         labels = {
             'instrumentresolution': _('Instrument Resolution'),
             'instrumentaccuracy': _('Instrument Accuracy')
+        }
+
+
+class FactoryServiceActionForm(ModelForm):
+    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
+                                 empty_label='Choose a Method')
+
+    class Meta:
+        model = Action
+        fields = [
+            'begindatetime',
+            'begindatetimeutcoffset',
+            'enddatetime',
+            'enddatetimeutcoffset',
+            'actiondescription',
+            'actionfilelink',
+        ]
+
+        widgets = {
+            'begindatetime': DateTimeInput,
+            'begindatetimeutcoffset': NumberInput,
+            'enddatetime': DateTimeInput,
+            'enddatetimeutcoffset': NumberInput,
+            'actionfilelink': TextInput,
+        }
+
+        labels = {
+            'begindatetime': _('Begin Time'),
+            'begindatetimeutcoffset': _('Begin UTC Offset'),
+            'enddatetime': _('End Time'),
+            'enddatetimeutcoffset': _('End UTC Offset'),
+            'actionfilelink': _('Action File'),
+            'actiondescription': _('Description')
+        }
+
+
+class MaintenanceActionForm(ModelForm):
+    class Meta:
+        model = MaintenanceAction
+        fields = [
+            # 'isfactoryservice' YES
+            'maintenancecode',
+            'maintenancereason',
+        ]
+
+        widgets = {
+            # 'isfactoryservice': BooleanField,
+            'maintenancecode': TextInput,
+        }
+
+        labels = {
+            # 'isfactoryservice': _('Is Factory Service')
+            'maintenancecode': _('Maintenance Code'),
+            'maintenancereason': _('Maintenance Reason')
+        }
+
+
+class SiteVisitForm(ModelForm):
+    class Meta:
+        model = Action
+        fields = [
+            'begindatetime',
+            'begindatetimeutcoffset',
+            'enddatetime',
+            'enddatetimeutcoffset',
+            'actiondescription',
+        ]
+        widgets = {
+            'begindatetimeutcoffset': NumberInput,
+            'enddatetimeutcoffset': NumberInput,
+        }
+        labels = {
+            'begindatetime': _('Begin Date Time'),
+            'begindatetimeutcoffset': _('Begin UTF Offset'),
+            'enddatetime': _('End Date Time'),
+            'enddatetimeutcoffset': _('End UTF Offset'),
+            'actiondescription': _('Description'),
+        }
+
+
+class CrewForm(ModelForm):
+    personid = PeopleMultipleChoice(queryset=People.objects.all(), label="Crew")
+
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        self.fields['personid'].help_text = None
+
+    class Meta:
+        model = Affiliation
+        fields = ['personid']
+        widgets = {'personid': SelectMultiple}
+
+
+class FeatureActionForm(ModelForm):
+    samplingfeatureid = SamplingFeatureChoiceField(
+        queryset=SamplingFeature.objects.all(),
+        label='Site',
+        empty_label="Choose a Site"
+    )
+
+    class Meta:
+        model = FeatureAction
+        fields = ['samplingfeatureid']
+
+
+class ActionForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        actiontype = kwargs.pop('actiontype', None)
+        super(ActionForm, self).__init__(*args, **kwargs)
+
+        if actiontype:
+            self.fields['methodid'].queryset = Method.objects.filter(actiontypecv=actiontype)
+
+    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
+                                 empty_label='Choose a Method')
+
+    class Meta:
+        model = Action
+        fields = [
+            'actiontypecv',
+            'begindatetime',
+            'begindatetimeutcoffset',
+            'enddatetime',
+            'enddatetimeutcoffset',
+            'actiondescription',
+            'actionfilelink',
+        ]
+
+        widgets = {
+            'actiontypecv': Select(choices=[
+                ('Generic', 'Generic'),
+                ('EquipmentDeployment', 'Deployment'),
+                ('InstrumentCalibration', 'Calibration'),
+                ('EquipmentMaintenance', 'Maintenance')
+            ]),
+            'begindatetime': DateTimeInput,
+            'begindatetimeutcoffset': NumberInput,
+            'enddatetime': DateTimeInput,
+            'enddatetimeutcoffset': NumberInput,
+            'actionfilelink': TextInput,
+        }
+
+        labels = {
+            'begindatetime': _('Begin Time'),
+            'begindatetimeutcoffset': _('Begin UTC Offset'),
+            'enddatetime': _('End Time'),
+            'enddatetimeutcoffset': _('End UTC Offset'),
+            'actionfilelink': _('Action File'),
+            'actiondescription': _('Description')
         }

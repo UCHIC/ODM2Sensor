@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{# Template form only for simple forms #}
+{% block content %}
+    <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
+        Site Visit</h1></div>
+    <div class="row">
+        <form class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"
+              method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ action }}" name="action">
+            <input type="hidden" value="{{ item_id }}" name="item_id">
+            <table class="table form-table form-group">
+                <tbody>
+                {% for render_form in render_forms %}
+                    {{ render_form.as_table }}
+                {% endfor %}
+                </tbody>
+                <tbody>
+                <tr>
+                    <th></th>
+                    <td>
+                        <div class="row">
+                            <a class='btn btn-default col-xs-12 col-sm-12'
+                               onclick='javascript:addActionForm(this)'>+ Add Action</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            <tbody>
+            <tr>
+                    <th></th>
+                    <td>
+                        <div class="row">
+                            <a class="btn btn-default col-xs-12 col-sm-12"
+                                    {% if item_id %}
+                               href="{% block detail_cancel_url %}{% endblock %}"
+                                    {% else %}
+                               href="{% block list_cancel_url %}{% endblock %}"
+                                    {% endif %}>
+                                Cancel
+                            </a>
+                            <input class="btn btn-primary col-xs-12 col-sm-12" type="submit"
+                                   value="{{ action|capfirst }} {% block button_value %}{% endblock %}">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </form>
+    </div>
+    <table id="action-form">
+        {{ actions_form }}
+    </table>
+{% endblock %}
