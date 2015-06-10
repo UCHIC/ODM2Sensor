@@ -42,8 +42,8 @@ function changeTab(tab) {
         href = href.substr(0, getStart);
     }
     //window.location.href = href + '?tab='+tab; causes reload :(
-    var stateObj = { tab: tab };
-    history.replaceState(stateObj, tab, '?tab='+tab);
+    var stateObj = {tab: tab};
+    history.replaceState(stateObj, tab, '?tab=' + tab);
 }
 
 function setInitialTab($) {
@@ -82,9 +82,9 @@ function set_delete_icon() {
         onCancel: function () {
             $('.delete-icon').confirmation('hide');
         },
-        onConfirm: function() {
+        onConfirm: function () {
             var tableClicked = $(this).parents('.dataTables_wrapper').attr('id');
-            var table = $('#'+tableClicked);
+            var table = $('#' + tableClicked);
             var searchText = table.find('input[type="search"]')[0].value;
 
             sessionStorage.setItem('tableClicked', tableClicked);
@@ -112,7 +112,7 @@ function setDateTimePicker() {
     dateElements.push($("[name='referencematerialpurchasedate']"));
     dateElements.push($("[name='referencematerialexpirationdate']"));
 
-    dateElements.forEach(function(element) {
+    dateElements.forEach(function (element) {
         element.wrap("<div class='datetimepicker input-append date'></div");
         element.removeClass('form-control');
         element.after(
@@ -148,12 +148,12 @@ $(document).ready(function () {
 
     set_delete_icon();
 
-    $('.dataTables_paginate').click(function(){
-       set_delete_icon();
+    $('.dataTables_paginate').click(function () {
+        set_delete_icon();
     });
 
-    $('.dataTables_filter').find('input[type="search"]').change(function() {
-       set_delete_icon();
+    $('.dataTables_filter').find('input[type="search"]').change(function () {
+        set_delete_icon();
     });
 
     setDateTimePicker();
@@ -169,7 +169,8 @@ function addActionForm(that) {
     var button = $(that).parents('tbody');
     var form = $('#action-form').children();
 
-    form.clone().insertBefore(button);
+    var thisForm = form.clone();
+    thisForm.insertBefore(button);
     button.prev().prepend('<tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>');
     $(".select2-container").remove();
     $(".select-two").select2();
@@ -178,8 +179,35 @@ function addActionForm(that) {
         format: 'MM/dd/yyyy hh:mm:ss'
     });
     $(".select2-container").attr('style', 'width:85%');
+
+    $(thisForm).find('.select-two[name="actiontypecv"]').change(function () {
+        var selected = $(this).val();//$(this).next().find('.select2-selection__rendered').html();
+        var currentActionForm = $(this).parents('tbody');
+        formSelected(selected, currentActionForm);
+    });
+
+    $(thisForm).find(".calibration").parents('tr').hide();
+    $(thisForm).find(".maintenance").parents('tr').hide();
 }
 
 function deleteActionForm(that) {
     $(that).parents('tbody').remove();
+}
+
+function formSelected(formType, currentForm) {
+    var formClasses = {
+        'EquipmentDeployment': 'deployment',
+        'InstrumentCalibration': 'calibration',
+        'EquipmentMaintenance': 'maintenance'
+    };
+
+    for (var key in formClasses) {
+        if (formClasses.hasOwnProperty(key) && key !== formType) {
+            $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
+        }
+    }
+
+    if (formClasses.hasOwnProperty(formType)) {
+        $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
+    }
 }

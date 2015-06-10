@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from copy import deepcopy
 from django import forms
-from django.forms.formsets import formset_factory
+# from sensordatainterface.forms import InstrumentOutputVariableChoiceField
 
 
 @login_required(login_url=LOGIN_URL)
@@ -467,7 +467,9 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
         if deployment is None:
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
-                    (Q(actionid__actiontypecv='InstrumentDeployment') | Q(actionid__actiontypecv='EquipmentDeployment')),
+                    (
+                        Q(actionid__actiontypecv='InstrumentDeployment') | Q(
+                            actionid__actiontypecv='EquipmentDeployment')),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -476,10 +478,11 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.initial['deployments'] = EquipmentUsed.objects.filter(
                 equipmentid__equipmentmodelid=outputvar.modelid,
                 equipmentid__equipmentused__actionid__featureaction__samplingfeatureid=site_id
-                ).first()
+            ).first()
             render_form = 'sites/site-output-variable-form.html'
         else:
-            outputvar_form.fields['deployments'] = forms.CharField(widget=forms.HiddenInput(), label='deployments', initial=deployment)
+            outputvar_form.fields['deployments'] = forms.CharField(widget=forms.HiddenInput(), label='deployments',
+                                                                   initial=deployment)
             render_form = 'site-visits/deployment/deployment-output-variable-form.html'
 
         action = 'update'
@@ -489,7 +492,9 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
         if deployment is None:
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
-                    (Q(actionid__actiontypecv='InstrumentDeployment') | Q(actionid__actiontypecv='EquipmentDeployment')),
+                    (
+                        Q(actionid__actiontypecv='InstrumentDeployment') | Q(
+                            actionid__actiontypecv='EquipmentDeployment')),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -497,14 +502,15 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             )
             render_form = 'sites/site-output-variable-form.html'
         else:
-            outputvar_form.fields['deployments'] = forms.CharField(widget=forms.HiddenInput(), label='deployments', initial=deployment)
+            outputvar_form.fields['deployments'] = forms.CharField(widget=forms.HiddenInput(), label='deployments',
+                                                                   initial=deployment)
             render_form = 'site-visits/deployment/deployment-output-variable-form.html'
 
     return render(
         request,
         render_form,
         {'render_forms': [outputvar_form], 'action': action, 'item_id': outputvar_id, 'specific_name': specific_name,
-         'site_id': site_id, 'deployment_id': deployment }
+         'site_id': site_id, 'deployment_id': deployment}
 
     )
 
@@ -513,6 +519,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 def edit_site_visit(request, action_id):
     action = 'create'
     if request.method == 'POST':
+        # Fields are passed in the list even when they are empty. One idea to parse and validate this form is to pop the
+        # first value from each list as needed (because the size of the list will be how many fields submitted them). Chop chop homie.
         pass
 
     else:
@@ -521,12 +529,32 @@ def edit_site_visit(request, action_id):
         crew_form = CrewForm()
 
         action_form = ActionForm()
-
         # add additional fields and put classes to make visible depending on action type.
 
+        # fields for equipment maintenance:
+        action_form.fields['equipmentused'] = EquipmentChoiceField(
+            queryset=Equipment.objects.all(),
+            widget=forms.Select(attrs={}), label='Equipment Used'
+        )
+        action_form.fields['isfactoryservice'] = forms.BooleanField(
+            widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service')
+        action_form.fields['maintenancecode'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'maintenance'}), label='Maintenance Code')
+        action_form.fields['maintenancereason'] = forms.CharField(
+            widget=forms.Textarea(attrs={'class': 'maintenance'}), label='Maintenance Reason')
+
+        # fields for calibration
+        action_form.fields['instrumentoutputvariable'] = InstrumentOutputVariableChoiceField(
+            widget=forms.Select(attrs={'class': 'calibration'}),
+            queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable')
+        action_form.fields['calibrationcheckvalue'] = forms.DecimalField(
+            widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value')
+        action_form.fields['calibrationequation'] = forms.CharField(
+            widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation')
 
     return render(
         request,
         'site-visits/actions-form.html',
-        {'render_forms': [sampling_feature_form, site_visit_form, crew_form ], 'actions_form': action_form, 'action': action, 'item_id': action_id}
+        {'render_forms': [sampling_feature_form, site_visit_form, crew_form], 'actions_form': action_form,
+         'action': action, 'item_id': action_id}
     )

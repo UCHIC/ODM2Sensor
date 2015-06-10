@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple\
-    , ModelMultipleChoiceField
+    , ModelMultipleChoiceField, FileInput
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 
@@ -56,6 +56,10 @@ class VariableChoiceField(ModelChoiceField):
 class DeploymentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return str(obj.actionid.begindatetime)+": "+obj.equipmentid.equipmentname
+
+class InstrumentOutputVariableChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.modelid.modelname+": "+obj.variableid.variablenamecv
 
 
 class SamplingFeatureForm(ModelForm):
@@ -586,7 +590,7 @@ class ActionForm(ModelForm):
             'begindatetimeutcoffset': NumberInput,
             'enddatetime': DateTimeInput,
             'enddatetimeutcoffset': NumberInput,
-            'actionfilelink': TextInput,
+            'actionfilelink': FileInput,
         }
 
         labels = {
