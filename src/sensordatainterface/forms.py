@@ -1,7 +1,8 @@
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple\
-    , ModelMultipleChoiceField, FileInput
+    , ModelMultipleChoiceField, FileInput, HiddenInput
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
+from django import forms
 
 
 class SpatialReferenceChoiceField(ModelChoiceField):
@@ -30,7 +31,7 @@ class PeopleChoiceField(ModelChoiceField):
 
 class PeopleMultipleChoice(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.personfirstname + " " + obj.personlastname
+        return obj.organizationid.organizationname+": "+obj.personid.personfirstname + " " + obj.personid.personlastname
 
 
 class MethodChoiceField(ModelChoiceField):
@@ -532,16 +533,16 @@ class SiteVisitForm(ModelForm):
 
 
 class CrewForm(ModelForm):
-    personid = PeopleMultipleChoice(queryset=People.objects.all(), label="Crew")
+    affiliationid = PeopleMultipleChoice(queryset=Affiliation.objects.all(), label="Crew")
 
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
-        self.fields['personid'].help_text = None
+        self.fields['affiliationid'].help_text = None
 
     class Meta:
-        model = Affiliation
-        fields = ['personid']
-        widgets = {'personid': SelectMultiple}
+        model = ActionBy
+        fields = ['affiliationid']
+        widgets = {'affiliationid': SelectMultiple}
 
 
 class FeatureActionForm(ModelForm):
@@ -567,6 +568,31 @@ class ActionForm(ModelForm):
     methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
                                  empty_label='Choose a Method')
 
+    # add additional fields and put classes to make visible depending on action type.
+    # fields for equipment maintenance:
+    equipmentused = EquipmentChoiceField(
+        queryset=Equipment.objects.all(),
+        widget=forms.Select(attrs={}), label='Equipment Used'
+    )
+    isfactoryservice = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service', required=False)
+    isfactoryservicebool = forms.BooleanField(
+        widget=HiddenInput(), initial='False', required=False
+    )
+    maintenancecode = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'maintenance'}), label='Maintenance Code', required=False)
+    maintenancereason = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'maintenance'}), label='Maintenance Reason', required=False)
+
+    # fields for calibration
+    instrumentoutputvariable = InstrumentOutputVariableChoiceField(
+        widget=forms.Select(attrs={'class': 'calibration'}),
+        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
+    calibrationcheckvalue = forms.DecimalField(
+        widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
+    calibrationequation = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation', required=False)
+
     class Meta:
         model = Action
         fields = [
@@ -577,6 +603,7 @@ class ActionForm(ModelForm):
             'enddatetimeutcoffset',
             'actiondescription',
             'actionfilelink',
+            'methodid'
         ]
 
         widgets = {

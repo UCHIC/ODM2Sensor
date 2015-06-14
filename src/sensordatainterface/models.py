@@ -16,7 +16,7 @@ class ActionAnnotation(models.Model):
 
 
 class ActionBy(models.Model):
-    bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
+    bridgeid = models.AutoField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey('Action', related_name="actionby", db_column='ActionID')  # Field name made lowercase.
     affiliationid = models.ForeignKey('Affiliation', db_column='AffiliationID')  # Field name made lowercase.
     isactionlead = models.BooleanField(
@@ -455,7 +455,7 @@ class ExternalIdentifierSystem(models.Model):
 
 
 class FeatureAction(models.Model):
-    featureactionid = models.IntegerField(db_column='FeatureActionID', primary_key=True)  # Field name made lowercase.
+    featureactionid = models.AutoField(db_column='FeatureActionID', primary_key=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature', related_name="featureaction",
                                           db_column='SamplingFeatureID')  # Field name made lowercase.
     actionid = models.ForeignKey(Action, related_name="featureaction", db_column='ActionID')  # Field name made lowercase.
@@ -856,7 +856,7 @@ class ReferenceMaterial(models.Model):
 
 
 class RelatedAction(models.Model):
-    relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
+    relationid = models.AutoField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey(Action, related_name='relatedaction',
                                  db_column='ActionID')  # Field name made lowercase.
     relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.

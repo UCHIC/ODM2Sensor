@@ -186,6 +186,18 @@ function addActionForm(that) {
         formSelected(selected, currentActionForm);
     });
 
+    // This bit of code solves the problem of th checkbox not sending status when is unchecked.
+    // ie. it will not send False to the server
+    $(thisForm).find('.maintenance[type="checkbox"]').change(function () {
+        var thisCheckBox = $(this)
+        var hiddenCheckBox = thisCheckBox.parents('tbody').find('#id_isfactoryservicebool');
+        if (thisCheckBox[0].checked) {
+            hiddenCheckBox.attr('value', 'True');
+        } else {
+            hiddenCheckBox.attr('value', 'False');
+        }
+    });
+
     $(thisForm).find(".calibration").parents('tr').hide();
     $(thisForm).find(".maintenance").parents('tr').hide();
 }

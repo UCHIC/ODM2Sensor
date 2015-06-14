@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from copy import deepcopy
 from django import forms
-# from sensordatainterface.forms import InstrumentOutputVariableChoiceField
 
 
 @login_required(login_url=LOGIN_URL)
@@ -313,7 +312,7 @@ def edit_vendor(request, organization_id):
                  'organizationid', organization_id, 'vocabulary/vendor-form.html']
     return edit_models(*arguments)
 
-
+@login_required(login_url=LOGIN_URL)
 def delete_vendor(request, organization_id):
     organization = Organization.objects.get(pk=organization_id)
     Affiliation.objects.filter(organizationid=organization).delete()
@@ -322,7 +321,7 @@ def delete_vendor(request, organization_id):
     messages.add_message(request, messages.SUCCESS, 'Organization ' + organization_name + ' removed successfully.')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=vendor')
 
-
+@login_required(login_url=LOGIN_URL)
 def edit_calibration_standard(request, reference_val_id):
     action = 'create'
     if request.method == 'POST':
@@ -377,7 +376,7 @@ def edit_calibration_standard(request, reference_val_id):
 
     )
 
-
+@login_required(login_url=LOGIN_URL)
 def delete_calibration_standard(request, reference_val_id):
     reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
     reference = reference_mat_val.variableid.variabletypecv + "(" + str(reference_mat_val.referencematerialvalue) + ")"
@@ -386,7 +385,7 @@ def delete_calibration_standard(request, reference_val_id):
     messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + "deleted successfully")
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
 
-
+@login_required(login_url=LOGIN_URL)
 def edit_calibration_method(request, method_id):
     modifications = {
         'organizationid': ['organizationid'],
@@ -396,7 +395,7 @@ def edit_calibration_method(request, method_id):
 
     return edit_models(*arguments)
 
-
+@login_required(login_url=LOGIN_URL)
 def delete_calibration_method(request, method_id):
     method = Method.objects.get(pk=method_id)
     method_name = method.methodname
@@ -404,7 +403,7 @@ def delete_calibration_method(request, method_id):
     messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' succesfully deleted')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
 
-
+@login_required(login_url=LOGIN_URL)
 def edit_output_variable(request, outputvar_id):
     modifications = {
         'instrumentmethodid': ['instrumentmethodid', 'methodid'],
@@ -418,7 +417,7 @@ def edit_output_variable(request, outputvar_id):
 
     return edit_models(*arguments)
 
-
+@login_required(login_url=LOGIN_URL)
 def delete_output_variable(request, outputvar_id):
     output_var = InstrumentOutputVariable.objects.get(pk=outputvar_id)
     output_var_name = output_var.variableid.variablecode
@@ -427,7 +426,7 @@ def delete_output_variable(request, outputvar_id):
                          'Instrument Output Variable for variable ' + output_var_name + ' succesfully deleted')
     return HttpResponseRedirect(reverse('sensor_output'))
 
-
+@login_required(login_url=LOGIN_URL)
 def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
     # This function is going to use results table in database for relationships.
     # As it is, it needs some fixing.
@@ -514,14 +513,109 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
     )
 
-
 @login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
     action = 'create'
     if request.method == 'POST':
         # Fields are passed in the list even when they are empty. One idea to parse and validate this form is to pop the
         # first value from each list as needed (because the size of the list will be how many fields submitted them). Chop chop homie.
-        pass
+
+        site_visit_data = {
+            'begindatetime': request.POST.getlist('begindatetime')[0],
+            'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
+            'enddatetime': request.POST.getlist('enddatetime')[0],
+            'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
+            'actiondescription': request.POST.getlist('actiondescription')[0],
+        }
+
+        sampling_feature_form = FeatureActionForm(request.POST)
+        site_visit_form = SiteVisitForm(site_visit_data)
+        crew_form = CrewForm(request.POST)
+
+        forms_returned = len(request.POST.getlist('actiontypecv'))
+
+        action_form = []
+        maintenance_counter = 0
+        for i in range(1, forms_returned+1):
+            action_type = request.POST.getlist('actiontypecv')[i-1]
+            form_data = {
+                'actiontypecv': action_type, #check indexes
+                'begindatetime': request.POST.getlist('begindatetime')[i],
+                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
+                'enddatetime': request.POST.getlist('enddatetime')[i],
+                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
+                'actiondescription': request.POST.getlist('actiondescription')[i],
+                'actionfilelink': request.POST.getlist('actionfilelink')[i-1],
+                'methodid': request.POST.getlist('methodid')[i-1],
+                'equipmentused': request.POST.getlist('equipmentused')[i-1],
+                'maintenancecode': request.POST.getlist('maintenancecode')[i-1],
+                'maintenancereason': request.POST.getlist('maintenancereason')[i-1],
+                'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i-1],
+                'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i-1],
+                'calibrationequation': request.POST.getlist('calibrationequation')[i-1],
+            }
+            if request.POST.getlist('isfactoryservicebool')[i-1] == 'True':
+                form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
+                maintenance_counter += 1
+
+            action_form.append(ActionForm(form_data))
+
+        # validate crew
+        crew_form_valid = crew_form.is_valid()
+        affiliation_list = request.POST.getlist('affiliationid')
+        for i in range(0, len(affiliation_list)):
+            exists = Affiliation.objects.filter(affiliationid=affiliation_list[i])
+            crew_form_valid = crew_form_valid and exists.count() > 0
+
+        all_forms_valid = site_visit_form.is_valid() and sampling_feature_form.is_valid() and crew_form_valid
+        for form_elem in action_form:
+            all_forms_valid = all_forms_valid and form_elem.is_valid()
+            # Validate depending on the actiontypecv
+
+        #validate extra data
+
+        if all_forms_valid:
+            #set up site visit
+            sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
+            site_visit_action = site_visit_form.save(commit=False)
+            site_visit_action.methodid = Method.objects.get(pk=1000)
+            site_visit_action.actiontypecv = 'SiteVisit'
+            site_visit_action.save()
+
+            FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=site_visit_action)
+
+            for affiliation in crew_form.cleaned_data['affiliationid']:
+                ActionBy.objects.create(affiliationid=affiliation, actionid=site_visit_action, isactionlead=0) #isactionlead?
+
+            # set up child actions
+            for i in range(0, len(action_form)):
+                current_action = action_form[i].save(commit=False)
+                action_type = action_form[i].cleaned_data['actiontypecv']
+                current_action.actiontypecv = action_type
+                current_action.save()
+
+                RelatedAction.objects.create(actionid=current_action, relationshiptypecv='is_child_of', relatedactionid=site_visit_action)
+                FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
+
+                EquipmentUsed.objects.create(
+                    actionid=current_action,
+                    equipmentid=action_form[i].cleaned_data['equipmentused'] # might have to bring model instance if integer id starts whining.
+                )
+                if action_type == 'InstrumentCalibration':
+                    CalibrationAction.objects.create(
+                        actionid=current_action,
+                        calibrationcheckvalue=action_form[i].cleaned_data['calibrationcheckvalue'],
+                        instrumentoutputvariableid=action_form[i].cleaned_data['instrumentoutputvariable'],
+                        calibrationequation=action_form[i].cleaned_data['calibrationequation']
+                    )
+                elif action_type == 'EquipmentMaintenance':
+                    MaintenanceAction.objects.create(
+                        actionid=current_action,
+                        isfactoryservice=action_form[i].cleaned_data['isfactoryservice'],
+                        maintenancereason=action_form[i].cleaned_data['maintenancereason']
+                    )
+
+            return HttpResponseRedirect(reverse('site_visit_detail', args=[site_visit_action.actionid]))
 
     else:
         sampling_feature_form = FeatureActionForm()
@@ -529,28 +623,6 @@ def edit_site_visit(request, action_id):
         crew_form = CrewForm()
 
         action_form = ActionForm()
-        # add additional fields and put classes to make visible depending on action type.
-
-        # fields for equipment maintenance:
-        action_form.fields['equipmentused'] = EquipmentChoiceField(
-            queryset=Equipment.objects.all(),
-            widget=forms.Select(attrs={}), label='Equipment Used'
-        )
-        action_form.fields['isfactoryservice'] = forms.BooleanField(
-            widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service')
-        action_form.fields['maintenancecode'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'maintenance'}), label='Maintenance Code')
-        action_form.fields['maintenancereason'] = forms.CharField(
-            widget=forms.Textarea(attrs={'class': 'maintenance'}), label='Maintenance Reason')
-
-        # fields for calibration
-        action_form.fields['instrumentoutputvariable'] = InstrumentOutputVariableChoiceField(
-            widget=forms.Select(attrs={'class': 'calibration'}),
-            queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable')
-        action_form.fields['calibrationcheckvalue'] = forms.DecimalField(
-            widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value')
-        action_form.fields['calibrationequation'] = forms.CharField(
-            widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation')
 
     return render(
         request,
