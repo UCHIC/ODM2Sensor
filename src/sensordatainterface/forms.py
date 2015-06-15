@@ -532,18 +532,12 @@ class SiteVisitForm(ModelForm):
         }
 
 
-class CrewForm(ModelForm):
+class CrewForm(forms.Form):
     affiliationid = PeopleMultipleChoice(queryset=Affiliation.objects.all(), label="Crew")
 
     def __init__(self, *args, **kwargs):
-        super(ModelForm, self).__init__(*args, **kwargs)
+        super(forms.Form, self).__init__(*args, **kwargs)
         self.fields['affiliationid'].help_text = None
-
-    class Meta:
-        model = ActionBy
-        fields = ['affiliationid']
-        widgets = {'affiliationid': SelectMultiple}
-
 
 class FeatureActionForm(ModelForm):
     samplingfeatureid = SamplingFeatureChoiceField(
