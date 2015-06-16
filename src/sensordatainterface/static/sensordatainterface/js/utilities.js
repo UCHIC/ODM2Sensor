@@ -123,13 +123,44 @@ function setDateTimePicker() {
 
     //format: 'm/d/Y H:i'
     $('.datetimepicker').datetimepicker({
-        format: 'MM/dd/yyyy hh:mm:ss'
-    });
+        format: 'yyyy-MM-dd hh:mm:ss'
+    })
+        .on('changeDate', beginDTChanged);
+
+    var siteVisitEndDTElem = $('.form-table').children().first().find("[name='enddatetime']");
+
+    setFormEndTime(siteVisitEndDTElem, new Date());
 
     var button = $(".timepicker-picker a");
     button.addClass('btn-default');
     button.find('.icon-chevron-up').addClass('glyphicon glyphicon-chevron-up');
     button.find('.icon-chevron-down').addClass('glyphicon glyphicon-chevron-down');
+}
+
+function beginDTChanged(ev) {
+    var changedInputName = $(ev.currentTarget).find('input').attr('name');
+    if (changedInputName !== 'enddatetime') {
+        var beginDate = new Date($(this).find('input').val());
+        var endDTElem = $(ev.currentTarget).parents('tbody').find("[name='enddatetime']");
+        setFormEndTime(endDTElem, beginDate)
+    }
+}
+
+function setFormEndTime(endTimeElem, newDate) {
+    var endDTPickerObj = $(endTimeElem.parents('.datetimepicker')).data('datetimepicker');
+    var elemInitiallyEmpty = endTimeElem.val() === "";
+    var endLessThanBegin = !elemInitiallyEmpty && newDate < new Date(endTimeElem.val());
+
+
+    endDTPickerObj.setStartDate(newDate);
+    if (!endLessThanBegin) {
+        endDTPickerObj.setDate(newDate);
+    }
+
+    if (elemInitiallyEmpty) {
+        endTimeElem.val("");
+    } 
+    
 }
 
 function setFormFields() {

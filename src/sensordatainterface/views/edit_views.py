@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from copy import deepcopy
 from django import forms
+from datetime import datetime
 
 
 @login_required(login_url=LOGIN_URL)
@@ -619,7 +620,7 @@ def edit_site_visit(request, action_id):
 
     else:
         sampling_feature_form = FeatureActionForm()
-        site_visit_form = SiteVisitForm()
+        site_visit_form = SiteVisitForm(initial={'begindatetime': datetime.now()})
         crew_form = CrewForm()
 
         action_form = ActionForm()
