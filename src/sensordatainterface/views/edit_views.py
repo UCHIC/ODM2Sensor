@@ -265,7 +265,7 @@ def edit_person(request, affiliation_id):
             affiliation = affiliation_form.save(commit=False)
             affiliation.personid = person
             # affiliation.organizationid = organization
-            affiliation.affiliationstartdate = datetime.datetime.now()
+            affiliation.affiliationstartdate = datetime.now()
             affiliation.organizationid = affiliation_form.cleaned_data['organizationid']
             affiliation.save()
 
@@ -620,7 +620,7 @@ def edit_site_visit(request, action_id):
 
     else:
         sampling_feature_form = FeatureActionForm()
-        site_visit_form = SiteVisitForm(initial={'begindatetime': datetime.now()})
+        site_visit_form = SiteVisitForm(initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
         crew_form = CrewForm()
 
         action_form = ActionForm()

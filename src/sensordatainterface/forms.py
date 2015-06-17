@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple\
     , ModelMultipleChoiceField, FileInput, HiddenInput
 from sensordatainterface.models import *
@@ -59,9 +60,51 @@ class DeploymentChoiceField(ModelChoiceField):
         return str(obj.actionid.begindatetime)+": "+obj.equipmentid.equipmentname
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.modelid.modelname+": "+obj.variableid.variablenamecv
+        def label_from_instance(self, obj):
+            return obj.modelid.modelname+": "+obj.variableid.variablenamecv
 
+time_zone_choices = (
+        (-12, '-12:00'),
+        (-11, '-11:00'),
+        (-10, '-10:00'),
+        (-9, '-9:00'),
+        (-8, '-8:00 PST'),
+        (-7, '-7:00 MST'),
+        (-6, '-6:00 CST'),
+        (-5, '-5:00 EST'),
+        (-4, '-4:00'),
+        (-3, '-3:00'),
+        (-2, '-2:00'),
+        (-1, '-1:00'),
+        (0, '±0:00'),
+        (1, '+1:00'),
+        (2, '+2:00'),
+        (3, '+3:00'),
+        (4, '+4:00'),
+        (5, '+5:00'),
+        (6, '+6:00'),
+        (7, '+7:00'),
+        (8, '+8:00'),
+        (9, '+9:00'),
+        (10, '+10:00'),
+        (11, '+11:00'),
+        (12, '+12:00'),
+        (13, '+13:00'),
+        (14, '+14:00'),
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+        # 12: '+12:00',
+)
 
 class SamplingFeatureForm(ModelForm):
     class Meta:
@@ -472,9 +515,9 @@ class FactoryServiceActionForm(ModelForm):
 
         widgets = {
             'begindatetime': DateTimeInput,
-            'begindatetimeutcoffset': NumberInput,
+            'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
-            'enddatetimeutcoffset': NumberInput,
+            'enddatetimeutcoffset': Select(choices=time_zone_choices),
             'actionfilelink': TextInput,
         }
 
@@ -520,8 +563,8 @@ class SiteVisitForm(ModelForm):
             'actiondescription',
         ]
         widgets = {
-            'begindatetimeutcoffset': NumberInput,
-            'enddatetimeutcoffset': NumberInput,
+            'begindatetimeutcoffset': Select(choices=time_zone_choices),
+            'enddatetimeutcoffset': Select(choices=time_zone_choices),
         }
         labels = {
             'begindatetime': _('Begin Date Time'),
@@ -608,9 +651,9 @@ class ActionForm(ModelForm):
                 ('EquipmentMaintenance', 'Maintenance')
             ]),
             'begindatetime': DateTimeInput,
-            'begindatetimeutcoffset': NumberInput,
+            'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
-            'enddatetimeutcoffset': NumberInput,
+            'enddatetimeutcoffset': Select(choices=time_zone_choices),
             'actionfilelink': FileInput,
         }
 

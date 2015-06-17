@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {# Template form only for simple forms #}
 {% block content %}
     <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
@@ -51,4 +53,5 @@
     <table id="action-form">
         {{ actions_form }}
     </table>
+    <script src="{% static  "sensordatainterface/js/action_form.js" %}"></script>
 {% endblock %}

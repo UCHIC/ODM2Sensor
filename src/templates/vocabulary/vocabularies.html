@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
     <h1>Control Vocabularies</h1>
     <div role="tabpanel">
@@ -85,4 +87,5 @@
             </div>
         </div>
     </div>
+    <script src="{% static  "sensordatainterface/js/vocabularies.js" %}"></script>
 {% endblock %}
