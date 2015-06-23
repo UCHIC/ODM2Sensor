@@ -537,8 +537,11 @@ def edit_site_visit(request, action_id):
 
         action_form = []
         maintenance_counter = 0
+        equipment_used_position = 0
         for i in range(1, forms_returned+1):
             action_type = request.POST.getlist('actiontypecv')[i-1]
+            equipment_used_count = request.POST.getlist('equipmentusednumber')[i-1]
+
             form_data = {
                 'actiontypecv': action_type, #check indexes
                 'begindatetime': request.POST.getlist('begindatetime')[i],
@@ -548,13 +551,17 @@ def edit_site_visit(request, action_id):
                 'actiondescription': request.POST.getlist('actiondescription')[i],
                 'actionfilelink': request.POST.getlist('actionfilelink')[i-1],
                 'methodid': request.POST.getlist('methodid')[i-1],
-                'equipmentused': request.POST.getlist('equipmentused')[i-1],
+                'equipmentusednumber': equipment_used_count,
                 'maintenancecode': request.POST.getlist('maintenancecode')[i-1],
                 'maintenancereason': request.POST.getlist('maintenancereason')[i-1],
                 'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i-1],
                 'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i-1],
                 'calibrationequation': request.POST.getlist('calibrationequation')[i-1],
             }
+
+            form_data['equipmentused'] = request.POST.getlist('equipmentused')[equipment_used_position:int(equipment_used_count)+equipment_used_position]
+            equipment_used_position += int(equipment_used_count)
+
             if request.POST.getlist('isfactoryservicebool')[i-1] == 'True':
                 form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
                 maintenance_counter += 1
@@ -598,10 +605,12 @@ def edit_site_visit(request, action_id):
                 RelatedAction.objects.create(actionid=current_action, relationshiptypecv='is_child_of', relatedactionid=site_visit_action)
                 FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
 
-                EquipmentUsed.objects.create(
-                    actionid=current_action,
-                    equipmentid=action_form[i].cleaned_data['equipmentused'] # might have to bring model instance if integer id starts whining.
-                )
+                equipments = action_form[i].cleaned_data['equipmentused']
+                for equ in equipments:
+                    EquipmentUsed.objects.create(
+                        actionid=current_action,
+                        equipmentid=equ
+                    )
                 if action_type == 'InstrumentCalibration':
                     CalibrationAction.objects.create(
                         actionid=current_action,

@@ -87,5 +87,7 @@
             </div>
         </div>
     </div>
-    <script src="{% static  "sensordatainterface/js/vocabularies.js" %}"></script>
+    {% block scripts %}
+        <script src="{% static  "sensordatainterface/js/vocabularies.js" %}"></script>
+    {% endblock %}
 {% endblock %}

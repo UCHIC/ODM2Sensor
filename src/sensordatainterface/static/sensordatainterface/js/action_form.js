@@ -55,17 +55,17 @@ function addActionForm(that) {
     thisForm.find("[name='begindatetimeutcoffset']").val(siteVisitForm.find("[name='begindatetimeutcoffset']").val());
     thisForm.find("[name='enddatetimeutcoffset']").val(siteVisitForm.find("[name='enddatetimeutcoffset']").val());
 
-    //Fix error with select2
-    $(".select2-container").remove();
-    $(".select-two").select2();
-    $(".select2-container").attr('style', 'width:85%');
-
     //add handler for when the actiontypecv is changed
     $(thisForm).find('.select-two[name="actiontypecv"]').change(function () {
         var selected = $(this).val();
         var currentActionForm = $(this).parents('tbody');
         formSelected(selected, currentActionForm);
     });
+
+    //Fix error with select2
+    $(".select2-container").remove();
+    $(".select-two").select2();
+    $(".select2-container").attr('style', 'width:85%');
 
     // This bit of code solves the problem of th checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
@@ -79,6 +79,11 @@ function addActionForm(that) {
         }
     });
 
+    //add button for adding new equiment
+    var insertPosition = $(thisForm).find('[name="equipmentused"]', '[name="methodid"]').eq(0).parents('tr');
+    var addEquipmentButton = '<tr><th></th><td><a class="btn btn-default col-xs-2 col-sm-2" onclick="javascript:addEquipmentField(this)">- Add Equipment Used</a></td></tr>';
+    $(addEquipmentButton).insertAfter(insertPosition);
+
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").parents('tr').hide();
     $(thisForm).find(".maintenance").parents('tr').hide();
@@ -88,8 +93,20 @@ function deleteActionForm(that) {
     $(that).parents('tbody').remove();
 }
 
+function addEquipmentField(that) {
+    // Change this function to add a nested form for equipment used...
+    var newField = $($('#action-form').find('[name="equipmentused"]').parents('tr').clone());
+    var select2Elem = newField.find('[name="equipmentused"]');
+    newField.insertBefore($(that).parents('tr'));
+    select2Elem.next('.select2-container').remove();
+    select2Elem.select2();
+    select2Elem.next('.select2-container').attr('style', 'width:85%');
+
+}
+
 function formSelected(formType, currentForm) {
     var formClasses = {
+        'Generic': 'notypeclass',
         'EquipmentDeployment': 'deployment',
         'InstrumentCalibration': 'calibration',
         'EquipmentMaintenance': 'maintenance'
@@ -98,10 +115,33 @@ function formSelected(formType, currentForm) {
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
             $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
+            $('.'+key).attr('disabled', 'disabled');
         }
     }
 
     if (formClasses.hasOwnProperty(formType)) {
         $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
+        $('.'+formType).removeAttr('disabled');
     }
+
+    //reset select2 to hide disabled options
+    var methodSelect = $(currentForm).find('[name="methodid"]');
+    methodSelect.next('select2-container').remove();
+    methodSelect.select2();
+    methodSelect.next('select2-container').attr('style', 'width:85%');
 }
+
+function setEquipmentUsedNumber( event ) {
+       var equipmentUsedElems = $('.input-group tbody').find('[name="equipmentused"]');
+
+       for (var i = 0; i < equipmentUsedElems.length; i++) {
+           var equipmentUsedElem = $(equipmentUsedElems[i]);
+           var equipmentUsedCount = equipmentUsedElem.val().length;
+           equipmentUsedElem.parents('tbody').find('[name="equipmentusednumber"]').val(equipmentUsedCount);
+       }
+
+}
+
+$(document).ready(function() {
+   $('.input-group').submit(setEquipmentUsedNumber);
+});

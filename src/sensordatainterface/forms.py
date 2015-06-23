@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple\
+from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
     , ModelMultipleChoiceField, FileInput, HiddenInput
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
@@ -30,9 +30,10 @@ class PeopleChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.personfirstname + " " + obj.personlastname
 
+
 class PeopleMultipleChoice(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.organizationid.organizationname+": "+obj.personid.personfirstname + " " + obj.personid.personlastname
+        return obj.organizationid.organizationname + ": " + obj.personid.personfirstname + " " + obj.personid.personlastname
 
 
 class MethodChoiceField(ModelChoiceField):
@@ -50,6 +51,11 @@ class EquipmentChoiceField(ModelChoiceField):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber
 
 
+class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber
+
+
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.variablenamecv
@@ -57,54 +63,57 @@ class VariableChoiceField(ModelChoiceField):
 
 class DeploymentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return str(obj.actionid.begindatetime)+": "+obj.equipmentid.equipmentname
+        return str(obj.actionid.begindatetime) + ": " + obj.equipmentid.equipmentname
+
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
-        def label_from_instance(self, obj):
-            return obj.modelid.modelname+": "+obj.variableid.variablenamecv
+    def label_from_instance(self, obj):
+        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv
+
 
 time_zone_choices = (
-        (-12, '-12:00'),
-        (-11, '-11:00'),
-        (-10, '-10:00'),
-        (-9, '-9:00'),
-        (-8, '-8:00 PST'),
-        (-7, '-7:00 MST'),
-        (-6, '-6:00 CST'),
-        (-5, '-5:00 EST'),
-        (-4, '-4:00'),
-        (-3, '-3:00'),
-        (-2, '-2:00'),
-        (-1, '-1:00'),
-        (0, '±0:00'),
-        (1, '+1:00'),
-        (2, '+2:00'),
-        (3, '+3:00'),
-        (4, '+4:00'),
-        (5, '+5:00'),
-        (6, '+6:00'),
-        (7, '+7:00'),
-        (8, '+8:00'),
-        (9, '+9:00'),
-        (10, '+10:00'),
-        (11, '+11:00'),
-        (12, '+12:00'),
-        (13, '+13:00'),
-        (14, '+14:00'),
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
-        # 12: '+12:00',
+    (-12, '-12:00'),
+    (-11, '-11:00'),
+    (-10, '-10:00'),
+    (-9, '-9:00'),
+    (-8, '-8:00 PST'),
+    (-7, '-7:00 MST'),
+    (-6, '-6:00 CST'),
+    (-5, '-5:00 EST'),
+    (-4, '-4:00'),
+    (-3, '-3:00'),
+    (-2, '-2:00'),
+    (-1, '-1:00'),
+    (0, '±0:00'),
+    (1, '+1:00'),
+    (2, '+2:00'),
+    (3, '+3:00'),
+    (4, '+4:00'),
+    (5, '+5:00'),
+    (6, '+6:00'),
+    (7, '+7:00'),
+    (8, '+8:00'),
+    (9, '+9:00'),
+    (10, '+10:00'),
+    (11, '+11:00'),
+    (12, '+12:00'),
+    (13, '+13:00'),
+    (14, '+14:00'),
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
+    # 12: '+12:00',
 )
+
 
 class SamplingFeatureForm(ModelForm):
     class Meta:
@@ -582,6 +591,7 @@ class CrewForm(forms.Form):
         super(forms.Form, self).__init__(*args, **kwargs)
         self.fields['affiliationid'].help_text = None
 
+
 class FeatureActionForm(ModelForm):
     samplingfeatureid = SamplingFeatureChoiceField(
         queryset=SamplingFeature.objects.all(),
@@ -594,22 +604,41 @@ class FeatureActionForm(ModelForm):
         fields = ['samplingfeatureid']
 
 
+class SelectWithClassForOptions(Select):
+    def render_option(self, *args, **kwargs):
+        option_html = super(SelectWithClassForOptions, self).render_option(*args, **kwargs)
+
+        # method types are currently not equal to actiontypes so this dictionary temporarily corrects that.
+        methodtypes = {
+            'Calibration': 'InstrumentCalibration',
+            'EquipmentDeployment': 'EquipmentDeployment',
+            'EquipmentMaintenance': 'EquipmentMaintenance',
+            'EquipmentRetrieval': 'Generic',
+            'FieldActivity': 'Generic',
+            'Observation': 'Generic',
+            'SpecimenCollection': 'Generic',
+        }
+        this_method = args[1]
+        class_value = "class=\"\""
+        if this_method != "":
+            class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv]
+
+        return option_html[:8] + "class=\"" + class_value + "\"" + option_html[7:]
+
+
 class ActionForm(ModelForm):
     def __init__(self, *args, **kwargs):
         actiontype = kwargs.pop('actiontype', None)
         super(ActionForm, self).__init__(*args, **kwargs)
-
-        if actiontype:
-            self.fields['methodid'].queryset = Method.objects.filter(actiontypecv=actiontype)
+        self.fields['equipmentused'].help_text = None
 
     methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
-                                 empty_label='Choose a Method')
+                                 empty_label='Choose a Method', widget=SelectWithClassForOptions)
 
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
-    equipmentused = EquipmentChoiceField(
-        queryset=Equipment.objects.all(),
-        widget=forms.Select(attrs={}), label='Equipment Used'
+    equipmentused = MultipleEquipmentChoiceField(
+        queryset=Equipment.objects.all(), label='Equipment Used'
     )
     isfactoryservice = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service', required=False)
@@ -629,6 +658,8 @@ class ActionForm(ModelForm):
         widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation', required=False)
+
+    equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     class Meta:
         model = Action
@@ -655,6 +686,7 @@ class ActionForm(ModelForm):
             'enddatetime': DateTimeInput,
             'enddatetimeutcoffset': Select(choices=time_zone_choices),
             'actionfilelink': FileInput,
+            # 'methodid': SelectWithClassForOptions,
         }
 
         labels = {

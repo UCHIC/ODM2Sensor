@@ -293,8 +293,8 @@ label {
     right: 30px;
 }
 
-.select2-container--default 
-.select2-selection--single 
+.select2-container--default
+.select2-selection--single
 .select2-selection__arrow {
     width: 45px;
 }
@@ -314,4 +314,25 @@ label {
 
 #action-form {
     display: none;
+}
+
+.select2-results__option[aria-disabled="true"] {
+    display: none!important;
+}
+
+.btn-default {
+  background-image: linear-gradient(to bottom,#fff 0,#F5F5F5 100%);
+}
+
+.btn-primary {
+    background-image: linear-gradient(to bottom,#5C96C8 0,#629ACB 100%);
+}
+
+.btn-danger {
+    background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
+}
+
+.btn-primary:focus, .btn-primary:hover {
+  background-color: #4D89BF;
+  background-position: 0 -15px;
 }
