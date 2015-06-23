@@ -58,7 +58,7 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
 
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.variablenamecv
+        return obj.variablecode + ": " + obj.variablenamecv
 
 
 class DeploymentChoiceField(ModelChoiceField):

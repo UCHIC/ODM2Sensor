@@ -336,3 +336,17 @@ label {
   background-color: #4D89BF;
   background-position: 0 -15px;
 }
+
+/*.detail-mid {*/
+    /*width: 84%;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+/*}*/
+
+.detail-mid th {
+    width: 54%;
+}
+
+.detail-mid td {
+    width: 46%;
+}

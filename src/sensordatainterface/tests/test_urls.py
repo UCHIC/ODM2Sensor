@@ -1,6 +1,6 @@
 from django.test import TestCase
 from sensordatainterface.urls import lists_urls, detail_urls
-from sensordatainterface.views import DeploymentDetail
+from sensordatainterface.views.detail_views import DeploymentDetail
 from sensordatainterface.models import Sites, Action, EquipmentModel, SamplingFeature, SpatialReference, \
     FeatureAction, Method, People, Organization, Equipment, EquipmentUsed, CalibrationAction, Variable, Units, \
     InstrumentOutputVariable, RelatedAction

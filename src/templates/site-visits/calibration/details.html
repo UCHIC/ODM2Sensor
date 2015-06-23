@@ -13,7 +13,7 @@
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
-            <h3>Equipment Description</h3>
+            <h3>Equipment</h3>
             <table class="table">
                 <tr>
                     <th>Equipment Serial Number:</th>
@@ -49,14 +49,14 @@
                 </tr>
 
             </table>
-            <h3>Calibration Description</h3>
+            <h3>Calibration</h3>
             <table class="table">
                 <tr>
-                    <th>Activity Begin DateTime:</th>
+                    <th>Action Begin DateTime:</th>
                     <td>{{ Calibration.actionid.begindatetime }}</td>
                 </tr>
                 <tr>
-                    <th>Activity End DateTime:</th>
+                    <th>Action End DateTime:</th>
                     <td>{{ Calibration.actionid.enddatetime|default:"present" }}</td>
                 </tr>
                 <tr>
@@ -97,7 +97,7 @@
             </table>
             <h3>Reference Material</h3>
             <table class="table">
-                {% with calibrationactions=Calibration.actionid.calibrationaction.all.0 %}
+                {% for calibrationactions in Calibration.actionid.calibrationaction.all %}
                     {% for referencematerial in calibrationactions.calibrationstandard.all %}
                         <tr>
                             <th>Reference Material Medium:</th>
@@ -155,11 +155,11 @@
                                     <td>No Reference Material information for this calibration.</td>
                                 </tr>
                     {% endfor %}
-                {% endwith %}
+                {% endfor %}
             </table>
         <h3>Reference Equipment</h3>
             <table class="table">
-                {% with calibrationactions=Calibration.actionid.calibrationaction.all.0 %}
+                {% for calibrationactions in Calibration.actionid.calibrationaction.all %}
                     {% for referenceequipment in calibrationactions.calibrationreferenceequipment.all %}
                         <tr>
                             <th>Equipment Serial Number:</th>
@@ -198,7 +198,7 @@
                                     <td>No Reference Equipment information for this calibration.</td>
                                 </tr>
                     {% endfor %}
-                {% endwith %}
+                {% endfor %}
             </table>
         </div>
     </div>

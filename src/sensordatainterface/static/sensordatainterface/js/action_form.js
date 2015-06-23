@@ -101,7 +101,6 @@ function addEquipmentField(that) {
     select2Elem.next('.select2-container').remove();
     select2Elem.select2();
     select2Elem.next('.select2-container').attr('style', 'width:85%');
-
 }
 
 function formSelected(formType, currentForm) {

@@ -3,11 +3,13 @@
 {% load inv_extras %}
 {% block content %}
     <div class="row title">
-        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Deployment Details</h2></div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h2>Deployment Details</h2></div>
+        </div>
+        <div class="row">
 
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="#">Create New Deployment</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
             <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="#">Edit Deployment Description</a></div>
@@ -15,10 +17,8 @@
             <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
         </div>
     </div>
-    {% with samplingfeature=Deployment.actionid.featureaction.all.0.samplingfeatureid.samplingfeatureid %}
         <div class="row detail-mid">
-            <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
-            <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-right">
                 <h3>Equipment</h3>
                 <table class="table">
                     <tr>
@@ -87,12 +87,15 @@
                     {#                    {% endif %}#}
                     {#                {% endfor %}#}
                 </table>
+            </div>
+        {% with samplingfeature=Deployment.actionid.featureaction.all.0.samplingfeatureid %}
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <h3>Deployment</h3>
                 <table class="table">
                     <tr>
                         <th>Site Code:</th>
                         <td>
-                            <a href="{% url 'site_detail' samplingfeature %}">
+                            <a href="{% url 'site_detail' samplingfeature.samplingfeatureid %}">
                                 {{ samplingfeature.samplingfeaturecode }}</a>
                         </td>
                     </tr>
@@ -129,6 +132,8 @@
                     {#                    <td>{{ Deployment.actionid.actionfilelink }}</td>#}
                     {#                </tr>#}
                 </table>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <h3>Related Equipment</h3>
                 <table class="table">
                     {% for parent in Deployment.equipmentid.relatedequipment_equipmentid.all %}
@@ -157,7 +162,7 @@
         <div class="row">
             <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
                 <a class="btn btn-block btn-primary"
-                   href="{% url 'create_output_variable_deployment' samplingfeature Deployment.bridgeid %}">New
+                   href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid Deployment.bridgeid %}">New
                     Deployment Measured Variable</a></div>
         </div>
         <div class="row">
@@ -188,6 +193,7 @@
             </table>
         </div>
     {% endwith %}
+
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
             <a class="btn btn-primary btn-block"
@@ -202,11 +208,13 @@
                 Deployment History</a></div>
     </div>
     <nav>
-    <ul class="pager">
-        <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
-                                                               href="#">Next<span aria-hidden="true">&rarr;</span></a></li>
-        <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
-                                                              href="#"><span aria-hidden="true">&larr;</span> Previous</a></li>
+        <ul class="pager">
+            <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
+                                                                      href="#">Next<span
+                    aria-hidden="true">&rarr;</span></a></li>
+            <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
+                                                                         href="#"><span aria-hidden="true">&larr;</span>
+                Previous</a></li>
         </ul>
     </nav>
 
