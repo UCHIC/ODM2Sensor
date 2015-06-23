@@ -3,44 +3,72 @@
 {% load inv_extras %}
 {% block content %}
     <div class="row title">
-        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Sensor Output Variable Details</h2></div>
+        <div class="col-xs-12 col-sm-6 col-md-7"><h2>Factory Service Action</h2></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Edit Variable Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_factory_service' FactoryService.bridgeid %}">Edit Factory Service</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" `="#">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_factory_service' FactoryService.bridgeid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <h2>Action</h2>
             <table class="table">
                 <tr>
-                    <th>Variable Name:</th>
-                    <td>{{ Equipment.equipmentserialnumber }}</td>
+                    <th>Begin Date Time:</th>
+                    <td>{{ FactoryService.actionid.begindatetime }}</td>
                 </tr>
                 <tr>
-                    <th>Variable Code:</th>
-                    <td>{{ Equipment.equipmentmodelid.modelname }}</td>
+                    <th>Maintenance Code:</th>
+                    <td>{{ FactoryService.actionid.maintenanceaction.all.0.maintenancecode }}</td>
                 </tr>
+                <tr>
+                    <th>Maintenance Reason:</th>
+                    <td>{{ FactoryService.actionid.maintenanceaction.all.0.maintenancereason }}</td>
+                </tr>
+                <tr>
+                    <th>Action Description:</th>
+                    <td>{{ FactoryService.actionid.actiondescription }}</td>
+                </tr>
+                <tr>
+                    <th>Action Link:</th>
+                    <td>{{ FactoryService.actionid.actionfilelink }}</td>
+                </tr>
+                </table>
+            <h2>Equipment</h2>
+            <table class="table">
+
+                <tr>
+                    <th>Equipment Serial Number:</th>
+                    <td>{{ FactoryService.equipmentid.equipmentserialnumber }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Code:</th>
+                    <td>{{ FactoryService.equipmentid.equipmentcode }}</td>
+                </tr>
+
+                <tr>
+                    <th>Equipment Name:</th>
+                    <td>{{ FactoryService.equipmentid.equipmentname }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Type:</th>
+                    <td>{{ FactoryService.equipmentid.equipmenttypecv }}</td>
+                </tr>
+
                 <tr>
                     <th>Equipment Model Name:</th>
-                    <td>{{ Equipment.equipmentmodelid.modellink }}</td>
+                    <td>{{ FactoryService.equipmentid.equipmentmodelid.modelname }}</td>
                 </tr>
                 <tr>
-                    <th>Accuracy:</th>
-                    <td>{{ Equipment.equipmentmodelid.modeldescription }}</td>
+                    <th>Manufacturer Name:</th>
+                    <td>{{ FactoryService.equipmentid.equipmentvendorid.organizationname }}</td>
                 </tr>
+
                 <tr>
-                    <th>Method Description:</th>
-                    <td>{{ Equipment.equipmentdocumentationlink }}??</td>
-                </tr>
-                <tr>
-                    <th>Raw Output Units ID:</th>
-                    <td>{{ Equipment.equipmentpurchasedate }}</td>
-                </tr>
-                <tr>
-                    <th>Resolution:</th>
-                    <td>{{ Equipment.equipmentpurchaseordernumber }}</td>
+                    <th>Owner Name:</th>
+                    <td>{{ FactoryService.equipmentid.equipmentownerid.personfirstname }} {{ FactoryService.equipmentid.equipmentownerid.personlastname }}</td>
                 </tr>
             </table>
             </div>

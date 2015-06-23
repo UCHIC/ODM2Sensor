@@ -58,13 +58,13 @@ def edit_site(request, site_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_factory_service_event(request, action_id):
+def edit_factory_service_event(request, bridge_id):
     action = 'create'
     if request.method == 'POST':
         if request.POST['action'] == 'update':
-            action_model = Action.objects.get(pk=request.POST['item_id'])
-            maintenance = MaintenanceAction.objects.get(pk=request.POST['item_id'])
-            equipment_used = EquipmentUsed.objects.get(actionid=request.POST['item_id'])
+            equipment_used = EquipmentUsed.objects.get(pk=request.POST['item_id'])
+            action_model = Action.objects.get(actionid=equipment_used.actionid.actionid)
+            maintenance = MaintenanceAction.objects.get(actionid=equipment_used.actionid)
             action_form = FactoryServiceActionForm(request.POST, instance=action_model)
             maintenance_form = MaintenanceActionForm(request.POST, instance=maintenance)
             equipment_form = EquipmentUsedForm(request.POST, instance=equipment_used)
@@ -91,13 +91,14 @@ def edit_factory_service_event(request, action_id):
             messages.add_message(request, messages.SUCCESS,
                                  'Factory Service Event ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(
-                reverse('site_detail', args=[action_model.actionid])
+                reverse('factory_service_detail', args=[equipment.bridgeid])
             )  # change to factory detail url
 
-    elif action_id:
-        action_model = Action.objects.get(pk=action_id)
-        maintenance = MaintenanceAction.objects.get(pk=action_id)
-        equipment_used = EquipmentUsed.objects.get(actionid=action_id)
+    elif bridge_id:
+        equipment_used = EquipmentUsed.objects.get(pk=bridge_id)
+        action_model = Action.objects.get(pk=equipment_used.actionid.actionid)
+        maintenance = MaintenanceAction.objects.get(pk=equipment_used.actionid.actionid)
+
         action_form = FactoryServiceActionForm(instance=action_model)
         maintenance_form = MaintenanceActionForm(instance=maintenance)
         equipment_form = EquipmentUsedForm(instance=equipment_used)
@@ -113,7 +114,7 @@ def edit_factory_service_event(request, action_id):
     return render(
         request,
         'equipment/factory-service/factory-service-form.html',
-        {'render_forms': [action_form, maintenance_form, equipment_form], 'action': action, 'item_id': action_id}
+        {'render_forms': [action_form, maintenance_form, equipment_form], 'action': action, 'item_id': bridge_id}
     )
 
 
@@ -146,11 +147,12 @@ def delete_model(request, model_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def delete_factory_service_event(request, action_id):
-    EquipmentUsed.objects.get(actionid=action_id).delete()
-    MaintenanceAction.objects.get(pk=action_id).delete()
-    Action.objects.get(actionid=action_id).delete()
-    messages.add_message(request, messages.SUCCESS, 'Maintenance Action ' + action_id + 'deleted successfully')
+def delete_factory_service_event(request, bridge_id):
+    equipment_used = EquipmentUsed.objects.get(pk=bridge_id)
+    MaintenanceAction.objects.get(pk=equipment_used.actionid.actionid).delete()
+    Action.objects.get(actionid=equipment_used.actionid.actionid).delete()
+    equipment_used.delete()
+    messages.add_message(request, messages.SUCCESS, 'Maintenance Action ' + bridge_id + ' deleted successfully')
     return HttpResponseRedirect(reverse('factory_service'))
 
 

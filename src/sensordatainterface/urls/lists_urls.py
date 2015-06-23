@@ -51,7 +51,7 @@ urlpatterns = patterns('',
                            name='calibrations'),
 
                        #Field Activities Generic View
-                       url(r'^site-visits/other-activities/$', #!!!
+                       url(r'^site-visits/other-actions/$', #!!!
                            GenericListView.as_view(
                                queryset=Action.objects.filter(
                                    (

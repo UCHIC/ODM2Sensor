@@ -33,7 +33,7 @@ urlpatterns = patterns('',
                            name='calibration_detail'),
 
                         # Field Activity detail
-                        url(r'^site-visits/field-activity-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                        url(r'^site-visits/action-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Activity',
                            model=FeatureAction,
                            slug_field='actionid',
@@ -48,13 +48,13 @@ urlpatterns = patterns('',
                            template_name='equipment/details.html'),
                            name='equipment_detail'),
 
-                        # to do: Factory Service detail - no detail pages for reference.
-                        # url(r'^inventory/factory-service-detail/(?P<slug>[-_\w]+)/$', SiteDetailView.as_view(
-                        #         context_object_name='FactoryService',
-                        #         model=Equipment,
-                        #         slug_field='equipmentid',
-                        #         template_name='equipment/details.html'),
-                        #         name='equipment-detail'),
+                        #to do: Factory Service detail - no detail pages for reference.
+                        url(r'^inventory/factory-service-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                                context_object_name='FactoryService',
+                                model=EquipmentUsed,
+                                slug_field='bridgeid',
+                                template_name='equipment/factory-service/details.html'),
+                                name='factory_service_detail'),
 
                         # Sensor Output Variable detail
                         url(r'^inventory/output-variable-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(

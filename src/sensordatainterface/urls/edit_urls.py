@@ -18,9 +18,9 @@ urlpatterns = patterns('',
                         url(r'^inventory/delete-model/(?P<model_id>\d+)/$', edit_views.delete_model,
                            name='delete_model'),
 
-                        url(r'^inventory/create-factory-service/(?:(?P<action_id>\d+)/)?$', edit_views.edit_factory_service_event,
+                        url(r'^inventory/create-factory-service/(?:(?P<bridge_id>\d+)/)?$', edit_views.edit_factory_service_event,
                         name='create_factory_service'),
-                        url(r'^inventory/delete-factory-service/(?P<action_id>\d+)/$', edit_views.delete_factory_service_event,
+                        url(r'^inventory/delete-factory-service/(?P<bridge_id>\d+)/$', edit_views.delete_factory_service_event,
                         name='delete_factory_service'),
 
                         url(r'^inventory/create-sensor-output-variable/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable,

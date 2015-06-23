@@ -482,7 +482,7 @@ class InstrumentOutputVariable(models.Model):
 
 
 class MaintenanceAction(models.Model):
-    actionid = models.ForeignKey(Action, db_column='ActionID', primary_key=True)  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, db_column='ActionID', related_name='maintenanceaction', primary_key=True)  # Field name made lowercase.
     isfactoryservice = models.BooleanField(db_column='IsFactoryService', default=None)  # Field name made lowercase.
     maintenancecode = models.TextField(db_column='MaintenanceCode', blank=True)  # Field name made lowercase.
     maintenancereason = models.TextField(db_column='MaintenanceReason', blank=True)  # Field name made lowercase.

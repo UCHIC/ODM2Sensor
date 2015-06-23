@@ -6,7 +6,7 @@
         <h1>Factory Service Table</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_factory_service' %}">New Factory Service Event</a>
+        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_factory_service' %}">New Factory Service Action</a>
     </div>
     </div>
     <table class="data-table">
@@ -21,7 +21,7 @@
         <tbody>
         {% for event in FactoryService %}
             <tr>
-                <td><a href="/factory-service-detail/{{ event.actionid.actionid }}">{{ event.actionid.begindatetime }}</a></td>
+                <td><a href="{% url 'factory_service_detail' event.bridgeid %}">{{ event.actionid.begindatetime }}</a></td>
                 <td>{{ event.equipmentid.equipmentcode }}</td>
                 <td>{{ event.equipmentid.equipmenttypecv }}</td>
                 <td>{{ event.equipmentid.equipmentserialnumber }}</td>
