@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 
+
+
 class SpatialReferenceChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.srsname

@@ -344,9 +344,9 @@ label {
 /*}*/
 
 .detail-mid th {
-    width: 54%;
+    width: 24%;
 }
 
 .detail-mid td {
-    width: 46%;
+    /* width: 46%; */
 }

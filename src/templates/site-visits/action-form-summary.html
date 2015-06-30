@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% load inv_extras %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-4 col-md-4"><h2>Site Visit Summary</h2></div>
+    </div>
+    <div class="row detail-mid">
+        <table class="table-bordered" style="width: 100%; padding: 5px">
+            <tr>
+                <th>Site Visit Details</th>
+                <td style="width: 70%">
+                    <strong>Site:</strong> {{ Site.samplingfeatureid.samplingfeaturename }} <br/>
+                    <strong>Begin Date Time:</strong> {{ SiteVisit.begindatetime }} | <strong>End Date
+                    Time:</strong> {{ SiteVisit.enddatetime }} |
+                    <strong>UTCOffset:</strong> {{ SiteVisit.begindatetimeutcoffset }}
+                    <br/>
+                    <strong>Crew:</strong> {% for person in Crew %}
+                    {{ person.affiliationid.personid.personfirstname }}
+                    {{ person.affiliationid.personid.personlastname }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                </td>
+            </tr>
+            {% for child_action in ChildActions %}
+                <tr>
+                    <th>{{ child_action.actionid.actiontypecv|separatewordsbycaps }} Action Details</th>
+                    <td style="width: 70%"><strong>Begin Date Time:</strong> {{ child_action.actionid.begindatetime }} |
+                        <strong>End Date Time:</strong> {{ child_action.actionid.enddatetime }} |
+                        <strong>UTCOffset:</strong> {{ child_action.actionid.begindatetimeutcoffset }}
+                        <br/><strong>EquipmentUsed:</strong>
+                        {% for equipment in child_action.actionid.equipmentused.all %}
+                            {{ equipment.equipmentid.equipmentserialnumber }}:
+                            {{ equipment.equipmentid.equipmentmodelid.modelname }}
+                            {% if not forloop.last %} | {% endif %}
+                        {% endfor %}<br/>
+                        {% if child_action.actionid.actiontypecv == 'InstrumentCalibration' %}
+                            {% with calibration_action=child_action.actionid.calibrationaction.all.0 %}
+                                <strong>Instrument Output Variable:</strong>
+                                {{ calibration_action.instrumentoutputvariableid.variableid.variablenamecv }}
+                                <br/>
+                                <strong>Calibration Check Value:</strong>
+                                {{ calibration_action.calibrationcheckvalue }}
+                                <br/>
+                                <strong>Calibration Standards:</strong>
+                                {% for calibration_standard in calibration_action.calibrationstandard.all %}
+                                    {% for reference_material in calibration_standard.referencematerialid.referencematerialvalue.all %}
+                                        {{ reference_material.variableid.variablenamecv }}
+                                    {% endfor %}
+                                {% endfor %}
+                                <br/>
+                            {% endwith %}
+                        {% elif child_action.actionid.actiontypecv == 'EquipmentMaintenance' %}
+                            <strong>Is Factory Service?</strong>
+                            {{ child_action.actionid.maintenanceaction.all.0.isfactoryservice }}
+                            <br/>
+                        {% endif %}
+                        <strong>Description:</strong> {{ child_action.actionid.actiondescription }}
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary"
+                                                              href="#">Edit this Site Visit</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-left"><a class="btn btn-primary btn-block"
+                                                              href="{% url 'create_site_visit' %}">Create new Site Visit</a></div>
+    </div>
+
+{% endblock %}

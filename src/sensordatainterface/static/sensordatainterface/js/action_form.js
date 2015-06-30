@@ -59,7 +59,7 @@ function addActionForm(that) {
     $(thisForm).find('.select-two[name="actiontypecv"]').change(function () {
         var selected = $(this).val();
         var currentActionForm = $(this).parents('tbody');
-        formSelected(selected, currentActionForm);
+        changeMethodOptions(selected, currentActionForm);
     });
 
     //Fix error with select2
@@ -84,6 +84,8 @@ function addActionForm(that) {
     var addEquipmentButton = '<tr><th></th><td><a class="btn btn-default col-xs-2 col-sm-2" onclick="javascript:addEquipmentField(this)">- Add Equipment Used</a></td></tr>';
     $(addEquipmentButton).insertAfter(insertPosition);
 
+    changeMethodOptions('Generic', thisForm);
+
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").parents('tr').hide();
     $(thisForm).find(".maintenance").parents('tr').hide();
@@ -103,7 +105,7 @@ function addEquipmentField(that) {
     select2Elem.next('.select2-container').attr('style', 'width:85%');
 }
 
-function formSelected(formType, currentForm) {
+function changeMethodOptions(formType, currentForm) {
     var formClasses = {
         'Generic': 'notypeclass',
         'EquipmentDeployment': 'deployment',
@@ -114,13 +116,13 @@ function formSelected(formType, currentForm) {
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
             $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
-            $('.'+key).attr('disabled', 'disabled');
+            $(currentForm).find('.'+key).attr('disabled', 'disabled');
         }
     }
 
     if (formClasses.hasOwnProperty(formType)) {
         $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
-        $('.'+formType).removeAttr('disabled');
+        $(currentForm).find('.'+formType).removeAttr('disabled');
     }
 
     //reset select2 to hide disabled options

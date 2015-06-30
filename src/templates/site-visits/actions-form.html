@@ -53,7 +53,8 @@
     <table id="action-form">
         {{ actions_form }}
     </table>
-    {% block scripts %}
+{% endblock %}
+
+{% block scripts %}
         <script src="{% static  "sensordatainterface/js/action_form.js" %}"></script>
-    {% endblock %}
 {% endblock %}

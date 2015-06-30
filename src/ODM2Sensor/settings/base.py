@@ -30,6 +30,7 @@ PREREQ_APPS = (
 )
 
 PROJECT_APPS = (
+    'django.contrib.formtools',
     'sensordatainterface',
 )
 
@@ -86,6 +87,7 @@ DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter', ]
 #         },
 #     },
 # ]
+
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
 
