@@ -59,7 +59,7 @@ function addActionForm(that) {
     $(thisForm).find('.select-two[name="actiontypecv"]').change(function () {
         var selected = $(this).val();
         var currentActionForm = $(this).parents('tbody');
-        changeMethodOptions(selected, currentActionForm);
+        handleActionTypeChange(selected, currentActionForm);
     });
 
     //Fix error with select2
@@ -84,7 +84,7 @@ function addActionForm(that) {
     var addEquipmentButton = '<tr><th></th><td><a class="btn btn-default col-xs-2 col-sm-2" onclick="javascript:addEquipmentField(this)">- Add Equipment Used</a></td></tr>';
     $(addEquipmentButton).insertAfter(insertPosition);
 
-    changeMethodOptions('Generic', thisForm);
+    handleActionTypeChange('Generic', thisForm);
 
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").parents('tr').hide();
@@ -105,7 +105,7 @@ function addEquipmentField(that) {
     select2Elem.next('.select2-container').attr('style', 'width:85%');
 }
 
-function changeMethodOptions(formType, currentForm) {
+function handleActionTypeChange(formType, currentForm) {
     var formClasses = {
         'Generic': 'notypeclass',
         'EquipmentDeployment': 'deployment',
@@ -145,4 +145,14 @@ function setEquipmentUsedNumber( event ) {
 
 $(document).ready(function() {
    $('.input-group').submit(setEquipmentUsedNumber);
+   $('tbody').each(function() {
+       var actionType = $(this).find('.select-two[name="actiontypecv"]');
+       handleActionTypeChange(actionType.val(), this);
+       actionType.change(function () {
+           var selected = $(this).val();
+           var currentActionForm = $(this).parents('tbody');
+           handleActionTypeChange(selected, currentActionForm);
+       });
+
+   });
 });
