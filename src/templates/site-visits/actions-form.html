@@ -6,7 +6,7 @@
     <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
         Site Visit</h1></div>
     <div class="row">
-        <form class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"
+        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"
               method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ action }}" name="action">
@@ -18,6 +18,16 @@
                 {% endfor %}
                 </tbody>
                 <tbody>
+                {% if render_actions %}
+
+                    {% for action_form in actions_form %}
+                        <tbody>
+                        {{ action_form.as_table }}
+                         </tbody>
+                    {% endfor %}
+
+                {% endif %}
+                <tbody>
                 <tr>
                     <th></th>
                     <td>
@@ -28,8 +38,8 @@
                     </td>
                 </tr>
                 </tbody>
-            <tbody>
-            <tr>
+                <tbody>
+                <tr>
                     <th></th>
                     <td>
                         <div class="row">
@@ -46,15 +56,15 @@
                         </div>
                     </td>
                 </tr>
-            </tbody>
+                </tbody>
             </table>
         </form>
     </div>
     <table id="action-form">
-        {{ actions_form }}
+            {{ mock_action_form }}
     </table>
 {% endblock %}
 
 {% block scripts %}
-        <script src="{% static  "sensordatainterface/js/action_form.js" %}"></script>
+    <script src="{% static  "sensordatainterface/js/action_form.js" %}"></script>
 {% endblock %}

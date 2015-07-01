@@ -10,9 +10,9 @@
                href="{% url 'site_visits_by_site' SiteVisit.samplingfeatureid.samplingfeatureid %}">View Full Visit
                 History for Site</a></div>
         <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Edit Site Visit Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_site_visit' SiteVisit.actionid.actionid %}">Edit Site Visit Description</a></div>
         <div class="col-xs-12 col-sm-8 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_site_visit' SiteVisit.actionid.actionid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">

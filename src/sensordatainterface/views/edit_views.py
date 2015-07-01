@@ -528,6 +528,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 @login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
     action = 'create'
+    render_actions = False
+
     if request.method == 'POST':
         # Fields are passed in the list even when they are empty. One idea to parse and validate this form is to pop the
         # first value from each list as needed (because the size of the list will be how many fields submitted them). Chop chop homie.
@@ -547,6 +549,8 @@ def edit_site_visit(request, action_id):
         forms_returned = len(request.POST.getlist('actiontypecv'))
 
         action_form = []
+        render_actions = True
+
         maintenance_counter = 0
         equipment_used_position = 0
         for i in range(1, forms_returned + 1):
@@ -560,7 +564,7 @@ def edit_site_visit(request, action_id):
                 'enddatetime': request.POST.getlist('enddatetime')[i],
                 'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
                 'actiondescription': request.POST.getlist('actiondescription')[i],
-                'actionfilelink': request.POST.getlist('actionfilelink')[i - 1],
+                # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
                 'methodid': request.POST.getlist('methodid')[i - 1],
                 'equipmentusednumber': equipment_used_count,
                 'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
@@ -572,6 +576,14 @@ def edit_site_visit(request, action_id):
                                  equipment_used_position:int(equipment_used_count) + equipment_used_position
                                  ]
             }
+            try:
+                action_file = request.FILES.getlist('actionfilelink')[i - 1]
+            except:
+                action_file = ''
+
+            form_files = {
+                'actionfilelink': action_file,
+            }
 
             equipment_used_position += int(equipment_used_count)
 
@@ -579,7 +591,7 @@ def edit_site_visit(request, action_id):
                 form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
                 maintenance_counter += 1
 
-            action_form.append(ActionForm(form_data))
+            action_form.append(ActionForm(form_data, form_files))
 
         # validate crew
         crew_form_valid = crew_form.is_valid()
@@ -620,6 +632,8 @@ def edit_site_visit(request, action_id):
                                              relatedactionid=site_visit_action)
                 FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
 
+                # save file to sensordatainterface/file-upload/actionform-actionfilelink
+
                 equipments = action_form[i].cleaned_data['equipmentused']
                 for equ in equipments:
                     EquipmentUsed.objects.create(
@@ -641,6 +655,20 @@ def edit_site_visit(request, action_id):
                     )
 
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
+    elif action_id:
+        site_visit = Action.objects.get(pk=action_id)
+        site_visit_form = SiteVisitForm(instance=site_visit)
+        sampling_feature = FeatureAction.objects.get(actionid=site_visit)
+        sampling_feature_form = FeatureActionForm(instance=sampling_feature)
+        #initialize crew
+        crew_form = CrewForm() #try objects of actionby by site_visit
+        render_actions = True
+
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
+
+        action_form = []
+        for child in children_actions:
+            action_form.append(ActionForm(instance=child.actionid))
 
     else:
         sampling_feature_form = FeatureActionForm()
@@ -653,9 +681,28 @@ def edit_site_visit(request, action_id):
     return render(
         request,
         'site-visits/actions-form.html',
-        {'render_forms': [sampling_feature_form, site_visit_form, crew_form], 'actions_form': action_form,
-         'action': action, 'item_id': action_id}
+        {
+             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
+             'mock_action_form': ActionForm(),
+             'actions_form': action_form,
+             'render_actions': render_actions,
+             'action': action, 'item_id': action_id
+         }
     )
+
+def delete_site_visit(request, action_id):
+    site_visit = Action.objects.get(pk=action_id)
+    site_visit_name = site_visit.actionid
+    children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
+
+    for child in children_actions:
+            child.actionid.delete()
+            child.delete()
+
+    site_visit.delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'Site Visit ' + str(site_visit_name) + ' succesfully deleted')
+    return HttpResponseRedirect(reverse('site_visits'))
 
 
 def edit_site_visit_summary(request, action_id):
