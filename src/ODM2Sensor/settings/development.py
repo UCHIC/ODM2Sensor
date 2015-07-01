@@ -9,3 +9,5 @@ STATIC_ROOT = 'static/'
 STATIC_URL = SITE_URL + 'static/'
 
 LOGIN_REDIRECT_URL = SITE_URL + 'home/'
+
+MEDIA_URL = SITE_URL + 'media/'

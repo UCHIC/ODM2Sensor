@@ -9,6 +9,9 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 from ODM2Sensor.settings.settings import *
 
 # SECURITY WARNING: keep the secret key used in production secret!

@@ -59,7 +59,7 @@ class Action(models.Model):
     enddatetimeutcoffset = models.IntegerField(db_column='EndDateTimeUTCOffset', blank=True,
                                                null=True)  # Field name made lowercase.
     actiondescription = models.TextField(db_column='ActionDescription', blank=True)  # Field name made lowercase.
-    actionfilelink = models.TextField(db_column='ActionFileLink', blank=True)  # Field name made lowercase.
+    actionfilelink = models.FileField(db_column='ActionFileLink', upload_to='actionfilelinks/%Y/%m/%d', blank=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

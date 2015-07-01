@@ -529,7 +529,7 @@ class FactoryServiceActionForm(ModelForm):
             'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
             'enddatetimeutcoffset': Select(choices=time_zone_choices),
-            'actionfilelink': TextInput,
+            'actionfilelink': FileInput,
         }
 
         labels = {
