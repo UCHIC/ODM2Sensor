@@ -692,6 +692,7 @@ class ActionForm(ModelForm):
         }
 
         labels = {
+            'Action Type'
             'begindatetime': _('Begin Time'),
             'begindatetimeutcoffset': _('Begin UTC Offset'),
             'enddatetime': _('End Time'),
