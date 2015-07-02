@@ -82,14 +82,14 @@ DATABASES = {
 
 DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter', ]
 
-# TEMPLATES = [
-#     {
-#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#         'OPTIONS': {
-#             'context_processors': 'django.contrib.messages.context_processors.messages'
-#         },
-#     },
-# ]
+TEMPLATES = [
+    {
+        # 'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': {
+            'context_processors': 'django.template.context_processors.media'
+        },
+    },
+]
 
 
 TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]

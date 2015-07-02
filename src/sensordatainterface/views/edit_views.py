@@ -65,11 +65,11 @@ def edit_factory_service_event(request, bridge_id):
             equipment_used = EquipmentUsed.objects.get(pk=request.POST['item_id'])
             action_model = Action.objects.get(actionid=equipment_used.actionid.actionid)
             maintenance = MaintenanceAction.objects.get(actionid=equipment_used.actionid)
-            action_form = FactoryServiceActionForm(request.POST, instance=action_model)
+            action_form = FactoryServiceActionForm(request.POST, request.FILES, instance=action_model)
             maintenance_form = MaintenanceActionForm(request.POST, instance=maintenance)
             equipment_form = EquipmentUsedForm(request.POST, instance=equipment_used)
         else:
-            action_form = FactoryServiceActionForm(request.POST)
+            action_form = FactoryServiceActionForm(request.POST, request.FILES)
             maintenance_form = MaintenanceActionForm(request.POST)
             equipment_form = EquipmentUsedForm(request.POST)
 
@@ -531,67 +531,76 @@ def edit_site_visit(request, action_id):
     render_actions = False
 
     if request.method == 'POST':
-        # Fields are passed in the list even when they are empty. One idea to parse and validate this form is to pop the
-        # first value from each list as needed (because the size of the list will be how many fields submitted them). Chop chop homie.
+        if request.POST['action'] == 'update':
+            site_visit = Action.objects.get(pk=request.POST['item_id'])
+            site_visit_form = SiteVisitForm(request.POST, instance=site_visit)
+            sampling_feature = FeatureAction.objects.get(actionid=site_visit)
+            sampling_feature_form = FeatureActionForm(request.POST, instance=sampling_feature)
+            crew_form = CrewForm() #what to initialize?
 
-        site_visit_data = {
-            'begindatetime': request.POST.getlist('begindatetime')[0],
-            'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
-            'enddatetime': request.POST.getlist('enddatetime')[0],
-            'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
-            'actiondescription': request.POST.getlist('actiondescription')[0],
-        }
-
-        sampling_feature_form = FeatureActionForm(request.POST)
-        site_visit_form = SiteVisitForm(site_visit_data)
-        crew_form = CrewForm(request.POST)
-
-        forms_returned = len(request.POST.getlist('actiontypecv'))
-
-        action_form = []
-        render_actions = True
-
-        maintenance_counter = 0
-        equipment_used_position = 0
-        for i in range(1, forms_returned + 1):
-            action_type = request.POST.getlist('actiontypecv')[i - 1]
-            equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
-
-            form_data = {
-                'actiontypecv': action_type,
-                'begindatetime': request.POST.getlist('begindatetime')[i],
-                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
-                'enddatetime': request.POST.getlist('enddatetime')[i],
-                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
-                'actiondescription': request.POST.getlist('actiondescription')[i],
-                # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
-                'methodid': request.POST.getlist('methodid')[i - 1],
-                'equipmentusednumber': equipment_used_count,
-                'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
-                'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-                'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
-                'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
-                'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
-                'equipmentused': request.POST.getlist('equipmentused')[
-                                 equipment_used_position:int(equipment_used_count) + equipment_used_position
-                                 ]
-            }
-            try:
-                action_file = request.FILES.getlist('actionfilelink')[i - 1]
-            except:
-                action_file = ''
-
-            form_files = {
-                'actionfilelink': action_file,
+            children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
+            action_form = []
+            for child in children_actions:
+                action_form.append(ActionForm(request.POST, request.FILES, instance=child.actionid))
+        else:
+            site_visit_data = {
+                'begindatetime': request.POST.getlist('begindatetime')[0],
+                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
+                'enddatetime': request.POST.getlist('enddatetime')[0],
+                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
+                'actiondescription': request.POST.getlist('actiondescription')[0],
             }
 
-            equipment_used_position += int(equipment_used_count)
+            sampling_feature_form = FeatureActionForm(request.POST)
+            site_visit_form = SiteVisitForm(site_visit_data)
+            crew_form = CrewForm(request.POST)
 
-            if request.POST.getlist('isfactoryservicebool')[i - 1] == 'True':
-                form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
-                maintenance_counter += 1
+            forms_returned = len(request.POST.getlist('actiontypecv'))
 
-            action_form.append(ActionForm(form_data, form_files))
+            action_form = []
+            render_actions = True
+
+            maintenance_counter = 0
+            equipment_used_position = 0
+            for i in range(1, forms_returned + 1):
+                action_type = request.POST.getlist('actiontypecv')[i - 1]
+                equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
+
+                form_data = {
+                    'actiontypecv': action_type,
+                    'begindatetime': request.POST.getlist('begindatetime')[i],
+                    'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
+                    'enddatetime': request.POST.getlist('enddatetime')[i],
+                    'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
+                    'actiondescription': request.POST.getlist('actiondescription')[i],
+                    # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
+                    'methodid': request.POST.getlist('methodid')[i - 1],
+                    'equipmentusednumber': equipment_used_count,
+                    'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
+                    'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
+                    'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
+                    'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
+                    'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
+                    'equipmentused': request.POST.getlist('equipmentused')[
+                                     equipment_used_position:int(equipment_used_count) + equipment_used_position
+                                     ]
+                }
+                try:
+                    action_file = request.FILES.getlist('actionfilelink')[i - 1]
+                except:
+                    action_file = ''
+
+                form_files = {
+                    'actionfilelink': action_file,
+                }
+
+                equipment_used_position += int(equipment_used_count)
+
+                if request.POST.getlist('isfactoryservicebool')[i - 1] == 'True':
+                    form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
+                    maintenance_counter += 1
+
+                action_form.append(ActionForm(form_data, form_files))
 
         # validate crew
         crew_form_valid = crew_form.is_valid()
@@ -661,14 +670,17 @@ def edit_site_visit(request, action_id):
         sampling_feature = FeatureAction.objects.get(actionid=site_visit)
         sampling_feature_form = FeatureActionForm(instance=sampling_feature)
         #initialize crew
-        crew_form = CrewForm() #try objects of actionby by site_visit
+        crew_form = CrewForm(initial={'affiliationid': Affiliation.objects.filter(actionby__actionid=site_visit)}) #try objects of actionby by site_visit
         render_actions = True
 
         children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
 
         action_form = []
         for child in children_actions:
-            action_form.append(ActionForm(instance=child.actionid))
+            action_form.append(ActionForm(
+                instance=child.actionid,
+                initial={'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid)}
+            ))
 
     else:
         sampling_feature_form = FeatureActionForm()
