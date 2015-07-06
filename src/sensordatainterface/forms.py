@@ -603,7 +603,9 @@ class FeatureActionForm(ModelForm):
 
     class Meta:
         model = FeatureAction
-        fields = ['samplingfeatureid']
+        fields = [
+            'samplingfeatureid'
+        ]
 
 
 class SelectWithClassForOptions(Select):
@@ -662,6 +664,8 @@ class ActionForm(ModelForm):
         widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation', required=False)
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+
+    thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     class Meta:
         model = Action

@@ -42,15 +42,7 @@ function addActionForm(that) {
 
     // This bit of code solves the problem of th checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
-    $(thisForm).find('.maintenance[type="checkbox"]').change(function () {
-        var thisCheckBox = $(this);
-        var hiddenCheckBox = thisCheckBox.parents('tbody').find('#id_isfactoryservicebool');
-        if (thisCheckBox[0].checked) {
-            hiddenCheckBox.attr('value', 'True');
-        } else {
-            hiddenCheckBox.attr('value', 'False');
-        }
-    });
+    $(thisForm).find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 
     setTimeBoundaries(thisForm, beginDTInitialValue, endDTInitialValue);
 
@@ -64,6 +56,16 @@ function addActionForm(that) {
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").parents('tr').hide();
     $(thisForm).find(".maintenance").parents('tr').hide();
+}
+
+function setIsFactoryServiceFlag() {
+    var thisCheckBox = $(this);
+    var hiddenCheckBox = thisCheckBox.parents('tbody').find('#id_isfactoryservicebool');
+    if (thisCheckBox[0].checked) {
+        hiddenCheckBox.attr('value', 'True');
+    } else {
+        hiddenCheckBox.attr('value', 'False');
+    }
 }
 
 function deleteActionForm(that) {
@@ -205,8 +207,9 @@ $(document).ready(function () {
     })
         .on('changeDate', changeDateTimeBoundaries);
 
+    var allForms = $('tbody');
 
-    $('tbody').each(function (index) {
+    allForms.each(function (index) {
         var actionType = $(this).find('.select-two[name="actiontypecv"]');
         handleActionTypeChange(actionType.val(), this);
         actionType.change(function () {
@@ -215,5 +218,7 @@ $(document).ready(function () {
             handleActionTypeChange(selected, currentActionForm);
         });
     });
+
+    allForms.find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 
 });

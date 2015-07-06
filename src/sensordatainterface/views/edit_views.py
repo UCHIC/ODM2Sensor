@@ -526,190 +526,262 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_site_visit(request, action_id):
+def create_site_visit(request):
     action = 'create'
     render_actions = False
 
     if request.method == 'POST':
-        if request.POST['action'] == 'update':
-            site_visit = Action.objects.get(pk=request.POST['item_id'])
-            site_visit_form = SiteVisitForm(request.POST, instance=site_visit)
-            sampling_feature = FeatureAction.objects.get(actionid=site_visit)
-            sampling_feature_form = FeatureActionForm(request.POST, instance=sampling_feature)
-            crew_form = CrewForm() #what to initialize?
-
-            children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
-            action_form = []
-            for child in children_actions:
-                action_form.append(ActionForm(request.POST, request.FILES, instance=child.actionid))
-        else:
-            site_visit_data = {
-                'begindatetime': request.POST.getlist('begindatetime')[0],
-                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
-                'enddatetime': request.POST.getlist('enddatetime')[0],
-                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
-                'actiondescription': request.POST.getlist('actiondescription')[0],
-            }
-
-            sampling_feature_form = FeatureActionForm(request.POST)
-            site_visit_form = SiteVisitForm(site_visit_data)
-            crew_form = CrewForm(request.POST)
-
-            forms_returned = len(request.POST.getlist('actiontypecv'))
-
-            action_form = []
-            render_actions = True
-
-            maintenance_counter = 0
-            equipment_used_position = 0
-            for i in range(1, forms_returned + 1):
-                action_type = request.POST.getlist('actiontypecv')[i - 1]
-                equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
-
-                form_data = {
-                    'actiontypecv': action_type,
-                    'begindatetime': request.POST.getlist('begindatetime')[i],
-                    'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
-                    'enddatetime': request.POST.getlist('enddatetime')[i],
-                    'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
-                    'actiondescription': request.POST.getlist('actiondescription')[i],
-                    # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
-                    'methodid': request.POST.getlist('methodid')[i - 1],
-                    'equipmentusednumber': equipment_used_count,
-                    'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
-                    'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-                    'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
-                    'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
-                    'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
-                    'equipmentused': request.POST.getlist('equipmentused')[
-                                     equipment_used_position:int(equipment_used_count) + equipment_used_position
-                                     ]
-                }
-                try:
-                    action_file = request.FILES.getlist('actionfilelink')[i - 1]
-                except:
-                    action_file = ''
-
-                form_files = {
-                    'actionfilelink': action_file,
-                }
-
-                equipment_used_position += int(equipment_used_count)
-
-                if request.POST.getlist('isfactoryservicebool')[i - 1] == 'True':
-                    form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
-                    maintenance_counter += 1
-
-                action_form.append(ActionForm(form_data, form_files))
-
-        # validate crew
-        crew_form_valid = crew_form.is_valid()
-        affiliation_list = request.POST.getlist('affiliationid')
-        for i in range(0, len(affiliation_list)):
-            exists = Affiliation.objects.filter(affiliationid=affiliation_list[i])
-            crew_form_valid = crew_form_valid and exists.count() > 0
-
-        all_forms_valid = site_visit_form.is_valid() and sampling_feature_form.is_valid() and crew_form_valid
-        for form_elem in action_form:
-            all_forms_valid = all_forms_valid and form_elem.is_valid()
-            # Validate depending on the actiontypecv
-
-        # validate extra data
-
-        if all_forms_valid:
-            # set up site visit
-            sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
-            site_visit_action = site_visit_form.save(commit=False)
-            site_visit_action.methodid = Method.objects.get(pk=1000)
-            site_visit_action.actiontypecv = 'SiteVisit'
-            site_visit_action.save()
-
-            FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=site_visit_action)
-
-            for affiliation in crew_form.cleaned_data['affiliationid']:
-                ActionBy.objects.create(affiliationid=affiliation, actionid=site_visit_action,
-                                        isactionlead=0)  # isactionlead?
-
-            # set up child actions
-            for i in range(0, len(action_form)):
-                current_action = action_form[i].save(commit=False)
-                action_type = action_form[i].cleaned_data['actiontypecv']
-                current_action.actiontypecv = action_type
-                current_action.save()
-
-                RelatedAction.objects.create(actionid=current_action, relationshiptypecv='is_child_of',
-                                             relatedactionid=site_visit_action)
-                FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
-
-                # save file to sensordatainterface/file-upload/actionform-actionfilelink
-
-                equipments = action_form[i].cleaned_data['equipmentused']
-                for equ in equipments:
-                    EquipmentUsed.objects.create(
-                        actionid=current_action,
-                        equipmentid=equ
-                    )
-                if action_type == 'InstrumentCalibration':
-                    CalibrationAction.objects.create(
-                        actionid=current_action,
-                        calibrationcheckvalue=action_form[i].cleaned_data['calibrationcheckvalue'],
-                        instrumentoutputvariableid=action_form[i].cleaned_data['instrumentoutputvariable'],
-                        calibrationequation=action_form[i].cleaned_data['calibrationequation']
-                    )
-                elif action_type == 'EquipmentMaintenance':
-                    MaintenanceAction.objects.create(
-                        actionid=current_action,
-                        isfactoryservice=action_form[i].cleaned_data['isfactoryservice'],
-                        maintenancereason=action_form[i].cleaned_data['maintenancereason']
-                    )
-
-            return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
-    elif action_id:
-        site_visit = Action.objects.get(pk=action_id)
-        site_visit_form = SiteVisitForm(instance=site_visit)
-        sampling_feature = FeatureAction.objects.get(actionid=site_visit)
-        sampling_feature_form = FeatureActionForm(instance=sampling_feature)
-        #initialize crew
-        crew_form = CrewForm(initial={'affiliationid': Affiliation.objects.filter(actionby__actionid=site_visit)}) #try objects of actionby by site_visit
         render_actions = True
-
-        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
-
-        action_form = []
-        for child in children_actions:
-            action_form.append(ActionForm(
-                instance=child.actionid,
-                initial={'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid)}
-            ))
+        crew_form, site_visit_form, sampling_feature_form, action_form = get_forms_from_request(request)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form)
+        if all_forms_valid:
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form)
+            return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
     else:
         sampling_feature_form = FeatureActionForm()
         site_visit_form = SiteVisitForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
         crew_form = CrewForm()
-
         action_form = ActionForm()
 
     return render(
         request,
         'site-visits/actions-form.html',
         {
-             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
-             'mock_action_form': ActionForm(),
-             'actions_form': action_form,
-             'render_actions': render_actions,
-             'action': action, 'item_id': action_id
-         }
+            'render_forms': [sampling_feature_form, site_visit_form, crew_form],
+            'mock_action_form': ActionForm(),
+            'actions_form': action_form,
+            'render_actions': render_actions,
+            'action': action,
+        }
     )
 
+
+@login_required(login_url=LOGIN_URL)
+def get_forms_from_request(request, action_id=False):
+    forms_returned = len(request.POST.getlist('actiontypecv'))
+    action_form = []
+    maintenance_counter = 0
+    equipment_used_position = 0
+
+    site_visit_data = {
+        'begindatetime': request.POST.getlist('begindatetime')[0],
+        'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
+        'enddatetime': request.POST.getlist('enddatetime')[0],
+        'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
+        'actiondescription': request.POST.getlist('actiondescription')[0],
+    }
+
+    for i in range(1, forms_returned + 1):
+        action_type = request.POST.getlist('actiontypecv')[i - 1]
+        equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
+
+        form_data = {
+            'actiontypecv': action_type,
+            'begindatetime': request.POST.getlist('begindatetime')[i],
+            'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
+            'enddatetime': request.POST.getlist('enddatetime')[i],
+            'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
+            'actiondescription': request.POST.getlist('actiondescription')[i],
+            # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
+            'methodid': request.POST.getlist('methodid')[i - 1],
+            'equipmentusednumber': equipment_used_count,
+            'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
+            'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
+            'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
+            'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
+            'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
+            'equipmentused': request.POST.getlist('equipmentused')[
+                             equipment_used_position:int(equipment_used_count) + equipment_used_position
+                             ]
+        }
+        try:
+            action_file = request.FILES.getlist('actionfilelink')[i - 1]
+        except:
+            action_file = ''
+
+        form_files = {
+            'actionfilelink': action_file,
+        }
+
+        equipment_used_position += int(equipment_used_count)
+
+        if request.POST.getlist('isfactoryservicebool')[i - 1] == 'True':
+            form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
+            maintenance_counter += 1
+
+        if action_id:
+            action_form.append(ActionForm(form_data, form_files,
+                                          instance=Action.objects.get(pk=request.POST.getlist('thisactionid')[i - 1])))
+        else:
+            action_form.append(ActionForm(form_data, form_files))
+    if action_id:
+        sampling_feature_form = FeatureActionForm(request.POST, instance=FeatureAction.objects.get(actionid=action_id))
+        site_visit_form = SiteVisitForm(site_visit_data, instance=Action.objects.get(actionid=action_id))
+    else:
+        sampling_feature_form = FeatureActionForm(request.POST)
+        site_visit_form = SiteVisitForm(site_visit_data)
+
+    crew_form = CrewForm(request.POST)
+
+    return crew_form, site_visit_form, sampling_feature_form, action_form
+
+
+@login_required(login_url=LOGIN_URL)
+def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form):
+    # validate crew
+    # validate extra data
+    crew_form_valid = crew_form.is_valid()
+    affiliation_list = request.POST.getlist('affiliationid')
+    for i in range(0, len(affiliation_list)):
+        exists = Affiliation.objects.filter(affiliationid=affiliation_list[i])
+        crew_form_valid = crew_form_valid and exists.count() > 0
+
+    all_forms_valid = site_visit_form.is_valid() and sampling_feature_form.is_valid() and crew_form_valid
+
+    for form_elem in action_form:
+        all_forms_valid = all_forms_valid and form_elem.is_valid()
+
+    return all_forms_valid
+
+
+@login_required(login_url=LOGIN_URL)
+def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, updating=False):
+    # set up site visit
+    sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
+    site_visit_action = site_visit_form.save(commit=False)
+    site_visit_action.methodid = Method.objects.get(pk=1000)
+    site_visit_action.actiontypecv = 'SiteVisit'
+    site_visit_action.save()
+
+    if updating:
+        feature_action = FeatureAction.objects.get(actionid=site_visit_action)
+        feature_action.samplingfeatureid = sampling_feature
+        feature_action.save()
+        ActionBy.objects.filter(actionid=site_visit_action,
+                                isactionlead=0).delete()  # isactionlead?
+    else:
+        FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=site_visit_action)
+
+    for affiliation in crew_form.cleaned_data['affiliationid']:
+        ActionBy.objects.create(affiliationid=affiliation, actionid=site_visit_action,
+                                isactionlead=0)  # isactionlead?
+
+    # set up child actions
+    for i in range(0, len(action_form)):
+        current_action = action_form[i].save(commit=False)
+        action_type = action_form[i].cleaned_data['actiontypecv']
+        current_action.actiontypecv = action_type
+        current_action.save()
+
+        if not updating:
+            RelatedAction.objects.create(actionid=current_action, relationshiptypecv='is_child_of',
+                                         relatedactionid=site_visit_action)
+            FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
+        else:
+            EquipmentUsed.objects.filter(actionid=current_action).delete()
+
+        equipments = action_form[i].cleaned_data['equipmentused']
+        for equ in equipments:
+            EquipmentUsed.objects.create(
+                actionid=current_action,
+                equipmentid=equ
+            )
+        if action_type == 'InstrumentCalibration':
+            if updating:
+                CalibrationAction.objects.get(actionid=current_action).delete()
+            CalibrationAction.objects.create(
+                actionid=current_action,
+                calibrationcheckvalue=action_form[i].cleaned_data['calibrationcheckvalue'],
+                instrumentoutputvariableid=action_form[i].cleaned_data['instrumentoutputvariable'],
+                calibrationequation=action_form[i].cleaned_data['calibrationequation']
+            )
+        elif action_type == 'EquipmentMaintenance':
+            if updating:
+                MaintenanceAction.objects.get(actionid=current_action).delete()
+            MaintenanceAction.objects.create(
+                actionid=current_action,
+                isfactoryservice=action_form[i].cleaned_data['isfactoryservice'],
+                maintenancecode=action_form[i].cleaned_data['maintenancecode'],
+                maintenancereason=action_form[i].cleaned_data['maintenancereason']
+            )
+
+    return site_visit_action
+
+
+@login_required(login_url=LOGIN_URL)
+def edit_site_visit(request, action_id):
+    action = 'create'
+    render_actions = False
+
+    if request.method == 'POST':
+        render_actions = True
+        crew_form, site_visit_form, sampling_feature_form, action_form = get_forms_from_request(request, action_id)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form)
+        if all_forms_valid:
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, True)
+            # **delete action and related action for actionid's left**
+            return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
+
+    else:
+        site_visit = Action.objects.get(pk=action_id)
+        site_visit_form = SiteVisitForm(instance=site_visit)
+        sampling_feature = FeatureAction.objects.get(actionid=site_visit)
+        sampling_feature_form = FeatureActionForm(instance=sampling_feature)
+        crew_form = CrewForm(initial={'affiliationid': Affiliation.objects.filter(
+            actionby__actionid=site_visit)})
+        render_actions = True
+        action = 'update'
+
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
+
+        action_form = []
+        for child in children_actions:
+
+            initial_action_data = {
+                'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid),
+                'thisactionid': child.actionid.actionid
+            }
+
+            if child.actionid.actiontypecv == 'InstrumentCalibration':
+                calibration_action = CalibrationAction.objects.get(actionid=child.actionid)
+                initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
+                initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
+                initial_action_data['calibrationequation'] = calibration_action.calibrationequation
+            elif child.actionid.actiontypecv == 'EquipmentMaintenance':
+                maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
+                initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
+                initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
+                initial_action_data['maintenancereason'] = maintenance_action.maintenancereason
+
+            action_form.append(ActionForm(
+                instance=child.actionid,
+                initial=initial_action_data
+            ))
+
+    return render(
+        request,
+        'site-visits/actions-form.html',
+        {
+            'render_forms': [sampling_feature_form, site_visit_form, crew_form],
+            'mock_action_form': ActionForm(),
+            'actions_form': action_form,
+            'render_actions': render_actions,
+            'action': action, 'item_id': action_id
+        }
+    )
+
+
+@login_required(login_url=LOGIN_URL)
 def delete_site_visit(request, action_id):
     site_visit = Action.objects.get(pk=action_id)
     site_visit_name = site_visit.actionid
     children_actions = RelatedAction.objects.filter(relatedactionid=site_visit)
 
     for child in children_actions:
-            child.actionid.delete()
-            child.delete()
+        child.actionid.delete()
+        child.delete()
 
     site_visit.delete()
     messages.add_message(request, messages.SUCCESS,
@@ -717,6 +789,7 @@ def delete_site_visit(request, action_id):
     return HttpResponseRedirect(reverse('site_visits'))
 
 
+@login_required(login_url=LOGIN_URL)
 def edit_site_visit_summary(request, action_id):
     site_visit = Action.objects.get(pk=action_id)
     crew = ActionBy.objects.filter(actionid=action_id)

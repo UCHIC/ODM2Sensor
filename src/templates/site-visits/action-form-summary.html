@@ -63,8 +63,10 @@
     </div>
 
     <div class="row">
+    <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary"
+                                                              href="{% url 'site_visit_detail' SiteVisit.actionid %}">Site Visit Page</a></div>
         <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary"
-                                                              href="{% url 'create_site_visit' SiteVisit.actionid %}">Edit this Site Visit</a></div>
+                                                              href="{% url 'edit_site_visit' SiteVisit.actionid %}">Edit this Site Visit</a></div>
         <div class="col-sm-3 col-xs-12 col-md-3 pull-left"><a class="btn btn-primary btn-block"
                                                               href="{% url 'create_site_visit' %}">Create new Site
             Visit</a></div>

@@ -22,6 +22,7 @@
 
                     {% for action_form in actions_form %}
                         <tbody>
+                        <tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>
                         {{ action_form.as_table }}
                          </tbody>
                     {% endfor %}
