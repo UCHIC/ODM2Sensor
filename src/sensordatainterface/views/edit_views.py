@@ -558,7 +558,6 @@ def create_site_visit(request):
     )
 
 
-@login_required(login_url=LOGIN_URL)
 def get_forms_from_request(request, action_id=False):
     forms_returned = len(request.POST.getlist('actiontypecv'))
     action_form = []
@@ -628,7 +627,6 @@ def get_forms_from_request(request, action_id=False):
     return crew_form, site_visit_form, sampling_feature_form, action_form
 
 
-@login_required(login_url=LOGIN_URL)
 def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form):
     # validate crew
     # validate extra data
@@ -646,7 +644,6 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
     return all_forms_valid
 
 
-@login_required(login_url=LOGIN_URL)
 def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, updating=False):
     # set up site visit
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
