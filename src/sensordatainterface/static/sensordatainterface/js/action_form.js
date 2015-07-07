@@ -47,9 +47,9 @@ function addActionForm(that) {
     setTimeBoundaries(thisForm, beginDTInitialValue, endDTInitialValue);
 
     //add button for adding new equiment
-    var insertPosition = $(thisForm).find('[name="equipmentused"]', '[name="methodid"]').eq(0).parents('tr');
-    var addEquipmentButton = '<tr><th></th><td><a class="btn btn-default col-xs-2 col-sm-2" onclick="javascript:addEquipmentField(this)">- Add Equipment Used</a></td></tr>';
-    $(addEquipmentButton).insertAfter(insertPosition);
+    //var insertPosition = $(thisForm).find('[name="equipmentused"]', '[name="methodid"]').eq(0).parents('tr');
+    //var addEquipmentButton = '<tr><th></th><td><a class="btn btn-default col-xs-2 col-sm-2" onclick="javascript:addEquipmentField(this)">- Add Equipment Used</a></td></tr>';
+    //$(addEquipmentButton).insertAfter(insertPosition);
 
     handleActionTypeChange('Generic', thisForm);
 
