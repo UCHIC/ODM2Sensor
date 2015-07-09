@@ -4,17 +4,17 @@ function addActionForm(that) {
     var siteVisitForm = $('.form-table').children().first();
     var beginDTInitialValue = siteVisitForm.find("[name='begindatetime']").val();
     var endDTInitialValue = siteVisitForm.find("[name='enddatetime']").val();
-
+    var thisForm = form.clone();
 
     //Move add button and insert delete button
-    var thisForm = form.clone();
     thisForm.insertBefore(button);
     button.prev().prepend('<tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>');
 
     //restart datetimepicker
     //format: 'm/d/Y H:i'
-    $(thisForm).find('.datetimepicker').datetimepicker({
-        format: 'yyyy-MM-dd hh:mm:ss'
+    $(thisForm).find('.datetimepicker').datetimepicker(
+    {
+        format: 'YYYY-MM-DD HH:mm'
     })
         .on('changeDate', beginDTChanged);
 
@@ -52,6 +52,8 @@ function addActionForm(that) {
     //$(addEquipmentButton).insertAfter(insertPosition);
 
     handleActionTypeChange('Generic', thisForm);
+
+    setFormFields();
 
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").parents('tr').hide();
@@ -124,15 +126,15 @@ function setFormEndTime(endTimeElem, newDate) {
     var endLessThanBegin = !elemInitiallyEmpty && newDate < new Date(endTimeElem.val());
 
 
-    endDTPickerObj.setStartDate(newDate);
+    //endDTPickerObj.setStartDate(newDate);
 
-    if (!endLessThanBegin) {
-        endDTPickerObj.setDate(newDate);
-    }
-
-    if (elemInitiallyEmpty) {
-        endTimeElem.val("");
-    }
+    //if (!endLessThanBegin) {
+    //    endDTPickerObj.setDate(newDate);
+    //}
+    //
+    //if (elemInitiallyEmpty) {
+    //    endTimeElem.val("");
+    //}
 
 }
 
@@ -146,31 +148,31 @@ function setTimeBoundaries(that, startDateTime, endDateTime) {
         if (startDateTime) {
             var startDTObj = new Date(startDateTime);
 
-            beginDTObj.setStartDate(startDTObj);
-            endDTObj.setStartDate(startDTObj);
+            //beginDTObj.setStartDate(startDTObj);
+            //endDTObj.setStartDate(startDTObj);
 
-            if (startDTObj > new Date(beginDTElem.val())) {
-                beginDTObj.setDate(startDTObj);
-            }
-
-            if (startDTObj > new Date(endDTElem.val())) {
-                endDTObj.setDate(startDTObj);
-            }
+            //if (startDTObj > new Date(beginDTElem.val())) {
+            //    beginDTObj.setDate(startDTObj);
+            //}
+            //
+            //if (startDTObj > new Date(endDTElem.val())) {
+            //    endDTObj.setDate(startDTObj);
+            //}
         }
 
         if (endDateTime) {
             var finishDTObj = new Date(endDateTime);
 
-            beginDTObj.setEndDate(finishDTObj);
-            endDTObj.setEndDate(finishDTObj);
-
-            if (finishDTObj < new Date(beginDTElem.val())) {
-                beginDTObj.setDate(finishDTObj)
-            }
-
-            if (finishDTObj < new Date(endDTElem.val())) {
-                endDTObj.setDate(finishDTObj)
-            }
+            //beginDTObj.setEndDate(finishDTObj);
+            //endDTObj.setEndDate(finishDTObj);
+            //
+            //if (finishDTObj < new Date(beginDTElem.val())) {
+            //    beginDTObj.setDate(finishDTObj)
+            //}
+            //
+            //if (finishDTObj < new Date(endDTElem.val())) {
+            //    endDTObj.setDate(finishDTObj)
+            //}
         }
 
     }

@@ -75,29 +75,41 @@ function setDateTimePicker() {
     dateElements.push($("[name='referencematerialexpirationdate']"));
 
     dateElements.forEach(function (element) {
-        element.wrap("<div class='datetimepicker input-append date'></div");
-        element.removeClass('form-control');
+        element.wrap("<div class='datetimepicker input-group date'></div");
         element.after(
-            $("<span class='add-on'><i data-time-icon='glyphicon glyphicon-time' data-date-icon='glyphicon glyphicon-calendar'></i></span>")
+            $("<span class='input-group-addon'><span class='glyphicon glyphicon-calendar'></span></span>")
         );
 
     });
 
-    var currentDateTimePicker = $('.datetimepicker').datetimepicker({
-        format: 'yyyy-MM-dd hh:mm:ss'
+    var currentDateTimePicker = $('.datetimepicker');
+    currentDateTimePicker.datetimepicker({
+        format: 'YYYY-MM-DD HH:mm'
     });
 
     //If adding actionforms add endtime functionality
-    if (typeof (beginDTChanged) == "function") {
-        currentDateTimePicker.on('changeDate', beginDTChanged);
-        var siteVisitEndDTElem = $('.form-table').children().first().find("[name='enddatetime']");
-        setFormEndTime(siteVisitEndDTElem, new Date());
+    //if (typeof (beginDTChanged) == 'function') {
+    //    currentDateTimePicker.on('dp.change', beginDTChanged);
+    //    var siteVisitEndDTElem = $('.form-table').children().first().find("[name='enddatetime']");
+    //    setFormEndTime(siteVisitEndDTElem, new Date());
+    //}
+
+    //When begindatetime changes, set maxDate on enddatetime
+    var tBodies = $('form tbody');
+    tBodies.each(beginDateTimeChanged);
+
+}
+
+function beginDateTimeChanged() {
+        var thisTBody = this;
+        $(this).find('[name="begindatetime"]').parent('.datetimepicker').on('dp.change', function (ev) {
+            var date = moment($(ev.currentTarget).data().date);
+            setEndMaxDate(thisTBody, date);
+        }).trigger('dp.change');
     }
 
-    var button = $(".timepicker-picker a");
-    button.addClass('btn-default');
-    button.find('.icon-chevron-up').addClass('glyphicon glyphicon-chevron-up');
-    button.find('.icon-chevron-down').addClass('glyphicon glyphicon-chevron-down');
+function setEndMaxDate(thisTBody, newDate) {
+    $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker').data('DateTimePicker').minDate(newDate);
 }
 
 function setFormFields() {
@@ -107,9 +119,19 @@ function setFormFields() {
     $('select').addClass('select-two');
 
     $(".select-two").select2();
+
+    //set styling issues with form fields.
+    $('.select2-container').css('width', '85%');
+    $('form input, form textarea').css('width', '85%');
+    $('form input[type="submit"]').css('width', '66%');
+    $('.datetimepicker input').css('width', '100%');
 }
 
 $(document).ready(function () {
+    setDateTimePicker();
+
+    setFormFields();
+
     setNavActive();
 
     setDeleteConfirmation();
@@ -124,10 +146,8 @@ $(document).ready(function () {
         set_delete_icon();
     });
 
-    setDateTimePicker();
-
-    setFormFields();
     if (typeof (initVocabulariesTabs) == "function") {
         initVocabulariesTabs($);
     }
+
 });

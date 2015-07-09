@@ -142,10 +142,10 @@ table.data-table tbody thead th {
     }
 }
 
-/* temporary style for forms */
-.form-table input, .form-table textarea, .select-two {
-    width: 85%;
-}
+/*/!* temporary style for forms *!/*/
+/*.form-table input, .form-table textarea, .select-two {*/
+/*/!* width: 100%; *!/*/
+/*}*/
 
 .form-table th {
     width: 20%;
@@ -165,7 +165,8 @@ form input[type=submit] {
 
 input[type=checkbox], input[type=radio] {
     height: 20px;
-    width: 25%;
+    float: left;
+    max-width: 15%;
 }
 
 .errorlist {
@@ -181,6 +182,8 @@ table a.btn.btn-default {
     margin-right: 2%;
     width: 17%;
     float: left;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
 .form-table label {
@@ -191,7 +194,11 @@ table a.btn.btn-default {
     vertical-align: middle;
 }
 
-.input-group .form-control {
+/*.input-group .form-control {*/
+/*width: 85%; problem caused by this. divides the datetimepicker icon from input*/
+/*}*/
+
+.input-group {
     width: 85%;
 }
 
@@ -279,13 +286,13 @@ label {
     text-align: right;
 }
 
-.bootstrap-datetimepicker-widget ul {
-    padding-left: 0px;
-}
+/*.bootstrap-datetimepicker-widget ul {*/
+/*padding-left: 0px;*/
+/*}*/
 
-.bootstrap-datetimepicker-widget ul a.btn {
-    width: 100%;
-}
+/*.bootstrap-datetimepicker-widget ul a.btn {*/
+/*width: 100%;*/
+/*}*/
 
 .input-append.date .add-on i {
     top: 9px;
@@ -298,18 +305,18 @@ label {
     width: 45px;
 }
 
-.bootstrap-datetimepicker-widget {
-    margin-top: 23px;
-    margin-left: -248px;
-}
+/*.bootstrap-datetimepicker-widget {*/
+/*margin-top: 23px;*/
+/*margin-left: -248px;*/
+/*}*/
 
-.bootstrap-datetimepicker-widget:before {
-    left: 216;
-}
+/*.bootstrap-datetimepicker-widget:before {*/
+/*left: 216;*/
+/*}*/
 
-.bootstrap-datetimepicker-widget:after {
-    left: 217;
-}
+/*.bootstrap-datetimepicker-widget:after {*/
+/*left: 217;*/
+/*}*/
 
 #action-form {
     display: none;
@@ -358,3 +365,9 @@ label {
 .table-bordered > thead > tr > th {
     padding: 10px;
 }
+
+.select2-container {
+    width: 85%;
+!important;
+}
+
