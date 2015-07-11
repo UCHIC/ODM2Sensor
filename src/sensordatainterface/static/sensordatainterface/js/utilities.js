@@ -66,15 +66,83 @@ function set_delete_icon() {
 }
 
 function setDateTimePicker() {
+    initDTPicker();//Checked
+
+    //If adding actionforms add endtime functionality
+    //if (typeof (beginDTChanged) == 'function') {
+    //    currentDateTimePicker.on('dp.change', beginDTChanged);
+    //    var siteVisitEndDTElem = $('.form-table').children().first().find("[name='enddatetime']");
+    //    setFormEndTime(siteVisitEndDTElem, new Date());
+    //}
+
+    //When begindatetime changes, set maxDate on enddatetime
+    var tBodies = $('form tbody');
+    tBodies.each(function () {
+        beginDateTimeChanged(this, true);
+    });
+
+}
+
+function beginDateTimeChanged(thisTBody, trigger) {
+    var endDTElem = $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker');
+    var event = $(thisTBody).find('[name="begindatetime"]')
+        .parent('.datetimepicker')
+        .on('dp.change', function (ev) {
+            var date = moment($(ev.currentTarget).data().date);
+            setEndMinDate(thisTBody, date);
+        });
+
+    if (trigger && endDTElem.length > 0) {
+        event.trigger('dp.change');
+        endDTElem.children('input').blur();
+        endDTElem.data('DateTimePicker').hide();
+    }
+}
+
+function setChildBoundsListener() {
+    // Set boundaries of child form datetime fields according to datetime fields of parent site visit
+    var siteVisitForm = $('form').find('tbody')[0];
+    $(siteVisitForm).find('.datetimepicker').on('dp.change', setChildActionFormBounds);
+}
+
+function setChildActionFormBounds(ev) {
+    var childForms = $('.form-table').children('tbody').has('[name="enddatetime"]');
+    for (var i = 1; i < childForms.length; i++)
+        setIndividualBounds($(childForms[i]))
+}
+
+function setIndividualBounds(actionTBody) {
+    var siteVisit = $('.form-table').children('tbody').first();
+    var beginSVDate = moment($(siteVisit).find('[name="begindatetime"]').val());
+    var endSVDate = moment($(siteVisit).find('[name="enddatetime"]').val());
+
+    var beginDateTimeObj = actionTBody.find('[name="begindatetime"]').parents('.datetimepicker').data('DateTimePicker');
+    var endDateTimeObj = actionTBody.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
+
+
+    beginDateTimeObj.maxDate(endSVDate);
+    beginDateTimeObj.minDate(beginSVDate);
+
+    endDateTimeObj.maxDate(endSVDate);
+    endDateTimeObj.minDate(beginSVDate);
+
+}
+
+function setEndMinDate(thisTBody, newDate) {
+    $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker').data('DateTimePicker').minDate(newDate).show();
+}
+
+function initDTPicker() {
     /* http://tarruda.github.io/bootstrap-datetimepicker/ */
     var dateElements = [];
-    dateElements.push($('#id_equipmentpurchasedate'));
+    // Push elements to get calendar widget
+    dateElements.push($('#id_equipmentpurchasedate'));// All checked below
     dateElements.push($("[name='begindatetime']"));
     dateElements.push($("[name='enddatetime']"));
     dateElements.push($("[name='referencematerialpurchasedate']"));
     dateElements.push($("[name='referencematerialexpirationdate']"));
 
-    dateElements.forEach(function (element) {
+    dateElements.forEach(function (element) {//function checked
         element.wrap("<div class='datetimepicker input-group date'></div");
         element.after(
             $("<span class='input-group-addon'><span class='glyphicon glyphicon-calendar'></span></span>")
@@ -86,30 +154,6 @@ function setDateTimePicker() {
     currentDateTimePicker.datetimepicker({
         format: 'YYYY-MM-DD HH:mm'
     });
-
-    //If adding actionforms add endtime functionality
-    //if (typeof (beginDTChanged) == 'function') {
-    //    currentDateTimePicker.on('dp.change', beginDTChanged);
-    //    var siteVisitEndDTElem = $('.form-table').children().first().find("[name='enddatetime']");
-    //    setFormEndTime(siteVisitEndDTElem, new Date());
-    //}
-
-    //When begindatetime changes, set maxDate on enddatetime
-    var tBodies = $('form tbody');
-    tBodies.each(beginDateTimeChanged);
-
-}
-
-function beginDateTimeChanged() {
-        var thisTBody = this;
-        $(this).find('[name="begindatetime"]').parent('.datetimepicker').on('dp.change', function (ev) {
-            var date = moment($(ev.currentTarget).data().date);
-            setEndMaxDate(thisTBody, date);
-        }).trigger('dp.change');
-    }
-
-function setEndMaxDate(thisTBody, newDate) {
-    $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker').data('DateTimePicker').minDate(newDate);
 }
 
 function setFormFields() {
@@ -124,11 +168,13 @@ function setFormFields() {
     $('.select2-container').css('width', '85%');
     $('form input, form textarea').css('width', '85%');
     $('form input[type="submit"]').css('width', '66%');
-    $('.datetimepicker input').css('width', '100%');
+    $('.datetimepicker input').css('width', '100%'); //Checked
 }
 
 $(document).ready(function () {
     setDateTimePicker();
+
+    setChildBoundsListener();
 
     setFormFields();
 

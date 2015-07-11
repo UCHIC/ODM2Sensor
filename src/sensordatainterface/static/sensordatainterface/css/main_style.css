@@ -371,3 +371,7 @@ label {
 !important;
 }
 
+.row form.input-group  textarea.form-control {
+    border-radius: 4px;
+}
+

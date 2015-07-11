@@ -6,7 +6,8 @@
     <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
         Site Visit</h1></div>
     <div class="row">
-        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"
+        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12"
+              action="{% block submit_url %}{% endblock %}"
               method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ action }}" name="action">
@@ -17,18 +18,21 @@
                     {{ render_form.as_table }}
                 {% endfor %}
                 </tbody>
-                <tbody>
-                {% if render_actions %}
 
+                {% if render_actions %}
+                    <tbody>
                     {% for action_form in actions_form %}
                         <tbody>
-                        <tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>
+                        <tr>
+                            <th></th>
+                            <td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">-
+                                Remove Action</a></td>
+                        </tr>
                         {{ action_form.as_table }}
-                         </tbody>
+                        </tbody>
                     {% endfor %}
-
+                    <tbody>
                 {% endif %}
-                <tbody>
                 <tr>
                     <th></th>
                     <td>
@@ -38,8 +42,6 @@
                         </div>
                     </td>
                 </tr>
-                </tbody>
-                <tbody>
                 <tr>
                     <th></th>
                     <td>
@@ -62,7 +64,7 @@
         </form>
     </div>
     <table id="action-form">
-            {{ mock_action_form }}
+        {{ mock_action_form }}
     </table>
 {% endblock %}
 
