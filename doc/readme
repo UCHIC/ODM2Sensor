@@ -5,3 +5,8 @@ To run tests:
     - To run tests, navigate to where the manage.py file is in the project (usually under src).
     - Run command: 'python manage.py test' (w/o quotes) to run test
     - Run command: 'python manage.py runserver' to start web server
+
+To fulfill django-pyodbc-azure requirement install the following version in the virtual enviroment:
+    pip install https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
+    if you get the error "unable to find vcvarsall.bat" then refer to http://www.lfd.uci.edu/~gohlke/pythonlibs/:
+        - Download the correct file for pyodbc and use "pip install filename" to install.

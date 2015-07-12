@@ -75,7 +75,7 @@ DATABASES = {
     },
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ODM2Sensor/Internal.sqlite3',
+        'NAME': os.path.join(PROJECT_DIR, 'ODM2Sensor/Internal.sqlite3'),
         'TEST_DEPENDENCIES': ['odm2']
     },
 }
