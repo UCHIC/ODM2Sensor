@@ -40,3 +40,4 @@ nosetests.xml
 
 # Database and secret key file
 src/ODM2Sensor/settings/settings.py
+src/ODM2Sensor/media/
