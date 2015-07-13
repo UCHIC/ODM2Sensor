@@ -51,6 +51,9 @@ function setChildActionDateTimePicker(childForm) {
             format: 'YYYY-MM-DD HH:mm'
         }).on('changeDate', beginDateTimeChanged);
 
+    //set initial bounds on dates depending on site visit dates
+    setIndividualBounds(childForm);
+
     //Initialize data and UTCOffset for children action forms
     //set the value of the begin time in the action form to the site visit form begin time
     childForm.find("[name='begindatetime']").val(beginDTInitialValue);// checked
@@ -61,8 +64,7 @@ function setChildActionDateTimePicker(childForm) {
     childForm.find("[name='begindatetimeutcoffset']").val(siteVisitForm.find("[name='begindatetimeutcoffset']").val());
     childForm.find("[name='enddatetimeutcoffset']").val(siteVisitForm.find("[name='enddatetimeutcoffset']").val());
 
-    //set initial bounds on dates depending on site visit dates
-    setIndividualBounds(childForm);
+    setDTPickerClose($(childForm).find('[name="begindatetime"]'));
 }
 
 function setIsFactoryServiceFlag() {
