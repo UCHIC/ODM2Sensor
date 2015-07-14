@@ -209,12 +209,16 @@
     </div>
     <nav>
         <ul class="pager">
+            {% if next_deployment %}
             <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
-                                                                      href="#">Next<span
+                                                                      href="{% url 'deployment_detail' next_deployment %}">Next<span
                     aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+        {% if previous_deployment %}
             <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
-                                                                         href="#"><span aria-hidden="true">&larr;</span>
+                                                                         href="{% url 'deployment_detail' previous_deployment %}"><span aria-hidden="true">&larr;</span>
                 Previous</a></li>
+        {% endif %}
         </ul>
     </nav>
 

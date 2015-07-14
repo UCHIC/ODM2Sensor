@@ -19,13 +19,25 @@ class DeploymentDetail(DetailView):
     context_object_name = 'Deployment'
     template_name = 'site-visits/deployment/details.html'
 
-    # def get_context_data(self, **kwargs):
-    # context = super(DeploymentDetail, self).get_context_data(**kwargs)
-    # context['Site'] = FeatureAction.objects.get(
-    # actionid__actionid=self.kwargs['slug'],
-    #         samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-    #     )
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super(DeploymentDetail, self).get_context_data(**kwargs)
+        deployments = EquipmentUsed.objects.filter(
+            Q(actionid__actiontypecv='EquipmentDeployment')
+            | Q(actionid__actiontypecv='InstrumentDeployment')
+        )
+        previous_deployment = deployments.filter(bridgeid__lt=context['Deployment'].bridgeid).order_by('-bridgeid')
+        next_deployment = deployments.filter(bridgeid__gt=context['Deployment'].bridgeid).order_by('bridgeid')
+
+        if len(previous_deployment) > 0:
+            context['previous_deployment'] = previous_deployment[0].actionid.actionid
+        else:
+            context['previous_deployment'] = False
+        if len(next_deployment) > 0:
+            context['next_deployment'] = next_deployment[0].actionid.actionid
+        else:
+            context['next_deployment'] = False
+
+        return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
