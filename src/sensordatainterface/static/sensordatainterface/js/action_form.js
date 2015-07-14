@@ -19,7 +19,6 @@ function addActionForm(that) {
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();
     $(thisForm).find(".select-two").select2();
-    $(thisForm).find(".select2-container").attr('style', 'width:85%');
 
     // This bit of code solves the problem of th checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
@@ -41,12 +40,11 @@ function addActionForm(that) {
 
 function setChildActionDateTimePicker(childForm) {
     var siteVisitForm = $('.form-table').children().first();
-    var beginDTInitialValue = moment(siteVisitForm.find("[name='begindatetime']").val());//Checked
-    var endDTInitialValue = moment(siteVisitForm.find("[name='enddatetime']").val());//Checked
+    var beginDTInitialValue = moment(siteVisitForm.find("[name='begindatetime']").val());
+    var endDTInitialValue = moment(siteVisitForm.find("[name='enddatetime']").val());
 
     //restart datetimepicker
-    //format: 'm/d/Y H:i'
-    $(childForm).find('.datetimepicker').datetimepicker(//checked
+    $(childForm).find('.datetimepicker').datetimepicker(
         {
             format: 'YYYY-MM-DD HH:mm'
         }).on('changeDate', beginDateTimeChanged);
@@ -56,10 +54,10 @@ function setChildActionDateTimePicker(childForm) {
 
     //Initialize data and UTCOffset for children action forms
     //set the value of the begin time in the action form to the site visit form begin time
-    childForm.find("[name='begindatetime']").parent('.datetimepicker').data('DateTimePicker').date(beginDTInitialValue);// checked
-    childForm.find("[name='enddatetime']").parent('.datetimepicker').data('DateTimePicker').date(endDTInitialValue);// checked
+    childForm.find("[name='begindatetime']").parent('.datetimepicker').data('DateTimePicker').date(beginDTInitialValue);
+    childForm.find("[name='enddatetime']").parent('.datetimepicker').data('DateTimePicker').date(endDTInitialValue);
 
-    beginDateTimeChanged(childForm, false); //set min date
+    beginDateTimeChanged(childForm, false);
 
     childForm.find("[name='begindatetimeutcoffset']").val(siteVisitForm.find("[name='begindatetimeutcoffset']").val());
     childForm.find("[name='enddatetimeutcoffset']").val(siteVisitForm.find("[name='enddatetimeutcoffset']").val());
@@ -113,9 +111,8 @@ function handleActionTypeChange(formType, currentForm) {
 
     //reset select2 to hide disabled options
     var methodSelect = $(currentForm).find('[name="methodid"]');
-    methodSelect.next('select2-container').remove();
     methodSelect.select2();
-    methodSelect.next('select2-container').attr('style', 'width:85%');
+    $('.select2-container').css('width', '85%');
 }
 
 function setEquipmentUsedNumber(event) {

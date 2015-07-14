@@ -375,3 +375,14 @@ label {
     border-radius: 4px;
 }
 
+.select2-container, form.input-group input.form-control, form.input-group textarea.form-control {
+    width: 85%;
+}
+
+form.form-control input[type="submit"].form-control {
+    width: 66%;
+}
+
+div.datetimepicker input.form-control {
+    width: 100%;
+}

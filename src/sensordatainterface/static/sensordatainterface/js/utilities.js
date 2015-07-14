@@ -66,9 +66,7 @@ function set_delete_icon() {
 }
 
 function setDateTimePicker() {
-    initDTPicker();//Checked
-
-    //If adding actionforms add endtime functionality
+    initDTPicker();
 
     //When begindatetime changes, set maxDate on enddatetime
     var tBodies = $('form tbody');
@@ -138,13 +136,13 @@ function initDTPicker() {
     /* http://tarruda.github.io/bootstrap-datetimepicker/ */
     var dateElements = [];
     // Push elements to get calendar widget
-    dateElements.push($('#id_equipmentpurchasedate'));// All checked below
+    dateElements.push($('#id_equipmentpurchasedate'));
     dateElements.push($("[name='begindatetime']"));
     dateElements.push($("[name='enddatetime']"));
     dateElements.push($("[name='referencematerialpurchasedate']"));
     dateElements.push($("[name='referencematerialexpirationdate']"));
 
-    dateElements.forEach(function (element) {//function checked
+    dateElements.forEach(function (element) {
         element.wrap("<div class='datetimepicker input-group date'></div");
         element.after(
             $("<span class='input-group-addon'><span class='glyphicon glyphicon-calendar'></span></span>")
@@ -165,17 +163,11 @@ function setFormFields() {
     $('select').addClass('select-two');
 
     $(".select-two").select2();
-
-    //set styling issues with form fields.
     $('.select2-container').css('width', '85%');
-    $('form input, form textarea').css('width', '85%');
-    $('form input[type="submit"]').css('width', '66%');
-    $('.datetimepicker input').css('width', '100%'); //Checked
 }
 
 function setDTPickerClose(beginDTElem) {
     //Function to set up begindatetime fields to close automatically when date is picked and open next enddatetime field.
-
     beginDTElem.parent('.datetimepicker').on('dp.change', function () {
         var beginDTObj = $(this).data('DateTimePicker');
         if (beginDTObj.collapse) {
