@@ -55,7 +55,7 @@ class EquipmentChoiceField(ModelChoiceField):
 
 class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.equipmentcode + ": " + obj.equipmentserialnumber
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber+" ("+obj.equipmenttypecv+", "+obj.equipmentmodelid.modelname+")"
 
 
 class VariableChoiceField(ModelChoiceField):
