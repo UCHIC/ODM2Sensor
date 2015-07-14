@@ -94,6 +94,10 @@ function beginDateTimeChanged(thisTBody, trigger) {
     }
 }
 
+function setEndMinDate(thisTBody, newDate) {
+    $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker').data('DateTimePicker').minDate(newDate);
+}
+
 function setChildBoundsListener() {
     // Set boundaries of child form datetime fields according to datetime fields of parent site visit
     var siteVisitForm = $('form').find('tbody')[0];
@@ -114,17 +118,20 @@ function setIndividualBounds(actionTBody) {
     var beginDateTimeObj = actionTBody.find('[name="begindatetime"]').parents('.datetimepicker').data('DateTimePicker');
     var endDateTimeObj = actionTBody.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
 
+    // This fixes problem of beginDateTime being after maxDate. Boundaries are reset and set again.
+    beginDateTimeObj.maxDate(false);
+    beginDateTimeObj.minDate(false);
+    endDateTimeObj.maxDate(false);
+    endDateTimeObj.minDate(false);
 
     beginDateTimeObj.maxDate(endSVDate);
     beginDateTimeObj.minDate(beginSVDate);
-
     endDateTimeObj.maxDate(endSVDate);
     endDateTimeObj.minDate(beginSVDate);
 
-}
+    beginDateTimeObj.hide();
+    endDateTimeObj.hide();
 
-function setEndMinDate(thisTBody, newDate) {
-    $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker').data('DateTimePicker').minDate(newDate);
 }
 
 function initDTPicker() {
@@ -169,7 +176,7 @@ function setFormFields() {
 function setDTPickerClose(beginDTElem) {
     //Function to set up begindatetime fields to close automatically when date is picked and open next enddatetime field.
 
-    beginDTElem.parent('.datetimepicker').on('dp.change', function() {
+    beginDTElem.parent('.datetimepicker').on('dp.change', function () {
         var beginDTObj = $(this).data('DateTimePicker');
         if (beginDTObj.collapse) {
             beginDTObj.hide();
@@ -181,9 +188,9 @@ function setDTPickerClose(beginDTElem) {
 $(document).ready(function () {
     setDateTimePicker();
 
-    setDTPickerClose($('[name="begindatetime"]'));
-
     setChildBoundsListener();
+
+    setDTPickerClose($('[name="begindatetime"]'));
 
     setFormFields();
 

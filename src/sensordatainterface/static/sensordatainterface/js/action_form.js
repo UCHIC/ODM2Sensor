@@ -41,8 +41,8 @@ function addActionForm(that) {
 
 function setChildActionDateTimePicker(childForm) {
     var siteVisitForm = $('.form-table').children().first();
-    var beginDTInitialValue = siteVisitForm.find("[name='begindatetime']").val();//Checked
-    var endDTInitialValue = siteVisitForm.find("[name='enddatetime']").val();//Checked
+    var beginDTInitialValue = moment(siteVisitForm.find("[name='begindatetime']").val());//Checked
+    var endDTInitialValue = moment(siteVisitForm.find("[name='enddatetime']").val());//Checked
 
     //restart datetimepicker
     //format: 'm/d/Y H:i'
@@ -56,8 +56,8 @@ function setChildActionDateTimePicker(childForm) {
 
     //Initialize data and UTCOffset for children action forms
     //set the value of the begin time in the action form to the site visit form begin time
-    childForm.find("[name='begindatetime']").val(beginDTInitialValue);// checked
-    childForm.find("[name='enddatetime']").val(endDTInitialValue);// checked
+    childForm.find("[name='begindatetime']").parent('.datetimepicker').data('DateTimePicker').date(beginDTInitialValue);// checked
+    childForm.find("[name='enddatetime']").parent('.datetimepicker').data('DateTimePicker').date(endDTInitialValue);// checked
 
     beginDateTimeChanged(childForm, false); //set min date
 
