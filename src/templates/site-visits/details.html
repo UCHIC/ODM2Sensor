@@ -80,6 +80,9 @@
     </div>
     <div class="row">
         <div class="col-md-9"><h3>Related Actions Table</h3></div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_site_visit' %}">Add New Site Visit</a>
+    </div>
     </div>
     <hr class="divider">
 
@@ -119,10 +122,14 @@
     </div>
     <nav>
     <ul class="pager">
-        <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
-                                                               href="#">Next<span aria-hidden="true">&rarr;</span></a></li>
-        <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
-                                                              href="#"><span aria-hidden="true">&larr;</span> Previous</a></li>
+        {% if next_site_visit %}
+        <li class="next col-sm-3 col-xs-6 col-md-2 pull-right">
+            <a class="btn btn-block" href="{% url 'site_visit_detail' next_site_visit %}">Next<span aria-hidden="true">&rarr;</span></a></li>
+        {% endif %}
+        {% if previous_site_visit %}
+        <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left">
+            <a class="btn btn-block" href="{% url 'site_visit_detail' previous_site_visit %}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+    {% endif %}
         </ul>
     </nav>
 

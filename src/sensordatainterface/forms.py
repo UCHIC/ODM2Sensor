@@ -57,6 +57,10 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber+" ("+obj.equipmenttypecv+", "+obj.equipmentmodelid.modelname+")"
 
+class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return str(obj.referencematerialid) + ": "+obj.referencematerialmediumcv
+
 
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
@@ -658,6 +662,11 @@ class ActionForm(ModelForm):
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
         widget=forms.Select(attrs={'class': 'calibration'}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
+
+    calibrationstandard = CalibrationStandardMultipleChoiceField(
+        widget=forms.Select(attrs={'class': 'calibration'}),
+        queryset=ReferenceMaterial.objects.all(), label='Reference Materials', required=False)
+
     calibrationcheckvalue = forms.DecimalField(
         widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
     calibrationequation = forms.CharField(

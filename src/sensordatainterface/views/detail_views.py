@@ -9,6 +9,34 @@ class GenericDetailView(DetailView):
     def dispatch(self, *args, **kwargs):
         return super(GenericDetailView, self).dispatch(*args, **kwargs)
 
+class SiteVisitDetailView(DetailView):
+    model = FeatureAction
+    slug_field = 'actionid'
+    context_object_name = 'SiteVisit'
+    template_name = 'site-visits/details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteVisitDetailView, self).get_context_data(**kwargs)
+        site_visits = Action.objects.filter(actiontypecv='SiteVisit', featureaction__isnull=False)
+
+        previous_site_visit = site_visits.filter(actionid__lt=context['SiteVisit'].actionid.actionid).order_by('-actionid')
+        next_site_visit = site_visits.filter(actionid__gt=context['SiteVisit'].actionid.actionid).order_by('actionid')
+
+        if len(previous_site_visit) > 0:
+            context['previous_site_visit'] = previous_site_visit[0].actionid
+        else:
+            context['previous_site_visit'] = False
+        if len(next_site_visit) > 0:
+            context['next_site_visit'] = next_site_visit[0].actionid
+        else:
+            context['next_site_visit'] = False
+
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteVisitDetailView, self).dispatch(*args, **kwargs)
+
 
 # Deployment Details needs it's own view since it depends on samplingfeatureid and equipmentid
 class DeploymentDetail(DetailView):
@@ -57,7 +85,6 @@ class DeploymentMeasVariableDetailView(DetailView):
         context['deployment'] = EquipmentUsed.objects.get(pk=self.kwargs['equipmentused'])
         context['equipment'] = context['deployment'].equipmentid
         context['model'] = context['equipment'].equipmentmodelid
-
         context['datalogger_file_column'] = DataloggerFileColumn.objects.filter(
             instrumentoutputvariableid=context['MeasuredVariable'])
 

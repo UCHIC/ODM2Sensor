@@ -563,6 +563,7 @@ def get_forms_from_request(request, action_id=False):
     action_form = []
     maintenance_counter = 0
     equipment_used_position = 0
+    calibration_standard_position = 0
 
     site_visit_data = {
         'begindatetime': request.POST.getlist('begindatetime')[0],
@@ -575,6 +576,7 @@ def get_forms_from_request(request, action_id=False):
     for i in range(1, forms_returned + 1):
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
+        calibration_standard_count = request.POST.getlist('calibrationstandardsnumber')[i - 1]
 
         form_data = {
             'actiontypecv': action_type,
@@ -586,6 +588,7 @@ def get_forms_from_request(request, action_id=False):
             # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
             'methodid': request.POST.getlist('methodid')[i - 1],
             'equipmentusednumber': equipment_used_count,
+            'calibrationstandardsnumber': calibration_standard_count,
             'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
             'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
             'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
@@ -593,6 +596,9 @@ def get_forms_from_request(request, action_id=False):
             'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
             'equipmentused': request.POST.getlist('equipmentused')[
                              equipment_used_position:int(equipment_used_count) + equipment_used_position
+                             ],
+            'calibrationstandard': request.POST.getlist('calibrationstandard')[
+                             calibration_standard_position:int(calibration_standard_count) + calibration_standard_position
                              ]
         }
         try:
@@ -605,6 +611,7 @@ def get_forms_from_request(request, action_id=False):
         }
 
         equipment_used_position += int(equipment_used_count)
+        calibration_standard_position += int(calibration_standard_count)
 
         if request.POST.getlist('isfactoryservicebool')[i - 1] == 'True':
             form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
@@ -678,12 +685,19 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
         else:
             EquipmentUsed.objects.filter(actionid=current_action).delete()
+            CalibrationStandard.objects.filter(actionid=current_action).delete()
 
         equipments = action_form[i].cleaned_data['equipmentused']
         for equ in equipments:
             EquipmentUsed.objects.create(
                 actionid=current_action,
                 equipmentid=equ
+            )
+        standards = action_form[i].cleaned_data['calibrationstandard']
+        for std in standards:
+            CalibrationStandard.objects.create(
+                actionid=current_action,
+                referencematerialid=std
             )
         if action_type == 'InstrumentCalibration':
             if updating:
@@ -738,6 +752,7 @@ def edit_site_visit(request, action_id):
 
             initial_action_data = {
                 'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid),
+                'calibrationstandard': CalibrationStandard.objects.filter(calibrationaction__actionid=child.actionid),
                 'thisactionid': child.actionid.actionid
             }
 
