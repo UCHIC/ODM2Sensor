@@ -752,7 +752,6 @@ def edit_site_visit(request, action_id):
 
             initial_action_data = {
                 'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid),
-                'calibrationstandard': CalibrationStandard.objects.filter(calibrationaction__actionid=child.actionid),
                 'thisactionid': child.actionid.actionid
             }
 
@@ -761,6 +760,10 @@ def edit_site_visit(request, action_id):
                 initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
                 initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
                 initial_action_data['calibrationequation'] = calibration_action.calibrationequation
+                initial_action_data['calibrationstandard'] = ReferenceMaterial.objects.filter(
+                    calibrationstandard__isnull=False,
+                    calibrationstandard__actionid=calibration_action.actionid
+                )
             elif child.actionid.actiontypecv == 'EquipmentMaintenance':
                 maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
                 initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice

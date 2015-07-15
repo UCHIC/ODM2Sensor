@@ -664,6 +664,7 @@ class ActionForm(ModelForm):
         actiontype = kwargs.pop('actiontype', None)
         super(ActionForm, self).__init__(*args, **kwargs)
         self.fields['equipmentused'].help_text = None
+
     required_css_class = 'form-required'
 
     methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
