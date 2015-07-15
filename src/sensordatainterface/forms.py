@@ -555,9 +555,9 @@ class FactoryServiceActionForm(ModelForm):
         }
 
         labels = {
-            'begindatetime': _('Begin Time'),
+            'begindatetime': _('Begin Date Time'),
             'begindatetimeutcoffset': _('Begin UTC Offset'),
-            'enddatetime': _('End Time'),
+            'enddatetime': _('End Date Time'),
             'enddatetimeutcoffset': _('End UTC Offset'),
             'actionfilelink': _('Action File'),
             'actiondescription': _('Description')
@@ -605,9 +605,9 @@ class SiteVisitForm(ModelForm):
         }
         labels = {
             'begindatetime': _('Begin Date Time'),
-            'begindatetimeutcoffset': _('Begin UTF Offset'),
+            'begindatetimeutcoffset': _('Begin UTC Offset'),
             'enddatetime': _('End Date Time'),
-            'enddatetimeutcoffset': _('End UTF Offset'),
+            'enddatetimeutcoffset': _('End UTC Offset'),
             'actiondescription': _('Description'),
         }
 
@@ -735,10 +735,10 @@ class ActionForm(ModelForm):
         }
 
         labels = {
-            'Action Type'
-            'begindatetime': _('Begin Time'),
+            'actiontypecv': _('Action Type'),
+            'begindatetime': _('Begin Date Time'),
             'begindatetimeutcoffset': _('Begin UTC Offset'),
-            'enddatetime': _('End Time'),
+            'enddatetime': _('End Date Time'),
             'enddatetimeutcoffset': _('End UTC Offset'),
             'actionfilelink': _('Action File'),
             'actiondescription': _('Description')
