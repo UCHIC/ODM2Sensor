@@ -24,7 +24,7 @@
                    data-toggle="tab">Calibration</a>
             </li>
             <li role="presentation">
-                <a href="#vendor" onclick="changeTab('vendor')" aria-controls="vendor" role="tab" data-toggle="tab">Vendor</a>
+                <a href="#vendor" onclick="changeTab('vendor')" aria-controls="vendor" role="tab" data-toggle="tab">Organization</a>
             </li>
         </ul>
         <div class="tab-content">
@@ -48,7 +48,7 @@
             <div role="tabpanel" class="tab-pane fade" id="vendor">
                 <div class="col-xs-12 col-sm-6 col-md-7"><h1>Organizations</h1></div>
                 <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                    <a class="btn btn-primary new-btn" href="{% url 'create_vendor' %}">New Vendor</a>
+                    <a class="btn btn-primary new-btn" href="{% url 'create_vendor' %}">New Organization</a>
                 </div>
                 <table class="data-table">
                     <thead>
