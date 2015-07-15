@@ -22,3 +22,5 @@ DEFAULT_DB['OPTIONS'] = {
     'driver': ODM2_configs['OPTIONS']['driver'],
     'host_is_server': ODM2_configs['OPTIONS']['host_is_server'],
 }
+
+MEDIA_URL = SITE_URL + 'media/'
