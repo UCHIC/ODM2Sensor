@@ -648,6 +648,11 @@ class ActionForm(ModelForm):
     equipmentused = MultipleEquipmentChoiceField(
         queryset=Equipment.objects.all(), label='Equipment Used'
     )
+
+    calibrationstandard = CalibrationStandardMultipleChoiceField(
+    widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+    queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False)
+
     isfactoryservice = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service', required=False)
     isfactoryservicebool = forms.BooleanField(
@@ -663,16 +668,14 @@ class ActionForm(ModelForm):
         widget=forms.Select(attrs={'class': 'calibration'}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
 
-    calibrationstandard = CalibrationStandardMultipleChoiceField(
-        widget=forms.Select(attrs={'class': 'calibration'}),
-        queryset=ReferenceMaterial.objects.all(), label='Reference Materials', required=False)
-
     calibrationcheckvalue = forms.DecimalField(
         widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation', required=False)
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+
+    calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 

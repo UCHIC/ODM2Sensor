@@ -576,7 +576,7 @@ def get_forms_from_request(request, action_id=False):
     for i in range(1, forms_returned + 1):
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
-        calibration_standard_count = request.POST.getlist('calibrationstandardsnumber')[i - 1]
+        calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
 
         form_data = {
             'actiontypecv': action_type,
@@ -588,7 +588,7 @@ def get_forms_from_request(request, action_id=False):
             # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
             'methodid': request.POST.getlist('methodid')[i - 1],
             'equipmentusednumber': equipment_used_count,
-            'calibrationstandardsnumber': calibration_standard_count,
+            'calibrationstandardnumber': calibration_standard_count,
             'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
             'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
             'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
@@ -693,21 +693,21 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 actionid=current_action,
                 equipmentid=equ
             )
-        standards = action_form[i].cleaned_data['calibrationstandard']
-        for std in standards:
-            CalibrationStandard.objects.create(
-                actionid=current_action,
-                referencematerialid=std
-            )
         if action_type == 'InstrumentCalibration':
             if updating:
                 CalibrationAction.objects.get(actionid=current_action).delete()
-            CalibrationAction.objects.create(
+            calibration_action = CalibrationAction.objects.create(
                 actionid=current_action,
                 calibrationcheckvalue=action_form[i].cleaned_data['calibrationcheckvalue'],
                 instrumentoutputvariableid=action_form[i].cleaned_data['instrumentoutputvariable'],
                 calibrationequation=action_form[i].cleaned_data['calibrationequation']
             )
+            standards = action_form[i].cleaned_data['calibrationstandard']
+            for std in standards:
+                CalibrationStandard.objects.create(
+                    actionid=calibration_action,
+                    referencematerialid=std
+                )
         elif action_type == 'EquipmentMaintenance':
             if updating:
                 MaintenanceAction.objects.get(actionid=current_action).delete()

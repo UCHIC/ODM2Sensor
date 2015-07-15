@@ -115,19 +115,22 @@ function handleActionTypeChange(formType, currentForm) {
     $('.select2-container').css('width', '85%');
 }
 
-function setEquipmentUsedNumber(event) {
-    var equipmentUsedElems = $('.input-group tbody').find('[name="equipmentused"]');
+function setMultipleFieldsNumber(event) {
+    var object = event.data.object;
+    var multipleObjElems = $('.input-group tbody').find('[name="'+object+'"]');
 
-    for (var i = 0; i < equipmentUsedElems.length; i++) {
-        var equipmentUsedElem = $(equipmentUsedElems[i]);
-        var equipmentUsedCount = equipmentUsedElem.val().length;
-        equipmentUsedElem.parents('tbody').find('[name="equipmentusednumber"]').val(equipmentUsedCount);
+    for (var i = 0; i < multipleObjElems.length; i++) {
+        var multipleObjElem = $(multipleObjElems[i]);
+        var multipleObjCount = multipleObjElem.val().length;
+        multipleObjElem.parents('tbody').find('[name="'+object+'number"]').val(multipleObjCount);
     }
 
 }
 
 $(document).ready(function () {
-    $('.input-group').submit(setEquipmentUsedNumber);
+    var formItems = $('.input-group');
+    formItems.submit({object: 'equipmentused'}, setMultipleFieldsNumber);
+    formItems.submit({object: 'calibrationstandard'}, setMultipleFieldsNumber);
     var allForms = $('tbody');
 
     allForms.each(function (index) {
