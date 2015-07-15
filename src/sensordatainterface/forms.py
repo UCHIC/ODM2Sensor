@@ -122,6 +122,8 @@ time_zone_choices = (
 
 
 class SamplingFeatureForm(ModelForm):
+    required_css_class = 'form-required'
+
     class Meta:
         model = SamplingFeature
         fields = [
@@ -150,6 +152,7 @@ class SamplingFeatureForm(ModelForm):
 
 
 class SiteForm(ModelForm):
+    required_css_class = 'form-required'
     latlondatumid = SpatialReferenceChoiceField(queryset=SpatialReference.objects.all(), label='Spatial Reference')
     # sitetypecv = ModelChoiceField(queryset=CV_SiteType.objects.all(), to_field_name='term') # Currently CV tables are outdated
 
@@ -175,6 +178,7 @@ class SiteForm(ModelForm):
 
 
 class EquipmentForm(ModelForm):
+    required_css_class = 'form-required'
     equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Vendor',
                                                 empty_label='Choose a Vendor')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
@@ -212,6 +216,7 @@ class EquipmentForm(ModelForm):
 
 
 class EquipmentModelForm(ModelForm):
+    required_css_class = 'form-required'
     modelmanufacturerid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Manufacturer',
                                                   empty_label='Choose a Manufacturer')
 
@@ -243,6 +248,7 @@ class EquipmentModelForm(ModelForm):
 
 
 class EquipmentUsedForm(ModelForm):
+    required_css_class = 'form-required'
     equipmentid = EquipmentChoiceField(
         queryset=Equipment.objects.all(),
         label='Equipment',
@@ -257,6 +263,7 @@ class EquipmentUsedForm(ModelForm):
 
 
 class PersonForm(ModelForm):
+    required_css_class = 'form-required'
     class Meta:
         model = People
         fields = [
@@ -289,6 +296,7 @@ class PersonForm(ModelForm):
 #         }
 
 class AffiliationForm(ModelForm):
+    required_css_class = 'form-required'
     organizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
         # this select will show all organizations and an option to create a new one.
@@ -320,6 +328,8 @@ class AffiliationForm(ModelForm):
 
 
 class VendorForm(ModelForm):
+    required_css_class = 'form-required'
+
     class Meta:
         model = Organization
         fields = [
@@ -347,6 +357,7 @@ class VendorForm(ModelForm):
 
 
 class ReferenceMaterialForm(ModelForm):
+    required_css_class = 'form-required'
     referencematerialorganizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
         label='Vendor',
@@ -375,6 +386,7 @@ class ReferenceMaterialForm(ModelForm):
 
 
 class ReferenceMaterialValueForm(ModelForm):
+    required_css_class = 'form-required'
     variableid = VariableChoiceField(
         queryset=Variable.objects.all(),
         label='Variables',
@@ -407,6 +419,7 @@ class ReferenceMaterialValueForm(ModelForm):
 #         ]
 
 class MethodForm(ModelForm):
+    required_css_class = 'form-required'
     organizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
         label='Organization',
@@ -438,6 +451,7 @@ class MethodForm(ModelForm):
 
 
 class OutputVariableForm(ModelForm):
+    required_css_class = 'form-required'
     instrumentmethodid = MethodChoiceField(
         queryset=Method.objects.all(),
         label='Method',
@@ -479,6 +493,8 @@ class OutputVariableForm(ModelForm):
 
 
 class SiteDeploymentMeasuredVariableForm(ModelForm):
+    required_css_class = 'form-required'
+
     instrumentmethodid = MethodChoiceField(
         queryset=Method.objects.all(),
         label='Method',
@@ -514,6 +530,8 @@ class SiteDeploymentMeasuredVariableForm(ModelForm):
 
 
 class FactoryServiceActionForm(ModelForm):
+    required_css_class = 'form-required'
+
     methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
                                  empty_label='Choose a Method')
 
@@ -547,6 +565,8 @@ class FactoryServiceActionForm(ModelForm):
 
 
 class MaintenanceActionForm(ModelForm):
+    required_css_class = 'form-required'
+
     class Meta:
         model = MaintenanceAction
         fields = [
@@ -568,6 +588,8 @@ class MaintenanceActionForm(ModelForm):
 
 
 class SiteVisitForm(ModelForm):
+    required_css_class = 'form-required'
+
     class Meta:
         model = Action
         fields = [
@@ -591,6 +613,7 @@ class SiteVisitForm(ModelForm):
 
 
 class CrewForm(forms.Form):
+    required_css_class = 'form-required'
     affiliationid = PeopleMultipleChoice(queryset=Affiliation.objects.all(), label="Crew")
 
     def __init__(self, *args, **kwargs):
@@ -599,6 +622,8 @@ class CrewForm(forms.Form):
 
 
 class FeatureActionForm(ModelForm):
+    required_css_class = 'form-required'
+
     samplingfeatureid = SamplingFeatureChoiceField(
         queryset=SamplingFeature.objects.all(),
         label='Site',
@@ -639,6 +664,7 @@ class ActionForm(ModelForm):
         actiontype = kwargs.pop('actiontype', None)
         super(ActionForm, self).__init__(*args, **kwargs)
         self.fields['equipmentused'].help_text = None
+    required_css_class = 'form-required'
 
     methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
                                  empty_label='Choose a Method', widget=SelectWithClassForOptions)

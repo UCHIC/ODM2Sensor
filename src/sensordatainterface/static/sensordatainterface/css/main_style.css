@@ -386,3 +386,13 @@ form.form-control input[type="submit"].form-control {
 div.datetimepicker input.form-control {
     width: 100%;
 }
+
+tr.form-required:after {
+    content: '*';
+    color: #461000;
+    font-weight: bold;
+    font-size: 1.2em;
+    position: relative;
+    right: 77px;
+    top: 14px;
+}
