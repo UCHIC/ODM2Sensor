@@ -113,6 +113,12 @@ function handleActionTypeChange(formType, currentForm) {
     var methodSelect = $(currentForm).find('[name="methodid"]');
     methodSelect.select2();
     $('.select2-container').css('width', '85%');
+
+    //Set EquipmentUsed required
+    if (formType !== 'Generic')
+        $(currentForm).find('[name="equipmentused"]').parents('tr').addClass('form-required');
+    else
+        $(currentForm).find('[name="equipmentused"]').parents('tr').removeClass('form-required');
 }
 
 function setMultipleFieldsNumber(event) {
