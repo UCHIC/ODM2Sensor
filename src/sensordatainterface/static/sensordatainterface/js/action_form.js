@@ -131,6 +131,8 @@ $(document).ready(function () {
     var formItems = $('.input-group');
     formItems.submit({object: 'equipmentused'}, setMultipleFieldsNumber);
     formItems.submit({object: 'calibrationstandard'}, setMultipleFieldsNumber);
+    formItems.submit({object: 'calibrationreferenceequipment'}, setMultipleFieldsNumber);
+
     var allForms = $('tbody');
 
     allForms.each(function (index) {

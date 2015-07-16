@@ -665,6 +665,7 @@ class ActionForm(ModelForm):
         super(ActionForm, self).__init__(*args, **kwargs)
         self.fields['equipmentused'].help_text = None
         self.fields['calibrationstandard'].help_text = None
+        self.fields['calibrationreferenceequipment'].help_text = None
 
     required_css_class = 'form-required'
 
@@ -677,9 +678,22 @@ class ActionForm(ModelForm):
         queryset=Equipment.objects.all(), label='Equipment Used'
     )
 
+    equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+
+
     calibrationstandard = CalibrationStandardMultipleChoiceField(
     widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
     queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False)
+
+    calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+
+    calibrationreferenceequipment = MultipleEquipmentChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+        queryset=Equipment.objects.all(), label='Reference Equipment',
+        required=False
+    )
+
+    calibrationreferenceequipmentnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     isfactoryservice = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service', required=False)
@@ -700,10 +714,6 @@ class ActionForm(ModelForm):
         widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation', required=False)
-
-    equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
-
-    calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
