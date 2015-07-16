@@ -51,6 +51,17 @@
             </table>
             <h3>Calibration</h3>
             <table class="table">
+                {% if Calibration.actionid.featureaction.get %}
+                    <tr>
+                        <th>Site Code:</th>
+                        <td>{{ Calibration.actionid.featureaction.get.samplingfeatureid.samplingfeaturecode }}</td>
+                    </tr>
+                    <tr>
+                        <th>Site Name:</th>
+                        <td>{{ Calibration.actionid.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
+                    </tr>
+                {% endif %}
+
                 <tr>
                     <th>Action Begin DateTime:</th>
                     <td>{{ Calibration.actionid.begindatetime }}</td>
