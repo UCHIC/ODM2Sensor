@@ -25,7 +25,7 @@
         {% for calibration in Calibrations %}
             {% for site in calibration.actionid.featureaction.all %}
                 <tr>
-                    <td>
+                    <td data-order="{{ calibration.actionid.begindatetime|date:'U' }}">
                         <a href="{% url 'calibration_detail' calibration.actionid.actionid %}">
                             {{ calibration.actionid.begindatetime }}
                         </a>

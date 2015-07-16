@@ -23,7 +23,11 @@
         <tbody>
         {% for visit in SiteVisits %}
             <tr>
-                <td><a href="{% url 'site_visit_detail' visit.actionid.actionid %}">{{ visit.actionid.begindatetime }}</a></td>
+                <td data-order="{{ visit.actionid.begindatetime|date:'U' }}">
+                    <a href="{% url 'site_visit_detail' visit.actionid.actionid %}">
+                        {{ visit.actionid.begindatetime }}
+                    </a>
+                </td>
             <td>{{ visit.samplingfeatureid.samplingfeaturecode }}</td>
                 <td>{{ visit.samplingfeatureid.samplingfeaturename }}</td>
                 <td>{% if visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}Logan River

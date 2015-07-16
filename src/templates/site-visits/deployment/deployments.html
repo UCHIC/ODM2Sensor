@@ -27,7 +27,7 @@
         {% for deployment in Deployments %}
             {% for site in deployment.actionid.featureaction.all %}
                 <tr>
-                    <td>
+                    <td data-order="{{ deployment.actionid.begindatetime|date:'U' }}">
                         <a href="{% url 'deployment_detail' deployment.actionid.actionid %}">
                             {{ deployment.actionid.begindatetime }}<br/>to
                             {{ deployment.actionid.enddatetime|default:"present" }}

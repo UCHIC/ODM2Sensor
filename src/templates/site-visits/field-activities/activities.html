@@ -26,7 +26,8 @@
         {% for activity in FieldActivities %}
             {% for samplingfeature in activity.featureaction.all %}
                 <tr>
-                    <td><a href="{% url 'field_activity_detail' activity.actionid %}">{{ activity.begindatetime }}</a>
+                    <td data-order="{{ activity.begindatetime|date:'U' }}">
+                        <a href="{% url 'field_activity_detail' activity.actionid %}">{{ activity.begindatetime }}</a>
                     </td>
                     <td>{{ samplingfeature.samplingfeatureid.samplingfeaturecode }}</td>
                     <td>{{ samplingfeature.samplingfeatureid.samplingfeaturename }}</td>

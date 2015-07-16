@@ -1,8 +1,13 @@
 $(document).ready(function () {
-    var dataTables = $('.data-table').dataTable({
+    var dataTables = $('.data-table').DataTable({
         "iDisplayLength": 50,
         retrieve: true
     });
+
+    if (dataTables.column(0).header().textContent == "Date") {
+        dataTables.order([0, 'desc']).draw();
+    }
+
     preserveTableStatus();
 });
 
@@ -10,7 +15,7 @@ $(document).ready(function () {
 // is redisplayed where it left off.
 function preserveTableStatus() {
      if (sessionStorage && sessionStorage.getItem('tableClicked')) {
-        var selectedTable = $('#' + sessionStorage.getItem('tableClicked'))
+        var selectedTable = $('#' + sessionStorage.getItem('tableClicked'));
         var tableNode = selectedTable.find('.dataTable').dataTable();
 
         if (sessionStorage.getItem('searchTerm')) {
