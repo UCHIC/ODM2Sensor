@@ -112,7 +112,11 @@
             <table class="table">
                 <tr>
                     <th>Name:</th>
-                    <td>{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                    <td>
+                        <a href="{% url 'vendor_detail' Equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
+                            {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}
+                        </a>
+                    </td>
                 </tr>
             {# start deleting from here in case this is not needed#}
                 {% for person in Equipment.equipmentmodelid.modelmanufacturerid.affiliation.all %}
@@ -158,7 +162,11 @@
             <table class="table">
                 <tr>
                     <th>Name:</th>
-                    <td>{{ Equipment.equipmentvendorid.organizationname }}</td>
+                    <td>
+                        <a href="{% url 'vendor_detail' Equipment.equipmentvendorid.organizationid %}">
+                            {{ Equipment.equipmentvendorid.organizationname|default:" -- " }}
+                        </a>
+                    </td>
                 </tr>
             {# start deleting from here in case this is not needed#}
                 {% for person in Equipment.equipmentvendorid.affiliation.all %}
