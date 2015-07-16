@@ -4,7 +4,7 @@ $(document).ready(function () {
         retrieve: true
     });
 
-    if (dataTables.column(0).header().textContent == "Date") {
+    if (dataTables.length > 0 && dataTables.column(0).header().textContent == "Date") {
         dataTables.order([0, 'desc']).draw();
     }
 
