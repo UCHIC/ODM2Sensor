@@ -61,6 +61,40 @@
             </table>
         </div>
     </div>
+
+    {% block equipments %}
+        <div class="row">
+            <div class="col-md-9"><h3>Equipments for this model</h3></div>
+        </div>
+        <hr class="divider">
+
+        <div class="row">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Type</th>
+                    <th>Manufacturer</th>
+                    <th>Owner</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for equipment in Model.equipment.all %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'equipment_detail' equipment.equipmentid %}">
+                                {{ equipment.equipmentserialnumber }}
+                            </a></td>
+                        <td>{{ equipment.equipmenttypecv }}</td>
+                        <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                        <td>{{ equipment.equipmentownerid.personfirstname }} {{ equipment.equipmentownerid.personlastname }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>
