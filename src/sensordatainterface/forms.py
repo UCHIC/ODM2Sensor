@@ -675,11 +675,10 @@ class ActionForm(ModelForm):
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
     equipmentused = MultipleEquipmentChoiceField(
-        queryset=Equipment.objects.all(), label='Equipment Used'
+        queryset=Equipment.objects.all(), label='Equipment Used', required=False
     )
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
-
 
     calibrationstandard = CalibrationStandardMultipleChoiceField(
     widget=forms.SelectMultiple(attrs={'class': 'calibration'}),

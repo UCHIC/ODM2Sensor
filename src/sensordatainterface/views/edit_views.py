@@ -631,6 +631,9 @@ def get_forms_from_request(request, action_id=False):
                                           instance=Action.objects.get(pk=request.POST.getlist('thisactionid')[i - 1])))
         else:
             action_form.append(ActionForm(form_data, form_files))
+
+        if action_type != 'Generic':
+            action_form[-1].fields['equipmentused'].required = True
     if action_id:
         sampling_feature_form = FeatureActionForm(request.POST, instance=FeatureAction.objects.get(actionid=action_id))
         site_visit_form = SiteVisitForm(site_visit_data, instance=Action.objects.get(actionid=action_id))
