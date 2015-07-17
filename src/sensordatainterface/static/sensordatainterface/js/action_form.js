@@ -114,34 +114,43 @@ function handleActionTypeChange(formType, currentForm) {
     methodSelect.select2();
     $('.select2-container').css('width', '85%');
 
+    var equipmentUsedElem = $(currentForm).find('[name="equipmentused"]');
+
     //Set EquipmentUsed required
     if (formType !== 'Generic')
-        $(currentForm).find('[name="equipmentused"]').parents('tr').addClass('form-required');
+        equipmentUsedElem.parents('tr').addClass('form-required');
     else
-        $(currentForm).find('[name="equipmentused"]').parents('tr').removeClass('form-required');
+        equipmentUsedElem.parents('tr').removeClass('form-required');
+
+    //Filter equipmentUsed
+    filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]'), equipmentUsedElem);
 }
 
 function setMultipleFieldsNumber(event) {
     var object = event.data.object;
-    var multipleObjElems = $('.input-group tbody').find('[name="'+object+'"]');
+    var multipleObjElems = $('.input-group tbody').find('[name="' + object + '"]');
 
     for (var i = 0; i < multipleObjElems.length; i++) {
         var multipleObjElem = $(multipleObjElems[i]);
         var multipleObjCount = multipleObjElem.val().length;
-        multipleObjElem.parents('tbody').find('[name="'+object+'number"]').val(multipleObjCount);
+        multipleObjElem.parents('tbody').find('[name="' + object + 'number"]').val(multipleObjCount);
     }
 
 }
 
 function setEquipmentUsedFilter() {
-        //add handler for when the actiontypecv is changed
+    //add handler for when the actiontypecv is changed
     $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
-        var selected = $(this).val();
-        filterEquipmentBySite(selected);
+        filterEquipmentBySite(this, $('form [name="equipmentused"]'));
     });
 }
 
-function filterEquipmentBySite(selected) {
+function filterEquipmentBySite(samplingFeatureSelectElement, equipmentUsedSelectElems) {
+    var selected = $(samplingFeatureSelectElement).val();
+
+    if (selected == "")
+        return;
+
     $.ajax({
         url: "get-equipment-by-site/",
         type: "POST",
@@ -152,23 +161,31 @@ function filterEquipmentBySite(selected) {
 
         success: function (json) {
             var currentValue;
-            $('form [name="equipmentused"]').each(function () {
-               currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
-               if (currentValue !== "EquipmentDeployment") {
-                   var currentEquipmentSelect = this;
-                   $(currentEquipmentSelect).empty();
-                   $.each(json, function (key, value) {
-                       $(currentEquipmentSelect).append('<option value="+key+">'+value+'</option>');
-                   });
-               }
+            equipmentUsedSelectElems.each(function () {
+                currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
+                var currentEquipmentSelect = this;
+                $(currentEquipmentSelect).empty();
+                if (currentValue !== "EquipmentDeployment") {
+                    $.each(json, function (key, value) {
+                        $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
+                    });
+                } else {
+                    var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
+                    $(currentEquipmentSelect).append($(defaultElements).clone());
+                }
+
+                // Clear value of equipment selected. An equipment can't be deployed at two locations.
+                $(currentEquipmentSelect).select2("val", "");
             });
             // When actiontype changes check if it is deployment, if it is then empty the select and add the ones on the hidden action form.
             // When an action form is added in the check the type (for thoroughness) and call this function with the site selected.
+
+            //Suggestion: Maybe the equipment that are currently being deployed should be on the selection for other forms in a site visit being created.
         },
 
         error: function (xhr, errmsg, err) {
             console.log(errmsg);
-            console.log(xhr.status+": "+xhr.responseText)
+            console.log(xhr.status + ": " + xhr.responseText)
         }
     });
 }
@@ -179,7 +196,7 @@ $(document).ready(function () {
     formItems.submit({object: 'calibrationstandard'}, setMultipleFieldsNumber);
     formItems.submit({object: 'calibrationreferenceequipment'}, setMultipleFieldsNumber);
 
-    var allForms = $('tbody');
+    var allForms = $('tbody').has('[name="actiontypecv"]');
 
     allForms.each(function (index) {
         var actionType = $(this).find('.select-two[name="actiontypecv"]');
