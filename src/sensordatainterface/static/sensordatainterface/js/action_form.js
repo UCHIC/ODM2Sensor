@@ -133,6 +133,46 @@ function setMultipleFieldsNumber(event) {
 
 }
 
+function setEquipmentUsedFilter() {
+        //add handler for when the actiontypecv is changed
+    $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
+        var selected = $(this).val();
+        filterEquipmentBySite(selected);
+    });
+}
+
+function filterEquipmentBySite(selected) {
+    $.ajax({
+        url: "get-equipment-by-site/",
+        type: "POST",
+        data: {
+            site_selected: selected,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var currentValue;
+            $('form [name="equipmentused"]').each(function () {
+               currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
+               if (currentValue !== "EquipmentDeployment") {
+                   var currentEquipmentSelect = this;
+                   $(currentEquipmentSelect).empty();
+                   $.each(json, function (key, value) {
+                       $(currentEquipmentSelect).append('<option value="+key+">'+value+'</option>');
+                   });
+               }
+            });
+            // When actiontype changes check if it is deployment, if it is then empty the select and add the ones on the hidden action form.
+            // When an action form is added in the check the type (for thoroughness) and call this function with the site selected.
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
 $(document).ready(function () {
     var formItems = $('.input-group');
     formItems.submit({object: 'equipmentused'}, setMultipleFieldsNumber);
@@ -152,5 +192,7 @@ $(document).ready(function () {
     });
 
     allForms.find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
+
+    setEquipmentUsedFilter();
 
 });
