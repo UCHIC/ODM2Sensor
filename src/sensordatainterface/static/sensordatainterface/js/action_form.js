@@ -31,7 +31,7 @@ function addActionForm(that) {
 
     handleActionTypeChange('Generic', thisForm);
 
-    setFormFields();
+   setFormFields($(thisForm));
 
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").parents('tr').hide();
