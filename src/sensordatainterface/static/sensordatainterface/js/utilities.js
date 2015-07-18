@@ -69,7 +69,7 @@ function setDateTimePicker() {
     initDTPicker();
 
     //When begindatetime changes, set maxDate on enddatetime
-    var tBodies = $('form tbody');
+    var tBodies = $('tbody');
     tBodies.each(function () {
         beginDateTimeChanged(this, true);
     });
@@ -156,7 +156,7 @@ function initDTPicker() {
     });
 }
 
-  function setFormFields(currentForm) {
+ function setFormFields(currentForm) {
     currentForm.find('input').addClass('form-control');
     currentForm.find("[type='checkbox']").removeClass('form-control');
     currentForm.find('textarea').addClass('form-control');
@@ -184,7 +184,7 @@ $(document).ready(function () {
 
     setDTPickerClose($('[name="begindatetime"]'));
 
-    setFormFields($('form tbody').has('[name="begindatetime"]'));
+    setFormFields($('tbody'));
 
     setNavActive();
 

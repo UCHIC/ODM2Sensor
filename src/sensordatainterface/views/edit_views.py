@@ -726,7 +726,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             reference_equipments = action_form[i].cleaned_data['calibrationreferenceequipment']
             for equ in reference_equipments:
                 CalibrationReferenceEquipment.objects.create(
-                    actionid=CalibrationAction.objects.get(pk=current_action),
+                    actionid=calibration_action,
                     equipmentid=equ
                 )
         elif action_type == 'EquipmentMaintenance':

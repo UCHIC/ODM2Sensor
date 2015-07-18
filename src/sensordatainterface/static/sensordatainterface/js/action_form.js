@@ -132,7 +132,8 @@ function setMultipleFieldsNumber(event) {
 
     for (var i = 0; i < multipleObjElems.length; i++) {
         var multipleObjElem = $(multipleObjElems[i]);
-        var multipleObjCount = multipleObjElem.val().length;
+        var selectedValue = multipleObjElem.val();
+        var multipleObjCount = !selectedValue? 0 : selectedValue.length;
         multipleObjElem.parents('tbody').find('[name="' + object + 'number"]').val(multipleObjCount);
     }
 
@@ -164,7 +165,7 @@ function filterEquipmentBySite(samplingFeatureSelectElement, equipmentUsedSelect
             equipmentUsedSelectElems.each(function () {
                 currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
                 var currentEquipmentSelect = this;
-                $(currentEquipmentSelect).empty();
+                $(currentEquipmentSelect).empty(); // Deployments are emptied when site changes. Might have to move this inside of the if below and get rid of the else.
                 if (currentValue !== "EquipmentDeployment") {
                     $.each(json, function (key, value) {
                         $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
@@ -191,7 +192,7 @@ function filterEquipmentBySite(samplingFeatureSelectElement, equipmentUsedSelect
 }
 
 $(document).ready(function () {
-    var formItems = $('.input-group');
+    var formItems = $('form.input-group');
     formItems.submit({object: 'equipmentused'}, setMultipleFieldsNumber);
     formItems.submit({object: 'calibrationstandard'}, setMultipleFieldsNumber);
     formItems.submit({object: 'calibrationreferenceequipment'}, setMultipleFieldsNumber);
