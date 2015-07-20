@@ -2,12 +2,16 @@ import json
 from django.http import HttpResponse
 from sensordatainterface.models import Equipment
 
+
 def get_equipment_by_site(request):
     if request.method == 'POST':
         site_selected = request.POST.get('site_selected')
         response_data = {}
 
-        equipment_deployed = Equipment.objects.filter(equipmentused__actionid__featureaction__samplingfeatureid=site_selected)
+        equipment_deployed = Equipment.objects.filter(
+            equipmentused__actionid__featureaction__samplingfeatureid=site_selected,
+            equipmentused__actionid__enddatetime__isnull=False
+        )
 
         for equipment in equipment_deployed:
             response_data[equipment.equipmentid] = str(equipment.equipmentcode) \
