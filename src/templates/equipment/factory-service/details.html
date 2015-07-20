@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load inv_extras %}
+{% load template_tags %}
 {% block content %}
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Factory Service Action</h2></div>
@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <th>Action Link:</th>
-                    <td><a href="{{ MEDIA_URL }}{{ FactoryService.actionid.actionfilelink }}">{{ FactoryService.actionid.actionfilelink }}</a></td>
+                    <td><a href="{{ MEDIA_URL }}{{ FactoryService.actionid.actionfilelink }}">{{ FactoryService.actionid.actionfilelink|get_media_file_name }}</a></td>
                 </tr>
                 </table>
             <h2>Equipment</h2>

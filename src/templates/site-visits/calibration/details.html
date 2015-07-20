@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load inv_extras %}
+{% load template_tags %}
 {% block content %}
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Calibration Details</h2></div>
@@ -152,6 +152,7 @@
                             {% endif %}
                             </td>
                             {% for materialvalue in referencematerial.referencematerialid.referencematerialvalue.all %}
+                                {% if materialvalue.variableid == calibrationactions.istrumentoutputvariableid.variableid %}
                                 </tr>
                                 <tr>
                                     <th>Value:</th>
@@ -165,6 +166,7 @@
                                     <th>Units:</th>
                                     <td>{{ materialvalue.unitsid.unitsname|default:" -- " }}</td>
                                 </tr>
+                                {% endif %}
                             {% endfor %}
                          {% empty %}
                                 <tr>
