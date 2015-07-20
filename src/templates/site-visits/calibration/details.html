@@ -147,6 +147,7 @@
                             {% endif %}
                             </td>
                             {% for materialvalue in referencematerial.referencematerialid.referencematerialvalue.all %}
+                                {% if materialvalue.variableid == calibrationactions.istrumentoutputvariableid.variableid %}
                                 </tr>
                                 <tr>
                                     <th>Value:</th>
@@ -160,6 +161,7 @@
                                     <th>Units:</th>
                                     <td>{{ materialvalue.unitsid.unitsname|default:" -- " }}</td>
                                 </tr>
+                                {% endif %}
                             {% endfor %}
                          {% empty %}
                                 <tr>
