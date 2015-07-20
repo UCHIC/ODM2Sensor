@@ -101,9 +101,16 @@
             {% for fieldactivity in SiteVisit.actionid.parent_relatedaction.all %}
                 <tr>
                     <td>
-                        <a href="{% url 'field_activity_detail' fieldactivity.actionid.actionid %}">
-                            {{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}
-                        </a></td>
+                        {% if fieldactivity.actionid.actiontypecv == 'InstrumentCalibration' %}
+                            <a href="{% url 'calibration_detail' fieldactivity.actionid.actionid %}">
+                        {% elif fieldactivity.actionid.actiontypecv == 'EquipmentDeployment' or fieldactivity.actionid.actiontypecv == 'InstrumentDeployment' %}
+                            <a href="{% url 'deployment_detail' fieldactivity.actionid.actionid %}">
+                        {% else %}
+                            <a href="{% url 'field_activity_detail' fieldactivity.actionid.actionid %}">
+                        {% endif %}
+                                {{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}
+                            </a>
+                    </td>
                     <td>{{ fieldactivity.actionid.begindatetime }}</td>
                     <td>{{ fieldactivity.actionid.enddatetime|default:"present" }}</td>
                     <td>{{ fieldactivity.actionid.actiondescription }}</td>
