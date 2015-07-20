@@ -20,3 +20,12 @@ def separatewordsbycaps(word):
             offset += 1
 
     return ''.join(wordList)
+
+@register.filter
+@stringfilter
+def get_media_file_name(file_path):
+    """ This filter takes a path to a media files (as stored in the database) and
+    gets the file name to display"""
+
+    file_start = file_path.rfind('/')
+    return file_path[file_start+1:]

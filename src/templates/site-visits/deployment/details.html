@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load inv_extras %}
+{% load template_tags %}
 {% block content %}
     <div class="row title">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h2>Deployment Details</h2></div>
@@ -125,7 +125,13 @@
                     </tr>
                     <tr>
                         <th>Action Link:</th>
-                        <td>{{ Deployment.actionid.actionfilelink|default:" -- " }}</td>
+                        <td>
+                            {% if Deployment.actionid.actionfilelink %}
+                                <a href="{{ MEDIA_URL }}{{ Deployment.actionid.actionfilelink }}">{{ Deployment.actionid.actionfilelink|get_media_file_name }}</a>
+                            {% else %}
+                                <p>--</p>
+                            {% endif %}
+                        </td>
                     </tr>
                     {#                <tr>#}
                     {#                    <th>Deployment Schematic:</th>#}
@@ -210,15 +216,16 @@
     <nav>
         <ul class="pager">
             {% if next_deployment %}
-            <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
-                                                                      href="{% url 'deployment_detail' next_deployment %}">Next<span
-                    aria-hidden="true">&rarr;</span></a></li>
+                <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
+                                                                          href="{% url 'deployment_detail' next_deployment %}">Next<span
+                        aria-hidden="true">&rarr;</span></a></li>
             {% endif %}
-        {% if previous_deployment %}
-            <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
-                                                                         href="{% url 'deployment_detail' previous_deployment %}"><span aria-hidden="true">&larr;</span>
-                Previous</a></li>
-        {% endif %}
+            {% if previous_deployment %}
+                <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
+                                                                             href="{% url 'deployment_detail' previous_deployment %}"><span
+                        aria-hidden="true">&larr;</span>
+                    Previous</a></li>
+            {% endif %}
         </ul>
     </nav>
 
