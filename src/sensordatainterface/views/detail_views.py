@@ -19,8 +19,15 @@ class SiteVisitDetailView(DetailView):
         context = super(SiteVisitDetailView, self).get_context_data(**kwargs)
         site_visits = Action.objects.filter(actiontypecv='SiteVisit', featureaction__isnull=False)
 
-        previous_site_visit = site_visits.filter(actionid__lt=context['SiteVisit'].actionid.actionid).order_by('-actionid')
-        next_site_visit = site_visits.filter(actionid__gt=context['SiteVisit'].actionid.actionid).order_by('actionid')
+        previous_site_visit = site_visits.filter(
+            actionid__lt=context['SiteVisit'].actionid.actionid,
+            featureaction__samplingfeatureid=context['SiteVisit'].samplingfeatureid
+        ).order_by('-actionid')
+
+        next_site_visit = site_visits.filter(
+            actionid__gt=context['SiteVisit'].actionid.actionid,
+            featureaction__samplingfeatureid=context['SiteVisit'].samplingfeatureid
+        ).order_by('actionid')
 
         if len(previous_site_visit) > 0:
             context['previous_site_visit'] = previous_site_visit[0].actionid
@@ -53,8 +60,15 @@ class DeploymentDetail(DetailView):
             Q(actionid__actiontypecv='EquipmentDeployment')
             | Q(actionid__actiontypecv='InstrumentDeployment')
         )
-        previous_deployment = deployments.filter(bridgeid__lt=context['Deployment'].bridgeid).order_by('-bridgeid')
-        next_deployment = deployments.filter(bridgeid__gt=context['Deployment'].bridgeid).order_by('bridgeid')
+        this_samplingfeature = context['Deployment'].actionid.featureaction.values()[0]['samplingfeatureid_id']
+        previous_deployment = deployments.filter(
+            bridgeid__lt=context['Deployment'].bridgeid,
+            actionid__featureaction__samplingfeatureid=this_samplingfeature
+        ).order_by('-bridgeid')
+        next_deployment = deployments.filter(
+            bridgeid__gt=context['Deployment'].bridgeid,
+            actionid__featureaction__samplingfeatureid=this_samplingfeature
+        ).order_by('bridgeid')
 
         if len(previous_deployment) > 0:
             context['previous_deployment'] = previous_deployment[0].actionid.actionid
