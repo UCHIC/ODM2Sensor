@@ -45,7 +45,12 @@
                 </tr>
                 <tr>
                     <th>Owner Name:</th>
-                    <td>{{ Calibration.equipmentid.equipmentownerid.personfirstname }} {{ Calibration.equipmentid.equipmentownerid.personlastname }}</td>
+
+                    <td><a href="{% url 'person_detail' Calibration.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                            {{ Calibration.equipmentid.equipmentownerid.personfirstname }}
+                            {{ Calibration.equipmentid.equipmentownerid.personlastname|default:" -- " }}
+                        </a>
+                    </td>
                 </tr>
 
             </table>
@@ -201,7 +206,12 @@
                         </tr>
                         <tr>
                             <th>Owner Name:</th>
-                            <td>{{ referenceequipment.equipmentid.equipmentownerid.personfirstname }} {{ referenceequipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}</td>
+                                <td>
+                                    <a href="{% url 'person_detail' referenceequipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                        {{ referenceequipment.equipmentid.equipmentownerid.personfirstname }}
+                                        {{ referenceequipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}
+                                    </a>
+                                </td>
                         </tr>
 
                          {% empty %}
