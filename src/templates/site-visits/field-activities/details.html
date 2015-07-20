@@ -37,8 +37,10 @@
                     <td>{% for related in Activity.actionid.relatedaction.all %}
                         {% if related.relationshiptypecv == 'is_child_of' %}
                             {% for person in related.relatedactionid.actionby.all %}
-                                {{ person.affiliationid.personid.personfirstname }}
-                                {{ person.affiliationid.personid.personlastname }}
+                                <a href="{% url 'person_detail' person.affiliationid_id %}">
+                                    {{ person.affiliationid.personid.personfirstname }}
+                                    {{ person.affiliationid.personid.personlastname|default:" -- " }}
+                                </a>
                                 {% if not forloop.last %}, {% endif %}
                             {% endfor %}
                             {% if not forloop.last %}, {% endif %}
