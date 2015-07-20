@@ -82,7 +82,12 @@
             <table class="table">
                 <tr>
                     <th>Name:</th>
-                    <td>{{ Equipment.equipmentownerid.personfirstname }} {{ Equipment.equipmentownerid.personlastname }}</td>
+                    <td>
+                        <a href="{% url 'person_detail' Equipment.equipmentownerid.affiliation.get.affiliationid %}">
+                            {{ Equipment.equipmentownerid.personfirstname }}
+                            {{ Equipment.equipmentownerid.personlastname|default:" -- " }}
+                        </a>
+                    </td>
                 </tr>
             {# start deleting from here in case this is not needed#}
                 {% for affiliation in Equipment.equipmentownerid.affiliation.all %}
