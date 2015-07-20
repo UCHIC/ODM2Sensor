@@ -172,7 +172,9 @@ function setDTPickerClose(beginDTElem) {
         var beginDTObj = $(this).data('DateTimePicker');
         if (beginDTObj.collapse) {
             beginDTObj.hide();
-            $(this).parents('tbody').find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker').show();
+            var endDTObj = $(this).parents('tbody').find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
+            endDTObj.show();
+            endDTObj.date(beginDTObj.date())
         }
     })
 }
