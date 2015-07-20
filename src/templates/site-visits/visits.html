@@ -34,8 +34,8 @@
                 {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}Red Butte Creek
                 {% elif visit.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}Provo River{% endif %}</td>
                 <td>{% for person in visit.actionid.actionby.all %}
-                        {{ person.affiliationid.personid.personfirstname }}
-                        {{ person.affiliationid.personid.personlastname }}
+                        <a href="{% url 'person_detail' person.affiliationid_id %}">{{ person.affiliationid.personid.personfirstname }}
+                        {{ person.affiliationid.personid.personlastname }}</a>
                         {% if not forloop.last %}, {% endif %}
                 {% endfor %}</td>
             </tr>
