@@ -44,4 +44,46 @@
             </table>
         </div>
     </div>
+    {% block equipments %}
+        <div class="row">
+            <div class="col-md-9"><h3>Equipments owned by this person</h3></div>
+        </div>
+        <hr class="divider">
+
+        <div class="row">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>Manufacturer</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for equipment in Person.personid.equipment_set.all %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'equipment_detail' equipment.equipmentid %}">
+                                {{ equipment.equipmentserialnumber }}
+                            </a></td>
+                        <td><a href="{% url 'models_detail'  equipment.equipmentmodelid_id %}">
+                                {{  equipment.equipmentmodelid.modelname }}
+                            </a>
+                        </td>
+                        <td>{{ equipment.equipmenttypecv }}</td>
+
+                        <td>
+                            <a href="{% url 'vendor_detail' equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
+                                {{ equipment.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}
+                            </a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
 {% endblock %}
