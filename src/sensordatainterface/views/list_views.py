@@ -103,6 +103,29 @@ class EquipmentCalibartions(ListView):
         return super(EquipmentCalibartions, self).dispatch(*args, **kwargs)
 
 
+class EquipmentFactoryServiceHistory(ListView):
+    service_events = []
+    context_object_name = 'FactoryService'
+    template_name = 'equipment/factory-service/service-events.html'
+
+    def get_queryset(self):
+        EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True)
+        self.service_events = EquipmentUsed.objects.filter(
+            (Q(actionid__maintenanceaction__isfactoryservice=True)),
+            equipmentid=self.kwargs['equipment_id']
+        )
+        return self.service_events
+
+    def get_context_data(self, **kwargs):
+        context = super(EquipmentFactoryServiceHistory, self).get_context_data(**kwargs)
+        context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(EquipmentFactoryServiceHistory, self).dispatch(*args, **kwargs)
+
+
 class Vocabularies(ListView):
     template_name = 'vocabulary/vocabularies.html'
 

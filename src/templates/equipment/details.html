@@ -213,18 +213,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'calibrations_by_equipment' Equipment.equipmentid %}">Calibration
-            History</a></div>
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="
-
-
-                                                                       {# View is made for this, see:  FactoryServiceByEquipment #}">Factory
-            Service History</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'deployments_by_equipment' Equipment.equipmentid %}">Deployment
-            History</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
+            <a class="btn btn-primary btn-block" href="{% url 'calibrations_by_equipment' Equipment.equipmentid %}">
+                Calibration History
+            </a>
+        </div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="{% url 'service_events_by_equipment' Equipment.equipmentid %}">
+                Factory Service History
+            </a>
+        </div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
+            <a class="btn btn-primary btn-block" href="{% url 'deployments_by_equipment' Equipment.equipmentid %}">
+                Deployment History
+            </a>
+        </div>
     </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
