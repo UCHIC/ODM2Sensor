@@ -85,6 +85,10 @@ urlpatterns = patterns('',
                            ),
                            name='factory_service'),
 
+                       #Factory Service list for an equipment
+                       url(r'^inventory/factory-service/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentFactoryServiceHistory.as_view(),
+                           name='service_events_by_equipment'),
+
                        #Sensor Output Variables Generic View
                        url(r'^inventory/sensor-output-variables/$',
                            GenericListView.as_view(
