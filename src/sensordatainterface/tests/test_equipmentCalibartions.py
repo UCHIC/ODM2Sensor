@@ -1,14 +1,14 @@
 from django.test import TestCase
 from sensordatainterface.models import Method, Action, Equipment, EquipmentModel, CalibrationAction, \
     InstrumentOutputVariable, Variable, Units, EquipmentUsed, People, Organization
-from sensordatainterface.views import EquipmentCalibartions
+from sensordatainterface.views.list_views import EquipmentCalibrations
 from django.test import RequestFactory
 from django.db.models import Q
 import helper_classes
 import datetime
 
 
-class TestEquipmentCalibartions(TestCase):
+class TestEquipmentCalibrations(TestCase):
     def setUp(self):
         method = Method.objects.create(
             methodid=100,
@@ -185,7 +185,7 @@ class TestEquipmentCalibartions(TestCase):
         request = RequestFactory().get('site-visits/calibrations/equipment/1',)
         request.user = helper_classes.User()
 
-        view = EquipmentCalibartions.as_view()
+        view = EquipmentCalibrations.as_view()
 
         response = view(request, name='detail_calibration', equipment_id=1)
         context = response.context_data['Calibrations']

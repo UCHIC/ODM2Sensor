@@ -116,7 +116,7 @@ urlpatterns = patterns('',
                            name='deployments_by_equipment'),
 
                        url(r'^site-visits/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
-                           EquipmentCalibartions.as_view(),
+                           EquipmentCalibrations.as_view(),
                            name='calibrations_by_equipment'),
 
                        url(r'^control-vocabularies/$',

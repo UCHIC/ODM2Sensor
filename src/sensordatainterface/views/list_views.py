@@ -81,7 +81,7 @@ class EquipmentDeployments(ListView):
         return super(EquipmentDeployments, self).dispatch(*args, **kwargs)
 
 
-class EquipmentCalibartions(ListView):
+class EquipmentCalibrations(ListView):
     context_object_name = 'Calibrations'
     template_name = 'site-visits/calibration/calibrations.html'
 
@@ -94,13 +94,13 @@ class EquipmentCalibartions(ListView):
         return self.calibrations
 
     def get_context_data(self, **kwargs):
-        context = super(EquipmentCalibartions, self).get_context_data(**kwargs)
+        context = super(EquipmentCalibrations, self).get_context_data(**kwargs)
         context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(EquipmentCalibartions, self).dispatch(*args, **kwargs)
+        return super(EquipmentCalibrations, self).dispatch(*args, **kwargs)
 
 
 class EquipmentFactoryServiceHistory(ListView):
