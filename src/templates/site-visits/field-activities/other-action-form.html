@@ -1,0 +1,14 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}
+    {% if action_type == 'EquipmentDeployment' %}
+        Deployment
+    {% elif action_type == 'InstrumentCalibration' %}
+        Calibration
+    {% else %}
+        Generic
+    {% endif %}
+    Action {% endblock %}{% endblock %}
+{% block form_class %}{{ action_type }}{% endblock %}
+{% block submit_url %}{% url 'create_action' action_type %}{% endblock %}
+{% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}

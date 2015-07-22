@@ -185,26 +185,25 @@ function setOtherActions() {
     var mainForm = $('form');
     var actionTypeElem;
 
-    if (mainForm.hasClass('action_form')) {
-        $('.action_form .calibration').parents('tr').hide();
-        $('.action_form .maintenance').parents('tr').hide();
-        actionTypeElem = $('.action_form [name="actiontypecv"]');
+    if (mainForm.hasClass('Generic')) {
+        $('.Generic .calibration').parents('tr').hide();
+        $('.Generic .maintenance').parents('tr').hide();
+        actionTypeElem = $('.Generic [name="actiontypecv"]');
         actionTypeElem.children('[value="EquipmentDeployment"]').remove();
         actionTypeElem.children('[value="InstrumentCalibration"]').remove();
 
-    } else if (mainForm.hasClass('calibration_form')) {
-        $('.calibration_form .maintenance').parents('tr').hide();
-        actionTypeElem = $('.calibration_form [name="actiontypecv"]');
-        actionTypeElem.parents('tr').hide();
+    } else if (mainForm.hasClass('InstrumentCalibration')) {
+        $('.InstrumentCalibration .maintenance').parents('tr').remove();
+        actionTypeElem = $('.InstrumentCalibration [name="actiontypecv"]');
         actionTypeElem.select2('val', 'InstrumentCalibration');
-        actionTypeElem.hide();
+        actionTypeElem.parents('tr').hide();
 
-    } else if (mainForm.hasClass('maintenance_form')) {
-        $('.maintenance_form .calibration').parents('tr').hide();
-        $('.maintenance_form [name="actiontypecv"]').parents('tr').hide();
-        actionTypeElem = $('.action_form [name="actiontypecv"]');
+    } else if (mainForm.hasClass('EquipmentDeployment')) {
+        $('.EquipmentDeployment .calibration').parents('tr').hide();
+        $('.EquipmentDeployment .maintenance').parents('tr').hide();
+        actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.select2('val', 'EquipmentDeployment');
-        actionTypeElem.hide();
+        actionTypeElem.parents('tr').hide();
     }
 }
 

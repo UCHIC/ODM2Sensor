@@ -1,33 +1,3 @@
-{#{% extends "base.html" %}#}
-{#{% block content %}#}
-{#    <div class="row"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }} Site</h1></div>#}
-{#    <div class="row">#}
-{#        <form class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% url 'create_site' %}"#}
-{#              method="post">#}
-{#            {% csrf_token %}#}
-{#            <input type="hidden" value="{{ action }}" name="action">#}
-{#            <input type="hidden" value="{{ site_id }}" name="site_id">#}
-{#            <table class="table form-table form-group">#}
-{#                {{ SampFeatForm.as_table }}#}
-{#                {{ SiteForm.as_table }}#}
-{#                <tr>#}
-{#                    <th>#}
-{#                    </th>#}
-{#                    <td>{% if site_id %}#}
-{#                        <div class="row">#}
-{#                        <a class="btn btn-default col-xs-12 col-sm-12"#}
-{#                           href="{% url 'site_detail' site_id %}">Cancel</a>#}
-{#                    {% else %}#}
-{#                        <a class="btn btn-default  col-xs-12 col-sm-12" href="{% url 'sites' %}">Cancel</a>#}
-{#                    {% endif %}<input class="btn btn-primary col-xs-12 col-sm-12" type="submit"#}
-{#                                      value="{{ action|capfirst }} Site"></div>#}
-{#                    </td>#}
-{#                </tr>#}
-{#            </table>#}
-{#        </form>#}
-{#    </div>#}
-{#{% endblock %}#}
-
 {% extends "base-form.html" %}
 {% block button_value %}{% block item_name %}Site{% endblock %}{% endblock %}
 {% block submit_url %}{% url 'create_site' %}{% endblock %}
