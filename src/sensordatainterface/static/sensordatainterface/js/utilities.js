@@ -179,6 +179,35 @@ function setDTPickerClose(beginDTElem) {
     })
 }
 
+// this action works for the create forms in Action, Deployment and Calibration pages.
+// It hides fields from the action forms depending on the type of action being created.
+function setOtherActions() {
+    var mainForm = $('form');
+    var actionTypeElem;
+
+    if (mainForm.hasClass('action_form')) {
+        $('.action_form .calibration').parents('tr').hide();
+        $('.action_form .maintenance').parents('tr').hide();
+        actionTypeElem = $('.action_form [name="actiontypecv"]');
+        actionTypeElem.children('[value="EquipmentDeployment"]').remove();
+        actionTypeElem.children('[value="InstrumentCalibration"]').remove();
+
+    } else if (mainForm.hasClass('calibration_form')) {
+        $('.calibration_form .maintenance').parents('tr').hide();
+        actionTypeElem = $('.calibration_form [name="actiontypecv"]');
+        actionTypeElem.parents('tr').hide();
+        actionTypeElem.select2('val', 'InstrumentCalibration');
+        actionTypeElem.hide();
+
+    } else if (mainForm.hasClass('maintenance_form')) {
+        $('.maintenance_form .calibration').parents('tr').hide();
+        $('.maintenance_form [name="actiontypecv"]').parents('tr').hide();
+        actionTypeElem = $('.action_form [name="actiontypecv"]');
+        actionTypeElem.select2('val', 'EquipmentDeployment');
+        actionTypeElem.hide();
+    }
+}
+
 $(document).ready(function () {
     setDateTimePicker();
 
@@ -206,4 +235,7 @@ $(document).ready(function () {
         initVocabulariesTabs($);
     }
 
+    setOtherActions();
 });
+
+

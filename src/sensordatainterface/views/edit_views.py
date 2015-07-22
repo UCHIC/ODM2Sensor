@@ -841,3 +841,28 @@ def edit_site_visit_summary(request, action_id):
         'site-visits/action-form-summary.html',
         {'SiteVisit': site_visit, 'Crew': crew, 'ChildActions': related_actions, 'Site': site}
     )
+
+@login_required(login_url=LOGIN_URL)
+def edit_action(request, action_id):
+    action = 'create'
+    if request.method == 'POST':
+        if request.POST['action'] == 'update':
+            # update this action
+            pass
+        else:
+            site_visit_form = SiteVisitChoiceForm(request.POST)
+            action_form = ActionForm(request.POST)
+
+    elif action_id:
+        # updating
+        pass
+
+    else:
+        site_visit_form = SiteVisitChoiceForm()
+        action_form = ActionForm()
+
+    return render(
+        request,
+        'site-visits/field-activities/action-form.html',
+        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id}
+    )

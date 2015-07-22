@@ -1,0 +1,6 @@
+{% extends "base-form.html" %}
+{% block button_value %}{% block item_name %}Action{% endblock %}{% endblock %}
+{% block form_class %}action_form{% endblock %}
+{% block submit_url %}{% url 'create_action' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}
