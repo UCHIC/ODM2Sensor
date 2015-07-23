@@ -9,8 +9,7 @@ def get_equipment_by_site(request):
         response_data = {}
 
         equipment_deployed = Equipment.objects.filter(
-            equipmentused__actionid__featureaction__samplingfeatureid=site_selected,
-            equipmentused__actionid__enddatetime__isnull=False
+            equipmentused__actionid__featureaction__samplingfeatureid=site_selected
         )
 
         for equipment in equipment_deployed:
