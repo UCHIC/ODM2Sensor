@@ -396,3 +396,7 @@ tr.form-required:after {
     right: 113px;
     top: 14px;
 }
+
+span.helptext {
+  display: inline-block;
+}

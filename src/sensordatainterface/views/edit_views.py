@@ -852,7 +852,7 @@ def edit_action(request, action_type, action_id):
     if request.method == 'POST':
         if request.POST['action'] == 'update':
             site_visit = Action.objects.get(pk=request.POST['actionid'])
-            child_action = Action.objects.filter(pk=request.POST['item_id'])
+            child_action = Action.objects.get(pk=request.POST['item_id'])
 
             site_visit_form = SiteVisitChoiceForm(request.POST, instance=site_visit)
             action_form = ActionForm(request.POST, request.FILES, instance=child_action)
@@ -863,15 +863,29 @@ def edit_action(request, action_type, action_id):
 
         if site_visit_form.is_valid() and action_form.is_valid():
             child_action = action_form.save()
-            RelatedAction.objects.create(
-                actionid=child_action,
-                relationshiptypecv='is_child_of',
-                relatedactionid=site_visit_form.cleaned_data['actionid']
-            )
+            if request.POST['action'] == 'update':
+                related_action = RelatedAction.objects.get(
+                    actionid=child_action,
+                    relationshiptypecv='is_child_of'
+                )
+                related_action.relatedactionid=site_visit_form.cleaned_data['actionid']
+                related_action.save()
+            else:
+                related_action = RelatedAction.objects.create(
+                    actionid=child_action,
+                    relationshiptypecv='is_child_of',
+                    relatedactionid=site_visit_form.cleaned_data['actionid']
+                )
 
             equipment_used = request.POST.getlist('equipmentused')
+            current_equipment = [equ.equipmentid.equipmentid for equ in EquipmentUsed.objects.filter(actionid=child_action)]
+
             for equ in equipment_used:
-                EquipmentUsed.objects.create(actionid=child_action, equipmentid=Equipment.objects.get(pk=equ))
+                EquipmentUsed.objects.get_or_create(actionid=child_action, equipmentid=Equipment.objects.get(pk=equ))
+
+            for equ in current_equipment:
+                if str(equ) not in equipment_used:
+                    EquipmentUsed.objects.filter(actionid=child_action, equipmentid=equ).delete()
 
             if action_form.cleaned_data['actiontypecv'] == 'InstrumentCalibration':
                 add_calibration_fields(child_action, action_form)
@@ -881,8 +895,23 @@ def edit_action(request, action_type, action_id):
             )
 
     elif action_id:
-        # updating
-        pass
+        child_action = Action.objects.get(pk=action_id)
+        parent_action_id = RelatedAction.objects.get(
+            relationshiptypecv='is_child_of',
+            actionid=action_id
+        )
+        site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
+
+        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
+
+        site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        action_form = ActionForm(
+            instance=child_action,
+            initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+        )
+
+        action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
+        action = 'update'
 
     else:
         site_visit_form = SiteVisitChoiceForm()
