@@ -29,9 +29,9 @@ urlpatterns = patterns('',
                        # Deployments Generic View
                        url(r'^site-visits/deployments/$',
                            GenericListView.as_view(
-                               queryset=EquipmentUsed.objects.filter(
-                                   Q(actionid__actiontypecv='EquipmentDeployment')
-                                   | Q(actionid__actiontypecv='InstrumentDeployment')
+                               queryset=Action.objects.filter(
+                                   Q(actiontypecv='EquipmentDeployment')
+                                   | Q(actiontypecv='InstrumentDeployment')
                                ),
                                context_object_name='Deployments',
                                template_name='site-visits/deployment/deployments.html'
@@ -41,9 +41,9 @@ urlpatterns = patterns('',
                        # Calibrations Generic Views
                        url(r'^site-visits/calibrations/$',
                            GenericListView.as_view(
-                               queryset=EquipmentUsed.objects.filter(
-                                   Q(actionid__actiontypecv='InstrumentCalibration')
-                                   & Q(actionid__calibrationaction__isnull=False)
+                               queryset=Action.objects.filter(
+                                   Q(actiontypecv='InstrumentCalibration')
+                                   & Q(calibrationaction__isnull=False)
                                ),
                                context_object_name='Calibrations',
                                template_name='site-visits/calibration/calibrations.html'
