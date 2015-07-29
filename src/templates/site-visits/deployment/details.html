@@ -5,10 +5,12 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h2>Deployment Details</h2></div>
     </div>
+    <!--buttons -->
     <div class="row">
 
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New Deployment</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
+                Deployment</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
             <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
@@ -17,193 +19,187 @@
             <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
         </div>
     </div>
-        {% with samplingfeature=Deployment.featureaction.all.0.samplingfeatureid %}
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <h3>Deployment</h3>
-                <table class="table">
-                    <tr>
-                        <th>Site Code:</th>
-                        <td>
-                            <a href="{% url 'site_detail' samplingfeature.samplingfeatureid %}">
-                                {{ samplingfeature.samplingfeaturecode }}</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Site Name:</th>
-                        <td>{{ samplingfeature.samplingfeaturename }}</td>
-                    </tr>
-                    <tr>
-                        <th>Begin Date Time:</th>
-                        <td>{{ Deployment.begindatetime }}</td>
-                    </tr>
-                    <tr>
-                        <th>End Date Time:</th>
-                        <td>{{ Deployment.enddatetime|default:"present" }}</td>
-                    </tr>
-                    <tr>
-                        <th>UTC Offset:</th>
-                        <td>{{ Deployment.begindatetimeutcoffset }}</td>
-                    </tr>
-                    <tr>
-                        <th>Currently Deployed:</th>
-                        <td>{% if Deployment.enddatetime %} No {% else %} Yes {% endif %}</td>
-                    </tr>
-                    <tr>
-                        <th>Action Description:</th>
-                        <td>{{ Deployment.actiondescription|default:" -- " }}</td>
-                    </tr>
-                    <tr>
-                        <th>Action Link:</th>
-                        <td>
-                            {% if Deployment.actionfilelink %}
-                                <a href="{{ MEDIA_URL }}{{ Deployment.actionfilelink }}">{{ Deployment.actionfilelink|get_media_file_name }}</a>
-                            {% else %}
-                                <p>--</p>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {#                <tr>#}
-                    {#                    <th>Deployment Schematic:</th>#}
-                    {#                    <td>{{ Deployment.actionfilelink }}</td>#}
-                    {#                </tr>#}
-                </table>
-            </div>
-            <div class="row detail-mid">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-right">
-            <h3>Equipment</h3>
-{#            <table class="table">#}
-{#                <tr>#}
-{#                    <th>Equipment Serial Number:</th>#}
-{#                    <td><a href="{% url 'equipment_detail' Deployment.equipmentid.equipmentid %}">#}
-{#                        {{ Deployment.equipmentid.equipmentserialnumber }}</a></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Equipment Code:</th>#}
-{#                    <td>{{ Deployment.equipmentid.equipmentcode }}</td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Equipment Name:</th>#}
-{#                    <td>{{ Deployment.equipmentid.equipmentname }}</td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Equipment Type:</th>#}
-{#                    <td>{{ Deployment.equipmentid.equipmenttypecv }}</td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Equipment Model Name:</th>#}
-{#                    <td>#}
-{#                        <a href="{% url 'models_detail' Deployment.equipmentid.equipmentmodelid.equipmentmodelid %}">#}
-{#                            {{ Deployment.equipmentid.equipmentmodelid.modelname }}</a></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Equipment Manufacturer:</th>#}
-{#                    <td>#}
-{#                        {{ Deployment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <th>Owner Name:</th>#}
-{#                    <td>#}
-{#                        <a href="{% url 'person_detail' Deployment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">#}
-{#                            {{ Deployment.equipmentid.equipmentownerid.personfirstname }}#}
-{#                            {{ Deployment.equipmentid.equipmentownerid.personlastname }}#}
-{#                        </a>#}
-{#                    </td>#}
-{#                </tr>#}
-                {#                <tr>#}
-                {#                    <th>Description:</th>#}
-                {#                    <td>{{ Deployment.equipmentid.equipmentdescription }}</td>#}
-                {#                </tr>#}
-                {#                <tr>#}
-                {#                    <th>Purchase Date:</th>#}
-                {#                    <td>{{ Deployment.equipmentid.equipmentpurchasedate }}</td>#}
-                {#                </tr>#}
-                {#                <tr>#}
-                {#                    <th>Link:</th>#}
-                {#                    <td>{{ Deployment.equipmentid.equipmentdocumentationlink }}</td>#}
-                {#                </tr>#}
-{##}
-                {#                {% for affiliation in Deployment.equipmentid.equipmentownerid.affiliation.all %}#}
-                {#                    {% if forloop.first %}#}
-                {#                        <tr>#}
-                {#                            <th>Owner Institution:</th>#}
-                {#                            <td>{{ affiliation.organizationid.organizationname }}</td>#}
-                {#                        </tr>#}
-                {#                        <tr>#}
-                {#                            <th>Owner Address:</th>#}
-                {#                            <td>{{ affiliation.primaryaddress }}</td>#}
-                {#                        </tr>#}
-                {#                        <tr>#}
-                {#                            <th>Owner Phone:</th>#}
-                {#                            <td>{{ affiliation.primaryphone }}</td>#}
-                {#                        </tr>#}
-                {#                        <tr>#}
-                {#                            <th>Email:</th>#}
-                {#                            <td>{{ affiliation.primaryemail }}</td>#}
-                {#                        </tr>#}
-                {#                    {% endif %}#}
-                {#                {% endfor %}#}
-{#            </table>#}
+
+    <!-- deployment details -->
+    {% with samplingfeature=Deployment.featureaction.all.0.samplingfeatureid %}
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <h3>Deployment</h3>
+            <table class="table">
+                <tr>
+                    <th>Site Code:</th>
+                    <td>
+                        <a href="{% url 'site_detail' samplingfeature.samplingfeatureid %}">
+                            {{ samplingfeature.samplingfeaturecode }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Site Name:</th>
+                    <td>{{ samplingfeature.samplingfeaturename }}</td>
+                </tr>
+                <tr>
+                    <th>Begin Date Time:</th>
+                    <td>{{ Deployment.begindatetime }}</td>
+                </tr>
+                <tr>
+                    <th>End Date Time:</th>
+                    <td>{{ Deployment.enddatetime|default:"present" }}</td>
+                </tr>
+                <tr>
+                    <th>UTC Offset:</th>
+                    <td>{{ Deployment.begindatetimeutcoffset }}</td>
+                </tr>
+                <tr>
+                    <th>Currently Deployed:</th>
+                    <td>{% if Deployment.enddatetime %} No {% else %} Yes {% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Action Description:</th>
+                    <td>{{ Deployment.actiondescription|default:" -- " }}</td>
+                </tr>
+                <tr>
+                    <th>Action Link:</th>
+                    <td>
+                        {% if Deployment.actionfilelink %}
+                            <a href="
+                                    {{ MEDIA_URL }}{{ Deployment.actionfilelink }}">{{ Deployment.actionfilelink|get_media_file_name }}</a>
+                        {% else %}
+                            <p>--</p>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
         </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <h3>Related Equipment</h3>
-                <table class="table">
-{#                    {% for parent in Deployment.equipmentid.relatedequipment_equipmentid.all %}#}
-{#                        {% if parent.relationshiptypecv == 'is_child_of' %}#}
-{#                            <tr>#}
-{#                                <th>Equipment Serial Number:</th>#}
-{#                                <td><a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">#}
-{#                                    {{ parent.relatedequipmentid.equipmentserialnumber }}</a>#}
-{#                                </td>#}
-{#                            </tr>#}
-{#                            <tr>#}
-{#                                <th>RelationshipType:</th>#}
-{#                                <td>{{ parent.relationshiptypecv }}</td>#}
-{#                            </tr>#}
-{#                        {% endif %}#}
-{#                    {% endfor %}#}
+        <!-- Equipment Used Table -->
+        <div class="row detail-mid">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h3>Equipment Used</h3>
+                {% for equipment in Deployment.equipmentused.all %}
+                    <div class="row side-by-side-item">
+                        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <th>Equipment Serial Number</th>
+                                    <td>
+                                        <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">
+                                            {{ equipment.equipmentid.equipmentserialnumber }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Code</th>
+                                    <td>{{ equipment.equipmentid.equipmentcode }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Name</th>
+                                    <td>{{ equipment.equipmentid.equipmentname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Type</th>
+                                    <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Model Name</th>
+                                    <td>
+                                        <a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                            {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Manufacturer</th>
+                                    <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Owner</th>
+                                    <td>
+                                        <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                            {{ equipment.equipmentid.equipmentownerid.personfirstname }} {{ equipment.equipmentid.equipmentownerid.personlastname }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Description</th>
+                                    <td>{{ equipment.equipmentid.equipmentdescription }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Purchase Date</th>
+                                    <td>{{ equipment.equipmentid.equipmentpurchasedate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Link</th>
+                                    <td>{{ equipment.equipmentid.equipmentdocumentationlink }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-dependent-table">
+                            <div class="row">
+                                <div class="col-md-9"><h4>Instrument Measured Variable Table</h4></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
+                                    <a class="btn btn-block btn-primary"
+                                       href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New
+                                        Deployment Measured Variable</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <table class="data-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Variable Code</th>
+                                        <th>Variable Name</th>
+                                        <th>Model Name</th>
+                                        <th>Method Code</th>
+                                        <th>Method Name</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for variable in equipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
+                                        {% if variable.modelid.isinstrument %}
+                                            <tr>
+                                                <td>
+                                                    {#                                                                    <a href="{% url 'measured_variable_detail' variable.instrumentoutputvariableid Deployment.bridgeid samplingfeature.samplingfeatureid %}">#}
+                                                    {{ variable.variableid.variablecode }}
+                                                    {#                                                                    </a>#}
+                                                </td>
+                                                <td>{{ variable.variableid.variablenamecv }}</td>
+                                                <td>{{ variable.modelid.modelname }}</td>
+                                                <td>{{ variable.instrumentmethodid.methodcode }}</td>
+                                                <td>{{ variable.instrumentmethodid.methodname }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            <h4>Related Equipment</h4>
+                            <table class="table">
+                                {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
+                                    {% if parent.relationshiptypecv == 'is_child_of' %}
+                                        <tr>
+                                            <th>Equipment Serial Number:</th>
+                                            <td>
+                                                <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                                    {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>RelationshipType:</th>
+                                            <td>{{ parent.relationshiptypecv }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
 
-                </table>
-            </div>
-            </div>
-            <hr class="divider">
-            <div class="row">
-                <div class="col-md-9"><h3>Instrument Measured Variable Table</h3></div>
-            </div>
+                            </table>
+                        </div>
+                    </div>
 
-            <div class="row">
-{#                <div class="col-sm-4 col-xs-12 col-md-3 pull-right">#}
-{#                    <a class="btn btn-block btn-primary"#}
-{#                       href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid Deployment.bridgeid %}">New#}
-{#                        Deployment Measured Variable</a></div>#}
+                {% endfor %}
             </div>
-            <div class="row">
-                <table class="data-table">
-                    <thead>
-                    <tr>
-                        <th>Variable Code</th>
-                        <th>Variable Name</th>
-                        <th>Model Name</th>
-                        <th>Method Code</th>
-                        <th>Method Name</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-{#                    {% for variable in Deployment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}#}
-{#                        <tr>#}
-{#                            <td>#}
-{#                                <a href="{% url 'measured_variable_detail' variable.instrumentoutputvariableid Deployment.bridgeid samplingfeature.samplingfeatureid %}">#}
-{#                                    {{ variable.variableid.variablecode }}</a>#}
-{#                            </td>#}
-{#                            <td>{{ variable.variableid.variablenamecv }}</td>#}
-{#                            <td>{{ variable.modelid.modelname }}</td>#}
-{#                            <td>{{ variable.instrumentmethodid.methodcode }}</td>#}
-{#                            <td>{{ variable.instrumentmethodid.methodname }}</td>#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
-                    </tbody>
-                </table>
-            </div>
-        {% endwith %}
+        </div>
+        <hr class="divider">
+    {% endwith %}
 
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
@@ -213,10 +209,10 @@
                href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
                         {% endif %}
                     {% endfor %}>Go to Site Visit</a></div>
-{#        <div class="col-sm-3 col-xs-12 col-md-3 pull-right">#}
-{#            <a class="btn btn-primary btn-block"#}
-{#               href="{% url 'deployments_by_equipment' Deployment.equipmentid.equipmentid %}">View Equipment's#}
-{#                Deployment History</a></div>#}
+                <div class="col-sm-3 col-xs-12 col-md-3 pull-right">
+                    <a class="btn btn-primary btn-block"
+                       href="{% url 'deployments_by_equipment' Deployment.equipmentid.equipmentid %}">View Equipment's
+                        Deployment History</a></div>
     </div>
     <nav>
         <ul class="pager">
