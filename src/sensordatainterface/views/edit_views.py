@@ -30,7 +30,7 @@ def edit_site(request, site_id):
 
             site = sites_form.save(commit=False)
             site.samplingfeatureid = samplingfeature
-            site.latlondatumid = sites_form.cleaned_data['latlondatumid']
+            site.spatialreferenceid = sites_form.cleaned_data['spatialreferenceid']
             site.save()
 
             messages.add_message(request, messages.SUCCESS, 'Site ' + request.POST['action'] + 'd successfully')
@@ -43,7 +43,7 @@ def edit_site(request, site_id):
         site = Sites.objects.get(pk=site_id)
         samp_feat_form = SamplingFeatureForm(instance=samplingfeature)
         sites_form = SiteForm(instance=site)
-        sites_form.initial['latlondatumid'] = site.latlondatumid.spatialreferenceid
+        sites_form.initial['spatialreferenceid'] = site.spatialreferenceid.spatialreferenceid
         action = 'update'
 
     else:
