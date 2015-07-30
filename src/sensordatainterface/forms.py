@@ -656,7 +656,7 @@ class SiteVisitChoiceForm(ModelForm):
     required_css_class = 'form-required'
 
     actionid = SiteVisitChoiceField(
-        queryset=Action.objects.filter(actiontypecv='SiteVisit'),
+        queryset=Action.objects.filter(actiontypecv='Site Visit'),
         label='Site Visit',
         empty_label='Choose a Site Visit'
     )
@@ -674,13 +674,13 @@ class SelectWithClassForOptions(Select):
 
         # method types are currently not equal to actiontypes so this dictionary temporarily corrects that.
         methodtypes = {
-            'Calibration': 'InstrumentCalibration',
-            'EquipmentDeployment': 'EquipmentDeployment',
-            'EquipmentMaintenance': 'EquipmentMaintenance',
-            'EquipmentRetrieval': 'Generic',
-            'FieldActivity': 'Generic',
+            'Instrument calibration': 'InstrumentCalibration',
+            'Equipment deployment': 'EquipmentDeployment',
+            'Equipment maintenance': 'EquipmentMaintenance',
+            'Equipment retrieval': 'Generic',
+            'Field activity': 'Generic',
             'Observation': 'Generic',
-            'SpecimenCollection': 'Generic',
+            'Specimen collection': 'Generic',
         }
         this_method = args[1]
         class_value = "class=\"\""

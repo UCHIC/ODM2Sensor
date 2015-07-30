@@ -59,8 +59,8 @@ urlpatterns = patterns('',
                                        ~Q(actiontypecv='Instrument deployment') &
                                        ~Q(actiontypecv='Instrument calibration')
                                    ),
-                                   relatedaction__relationshiptypecv='is_child_of',
-                                   relatedaction__relatedactionid__actiontypecv='SiteVisit'
+                                   relatedaction__relationshiptypecv='Is child of',
+                                   relatedaction__relatedactionid__actiontypecv='Site Visit'
                                ),
                                context_object_name='FieldActivities',
                                template_name='site-visits/field-activities/activities.html'

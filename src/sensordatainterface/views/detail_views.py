@@ -17,7 +17,7 @@ class SiteVisitDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SiteVisitDetailView, self).get_context_data(**kwargs)
-        site_visits = Action.objects.filter(actiontypecv='SiteVisit', featureaction__isnull=False)
+        site_visits = Action.objects.filter(actiontypecv='Site Visit', featureaction__isnull=False)
 
         previous_site_visit = site_visits.filter(
             actionid__lt=context['SiteVisit'].actionid.actionid,
@@ -47,7 +47,7 @@ class SiteVisitDetailView(DetailView):
 
 # Deployment Details needs it's own view since it depends on samplingfeatureid and equipmentid
 class DeploymentDetail(DetailView):
-    queryset = Action.objects.all()
+    queryset = Action.objects.filter(Q(actiontypecv='Instrument deployment') | Q(actiontypecv='Equipment deployment'))
     slug_field = 'actionid'
     context_object_name = 'Deployment'
     template_name = 'site-visits/deployment/details.html'

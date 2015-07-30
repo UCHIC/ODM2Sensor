@@ -7,7 +7,6 @@
     </div>
     <!--buttons -->
     <div class="row">
-
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>
@@ -61,6 +60,7 @@
                     <td>
                         {% if Deployment.actionfilelink %}
                             <a href="
+
                                     {{ MEDIA_URL }}{{ Deployment.actionfilelink }}">{{ Deployment.actionfilelink|get_media_file_name }}</a>
                         {% else %}
                             <p>--</p>
@@ -75,10 +75,10 @@
                 <h3>Equipment Used</h3>
                 {% for equipment in Deployment.equipmentused.all %}
                     <div class="row side-by-side-item">
-                    <div class="col-sm-3 col-xs-12 col-md-3 pull-right">
-                    <a class="btn btn-primary btn-block"
-                       href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View Equipment's
-                        Deployment History</a></div>
+                        <div class="col-sm-3 col-xs-12 col-md-3 pull-right">
+                            <a class="btn btn-primary btn-block"
+                               href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View Equipment's Deployment History</a>
+                        </div>
                         <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
                             <table>
                                 <tbody>
@@ -180,7 +180,8 @@
                             <h4>Related Equipment</h4>
                             <table class="table">
                                 {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
-                                    {% if parent.relationshiptypecv == 'is_child_of' %} {# this should be displayed. It's related equipment not children equipment #}
+                                    {% if parent.relationshiptypecv == 'Is child of' %}
+                                        {# this should be displayed. It's related equipment not children equipment #}
                                         <tr>
                                             <th>Equipment Serial Number:</th>
                                             <td>
@@ -209,7 +210,7 @@
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
             <a class="btn btn-primary btn-block"
                     {% for related in Deployment.relatedaction.all %}
-                        {% if related.relationshiptypecv == 'is_child_of' %}
+                        {% if related.relationshiptypecv == 'Is child of' %}
                href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
                         {% endif %}
                     {% endfor %}>Go to Site Visit</a></div>

@@ -667,7 +667,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.save(commit=False)
     site_visit_action.methodid = Method.objects.get(pk=1000)
-    site_visit_action.actiontypecv = 'SiteVisit'
+    site_visit_action.actiontypecv = 'Site Visit'
     site_visit_action.save()
 
     if updating:
@@ -690,7 +690,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
         current_action.save()
 
         if not updating:
-            RelatedAction.objects.create(actionid=current_action, relationshiptypecv='is_child_of',
+            RelatedAction.objects.create(actionid=current_action, relationshiptypecv='Is child of',
                                          relatedactionid=site_visit_action)
             FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
         else:
@@ -770,7 +770,7 @@ def edit_site_visit(request, action_id):
         render_actions = True
         action = 'update'
 
-        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv='is_child_of')
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv='Is child of')
 
         action_form = []
         for child in children_actions:
@@ -866,14 +866,14 @@ def edit_action(request, action_type, action_id):
             if request.POST['action'] == 'update':
                 related_action = RelatedAction.objects.get(
                     actionid=child_action,
-                    relationshiptypecv='is_child_of'
+                    relationshiptypecv='Is child of'
                 )
                 related_action.relatedactionid=site_visit_form.cleaned_data['actionid']
                 related_action.save()
             else:
                 related_action = RelatedAction.objects.create(
                     actionid=child_action,
-                    relationshiptypecv='is_child_of',
+                    relationshiptypecv='Is child of',
                     relatedactionid=site_visit_form.cleaned_data['actionid']
                 )
 
@@ -897,7 +897,7 @@ def edit_action(request, action_type, action_id):
     elif action_id:
         child_action = Action.objects.get(pk=action_id)
         parent_action_id = RelatedAction.objects.get(
-            relationshiptypecv='is_child_of',
+            relationshiptypecv='Is child of',
             actionid=action_id
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)

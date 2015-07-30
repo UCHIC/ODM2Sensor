@@ -1132,28 +1132,28 @@ class TestURLs(TestCase):
         related_action_1_1 = RelatedAction.objects.create(
             relationid = 1,
             actionid = child_action_1,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action
         )
 
         related_action_1_2 = RelatedAction.objects.create(
             relationid = 2,
             actionid = child_action_1_2,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action
         )
 
         related_action_2_1 = RelatedAction.objects.create(
             relationid = 3,
             actionid = child_action_2,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action2
         )
 
         related_action_2_2 = RelatedAction.objects.create(
             relationid = 4,
             actionid = child_action_2_2,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action2
         )
 
@@ -1261,28 +1261,28 @@ class TestURLs(TestCase):
         related_action_1_1 = RelatedAction.objects.create(
             relationid = 1,
             actionid = child_action_1,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action
         )
 
         related_action_1_2 = RelatedAction.objects.create(
             relationid = 2,
             actionid = child_action_1_2,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action
         )
 
         related_action_2_1 = RelatedAction.objects.create(
             relationid = 3,
             actionid = child_action_2,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action2
         )
 
         related_action_2_2 = RelatedAction.objects.create(
             relationid = 4,
             actionid = child_action_2_2,
-            relationshiptypecv = 'is_child_of',
+            relationshiptypecv = 'Is child of',
             relatedactionid = parent_action2
         )
 

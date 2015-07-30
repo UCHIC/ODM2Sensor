@@ -44,7 +44,7 @@ class SiteVisitsBySite(ListView):
 
     def get_queryset(self):
         self.site_visits = FeatureAction.objects.filter(
-            actionid__actiontypecv='SiteVisit',
+            actionid__actiontypecv='Site Visit',
             samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
         )
         return self.site_visits
@@ -139,7 +139,7 @@ class Vocabularies(ListView):
         context['OutputVariables'] = InstrumentOutputVariable.objects.all()
         context['People'] = Affiliation.objects.filter(personid__isnull=False)
         context['CalibrationStandards'] = CalibrationStandard.objects.filter(actionid__isnull=False)
-        context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='InstrumentCalibration') # calibrationmethodquestion
+        context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))

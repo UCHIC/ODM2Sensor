@@ -24,7 +24,7 @@ urlpatterns = patterns('',
                        # Calibration detail
                        url(r'^site-visits/calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Calibration',
-                           model=EquipmentUsed,
+                           model=Action,
                            slug_field='actionid',
                            template_name='site-visits/calibration/details.html'),
                            name='calibration_detail'),
