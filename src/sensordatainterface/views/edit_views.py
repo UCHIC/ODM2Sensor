@@ -915,7 +915,9 @@ def edit_action(request, action_type, action_id):
 
     else:
         site_visit_form = SiteVisitChoiceForm()
-        action_form = ActionForm()
+        action_form = ActionForm(
+            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
+        )
 
     return render(
         request,

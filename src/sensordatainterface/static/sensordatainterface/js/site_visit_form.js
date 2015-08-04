@@ -191,6 +191,18 @@ function filterEquipmentBySite(samplingFeatureSelectElement, equipmentUsedSelect
     });
 }
 
+function setChildBoundsListener() {
+    // Set boundaries of child form datetime fields according to datetime fields of parent site visit
+    var siteVisitForm = $('form').find('tbody')[0];
+    $(siteVisitForm).find('.datetimepicker').on('dp.change', setChildActionFormBounds);
+}
+
+function setChildActionFormBounds(ev) {
+    var childForms = $('.form-table').children('tbody').has('[name="enddatetime"]');
+    for (var i = 1; i < childForms.length; i++)
+        setIndividualBounds($(childForms[i]))
+}
+
 $(document).ready(function () {
     var formItems = $('form.input-group');
     formItems.submit({object: 'equipmentused'}, setMultipleFieldsNumber);
@@ -211,6 +223,7 @@ $(document).ready(function () {
 
     allForms.find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 
+    setChildBoundsListener();
     setEquipmentUsedFilter();
 
 });
