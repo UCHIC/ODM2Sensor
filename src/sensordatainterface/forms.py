@@ -674,20 +674,24 @@ class SelectWithClassForOptions(Select):
 
         # method types are currently not equal to actiontypes so this dictionary temporarily corrects that.
         methodtypes = {
-            'Instrument calibration': 'InstrumentCalibration',
-            'Equipment deployment': 'EquipmentDeployment',
-            'Equipment maintenance': 'EquipmentMaintenance',
-            'Equipment retrieval': 'Generic',
-            'Field activity': 'Generic',
-            'Observation': 'Generic',
-            'Specimen collection': 'Generic',
+            'Instrument calibration': 'calibration',
+            'Equipment deployment': 'deployment',
+            'Equipment maintenance': 'maintenance',
+            'Equipment retrieval': 'activity',
+            'Field activity': 'activity',
+            'Observation': 'activity',
+            'Specimen collection': 'activity',
         }
+
         this_method = args[1]
         class_value = "class=\"\""
         if this_method != "":
             class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv]
 
-        return option_html[:8] + "class=\"" + class_value + "\"" + option_html[7:]
+        after_tag = 8
+        before_tag_close = 7
+
+        return option_html[:after_tag] + "class=\"" + class_value + "\"" + option_html[before_tag_close:]
 
 
 class ActionForm(ModelForm):
@@ -763,9 +767,9 @@ class ActionForm(ModelForm):
         widgets = {
             'actiontypecv': Select(choices=[
                 ('Generic', 'Generic'),
-                ('EquipmentDeployment', 'Deployment'),
-                ('InstrumentCalibration', 'Calibration'),
-                ('EquipmentMaintenance', 'Maintenance')
+                ('Equipment deployment', 'Deployment'),
+                ('Instrument calibration', 'Calibration'),
+                ('Equipment maintenance', 'Maintenance')
             ]),
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),

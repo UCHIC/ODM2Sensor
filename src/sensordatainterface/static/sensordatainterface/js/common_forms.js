@@ -86,10 +86,61 @@ function setFormFields(currentForm) {
     currentForm.find('.select2-container').css('width', '85%');
 }
 
+function handleActionTypeChange(formType, currentForm) {
+    var formClasses = {
+        'Generic': 'notypeclass',
+        'Equipment deployment': 'deployment',
+        'Instrument calibration': 'calibration',
+        'Equipment maintenance': 'maintenance'
+    };
+
+    for (var key in formClasses) {
+        if (formClasses.hasOwnProperty(key) && key !== formType) {
+            $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
+            $(currentForm).find('.' + key).attr('disabled', 'disabled');
+        }
+    }
+
+    if (formClasses.hasOwnProperty(formType)) {
+        $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
+        $(currentForm).find('.' + formType).removeAttr('disabled');
+    }
+
+    //reset select2 to hide disabled options
+    var methodSelect = $(currentForm).find('[name="methodid"]');
+    methodSelect.select2();
+    $('.select2-container').css('width', '85%');
+
+    var equipmentUsedElem = $(currentForm).find('[name="equipmentused"]');
+
+    //Set EquipmentUsed required
+    if (formType !== 'Generic')
+        equipmentUsedElem.parents('tr').addClass('form-required');
+    else
+        equipmentUsedElem.parents('tr').removeClass('form-required');
+
+    //Filter equipmentUsed
+    filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]'), equipmentUsedElem);
+}
+
 $(document).ready(function () {
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
     setFormFields($('tbody'));
     setOtherActions();
+
+    var allForms = $('tbody').has('[name="actiontypecv"]');
+
+    allForms.each(function (index) {
+        var actionType = $(this).find('.select-two[name="actiontypecv"]');
+        handleActionTypeChange(actionType.val(), this);
+        actionType.change(function () {
+            var selected = $(this).val();
+            var currentActionForm = $(this).parents('tbody');
+            handleActionTypeChange(selected, currentActionForm);
+        });
+    });
+
+    allForms.find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 });
 
