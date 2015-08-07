@@ -105,52 +105,7 @@ function setMultipleFieldsNumber(event) {
 function setEquipmentUsedFilter() {
     //add handler for when the actiontypecv is changed
     $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
-        filterEquipmentBySite(this, $('form [name="equipmentused"]'));
-    });
-}
-
-function filterEquipmentBySite(samplingFeatureSelectElement, equipmentUsedSelectElems) {
-    var selected = $(samplingFeatureSelectElement).val();
-
-    if (selected == "")
-        return;
-
-    $.ajax({
-        url: "get-equipment-by-site/",
-        type: "POST",
-        data: {
-            site_selected: selected,
-            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
-        },
-
-        success: function (json) {
-            var currentValue;
-            equipmentUsedSelectElems.each(function () {
-                currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
-                var currentEquipmentSelect = this;
-                $(currentEquipmentSelect).empty(); // Deployments are emptied when site changes. Might have to move this inside of the if below and get rid of the else.
-                if (currentValue !== "EquipmentDeployment") {
-                    $.each(json, function (key, value) {
-                        $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
-                    });
-                } else {
-                    var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
-                    $(currentEquipmentSelect).append($(defaultElements).clone());
-                }
-
-                // Clear value of equipment selected. An equipment can't be deployed at two locations.
-                $(currentEquipmentSelect).select2("val", "");
-            });
-            // When actiontype changes check if it is deployment, if it is then empty the select and add the ones on the hidden action form.
-            // When an action form is added in the check the type (for thoroughness) and call this function with the site selected.
-
-            //Suggestion: Maybe the equipment that are currently being deployed should be on the selection for other forms in a site visit being created.
-        },
-
-        error: function (xhr, errmsg, err) {
-            console.log(errmsg);
-            console.log(xhr.status + ": " + xhr.responseText)
-        }
+        filterEquipmentBySite($(this).val(), $('form [name="equipmentused"]'));
     });
 }
 
@@ -174,5 +129,7 @@ $(document).ready(function () {
 
     setChildBoundsListener();
     setEquipmentUsedFilter();
+
+    $('tbody').has('[name="actiontypecv"]').find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 
 });

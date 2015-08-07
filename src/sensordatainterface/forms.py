@@ -677,10 +677,10 @@ class SelectWithClassForOptions(Select):
             'Instrument calibration': 'calibration',
             'Equipment deployment': 'deployment',
             'Equipment maintenance': 'maintenance',
-            'Equipment retrieval': 'activity',
-            'Field activity': 'activity',
-            'Observation': 'activity',
-            'Specimen collection': 'activity',
+            'Equipment retrieval': 'notypeclass',
+            'Field activity': 'notypeclass',
+            'Observation': 'notypeclass',
+            'Specimen collection': 'notypeclass',
         }
 
         this_method = args[1]

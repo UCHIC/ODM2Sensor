@@ -97,13 +97,13 @@ function handleActionTypeChange(formType, currentForm) {
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
             $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
-            $(currentForm).find('.' + key).attr('disabled', 'disabled');
+            $(currentForm).find('.' + formClasses[key]).attr('disabled', 'disabled');
         }
     }
 
     if (formClasses.hasOwnProperty(formType)) {
         $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
-        $(currentForm).find('.' + formType).removeAttr('disabled');
+        $(currentForm).find('.' + formClasses[formType]).removeAttr('disabled');
     }
 
     //reset select2 to hide disabled options
@@ -120,7 +120,50 @@ function handleActionTypeChange(formType, currentForm) {
         equipmentUsedElem.parents('tr').removeClass('form-required');
 
     //Filter equipmentUsed
-    filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]'), equipmentUsedElem);
+    filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
+}
+
+function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
+    if (selected == "")
+        return;
+
+    $.ajax({
+        url: "/ODM2Sensor/api/get-equipment-by-site/", /*needs to be changed depending on application name. ie in development it's ODM2Sensor, in sandbox it's equipment*/
+        type: "POST",
+        data: {
+            site_selected: selected,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var currentValue;
+            equipmentUsedSelectElems.each(function () {
+                currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
+                var currentEquipmentSelect = this;
+                $(currentEquipmentSelect).empty(); // Deployments are emptied when site changes. Might have to move this inside of the if below and get rid of the else.
+                if (currentValue !== "EquipmentDeployment") {
+                    $.each(json, function (key, value) {
+                        $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
+                    });
+                } else {
+                    var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
+                    $(currentEquipmentSelect).append($(defaultElements).clone());
+                }
+
+                // Clear value of equipment selected. An equipment can't be deployed at two locations.
+                $(currentEquipmentSelect).select2("val", "");
+            });
+            // When actiontype changes check if it is deployment, if it is then empty the select and add the ones on the hidden action form.
+            // When an action form is added in the check the type (for thoroughness) and call this function with the site selected.
+
+            //Suggestion: Maybe the equipment that are currently being deployed should be on the selection for other forms in a site visit being created.
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status + ": " + xhr.responseText)
+        }
+    });
 }
 
 $(document).ready(function () {
@@ -140,7 +183,5 @@ $(document).ready(function () {
             handleActionTypeChange(selected, currentActionForm);
         });
     });
-
-    allForms.find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 });
 
