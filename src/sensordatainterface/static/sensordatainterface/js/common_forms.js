@@ -97,13 +97,13 @@ function handleActionTypeChange(formType, currentForm) {
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
             $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
-            $(currentForm).find('.' + formClasses[key]).attr('disabled', 'disabled');
+            $(currentForm).find('option.' + formClasses[key]).attr('disabled', 'disabled');
         }
     }
 
     if (formClasses.hasOwnProperty(formType)) {
         $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
-        $(currentForm).find('.' + formClasses[formType]).removeAttr('disabled');
+        $(currentForm).find('option.' + formClasses[formType]).removeAttr('disabled');
     }
 
     //reset select2 to hide disabled options
