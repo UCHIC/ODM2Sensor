@@ -136,6 +136,40 @@ function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
         },
 
         success: function (json) {
+            handle_equ_used_filter_response(json, equipmentUsedSelectElems)
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status + ": " + xhr.responseText)
+        }
+    });
+}
+
+function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
+    if(selected == "")
+        return;
+
+    $.ajax({
+        url: "/ODM2Sensor/api/get-equipment-by-action/",
+        type: "POST",
+        data :{
+            action_id: selected,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            handle_equ_used_filter_response(json, equipmentUsedSelectElems)
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
             var currentValue;
             equipmentUsedSelectElems.each(function () {
                 currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
@@ -153,18 +187,7 @@ function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
                 // Clear value of equipment selected. An equipment can't be deployed at two locations.
                 $(currentEquipmentSelect).select2("val", "");
             });
-            // When actiontype changes check if it is deployment, if it is then empty the select and add the ones on the hidden action form.
-            // When an action form is added in the check the type (for thoroughness) and call this function with the site selected.
-
-            //Suggestion: Maybe the equipment that are currently being deployed should be on the selection for other forms in a site visit being created.
-        },
-
-        error: function (xhr, errmsg, err) {
-            console.log(errmsg);
-            console.log(xhr.status + ": " + xhr.responseText)
         }
-    });
-}
 
 $(document).ready(function () {
     setDateTimePicker();
@@ -183,5 +206,12 @@ $(document).ready(function () {
             handleActionTypeChange(selected, currentActionForm);
         });
     });
+
+    $('form').find('[name="actionid"]').change(function () {
+        var form = $('form');
+        var formActionType = form.find('[name="actiontypecv"]').val();
+        if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment")
+            filterEquipmentByAction($(this).val(), form.find('[name="equipmentused"]'));
+    })
 });
 

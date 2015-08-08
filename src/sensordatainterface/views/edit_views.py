@@ -107,7 +107,7 @@ def edit_factory_service_event(request, bridge_id):
         action = 'update'
 
     else:
-        action_form = FactoryServiceActionForm()
+        action_form = FactoryServiceActionForm(initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
         maintenance_form = MaintenanceActionForm()
         equipment_form = EquipmentUsedForm()
 
@@ -159,7 +159,7 @@ def delete_factory_service_event(request, bridge_id):
 # Helpers
 def edit_models(request, model_object, FormClass, modifications, model_name, redirect_url, m_id, model_id, template):
     """ Helper function to create simple models. With this function forms that involve only one model will be
-    faster """
+    created faster """
     action = 'create'
     response = None
     if request.method == 'POST':
@@ -370,7 +370,7 @@ def edit_calibration_standard(request, reference_val_id):
         action = 'update'
 
     else:
-        reference_mat_form = ReferenceMaterialForm()
+        reference_mat_form = ReferenceMaterialForm(initial={'referencematerialpurchasedate': datetime.now})
         reference_mat_value_form = ReferenceMaterialValueForm()
 
     return render(

@@ -4,7 +4,7 @@ from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, Da
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
-
+from datetime import datetime
 
 
 
@@ -200,6 +200,8 @@ class EquipmentForm(ModelForm):
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
+
+    equipmentpurchasedate = forms.DateTimeField(initial=datetime.now())
 
     class Meta:
         model = Equipment
