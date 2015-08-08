@@ -10,8 +10,8 @@ function setOtherActions() {
         $('.Generic .calibration').parents('tr').hide();
         $('.Generic .maintenance').parents('tr').hide();
         actionTypeElem = $('.Generic [name="actiontypecv"]');
-        actionTypeElem.children('[value="EquipmentDeployment"]').remove();
-        actionTypeElem.children('[value="InstrumentCalibration"]').remove();
+        actionTypeElem.children('[value="Equipment deployment"]').remove();
+        actionTypeElem.children('[value="Instrument calibration"]').remove();
 
     } else if (mainForm.hasClass('InstrumentCalibration')) {
         $('.InstrumentCalibration .maintenance').parents('tr').remove();
@@ -175,7 +175,7 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
                 currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
                 var currentEquipmentSelect = this;
                 $(currentEquipmentSelect).empty(); // Deployments are emptied when site changes. Might have to move this inside of the if below and get rid of the else.
-                if (currentValue !== "EquipmentDeployment") {
+                if (currentValue !== "Equipment deployment") {
                     $.each(json, function (key, value) {
                         $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
                     });

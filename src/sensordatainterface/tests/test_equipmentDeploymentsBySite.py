@@ -22,7 +22,7 @@ class TestEquipmentDeploymentsBySite(TestCase):
 
         action100ended = Action.objects.create(
             actionid=100,
-            actiontypecv='EquipmentDeployment',
+            actiontypecv='Equipment deployment',
             methodid=method,
             begindatetime=datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset=-7,
@@ -260,11 +260,11 @@ class TestEquipmentDeploymentsBySite(TestCase):
         valid_equipment = [obj.equipmentid for obj in deployed_equipments]
 
         invalid_actions = Action.objects.filter(
-            ~Q(actiontypecv='InstrumentDeployment'),
-            ~Q(actiontypecv='EquipmentDeployment')
+            ~Q(actiontypecv='Instrument deployment'),
+            ~Q(actiontypecv='Equipment deployment')
         )
 
-        actions = Action.objects.filter(Q(actiontypecv='InstrumentDeployment') | Q(actiontypecv='EquipmentDeployment'))
+        actions = Action.objects.filter(Q(actiontypecv='Instrument deployment') | Q(actiontypecv='Equipment deployment'))
 
         request = RequestFactory().get('site-visits/deployments/site/current/100',)
         request.user = helper_classes.User()
@@ -293,11 +293,11 @@ class TestEquipmentDeploymentsBySite(TestCase):
         valid_equipment = [obj.equipmentid for obj in deployed_equipments]
 
         invalid_actions = Action.objects.filter(
-            ~Q(actiontypecv='InstrumentDeployment'),
-            ~Q(actiontypecv='EquipmentDeployment')
+            ~Q(actiontypecv='Instrument deployment'),
+            ~Q(actiontypecv='Equipment deployment')
         )
 
-        actions = Action.objects.filter(Q(actiontypecv='InstrumentDeployment') | Q(actiontypecv='EquipmentDeployment'))
+        actions = Action.objects.filter(Q(actiontypecv='Instrument deployment') | Q(actiontypecv='Equipment deployment'))
 
         request = RequestFactory().get('site-visits/deployments/site/current/150',)
         request.user = helper_classes.User()

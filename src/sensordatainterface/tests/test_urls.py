@@ -373,7 +373,7 @@ class TestURLs(TestCase):
 
         action = Action.objects.create(
             actionid = 100,
-            actiontypecv = 'EquipmentDeployment',
+            actiontypecv = 'Equipment deployment',
             methodid = method,
             begindatetime = datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset = -7,
@@ -503,8 +503,8 @@ class TestURLs(TestCase):
                 self.fail()
 
             self.assertTrue(
-                deployment.actionid.actiontypecv == 'InstrumentDeployment' or
-                deployment.actionid.actiontypecv == 'EquipmentDeployment'
+                deployment.actionid.actiontypecv == 'Instrument deployment' or
+                deployment.actionid.actiontypecv == 'Equipment deployment'
             )
 
             self.assertEqual(deployment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname, 'Fenix Equipment')
@@ -532,7 +532,7 @@ class TestURLs(TestCase):
 
         action = Action.objects.create(
             actionid = 100,
-            actiontypecv = 'EquipmentDeployment',
+            actiontypecv = 'Equipment deployment',
             methodid = method,
             begindatetime = datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset = -7,
@@ -675,7 +675,7 @@ class TestURLs(TestCase):
 
         action = Action.objects.create(
             actionid = 100,
-            actiontypecv = 'InstrumentCalibration',
+            actiontypecv = 'Instrument calibration',
             methodid = method,
             begindatetime = datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset = -7,
@@ -687,7 +687,7 @@ class TestURLs(TestCase):
 
         action2 = Action.objects.create(
             actionid = 150,
-            actiontypecv = 'InstrumentCalibration',
+            actiontypecv = 'Instrument calibration',
             methodid = method,
             begindatetime = datetime.datetime(2010, 10, 3),
             begindatetimeutcoffset = -7,
@@ -846,7 +846,7 @@ class TestURLs(TestCase):
             elif calibration.bridgeid == 200:
                 self.fail()
 
-            self.assertTrue(calibration.actionid.actiontypecv == 'InstrumentCalibration')
+            self.assertTrue(calibration.actionid.actiontypecv == 'Instrument calibration')
             self.assertEqual(calibration.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname, 'Fenix Equipment')
             self.assertEqual(calibration.equipmentid.equipmentmodelid.modelname, 'Climate')
 
@@ -874,7 +874,7 @@ class TestURLs(TestCase):
 
         action = Action.objects.create(
             actionid = 100,
-            actiontypecv = 'InstrumentCalibration',
+            actiontypecv = 'Instrument calibration',
             methodid = method,
             begindatetime = datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset = -7,
@@ -886,7 +886,7 @@ class TestURLs(TestCase):
 
         action2 = Action.objects.create(
             actionid = 150,
-            actiontypecv = 'InstrumentCalibration',
+            actiontypecv = 'Instrument calibration',
             methodid = method,
             begindatetime = datetime.datetime(2010, 10, 3),
             begindatetimeutcoffset = -7,

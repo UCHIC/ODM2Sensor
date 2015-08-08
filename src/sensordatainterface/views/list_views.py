@@ -17,13 +17,13 @@ class EquipmentDeploymentsBySite(ListView):
     def get_queryset(self):
         if self.kwargs['current'] == 'current':
             self.equipment = EquipmentUsed.objects.filter(
-                (Q(actionid__actiontypecv='EquipmentDeployment') | Q(actionid__actiontypecv='InstrumentDeployment')),
+                (Q(actionid__actiontypecv='Equipment deployment') | Q(actionid__actiontypecv='Instrument deployment')),
                 actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id'],
                 actionid__enddatetime__isnull=True
             )
         else:
             self.equipment = EquipmentUsed.objects.filter(
-                (Q(actionid__actiontypecv='EquipmentDeployment') | Q(actionid__actiontypecv='InstrumentDeployment')),
+                (Q(actionid__actiontypecv='Equipment deployment') | Q(actionid__actiontypecv='Instrument deployment')),
                 actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
             )
         return self.equipment
@@ -65,8 +65,8 @@ class EquipmentDeployments(ListView):
 
     def get_queryset(self):
         self.deployments = EquipmentUsed.objects.filter(
-            (Q(actionid__actiontypecv='EquipmentDeployment') |
-             Q(actionid__actiontypecv='InstrumentDeployment')),
+            (Q(actionid__actiontypecv='Equipment deployment') |
+             Q(actionid__actiontypecv='Instrument deployment')),
             equipmentid=self.kwargs['equipment_id']
         )
         return self.deployments
@@ -87,7 +87,7 @@ class EquipmentCalibrations(ListView):
 
     def get_queryset(self):
         self.calibrations = EquipmentUsed.objects.filter(
-            (Q(actionid__actiontypecv='InstrumentCalibration') &
+            (Q(actionid__actiontypecv='Instrument calibration') &
              Q(actionid__calibrationaction__isnull=False)),
             equipmentid=self.kwargs['equipment_id']
         )

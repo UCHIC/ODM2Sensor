@@ -60,8 +60,8 @@ class DeploymentDetail(DetailView):
         ##
 
         # deployments = Action.objects.filter(
-        #     Q(actiontypecv='EquipmentDeployment')
-        #     | Q(actiontypecv='InstrumentDeployment')
+        #     Q(actiontypecv='Equipment deployment')
+        #     | Q(actiontypecv='Instrument deployment')
         # )
         # this_samplingfeature = context['Deployment'].actionid.featureaction.values()[0]['samplingfeatureid_id']
         # previous_deployment = deployments.filter(

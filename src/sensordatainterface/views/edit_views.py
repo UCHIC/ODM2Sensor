@@ -75,7 +75,7 @@ def edit_factory_service_event(request, bridge_id):
 
         if action_form.is_valid() and maintenance_form.is_valid() and equipment_form.is_valid():
             action_model = action_form.save(commit=False)
-            action_model.actiontypecv = 'EquipmentMaintenance'
+            action_model.actiontypecv = 'Equipment maintenance'
             action_model.methodid = action_form.cleaned_data['methodid']
             action_model.save()
 
@@ -477,8 +477,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
-                        Q(actionid__actiontypecv='InstrumentDeployment') | Q(
-                            actionid__actiontypecv='EquipmentDeployment')),
+                        Q(actionid__actiontypecv='Instrument deployment') | Q(
+                            actionid__actiontypecv='Equipment deployment')),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -502,8 +502,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
-                        Q(actionid__actiontypecv='InstrumentDeployment') | Q(
-                            actionid__actiontypecv='EquipmentDeployment')),
+                        Q(actionid__actiontypecv='Instrument deployment') | Q(
+                            actionid__actiontypecv='Equipment deployment')),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -704,14 +704,14 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 equipmentid=equ
             )
 
-        if action_type == 'InstrumentCalibration':
+        if action_type == 'Instrument calibration':
             if updating:
                 CalibrationAction.objects.get(actionid=current_action).delete()
                 CalibrationReferenceEquipment.objects.filter(actionid=current_action).delete()
 
             add_calibration_fields(current_action, action_form[i])
 
-        elif action_type == 'EquipmentMaintenance':
+        elif action_type == 'Equipment maintenance':
             if updating:
                 MaintenanceAction.objects.get(actionid=current_action).delete()
             add_maintenance_fields(current_action, action_form[i])
@@ -780,7 +780,7 @@ def edit_site_visit(request, action_id):
                 'thisactionid': child.actionid.actionid
             }
 
-            if child.actionid.actiontypecv == 'InstrumentCalibration':
+            if child.actionid.actiontypecv == 'Instrument calibration':
                 calibration_action = CalibrationAction.objects.get(actionid=child.actionid)
                 initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
                 initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
@@ -793,7 +793,7 @@ def edit_site_visit(request, action_id):
                     calibrationreferenceequipment__isnull=False,
                     calibrationreferenceequipment__actionid=calibration_action.actionid
                 )
-            elif child.actionid.actiontypecv == 'EquipmentMaintenance':
+            elif child.actionid.actiontypecv == 'Equipment maintenance':
                 maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
                 initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
@@ -887,7 +887,7 @@ def edit_action(request, action_type, action_id):
                 if str(equ) not in equipment_used:
                     EquipmentUsed.objects.filter(actionid=child_action, equipmentid=equ).delete()
 
-            if action_form.cleaned_data['actiontypecv'] == 'InstrumentCalibration':
+            if action_form.cleaned_data['actiontypecv'] == 'Instrument calibration':
                 add_calibration_fields(child_action, action_form)
 
             return HttpResponseRedirect(

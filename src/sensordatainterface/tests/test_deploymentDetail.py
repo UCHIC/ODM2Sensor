@@ -19,7 +19,7 @@ class TestDeploymentDetail(TestCase):
 
         action100 = Action.objects.create(
             actionid=100,
-            actiontypecv='EquipmentDeployment',
+            actiontypecv='Equipment deployment',
             methodid=method,
             begindatetime=datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset=-7,
