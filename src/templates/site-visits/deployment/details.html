@@ -75,7 +75,7 @@
                 <h3>Equipment Used</h3>
                 {% for equipment in Deployment.equipmentused.all %}
                     <div class="row side-by-side-item">
-                        <div class="col-sm-3 col-xs-12 col-md-3 pull-right">
+                        <div class="col-sm-6 col-xs-12 col-md-4 pull-right">
                             <a class="btn btn-primary btn-block"
                                href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View Equipment's Deployment History</a>
                         </div>
@@ -133,13 +133,15 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
+                                <a class="add-inst-meas-variables-button btn btn-primary btn-block">Show Instrument Measured Variables</a></div>
                         </div>
-                        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-dependent-table">
+                        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-dependent-table" style="display: none">
                             <div class="row">
                                 <div class="col-md-9"><h4>Instrument Measured Variable Table</h4></div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
+                                <div class="col-sm-4 col-xs-12 col-md-2 pull-right">
                                     <a class="btn btn-block btn-primary"
                                        href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New
                                         Deployment Measured Variable</a>
@@ -176,7 +178,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                     <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
+
+                                <a class="add-related-equ-button btn btn-primary btn-block">Show Related Equipment</a></div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 related-equipment-table" style="display: none">
                             <h4>Related Equipment</h4>
                             <table class="table">
                                 {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}

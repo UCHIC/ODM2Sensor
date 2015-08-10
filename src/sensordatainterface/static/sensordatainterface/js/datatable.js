@@ -8,9 +8,32 @@ $(document).ready(function () {
         dataTables.order([0, 'desc']).draw();
     }
 
-    if ($('.data-table').parents('.side-by-side-item')) {
-        $('.data-table').parents('.side-dependent-table').hide();
-    } /* After this add button in html template, and move related equipment inside 'side dependent table. 
+    var measuredVarsButton = $('.add-inst-meas-variables-button');
+    var relatedEquButton = $('.add-related-equ-button');
+
+    if (measuredVarsButton && relatedEquButton) {
+        measuredVarsButton.click(function () {
+            $(this).parents('.side-by-side-item').find('.side-dependent-table').toggle("slow");
+            var text = $(this).text();
+            $(this).text(
+                text == "Show Instrument Measured Variables"? "Hide Instrument Measured Variables" : "Show Instrument Measured Variables"
+            );
+
+        });
+        relatedEquButton.click(function () {
+            $(this).parents('.side-by-side-item').find('.related-equipment-table').toggle("slow");
+            var text = $(this).text();
+            $(this).text(
+                text == "Show Related Equipment"? "Hide Related Equipment" : "Show Related Equipment"
+            );
+        });
+    }
+
+    //if ($('.data-table').parents('.side-by-side-item')) {
+    //
+    //
+    //}
+    /* After this add button in html template, and move related equipment inside 'side dependent table.
          After that add functionality to show and hide the side dependent table. 
          A hide/show toggle could work nicely'*/
 
