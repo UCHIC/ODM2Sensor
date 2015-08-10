@@ -8,6 +8,12 @@ $(document).ready(function () {
         dataTables.order([0, 'desc']).draw();
     }
 
+    if ($('.data-table').parents('.side-by-side-item')) {
+        $('.data-table').parents('.side-dependent-table').hide();
+    } /* After this add button in html template, and move related equipment inside 'side dependent table. 
+         After that add functionality to show and hide the side dependent table. 
+         A hide/show toggle could work nicely'*/
+
     preserveTableStatus();
 });
 

@@ -405,7 +405,11 @@ span.helptext {
 .side-by-side-item {
     border: 1px solid black;
     overflow: hidden;
-    padding: 0px 32px;
+    padding: 22px 32px;
+}
+
+.side-by-side-item table.dataTable thead .sorting:last-of-type {
+      width: 34%!important;
 }
 
 .side-table-details {

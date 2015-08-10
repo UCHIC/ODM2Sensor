@@ -7,21 +7,22 @@ function setOtherActions() {
     var actionTypeElem;
 
     if (mainForm.hasClass('Generic')) {
-        $('.Generic .calibration').parents('tr').hide();
-        $('.Generic .maintenance').parents('tr').hide();
+        $('.Generic .calibration').not('option').parents('tr').hide();
+        $('.Generic .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.Generic [name="actiontypecv"]');
         actionTypeElem.children('[value="Equipment deployment"]').remove();
         actionTypeElem.children('[value="Instrument calibration"]').remove();
 
     } else if (mainForm.hasClass('InstrumentCalibration')) {
-        $('.InstrumentCalibration .maintenance').parents('tr').remove();
+        /* Careful when deleting parents of calibration etc tr */
+        $('.InstrumentCalibration .maintenance').not('option').parents('tr').remove();
         actionTypeElem = $('.InstrumentCalibration [name="actiontypecv"]');
         actionTypeElem.select2('val', 'Instrument calibration');
         actionTypeElem.parents('tr').hide();
 
     } else if (mainForm.hasClass('EquipmentDeployment')) {
-        $('.EquipmentDeployment .calibration').parents('tr').hide();
-        $('.EquipmentDeployment .maintenance').parents('tr').hide();
+        $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
+        $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.select2('val', 'Equipment deployment');
         actionTypeElem.parents('tr').hide();
@@ -88,7 +89,7 @@ function setFormFields(currentForm) {
 
 function handleActionTypeChange(formType, currentForm) {
     var formClasses = {
-        'Generic': 'notypeclass',
+        'Field activity': 'notypeclass',
         'Equipment deployment': 'deployment',
         'Instrument calibration': 'calibration',
         'Equipment maintenance': 'maintenance'
@@ -96,13 +97,13 @@ function handleActionTypeChange(formType, currentForm) {
 
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
-            $(currentForm).find('.' + formClasses[key]).parents('tr').hide();
+            $(currentForm).find('.' + formClasses[key]).not('option').parents('tr').hide();
             $(currentForm).find('option.' + formClasses[key]).attr('disabled', 'disabled');
         }
     }
 
     if (formClasses.hasOwnProperty(formType)) {
-        $(currentForm).find('.' + formClasses[formType]).parents('tr:hidden').show();
+        $(currentForm).find('.' + formClasses[formType]).not('option').parents('tr:hidden').show();
         $(currentForm).find('option.' + formClasses[formType]).removeAttr('disabled');
     }
 
@@ -174,14 +175,17 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
             equipmentUsedSelectElems.each(function () {
                 currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
                 var currentEquipmentSelect = this;
-                $(currentEquipmentSelect).empty(); // Deployments are emptied when site changes. Might have to move this inside of the if below and get rid of the else.
                 if (currentValue !== "Equipment deployment") {
+                    $(currentEquipmentSelect).empty();
                     $.each(json, function (key, value) {
                         $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
                     });
                 } else {
                     var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
-                    $(currentEquipmentSelect).append($(defaultElements).clone());
+                    if (defaultElements.length > 0) {
+                        $(currentEquipmentSelect).empty();
+                        $(currentEquipmentSelect).append($(defaultElements).clone());
+                    }
                 }
 
                 // Clear value of equipment selected. An equipment can't be deployed at two locations.

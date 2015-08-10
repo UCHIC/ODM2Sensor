@@ -863,19 +863,30 @@ def edit_action(request, action_type, action_id):
 
         if site_visit_form.is_valid() and action_form.is_valid():
             child_action = action_form.save()
+            parent_site_visit = site_visit_form.cleaned_data['actionid']
             if request.POST['action'] == 'update':
                 related_action = RelatedAction.objects.get(
                     actionid=child_action,
                     relationshiptypecv='Is child of'
                 )
-                related_action.relatedactionid=site_visit_form.cleaned_data['actionid']
+                related_action.relatedactionid=parent_site_visit
                 related_action.save()
             else:
                 related_action = RelatedAction.objects.create(
                     actionid=child_action,
                     relationshiptypecv='Is child of',
-                    relatedactionid=site_visit_form.cleaned_data['actionid']
+                    relatedactionid=parent_site_visit
                 )
+
+            sampling_feature = FeatureAction.objects.filter(
+                actionid=parent_site_visit,
+                samplingfeatureid__samplingfeaturetypecv='Site'
+                )[0].samplingfeatureid
+
+            FeatureAction.objects.get_or_create(
+                actionid=child_action,
+                samplingfeatureid=sampling_feature
+            )
 
             equipment_used = request.POST.getlist('equipmentused')
             current_equipment = [equ.equipmentid.equipmentid for equ in EquipmentUsed.objects.filter(actionid=child_action)]
@@ -887,12 +898,22 @@ def edit_action(request, action_type, action_id):
                 if str(equ) not in equipment_used:
                     EquipmentUsed.objects.filter(actionid=child_action, equipmentid=equ).delete()
 
-            if action_form.cleaned_data['actiontypecv'] == 'Instrument calibration':
+            action_type = action_form.cleaned_data['actiontypecv']
+
+            if action_type == 'Instrument calibration':
                 add_calibration_fields(child_action, action_form)
 
-            return HttpResponseRedirect(
-                reverse('deployment_detail', args=[child_action.actionid]) # fails because deployment detail will be changed to be referenced by ActionID
+            url_map = {
+                'Equipment deployment': 'deployment_detail',
+                'Instrument calibration': 'calibration_detail',
+                'Equipment maintenance': 'field_activity_detail',
+                'Field activity': 'field_activity_detail'
+            }
+            response = HttpResponseRedirect(
+                reverse(url_map[action_type], args=[child_action.actionid]) # fails because deployment detail will be changed to be referenced by ActionID
             )
+
+            return response
 
     elif action_id:
         child_action = Action.objects.get(pk=action_id)

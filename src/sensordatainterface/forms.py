@@ -768,7 +768,7 @@ class ActionForm(ModelForm):
 
         widgets = {
             'actiontypecv': Select(choices=[
-                ('Generic', 'Generic'),
+                ('Field activity', 'Generic'),
                 ('Equipment deployment', 'Deployment'),
                 ('Instrument calibration', 'Calibration'),
                 ('Equipment maintenance', 'Maintenance')
