@@ -406,6 +406,13 @@ span.helptext {
     border: 1px solid #CDCACA;
     overflow: hidden;
     padding: 22px 32px;
+
+}
+
+.side-by-side-item.small-box-item {
+    width: 48%;
+    float: left;
+    margin-right: 3%;
 }
 
 .side-by-side-item table.dataTable thead .sorting:last-of-type {

@@ -47,8 +47,7 @@
                     <th>Action Link:</th>
                     <td>
                         {% if Deployment.actionfilelink %}
-                            <a href="
-                                    {{ MEDIA_URL }}{{ Deployment.actionfilelink }}">{{ Deployment.actionfilelink|get_media_file_name }}</a>
+                            <a href="{{ MEDIA_URL }}{{ Deployment.actionfilelink }}">{{ Deployment.actionfilelink|get_media_file_name }}</a>
                         {% else %}
                             <p>--</p>
                         {% endif %}
