@@ -350,7 +350,7 @@ label {
 /*}*/
 
 .detail-mid th {
-    width: 24%;
+    /*width: 24%;*/
 }
 
 .detail-mid td {
@@ -403,7 +403,7 @@ span.helptext {
 
 
 .side-by-side-item {
-    border: 1px solid black;
+    border: 1px solid #CDCACA;
     overflow: hidden;
     padding: 22px 32px;
 }
@@ -417,15 +417,24 @@ span.helptext {
 }
 
 .side-table-details th {
-    width: 50%;
+    /* width: 50%; */
     padding: 1%;
 }
 
 .side-table-details td {
-    width: 50%;
-    padding-left: 14%;
+    /* width: 50%; */
+    /* padding-left: 14%; */
 }
 
 .side-dependent-table {
     float: right;
 }
+
+.related-equipment-table {
+    clear: both;
+}
+
+.related-equipment-table th {
+    width: 50%;
+}
+

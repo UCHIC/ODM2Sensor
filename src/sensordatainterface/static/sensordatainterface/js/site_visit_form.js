@@ -5,7 +5,9 @@ function addActionForm(that) {
 
     //Move add button and insert delete button
     thisForm.insertBefore(button);
-    button.prev().prepend('<tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>');
+    button.prev().prepend(
+        '<tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
+    );
 
     setChildActionDateTimePicker(thisForm);
 
@@ -23,11 +25,6 @@ function addActionForm(that) {
     // This bit of code solves the problem of th checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
     $(thisForm).find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
-
-    //add button for adding new equiment
-    //var insertPosition = $(thisForm).find('[name="equipmentused"]', '[name="methodid"]').eq(0).parents('tr');
-    //var addEquipmentButton = '<tr><th></th><td><a class="btn btn-default col-xs-2 col-sm-2" onclick="javascript:addEquipmentField(this)">- Add Equipment Used</a></td></tr>';
-    //$(addEquipmentButton).insertAfter(insertPosition);
 
     handleActionTypeChange('Generic', thisForm);
 
