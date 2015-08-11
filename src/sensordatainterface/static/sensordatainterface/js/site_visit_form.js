@@ -26,13 +26,13 @@ function addActionForm(that) {
     // ie. it will not send False to the server
     $(thisForm).find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 
-    handleActionTypeChange('Generic', thisForm);
+    handleActionTypeChange('Field activity', thisForm);
 
    setFormFields($(thisForm));
 
     //hide custom fields for all action form types
-    $(thisForm).find(".calibration").parents('tr').hide();
-    $(thisForm).find(".maintenance").parents('tr').hide();
+    $(thisForm).find(".calibration").not('option').parents('tr').hide();
+    $(thisForm).find(".maintenance").not('option').parents('tr').hide();
 }
 
 function setChildActionDateTimePicker(childForm) {
