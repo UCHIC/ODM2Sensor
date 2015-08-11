@@ -109,6 +109,10 @@ function setIndividualBounds(actionTBody) {
 
 }
 
+function  setLoginForm(loginForm) {
+    loginForm.find('input').addClass('form-control');
+}
+
 
 
 $(document).ready(function () {
@@ -128,6 +132,12 @@ $(document).ready(function () {
 
     if (typeof (initVocabulariesTabs) == "function") {
         initVocabulariesTabs($);
+    }
+
+    var loginForm = $('#login_form');
+
+    if (loginForm.length > 0) {
+        setLoginForm(loginForm);
     }
 });
 

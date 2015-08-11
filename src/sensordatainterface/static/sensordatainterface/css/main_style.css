@@ -249,19 +249,24 @@ a.delete-icon {
 }
 
 #login_section input[value=login] {
-    margin-right: 20.4%;
-    width: 47.8%;
-    background: #265a88;
-    color: white;
+/*     margin-right: 20.4%;
+    width: 47.8%; */
+    
+background: #265a88;
+    
+color: white;
 }
 
 #site_content {
     padding-bottom: 199px;
 }
 
-#login_section input[type=text], #login_section input[type=password] {
+#login_section input[type=text], 
+#login_section input[type=password],
+#login_section input[value=login] {
     width: 70%;
     margin-bottom: 2%;
+    float: initial;
 }
 
 .content {
