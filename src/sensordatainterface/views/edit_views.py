@@ -931,6 +931,13 @@ def edit_action(request, action_type, action_id):
             initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
         )
 
+        if action_type == 'InstrumentCalibration':
+            action_form.initial['calibrationstandard'] = [cal_std for cal_std in ReferenceMaterial.objects.filter(calibrationstandard__actionid=action_id)]
+            action_form.initial['calibrationreferenceequipment'] = Equipment.objects.filter(calibrationreferenceequipment__actionid=action_id)
+            action_form.initial['instrumentoutputvariable'] = CalibrationAction.objects.get(pk=action_id).instrumentoutputvariableid
+            action_form.initial['calibrationcheckvalue'] = CalibrationAction.objects.get(pk=action_id).calibrationcheckvalue
+            action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
+
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
         action = 'update'
 
