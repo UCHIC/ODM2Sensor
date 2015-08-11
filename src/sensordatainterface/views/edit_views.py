@@ -718,6 +718,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
     return site_visit_action
 
+
 def add_maintenance_fields(current_action, action_form):
     MaintenanceAction.objects.create(
         actionid=current_action,
@@ -725,6 +726,7 @@ def add_maintenance_fields(current_action, action_form):
         maintenancecode=action_form.cleaned_data['maintenancecode'],
         maintenancereason=action_form.cleaned_data['maintenancereason']
     )
+
 
 def add_calibration_fields(current_action, action_form):
     calibration_action = CalibrationAction.objects.create(
@@ -901,6 +903,8 @@ def edit_action(request, action_type, action_id):
             action_type = action_form.cleaned_data['actiontypecv']
 
             if action_type == 'Instrument calibration':
+                CalibrationAction.objects.get(actionid=child_action).delete()
+                CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
 
             url_map = {
@@ -910,7 +914,7 @@ def edit_action(request, action_type, action_id):
                 'Field activity': 'field_activity_detail'
             }
             response = HttpResponseRedirect(
-                reverse(url_map[action_type], args=[child_action.actionid]) # fails because deployment detail will be changed to be referenced by ActionID
+                reverse(url_map[action_type], args=[child_action.actionid])
             )
 
             return response
@@ -930,6 +934,13 @@ def edit_action(request, action_type, action_id):
             instance=child_action,
             initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
         )
+
+        if action_type == 'InstrumentCalibration':
+            action_form.initial['calibrationstandard'] = [cal_std for cal_std in ReferenceMaterial.objects.filter(calibrationstandard__actionid=action_id)]
+            action_form.initial['calibrationreferenceequipment'] = Equipment.objects.filter(calibrationreferenceequipment__actionid=action_id)
+            action_form.initial['instrumentoutputvariable'] = CalibrationAction.objects.get(pk=action_id).instrumentoutputvariableid
+            action_form.initial['calibrationcheckvalue'] = CalibrationAction.objects.get(pk=action_id).calibrationcheckvalue
+            action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
 
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
         action = 'update'

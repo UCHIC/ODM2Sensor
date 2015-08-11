@@ -8,6 +8,12 @@ $(document).ready(function () {
         dataTables.order([0, 'desc']).draw();
     }
 
+    var side_item_tables = $('.side-by-side-item .data-table');
+
+    if (side_item_tables.length > 0) {
+        dataTables.page.len(10).draw();
+    }
+
     var measuredVarsButton = $('.add-inst-meas-variables-button');
     var relatedEquButton = $('.add-related-equ-button');
 
@@ -28,15 +34,6 @@ $(document).ready(function () {
             );
         });
     }
-
-    //if ($('.data-table').parents('.side-by-side-item')) {
-    //
-    //
-    //}
-    /* After this add button in html template, and move related equipment inside 'side dependent table.
-         After that add functionality to show and hide the side dependent table. 
-         A hide/show toggle could work nicely'*/
-
     preserveTableStatus();
 });
 
