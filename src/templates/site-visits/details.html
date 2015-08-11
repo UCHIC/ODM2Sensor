@@ -121,11 +121,11 @@
     </div>
     <div class="row">
         <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="#">Add Another Action</a></div>
+                                                               href="{% url 'create_action' 'Generic' %}">Add Another Action</a></div> <!-- Add reference to Site Visit later-->
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">Add New Deployment</a></div>
+                                                               href="{% url 'create_action' 'EquipmentDeployment' %}">Add New Deployment</a></div> <!-- Add reference to Site Visit later-->
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">Add New Calibration</a></div>
+                                                               href="{% url 'create_action' 'InstrumentCalibration' %}">Add New Calibration</a></div> <!-- Add reference to Site Visit later-->
     </div>
     <nav>
     <ul class="pager">

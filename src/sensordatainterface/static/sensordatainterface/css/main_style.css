@@ -445,3 +445,8 @@ span.helptext {
     width: 50%;
 }
 
+a.add-related-equ-button.btn.btn-primary.btn-block {
+    /* margin-right: 66px; */
+    width: 97.5%;
+}
+

@@ -189,7 +189,7 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
                 }
 
                 // Clear value of equipment selected. An equipment can't be deployed at two locations.
-                $(currentEquipmentSelect).select2("val", "");
+                //$(currentEquipmentSelect).select2("val", "");
             });
         }
 

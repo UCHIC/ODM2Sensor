@@ -5,9 +5,9 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Calibration Details</h2></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Edit Calibration Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Edit Calibration Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Delete</a>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
@@ -243,7 +243,7 @@
 
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                {% for related in Calibration.actionid.relatedaction.all %}
+                {% for related in Calibration.relatedaction.all %}
                     {% if related.relationshiptypecv == 'Is child of' %}
                                                                href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
                     {% endif %}
