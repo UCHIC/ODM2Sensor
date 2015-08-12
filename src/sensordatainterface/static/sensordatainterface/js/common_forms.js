@@ -128,8 +128,10 @@ function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
     if (selected == "")
         return;
 
+    var equipmentBySiteUrl = $('#equipment-by-site-api').val();
+
     $.ajax({
-        url: "/ODM2Sensor/api/get-equipment-by-site/", /*needs to be changed depending on application name. ie in development it's ODM2Sensor, in sandbox it's equipment*/
+        url: equipmentBySiteUrl, /*needs to be changed depending on application name. ie in development it's ODM2Sensor, in sandbox it's equipment*/
         type: "POST",
         data: {
             site_selected: selected,
@@ -151,8 +153,10 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     if(selected == "")
         return;
 
+    var equipmentByActionUrl = $('#equipment-by-action-api').val();
+
     $.ajax({
-        url: "/ODM2Sensor/api/get-equipment-by-action/",
+        url: equipmentByActionUrl,
         type: "POST",
         data :{
             action_id: selected,

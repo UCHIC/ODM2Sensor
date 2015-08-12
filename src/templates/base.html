@@ -107,5 +107,11 @@
 <script src="{% static "sensordatainterface/js/datatable.js" %}"></script>
 <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
 {% block scripts %}{% endblock %}
+
+{% block data %}
+    <input id="equipment-by-site-api" type="hidden" value="{% url 'get_equipment_by_site' %}">
+    <input id="equipment-by-site-api" type="hidden" value="{% url 'get_equipment_by_action' %}">
+{% endblock %}
+
 </body>
 </html>
