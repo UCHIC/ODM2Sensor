@@ -6,6 +6,7 @@ from django.contrib import messages
 from copy import deepcopy
 from django import forms
 from datetime import datetime
+from django.apps import apps
 
 
 @login_required(login_url=LOGIN_URL)
@@ -306,6 +307,54 @@ def delete_person(request, affiliation_id):
     messages.add_message(request, messages.SUCCESS, 'Person ' + person_name + ' removed from the system')
     return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
 
+
+@login_required(login_url=LOGIN_URL)
+def edit_control_vocabularies(request, target_cv, name):
+    action = 'create'
+    sdi_app_config = apps.get_app_config('sensordatainterface')
+
+    if request.method == 'POST':
+        if request.POST['action'] == 'update':
+            # affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
+            #
+            # person_form = PersonForm(request.POST, instance=affiliation.personid)
+            # # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
+            # affiliation_form = AffiliationForm(request.POST, instance=affiliation)
+            pass
+        else:
+            cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv), request.POST)
+
+        if cv_form.is_valid():
+            cv_form.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
+            return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity') # change tab according to target_cv
+
+    elif name:
+        # affiliation = Affiliation.objects.get(pk=affiliation_id)
+        # person_form = PersonForm(instance=affiliation.personid)
+        # # organization_form = OrganizationForm(instance=affiliation.organizationid)
+        # affiliation_form = AffiliationForm(instance=affiliation)
+        # affiliation_form.initial['organizationid'] = affiliation.organizationid
+        # action = 'update'
+        pass
+
+    else:
+        cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv))
+        cv_form.initial ={'modelname': target_cv}
+
+    return render(
+        request,
+        'vocabulary/vocabulary-form.html',
+        {
+            'render_forms': [cv_form],
+            'action': action,
+            'item_id': name,
+            'cv_name': target_cv,
+            'tab_name': '?tab=activity' # set set set
+        }
+    )
 
 @login_required(login_url=LOGIN_URL)
 def edit_vendor(request, organization_id):

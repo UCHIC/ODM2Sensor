@@ -790,3 +790,25 @@ class ActionForm(ModelForm):
             'actionfilelink': _('Action File'),
             'actiondescription': _('Description')
         }
+
+def get_cv_model_form(form_model, *args, **kwargs):
+    class CVForm(ModelForm):
+        required_css_class = 'form-required'
+
+        class Meta:
+            model = form_model
+
+            fields = ['term', 'name', 'definition', 'category', 'sourcevocabularyuri']
+            labels = {'sourcevocabularyuri': 'Source Vocabulary URI'}
+            widgets = {
+                'term': TextInput,
+                'name': TextInput,
+                'definition': TextInput,
+                'category': TextInput,
+                'sourcevocabularyuri': TextInput
+            }
+
+        def __init__(self):
+            super(CVForm, self).__init__(*args, **kwargs)
+
+    return CVForm()
