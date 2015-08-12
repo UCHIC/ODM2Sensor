@@ -117,9 +117,7 @@ function  setLoginForm(loginForm) {
 
 $(document).ready(function () {
     setNavActive();
-
     setDeleteConfirmation();
-
     set_delete_icon();
 
     $('.dataTables_paginate').click(function () {
@@ -135,7 +133,6 @@ $(document).ready(function () {
     }
 
     var loginForm = $('#login_form');
-
     if (loginForm.length > 0) {
         setLoginForm(loginForm);
     }

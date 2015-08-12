@@ -140,6 +140,13 @@ class Vocabularies(ListView):
         context['People'] = Affiliation.objects.filter(personid__isnull=False)
         context['CalibrationStandards'] = CalibrationStandard.objects.filter(actionid__isnull=False)
         context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
+        context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
+        context['SiteTypes'] = CvSitetype.objects.all()
+        context['SpatialOffsetTypes'] = CvSpatialoffsettype.objects.all()
+        context['EquipmentTypes'] = CvEquipmenttype.objects.all()
+        context['ActionTypes'] = CvActiontype.objects.all()
+        context['MethodTypes'] = CvMethodtype.objects.all()
+        context['OrganizationTypes'] = CvOrganizationtype.objects.all()
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))

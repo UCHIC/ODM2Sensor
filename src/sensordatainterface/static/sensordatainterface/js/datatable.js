@@ -9,10 +9,10 @@ $(document).ready(function () {
     }
 
     var side_item_tables = $('.side-by-side-item .data-table');
+    var vocabularies_page = $('[role="tabpanel"]');
 
-    if (side_item_tables.length > 0) {
+    if (side_item_tables.length > 0 || vocabularies_page.length > 0)
         dataTables.page.len(10).draw();
-    }
 
     var measuredVarsButton = $('.add-inst-meas-variables-button');
     var relatedEquButton = $('.add-related-equ-button');
