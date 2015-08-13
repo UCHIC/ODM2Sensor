@@ -8,7 +8,7 @@
             {% endif %}</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-        <button class="btn btn-primary btn-block new-btn">New Deployment</button>
+        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_action' 'EquipmentDeployment' %}">New Deployment</a>
     </div>
     <table class="data-table">
         <thead>
@@ -25,14 +25,15 @@
         </thead>
         <tbody>
         {% for deployment in Deployments %}
-            {% for site in deployment.actionid.featureaction.all %}
+            {% for site in deployment.featureaction.all %}
+                {% for equipment in deployment.equipmentused.all %}
                 <tr>
-                    <td data-order="{{ deployment.actionid.begindatetime|date:'U' }}">
-                        <a href="{% url 'deployment_detail' deployment.actionid.actionid %}">
-                            {{ deployment.actionid.begindatetime }}<br/>to
-                            {{ deployment.actionid.enddatetime|default:"present" }}
+                    <td data-order="{{ deployment.begindatetime|date:'U' }}">
+                        <a href="{% url 'deployment_detail' deployment.actionid %}">
+                            {{ deployment.begindatetime }}<br/>to
+                            {{ deployment.enddatetime|default:"present" }}
                         </a></td>
-                    <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td>
+                    <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td> {# list all equipment linking to single actions #}
                     <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
                     <td>
                     {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
@@ -43,11 +44,12 @@
                         Provo River
                     {% endif %}
                 </td>
-                    <td>{{ deployment.equipmentid.equipmentserialnumber }}</td>
-                    <td>{{ deployment.equipmentid.equipmenttypecv }}</td>
-                    <td>{{ deployment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
-                    <td>{{ deployment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
+                    <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
+                    <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                    <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                    <td>{{ equipment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
                 </tr>
+                    {% endfor %}
             {% endfor %}
         {% endfor %}
         </tbody>

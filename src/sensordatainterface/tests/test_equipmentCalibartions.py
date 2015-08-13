@@ -22,7 +22,7 @@ class TestEquipmentCalibrations(TestCase):
 
         action100 = Action.objects.create(
             actionid=100,
-            actiontypecv='InstrumentCalibration',
+            actiontypecv='Instrument calibration',
             methodid=method,
             begindatetime=datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset=-7,
@@ -34,7 +34,7 @@ class TestEquipmentCalibrations(TestCase):
 
         action150 = Action.objects.create(
             actionid=150,
-            actiontypecv='InstrumentCalibration',
+            actiontypecv='Instrument calibration',
             methodid=method,
             begindatetime=datetime.datetime(2010, 10, 3),
             begindatetimeutcoffset=-7,
@@ -176,9 +176,9 @@ class TestEquipmentCalibrations(TestCase):
     def test_get_context_data(self):
         equipment_calibrations = EquipmentUsed.objects.filter(equipmentid=1)
         invalid_equipment = EquipmentUsed.objects.filter(~Q(equipmentid=1))
-        invalid_actions = Action.objects.filter(~Q(actiontypecv='InstrumentCalibration'))
+        invalid_actions = Action.objects.filter(~Q(actiontypecv='Instrument calibration'))
         calibration_action_objects = CalibrationAction.objects.all()
-        actions = Action.objects.filter(actiontypecv='InstrumentCalibration')
+        actions = Action.objects.filter(actiontypecv='Instrument calibration')
 
         calibration_actions = [obj.actionid for obj in calibration_action_objects]
 

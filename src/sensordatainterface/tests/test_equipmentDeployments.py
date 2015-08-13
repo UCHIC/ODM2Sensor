@@ -1,6 +1,5 @@
 from django.test import TestCase
 from sensordatainterface.models import EquipmentUsed, Equipment, Action, Method, People, EquipmentModel, Organization
-from sensordatainterface.views import EquipmentDeployments
 from django.test import RequestFactory
 from django.db.models import Q
 import datetime
@@ -21,7 +20,7 @@ class TestEquipmentDeployments(TestCase):
 
         action100 = Action.objects.create(
             actionid=100,
-            actiontypecv='EquipmentDeployment',
+            actiontypecv='Equipment deployment',
             methodid=method,
             begindatetime=datetime.datetime(2010, 12, 24),
             begindatetimeutcoffset=-7,
@@ -195,11 +194,11 @@ class TestEquipmentDeployments(TestCase):
         deployed_equipments = EquipmentUsed.objects.filter(equipmentid=1)
         invalid_equipment = EquipmentUsed.objects.filter(~Q(equipmentid=1))
         invalid_actions = Action.objects.filter(
-            ~Q(actiontypecv='InstrumentDeployment'),
-            ~Q(actiontypecv='EquipmentDeployment')
+            ~Q(actiontypecv='Instrument deployment'),
+            ~Q(actiontypecv='Equipment deployment')
         )
 
-        actions = Action.objects.filter(Q(actiontypecv='InstrumentDeployment') | Q(actiontypecv='EquipmentDeployment'))
+        actions = Action.objects.filter(Q(actiontypecv='Instrument deployment') | Q(actiontypecv='Equipment deployment'))
 
         request = RequestFactory().get('site-visits/deployments/equipment/1',)
         request.user = helper_classes.User()

@@ -17,7 +17,7 @@ class SiteVisitDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SiteVisitDetailView, self).get_context_data(**kwargs)
-        site_visits = Action.objects.filter(actiontypecv='SiteVisit', featureaction__isnull=False)
+        site_visits = Action.objects.filter(actiontypecv='Site Visit', featureaction__isnull=False)
 
         previous_site_visit = site_visits.filter(
             actionid__lt=context['SiteVisit'].actionid.actionid,
@@ -47,37 +47,40 @@ class SiteVisitDetailView(DetailView):
 
 # Deployment Details needs it's own view since it depends on samplingfeatureid and equipmentid
 class DeploymentDetail(DetailView):
-    queryset = EquipmentUsed.objects.filter(
-        Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__isnull=True) |
-        Q(equipmentid__equipmentownerid__affiliation__affiliationenddate__lt=datetime.datetime.now()))
+    queryset = Action.objects.filter(Q(actiontypecv='Instrument deployment') | Q(actiontypecv='Equipment deployment'))
     slug_field = 'actionid'
     context_object_name = 'Deployment'
     template_name = 'site-visits/deployment/details.html'
 
     def get_context_data(self, **kwargs):
         context = super(DeploymentDetail, self).get_context_data(**kwargs)
-        deployments = EquipmentUsed.objects.filter(
-            Q(actionid__actiontypecv='EquipmentDeployment')
-            | Q(actionid__actiontypecv='InstrumentDeployment')
-        )
-        this_samplingfeature = context['Deployment'].actionid.featureaction.values()[0]['samplingfeatureid_id']
-        previous_deployment = deployments.filter(
-            bridgeid__lt=context['Deployment'].bridgeid,
-            actionid__featureaction__samplingfeatureid=this_samplingfeature
-        ).order_by('-bridgeid')
-        next_deployment = deployments.filter(
-            bridgeid__gt=context['Deployment'].bridgeid,
-            actionid__featureaction__samplingfeatureid=this_samplingfeature
-        ).order_by('bridgeid')
 
-        if len(previous_deployment) > 0:
-            context['previous_deployment'] = previous_deployment[0].actionid.actionid
-        else:
-            context['previous_deployment'] = False
-        if len(next_deployment) > 0:
-            context['next_deployment'] = next_deployment[0].actionid.actionid
-        else:
-            context['next_deployment'] = False
+        ##
+        # http://stackoverflow.com/questions/4034053/how-do-you-limit-get-next-by-foo-inside-a-django-view-code-included
+        ##
+
+        # deployments = Action.objects.filter(
+        #     Q(actiontypecv='Equipment deployment')
+        #     | Q(actiontypecv='Instrument deployment')
+        # )
+        # this_samplingfeature = context['Deployment'].actionid.featureaction.values()[0]['samplingfeatureid_id']
+        # previous_deployment = deployments.filter(
+        #     bridgeid__lt=context['Deployment'].bridgeid,
+        #     actionid__featureaction__samplingfeatureid=this_samplingfeature
+        # ).order_by('-bridgeid')
+        # next_deployment = deployments.filter(
+        #     bridgeid__gt=context['Deployment'].bridgeid,
+        #     actionid__featureaction__samplingfeatureid=this_samplingfeature
+        # ).order_by('bridgeid')
+        #
+        # if len(previous_deployment) > 0:
+        #     context['previous_deployment'] = previous_deployment[0].actionid.actionid
+        # else:
+        #     context['previous_deployment'] = False
+        # if len(next_deployment) > 0:
+        #     context['next_deployment'] = next_deployment[0].actionid.actionid
+        # else:
+        #     context['next_deployment'] = False
 
         return context
 

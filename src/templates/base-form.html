@@ -1,10 +1,14 @@
 {% extends "base.html" %}
+{% load static %}
 {# Template form only for simple forms #}
 {% block content %}
-    <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
-        {% block item_name %}{% endblock %}</h1></div>
+    <div class="row title">
+        <h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
+        {% block item_name %}{% endblock %}
+        </h1>
+    </div>
     <div class="row">
-        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12" action="{% block submit_url %}{% endblock %}"
+        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12 {% block form_class %}{% endblock %}" action="{% block submit_url %}{% endblock %}"
               method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ action }}" name="action">
@@ -33,4 +37,8 @@
             </table>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static  "sensordatainterface/js/common_forms.js" %}"></script>
 {% endblock %}

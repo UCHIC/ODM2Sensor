@@ -33,7 +33,7 @@
                             {{ equipment.equipmentid.equipmentmodelid.modelname }}
                             {% if not forloop.last %} | {% endif %}
                         {% endfor %}<br/>
-                        {% if child_action.actionid.actiontypecv == 'InstrumentCalibration' %}
+                        {% if child_action.actionid.actiontypecv == 'Instrument calibration' %}
                             {% with calibration_action=child_action.actionid.calibrationaction.all.0 %}
                                 <strong>Instrument Output Variable:</strong>
                                 {{ calibration_action.instrumentoutputvariableid.variableid.variablenamecv }}
@@ -49,7 +49,7 @@
                                 {% endfor %}
                                 <br/>
                             {% endwith %}
-                        {% elif child_action.actionid.actiontypecv == 'EquipmentMaintenance' %}
+                        {% elif child_action.actionid.actiontypecv == 'Equipment maintenance' %}
                             <strong>Is Factory Service?</strong>
                             {{ child_action.actionid.maintenanceaction.all.0.isfactoryservice }}
                             <br/>

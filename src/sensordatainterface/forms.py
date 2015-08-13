@@ -4,7 +4,7 @@ from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, Da
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
-
+from datetime import datetime
 
 
 
@@ -51,6 +51,22 @@ class UnitChoiceField(ModelChoiceField):
 class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber
+
+
+class SiteVisitChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        start_time = obj.begindatetime.strftime('%m/%d/%Y')
+        end_time = obj.enddatetime.strftime('%m/%d/%Y')
+
+        if end_time is None:
+            end_time = 'Present'
+
+        description = obj.actiondescription
+
+        if description is None:
+            description = 'No Description'
+
+        return "("+ start_time + " - " + end_time + ") " + description
 
 
 class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
@@ -184,6 +200,8 @@ class EquipmentForm(ModelForm):
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
+
+    equipmentpurchasedate = forms.DateTimeField(initial=datetime.now())
 
     class Meta:
         model = Equipment
@@ -636,6 +654,21 @@ class FeatureActionForm(ModelForm):
             'samplingfeatureid'
         ]
 
+class SiteVisitChoiceForm(ModelForm):
+    required_css_class = 'form-required'
+
+    actionid = SiteVisitChoiceField(
+        queryset=Action.objects.filter(actiontypecv='Site Visit'),
+        label='Site Visit',
+        empty_label='Choose a Site Visit'
+    )
+
+    class Meta:
+        model = Action
+        fields = [
+            'actionid'
+        ]
+
 
 class SelectWithClassForOptions(Select):
     def render_option(self, *args, **kwargs):
@@ -643,20 +676,24 @@ class SelectWithClassForOptions(Select):
 
         # method types are currently not equal to actiontypes so this dictionary temporarily corrects that.
         methodtypes = {
-            'Calibration': 'InstrumentCalibration',
-            'EquipmentDeployment': 'EquipmentDeployment',
-            'EquipmentMaintenance': 'EquipmentMaintenance',
-            'EquipmentRetrieval': 'Generic',
-            'FieldActivity': 'Generic',
-            'Observation': 'Generic',
-            'SpecimenCollection': 'Generic',
+            'Instrument calibration': 'calibration',
+            'Equipment deployment': 'deployment',
+            'Equipment maintenance': 'maintenance',
+            'Equipment retrieval': 'notypeclass',
+            'Field activity': 'notypeclass',
+            'Observation': 'notypeclass',
+            'Specimen collection': 'notypeclass',
         }
+
         this_method = args[1]
         class_value = "class=\"\""
         if this_method != "":
             class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv]
 
-        return option_html[:8] + "class=\"" + class_value + "\"" + option_html[7:]
+        after_tag = 8
+        before_tag_close = 7
+
+        return option_html[:after_tag] + "class=\"" + class_value + "\"" + option_html[before_tag_close:]
 
 
 class ActionForm(ModelForm):
@@ -731,10 +768,10 @@ class ActionForm(ModelForm):
 
         widgets = {
             'actiontypecv': Select(choices=[
-                ('Generic', 'Generic'),
-                ('EquipmentDeployment', 'Deployment'),
-                ('InstrumentCalibration', 'Calibration'),
-                ('EquipmentMaintenance', 'Maintenance')
+                ('Field activity', 'Generic'),
+                ('Equipment deployment', 'Deployment'),
+                ('Instrument calibration', 'Calibration'),
+                ('Equipment maintenance', 'Maintenance')
             ]),
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),
@@ -753,3 +790,24 @@ class ActionForm(ModelForm):
             'actionfilelink': _('Action File'),
             'actiondescription': _('Description')
         }
+
+def get_cv_model_form(form_model, *args, **kwargs):
+    class CVForm(ModelForm):
+        required_css_class = 'form-required'
+
+        class Meta:
+            model = form_model
+
+            fields = ['term', 'name', 'definition', 'category', 'sourcevocabularyuri']
+            labels = {'sourcevocabularyuri': 'Source Vocabulary URI'}
+            widgets = {
+                'term': TextInput,
+                'name': TextInput,
+                'category': TextInput,
+                'sourcevocabularyuri': TextInput
+            }
+
+        def __init__(self):
+            super(CVForm, self).__init__(*args, **kwargs)
+
+    return CVForm()

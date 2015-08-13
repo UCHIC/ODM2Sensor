@@ -35,7 +35,7 @@
                 <tr>
                     <th>People:</th>
                     <td>{% for related in Activity.actionid.relatedaction.all %}
-                        {% if related.relationshiptypecv == 'is_child_of' %}
+                        {% if related.relationshiptypecv == 'Is child of' %}
                             {% for person in related.relatedactionid.actionby.all %}
                                 <a href="{% url 'person_detail' person.affiliationid_id %}">
                                     {{ person.affiliationid.personid.personfirstname }}
@@ -100,7 +100,7 @@
     <div class="row">
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
                 {% for related in Activity.actionid.relatedaction.all %}
-                    {% if related.relationshiptypecv == 'is_child_of' %}
+                    {% if related.relationshiptypecv == 'Is child of' %}
                        href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
                     {% endif %}
                 {% endfor %}>Go to Site Visit</a></div>

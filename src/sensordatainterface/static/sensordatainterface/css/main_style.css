@@ -249,19 +249,24 @@ a.delete-icon {
 }
 
 #login_section input[value=login] {
-    margin-right: 20.4%;
-    width: 47.8%;
-    background: #265a88;
-    color: white;
+/*     margin-right: 20.4%;
+    width: 47.8%; */
+    
+background: #265a88;
+    
+color: white;
 }
 
 #site_content {
     padding-bottom: 199px;
 }
 
-#login_section input[type=text], #login_section input[type=password] {
+#login_section input[type=text], 
+#login_section input[type=password],
+#login_section input[value=login] {
     width: 70%;
     margin-bottom: 2%;
+    float: initial;
 }
 
 .content {
@@ -350,7 +355,7 @@ label {
 /*}*/
 
 .detail-mid th {
-    width: 24%;
+    /*width: 24%;*/
 }
 
 .detail-mid td {
@@ -396,3 +401,57 @@ tr.form-required:after {
     right: 113px;
     top: 14px;
 }
+
+span.helptext {
+  display: inline-block;
+}
+
+
+.side-by-side-item {
+    border: 1px solid #CDCACA;
+    overflow: hidden;
+    padding: 22px 32px;
+
+}
+
+.side-by-side-item.small-box-item {
+    width: 48%;
+    float: left;
+    margin-right: 3%;
+}
+
+.side-by-side-item table.dataTable thead .sorting:last-of-type {
+      width: 34%!important;
+}
+
+.side-table-details {
+    float:left;
+}
+
+.side-table-details th {
+    /* width: 50%; */
+    padding: 1%;
+}
+
+.side-table-details td {
+    /* width: 50%; */
+    /* padding-left: 14%; */
+}
+
+.side-dependent-table {
+    float: right;
+}
+
+.related-equipment-table {
+    clear: both;
+}
+
+.related-equipment-table th {
+    width: 50%;
+}
+
+a.add-related-equ-button.btn.btn-primary.btn-block {
+    /* margin-right: 66px; */
+    width: 97.5%;
+}
+
