@@ -45,6 +45,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -55,6 +56,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSamplingfeaturetype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSamplingfeaturetype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -75,6 +84,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -85,6 +95,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSitetype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSitetype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -105,6 +123,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -115,6 +134,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSpatialoffsettype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSpatialoffsettype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -139,6 +166,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -149,6 +177,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvEquipmenttype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvEquipmenttype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -174,6 +210,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -184,6 +221,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvActiontype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvActiontype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -204,6 +249,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -214,6 +260,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvMethodtype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvMethodtype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -245,6 +299,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -255,6 +310,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvOrganizationtype' cv.name %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvOrganizationtype' cv.name %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

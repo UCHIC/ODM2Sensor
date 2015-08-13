@@ -312,33 +312,44 @@ def delete_person(request, affiliation_id):
 def edit_control_vocabularies(request, target_cv, name):
     action = 'create'
     sdi_app_config = apps.get_app_config('sensordatainterface')
+    id_modified = False
+    new_name_temp = None
 
     if request.method == 'POST':
         if request.POST['action'] == 'update':
-            # affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
-            #
-            # person_form = PersonForm(request.POST, instance=affiliation.personid)
-            # # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
-            # affiliation_form = AffiliationForm(request.POST, instance=affiliation)
-            pass
+            cv_model = sdi_app_config.get_model(target_cv)
+            cv_instance = cv_model.objects.get(pk=request.POST['item_id'])
+
+            if request.POST['name'] != request.POST['item_id']:
+                new_name_temp = request.POST['name']
+                request.POST['name'] = request.POST['item_id']
+                cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
+                id_modified = True
+
+            else:
+                cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
+
         else:
             cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv), request.POST)
 
         if cv_form.is_valid():
-            cv_form.save()
+            if id_modified:
+                cv = cv_form.save(commit=False)
+                cv.name = new_name_temp
+                cv.save()
+                cv_model.objects.get(pk=request.POST['name']).delete()
+            else:
+                cv = cv_form.save()
 
             messages.add_message(request, messages.SUCCESS,
-                                 'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
+                                 'Control Vocabulary ' + target_cv + " " +name+ " " + + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity') # change tab according to target_cv
 
     elif name:
-        # affiliation = Affiliation.objects.get(pk=affiliation_id)
-        # person_form = PersonForm(instance=affiliation.personid)
-        # # organization_form = OrganizationForm(instance=affiliation.organizationid)
-        # affiliation_form = AffiliationForm(instance=affiliation)
-        # affiliation_form.initial['organizationid'] = affiliation.organizationid
-        # action = 'update'
-        pass
+        cv_model = sdi_app_config.get_model(target_cv)
+        cv_instance = cv_model.objects.get(pk=name)
+        cv_form = get_cv_model_form(cv_model, instance=cv_instance)
+        action = 'update'
 
     else:
         cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv))
@@ -355,6 +366,16 @@ def edit_control_vocabularies(request, target_cv, name):
             'tab_name': '?tab=activity' # set set set
         }
     )
+
+@login_required(login_url=LOGIN_URL)
+def delete_control_vocabularies(request, target_cv, name):
+    sdi_app_config = apps.get_app_config('sensordatainterface')
+    cv_model = sdi_app_config.get_model(target_cv).objects.get(pk=name).delete()
+    messages.add_message(request, messages.SUCCESS,
+                                 'Control Vocabulary ' + target_cv + " " +name+ " " +  'deleted successfully')
+
+    return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity') # change tab according to target_cv
+
 
 @login_required(login_url=LOGIN_URL)
 def edit_vendor(request, organization_id):
