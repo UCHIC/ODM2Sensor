@@ -936,7 +936,8 @@ def edit_site_visit_summary(request, action_id):
 def edit_action(request, action_type, action_id):
     action = 'create'
     if request.method == 'POST':
-        if request.POST['action'] == 'update':
+        updating = request.POST['action'] == 'update'
+        if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
             child_action = Action.objects.get(pk=request.POST['item_id'])
 
@@ -950,7 +951,7 @@ def edit_action(request, action_type, action_id):
         if site_visit_form.is_valid() and action_form.is_valid():
             child_action = action_form.save()
             parent_site_visit = site_visit_form.cleaned_data['actionid']
-            if request.POST['action'] == 'update':
+            if updating:
                 related_action = RelatedAction.objects.get(
                     actionid=child_action,
                     relationshiptypecv='Is child of'
@@ -987,8 +988,9 @@ def edit_action(request, action_type, action_id):
             action_type = action_form.cleaned_data['actiontypecv']
 
             if action_type == 'Instrument calibration':
-                CalibrationAction.objects.get(actionid=child_action).delete()
-                CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
+                if updating:
+                    CalibrationAction.objects.get(actionid=child_action).delete()
+                    CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
 
             url_map = {
