@@ -15,10 +15,10 @@
             <li role="presentation">
                 <a href="#activity" onclick="changeTab('activity')" aria-controls="activity" role="tab"
                    data-toggle="tab">Action</a></li>
-            <li role="presentation">
-                <a href="#deployment" onclick="changeTab('deployment')" aria-controls="deployment" role="tab"
-                   data-toggle="tab">Deployment</a>
-            </li>
+{#            <li role="presentation">#}
+{#                <a href="#deployment" onclick="changeTab('deployment')" aria-controls="deployment" role="tab"#}
+{#                   data-toggle="tab">Deployment</a>#}
+{#            </li>#}
             <li role="presentation">
                 <a href="#calibration" onclick="changeTab('calibration')" aria-controls="calibration" role="tab"
                    data-toggle="tab">Calibration</a>
@@ -34,9 +34,9 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Sampling Feature Types Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSamplingfeaturetype' %}">New Sampling Feature Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSamplingfeaturetype' %}">New Sampling Feature Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -45,7 +45,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -56,14 +56,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSamplingfeaturetype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSamplingfeaturetype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSamplingfeaturetype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSamplingfeaturetype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -73,9 +73,9 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Site Types Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSitetype' %}">New Site Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSitetype' %}">New Site Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -84,7 +84,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -95,14 +95,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSitetype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSitetype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSitetype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSitetype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -112,9 +112,9 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Spatial Offset Types Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSpatialoffsettype' %}">New Spatial Offset Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSpatialoffsettype' %}">New Spatial Offset Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -123,7 +123,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -134,14 +134,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSpatialoffsettype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSpatialoffsettype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSpatialoffsettype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSpatialoffsettype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -154,10 +154,10 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Equipment Types Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvEquipmenttype' %}">New Equipment
-                            Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvEquipmenttype' %}">New Equipment#}
+{#                            Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -166,7 +166,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -177,14 +177,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvEquipmenttype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvEquipmenttype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvEquipmenttype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvEquipmenttype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -199,9 +199,9 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Action Type Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvActiontype' %}">New Action Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvActiontype' %}">New Action Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -210,7 +210,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -221,14 +221,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvActiontype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvActiontype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvActiontype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvActiontype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -238,9 +238,9 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Method Types Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvMethodtype' %}">New Method Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvMethodtype' %}">New Method Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -249,7 +249,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -260,14 +260,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvMethodtype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvMethodtype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvMethodtype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvMethodtype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -275,9 +275,9 @@
 
                 {% include "vocabulary/person-snippet.html" %}
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="deployment">
-                <p>CV</p>
-            </div>
+{#            <div role="tabpanel" class="tab-pane fade" id="deployment">#}
+{#                <p>CV</p>#}
+{#            </div>#}
             <div role="tabpanel" class="tab-pane fade" id="calibration">
                 {% include "site-visits/calibration/calibration-standards-snippet.html" %}
                 {% include "site-visits/calibration/calibration-methods-snippet.html" %}
@@ -288,9 +288,9 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Organization Types Table</h2>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvOrganizationtype' %}">New Organization Type</a>
-                    </div>
+{#                    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#                        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvOrganizationtype' %}">New Organization Type</a>#}
+{#                    </div>#}
                 </div>
                 <table class="data-table">
                     <thead>
@@ -299,7 +299,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Field activity</th>
-                        <th>Operations</th>
+{#                        <th>Operations</th>#}
                     </tr>
                     </thead>
                     <tbody>
@@ -310,14 +310,14 @@
                             <td>{{ cv.name }}</td>
                             <td>{{ cv.category }}</td>
                             <td>{{ cv.definition }}</td>
-                            <td>
-                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvOrganizationtype' cv.name %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvOrganizationtype' cv.name %}">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
+{#                            <td>#}
+{#                                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvOrganizationtype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvOrganizationtype' cv.name %}">#}
+{#                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>#}
+{#                                </a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -333,7 +333,6 @@
                         <th>Code</th>
                         <th>Name</th>
                         <th>Type</th>
-                        {# isn't this vendor? #}
                         <th>Website</th>
                         <th>Phone</th>
                     </tr>

@@ -31,7 +31,3 @@ function initVocabulariesTabs($) {
         $('#initial_tab').addClass('active');
     }
 }
-
-$(document).ready(function () {
-
-});
