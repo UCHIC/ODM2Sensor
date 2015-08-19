@@ -450,8 +450,40 @@ span.helptext {
     width: 50%;
 }
 
-a.add-related-equ-button.btn.btn-primary.btn-block {
-    /* margin-right: 66px; */
-    width: 97.5%;
+.hiddenRelEqu, .hiddenMeasVar {
+    display: none;
+}
+
+.add-inst-meas-variables-button,
+.add-related-equ-button,
+.view-depl-hist-button {
+    height: 5em;
+    white-space: pre-wrap;
+    line-height: 1.2em;
+    width: 32%;
+    float: left;
+    font-size: xx-small;
+    margin-right: 1%;
+    margin-top: 0px;
+    padding: 5px 0px;
+}
+
+.add-inst-meas-variables-button:hover,
+.add-related-equ-button:hover,
+.view-depl-hist-button:hover {
+    background-position: 0px -25px;
+}
+
+.equ-used-options {
+    width: 106%;
+    padding: 0px;
+}
+
+.view-depl-hist-button+.btn-block {
+    margin-top: 0px;
+}
+
+.add-inst-meas-variables-button+.btn-block {
+    margin-top: 0px;
 }
 

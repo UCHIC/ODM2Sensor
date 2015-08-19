@@ -11,35 +11,37 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
-            <h3>Calibration</h3>
-            <table class="table">
+
                 {#calibrationactions is one to one with actions #}
                 {% with variable=Calibration.calibrationaction.all.0 %}
-                    <tr>
+                    <h3>Site</h3>
+                    <table class="table">
                         {% if Calibration.featureaction.get %}
-                            <th>Site Code:</th>
-                            <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturecode }}</td>
+                            <tr>
+                                <th>Site Code:</th>
+                                <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturecode }}</td>
+                            </tr>
+                            <tr>
+                                <th>Site Name:</th>
+                                <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
+                            </tr>
                         {% endif %}
+                    </table>
+                    <h3>Calibration</h3>
+                    <table class="table">
+                    <tr>
                         <th>Action Begin DateTime:</th>
                         <td>{{ Calibration.begindatetime }}</td>
                         <th>UTC Offset:</th>
                         <td>{{ Calibration.begindatetimeutcoffset }}</td>
-                        <th>Variable Code:</th>
-                        <td> {{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
                         <th>Check Value:</th>
                         <td>
                             {{ variable.calibrationcheckvalue|default:" -- " }}
                         </td>
                     </tr>
                     <tr>
-                        {% if Calibration.featureaction.get %}
-                            <th>Site Name:</th>
-                            <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
-                        {% endif %}
                         <th>Action End DateTime:</th>
                         <td>{{ Calibration.enddatetime|default:"present" }}</td>
-                        <th>Variable Name:</th>
-                        <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
                         <th>Calibration Equation:</th>
                         <td>
                             {{ variable.calibrationequation|default:" -- " }}
@@ -51,8 +53,19 @@
                         <th>Action Description:</th>
                         <td colspan="4"> {{ Calibration.actiondescription }}</td>
                     </tr>
+                    </table>
+                    <h3>Variable</h3>
+                    <table>
+                        <tr>
+                            <th>Variable Code:</th>
+                            <td> {{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
+                        </tr>
+                        <tr>
+                            <th>Variable Name:</th>
+                            <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
+                        </tr>
+                    </table>
                 {% endwith %}
-            </table>
         </div>
     <div class="row detail-mid">
             <h3>Equipment Used</h3>
