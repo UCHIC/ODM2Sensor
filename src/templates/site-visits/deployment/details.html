@@ -113,19 +113,32 @@
                                     <div class="equ-used-options col-sm-6 col-xs-12 col-md-4 pull-right">
                                         <a class="view-depl-hist-button btn btn-primary btn-block"
                                            href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View Deployment History</a>
-                                        <a class="add-inst-meas-variables-button btn btn-primary btn-block">Show Measured Variables</a>
-                                        <a class="add-related-equ-button btn btn-primary btn-block">Show Equipment</a>
+                                        <button type="button" class="add-inst-meas-variables-button btn btn-primary btn-block" data-toggle="modal" data-target="#meas-var-{{ equipment.equipmentid.equipmentid }}">Show Measured Variables</button>
+                                        <button type="button" class="add-related-equ-button btn btn-primary btn-block" data-toggle="modal" data-target="#rel-equ-{{ equipment.equipmentid.equipmentid }}">Show Related Equipment</button>
                                     </div>
                                 </td>
                             <td class="hiddenMeasVar">
+
+
+
+
+                            <div class="modal fade" id="meas-var-{{ equipment.equipmentid.equipmentid }}" tabindex="-1" role="dialog" aria-labelledby="modalTitle-{{ equipment.equipmentid.equipmentid }}">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 <div class="row">
-                                        <div class="col-sm-12 col-xs-12 col-md-8"><h4>Instrument Measured Variable Table</h4></div>
+                                        <div class="col-sm-12 col-xs-12 col-md-8"><h4 class="modal-title" id="modalTitle-{{ equipment.equipmentid.equipmentid }}">Instrument Measured Variable Table</h4></div>
                                         <div class="col-sm-12 col-xs-12 col-md-4 pull-right">
                                             <a class="btn btn-block btn-primary"
                                                href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New
                                                 Deployment Measured Variable</a>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="modal-body">
                                     <div class="row">
                                         <table class="data-table">
                                             <thead>
@@ -156,9 +169,28 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                </div>
+                                </div>
+                                </div>
+                            </div>
+
+
                             </td>
                             <td class="hiddenRelEqu">
-                                <h4>Related Equipment</h4>
+
+
+
+                            <div class="modal fade" id="rel-equ-{{ equipment.equipmentid.equipmentid }}" tabindex="-1" role="dialog" aria-labelledby="equ-modalTitle-{{ equipment.equipmentid.equipmentid }}">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="equ-modalTitle-{{ equipment.equipmentid.equipmentid }}">Related Equipment</h4>
+
+                                </div>
+                                <div class="modal-body">
                                     {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
                                         {% if parent.relationshiptypecv == 'Is child of' %}
                                             {# this should be displayed. It's related equipment not children equipment #}
@@ -181,6 +213,13 @@
                                     {% empty %}
                                         <p>No relationships found.</p>
                                     {% endfor %}
+                                <div class="modal-body">
+                                </div>
+                            </div>
+                            </div>
+
+
+
                             </td>
                             </tr>
                         {% endfor %}

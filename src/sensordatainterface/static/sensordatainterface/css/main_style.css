@@ -450,8 +450,10 @@ span.helptext {
     width: 50%;
 }
 
-.hiddenRelEqu, .hiddenMeasVar {
-    display: none;
+.hiddenRelEqu .modal-dialog,
+.hiddenMeasVar .modal-dialog {
+    margin-top: 5%;
+    width: 58%;
 }
 
 .add-inst-meas-variables-button,
@@ -475,8 +477,9 @@ span.helptext {
 }
 
 .equ-used-options {
-    width: 106%;
+    width: 137%;
     padding: 0px;
+    left: 17px;
 }
 
 .view-depl-hist-button+.btn-block {

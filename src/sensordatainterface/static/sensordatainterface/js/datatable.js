@@ -18,21 +18,21 @@ $(document).ready(function () {
     var relatedEquButton = $('.add-related-equ-button');
 
     if (measuredVarsButton && relatedEquButton) {
-        measuredVarsButton.click(function () {
-            $(this).parents('.side-by-side-item').find('.side-dependent-table').toggle("slow");
-            var text = $(this).text();
-            $(this).text(
-                text == "Show Instrument Measured Variables"? "Hide Instrument Measured Variables" : "Show Instrument Measured Variables"
-            );
-
-        });
-        relatedEquButton.click(function () {
-            $(this).parents('.side-by-side-item').find('.related-equipment-table').toggle("slow");
-            var text = $(this).text();
-            $(this).text(
-                text == "Show Related Equipment"? "Hide Related Equipment" : "Show Related Equipment"
-            );
-        });
+        //measuredVarsButton.click(function () {
+        //    $(this).parents('.side-by-side-item').find('.side-dependent-table').toggle("slow");
+        //    var text = $(this).text();
+        //    $(this).text(
+        //        text == "Show Measured Variables"? "Hide Measured Variables" : "Show Measured Variables"
+        //    );
+        //
+        //});
+        //relatedEquButton.click(function () {
+        //    $(this).parents('.side-by-side-item').find('.related-equipment-table').toggle("slow");
+        //    var text = $(this).text();
+        //    $(this).text(
+        //        text == "Show Related Equipment"? "Hide Related Equipment" : "Show Related Equipment"
+        //    );
+        //});
     }
     preserveTableStatus();
 });
