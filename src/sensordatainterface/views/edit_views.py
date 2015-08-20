@@ -342,8 +342,8 @@ def edit_control_vocabularies(request, target_cv, name):
                 cv = cv_form.save()
 
             messages.add_message(request, messages.SUCCESS,
-                                 'Control Vocabulary ' + target_cv + " " +name+ " " + + request.POST['action'] + 'd successfully')
-            return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity') # change tab according to target_cv
+                                 'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
+            return HttpResponseRedirect(reverse('vocabularies') + get_cv_tab(target_cv)) # change tab according to target_cv
 
     elif name:
         cv_model = sdi_app_config.get_model(target_cv)
@@ -363,18 +363,32 @@ def edit_control_vocabularies(request, target_cv, name):
             'action': action,
             'item_id': name,
             'cv_name': target_cv,
-            'tab_name': '?tab=activity' # set set set
+            'tab_name': get_cv_tab(target_cv)
         }
     )
+
+
+def get_cv_tab(model_name):
+    tab_mapping = {
+        'CvActiontype': '?tab=activity',
+        'CvEquipmenttype': '?tab=equipment',
+        'CvMethodtype': '?tab=activity',
+        'CvOrganizationtype': '?tab=vendor',
+        'CvSitetype': '?tab=site',
+        'CvSpatialoffsettype': '?tab=site',
+        'CvSamplingfeaturetype': '?tab=site'
+    }
+    return tab_mapping[model_name]
+
 
 @login_required(login_url=LOGIN_URL)
 def delete_control_vocabularies(request, target_cv, name):
     sdi_app_config = apps.get_app_config('sensordatainterface')
     cv_model = sdi_app_config.get_model(target_cv).objects.get(pk=name).delete()
     messages.add_message(request, messages.SUCCESS,
-                                 'Control Vocabulary ' + target_cv + " " +name+ " " +  'deleted successfully')
+                                 'Control Vocabulary ' + target_cv + " " +  'deleted successfully')
 
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity') # change tab according to target_cv
+    return HttpResponseRedirect(reverse('vocabularies') + get_cv_tab(target_cv)) # change tab according to target_cv
 
 
 @login_required(login_url=LOGIN_URL)
@@ -922,7 +936,8 @@ def edit_site_visit_summary(request, action_id):
 def edit_action(request, action_type, action_id):
     action = 'create'
     if request.method == 'POST':
-        if request.POST['action'] == 'update':
+        updating = request.POST['action'] == 'update'
+        if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
             child_action = Action.objects.get(pk=request.POST['item_id'])
 
@@ -936,7 +951,7 @@ def edit_action(request, action_type, action_id):
         if site_visit_form.is_valid() and action_form.is_valid():
             child_action = action_form.save()
             parent_site_visit = site_visit_form.cleaned_data['actionid']
-            if request.POST['action'] == 'update':
+            if updating:
                 related_action = RelatedAction.objects.get(
                     actionid=child_action,
                     relationshiptypecv='Is child of'
@@ -973,8 +988,9 @@ def edit_action(request, action_type, action_id):
             action_type = action_form.cleaned_data['actiontypecv']
 
             if action_type == 'Instrument calibration':
-                CalibrationAction.objects.get(actionid=child_action).delete()
-                CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
+                if updating:
+                    CalibrationAction.objects.get(actionid=child_action).delete()
+                    CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
 
             url_map = {
