@@ -498,3 +498,10 @@ span.helptext {
     margin-top: 0;
 }
 
+.form-table > tbody > tr > td {
+    width: 80%;
+}
+.form-table > tbody > tr > th {
+    width: 20%;
+}
+
