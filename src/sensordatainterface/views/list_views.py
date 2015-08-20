@@ -64,10 +64,10 @@ class EquipmentDeployments(ListView):
     template_name = 'site-visits/deployment/deployments.html'
 
     def get_queryset(self):
-        self.deployments = EquipmentUsed.objects.filter(
-            (Q(actionid__actiontypecv='Equipment deployment') |
-             Q(actionid__actiontypecv='Instrument deployment')),
-            equipmentid=self.kwargs['equipment_id']
+        self.deployments = Action.objects.filter(
+            (Q(actiontypecv='Equipment deployment') |
+             Q(actiontypecv='Instrument deployment')),
+            equipmentused__equipmentid=self.kwargs['equipment_id']
         )
         return self.deployments
 
@@ -86,16 +86,17 @@ class EquipmentCalibrations(ListView):
     template_name = 'site-visits/calibration/calibrations.html'
 
     def get_queryset(self):
-        self.calibrations = EquipmentUsed.objects.filter(
-            (Q(actionid__actiontypecv='Instrument calibration') &
-             Q(actionid__calibrationaction__isnull=False)),
-            equipmentid=self.kwargs['equipment_id']
+        self.calibrations = Action.objects.filter(
+            (Q(actiontypecv='Instrument calibration') &
+             Q(calibrationaction__isnull=False)),
+            equipmentused__equipmentid=self.kwargs['equipment_id']
         )
         return self.calibrations
 
     def get_context_data(self, **kwargs):
         context = super(EquipmentCalibrations, self).get_context_data(**kwargs)
         context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
+        context['equipment_id'] = int(self.kwargs['equipment_id'])
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
