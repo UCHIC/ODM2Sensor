@@ -114,10 +114,11 @@ table.data-table tbody thead th {
     /*Site tables*/
     border: none;
     vertical-align: middle;
+    width: 50%;
 }
 
 .dataTables_wrapper {
-    margin: 0px 15px;
+    margin: 0px -1px;
 }
 
 @media (max-width: 770px) {
@@ -451,18 +452,19 @@ span.helptext {
 }
 
 .hiddenRelEqu .modal-dialog,
-.hiddenMeasVar .modal-dialog {
-    margin-top: 5%;
+.hiddenMeasVar .modal-dialog,
+.detail-mid .modal-dialog {
+    margin-top: 3%;
     width: 58%;
 }
 
 .add-inst-meas-variables-button,
 .add-related-equ-button,
-.view-depl-hist-button {
+.view-hist-button {
     height: 5em;
     white-space: pre-wrap;
     line-height: 1.2em;
-    width: 32%;
+    width: 31%;
     float: left;
     font-size: xx-small;
     margin-right: 1%;
@@ -472,21 +474,27 @@ span.helptext {
 
 .add-inst-meas-variables-button:hover,
 .add-related-equ-button:hover,
-.view-depl-hist-button:hover {
+.view-hist-button:hover {
     background-position: 0px -25px;
 }
 
 .equ-used-options {
     width: 137%;
-    padding: 0px;
-    left: 17px;
+    padding: 0;
+    left: 40px;
 }
 
-.view-depl-hist-button+.btn-block {
-    margin-top: 0px;
+.cal-equ-used-option {
+    width: 185%;
+    padding: 0px;
+    left: 117px;
+}
+
+.view-hist-button+.btn-block {
+    margin-top: 0;
 }
 
 .add-inst-meas-variables-button+.btn-block {
-    margin-top: 0px;
+    margin-top: 0;
 }
 

@@ -10,30 +10,11 @@ $(document).ready(function () {
 
     var side_item_tables = $('.side-by-side-item .data-table');
     var vocabularies_page = $('[role="tabpanel"]');
+    var modal_elem = $('.modal-dialog');
 
-    if (side_item_tables.length > 0 || vocabularies_page.length > 0)
+    if (side_item_tables.length > 0 || vocabularies_page.length > 0 || modal_elem.length > 0)
         dataTables.page.len(10).draw();
 
-    var measuredVarsButton = $('.add-inst-meas-variables-button');
-    var relatedEquButton = $('.add-related-equ-button');
-
-    if (measuredVarsButton && relatedEquButton) {
-        //measuredVarsButton.click(function () {
-        //    $(this).parents('.side-by-side-item').find('.side-dependent-table').toggle("slow");
-        //    var text = $(this).text();
-        //    $(this).text(
-        //        text == "Show Measured Variables"? "Hide Measured Variables" : "Show Measured Variables"
-        //    );
-        //
-        //});
-        //relatedEquButton.click(function () {
-        //    $(this).parents('.side-by-side-item').find('.related-equipment-table').toggle("slow");
-        //    var text = $(this).text();
-        //    $(this).text(
-        //        text == "Show Related Equipment"? "Hide Related Equipment" : "Show Related Equipment"
-        //    );
-        //});
-    }
     preserveTableStatus();
 });
 
