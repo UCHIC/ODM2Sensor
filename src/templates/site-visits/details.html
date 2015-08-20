@@ -65,7 +65,7 @@
                 </tr>
                 <tr>
                     <th>End Date Time:</th>
-                    <td>{{ SiteVisit.actionid.enddatetime|default:"present" }}</td>
+                    <td>{{ SiteVisit.actionid.enddatetime|default:"Not Defined" }}</td>
                 </tr>
                 <tr>
                     <th>UTC Offset:</th>
@@ -112,7 +112,7 @@
                             </a>
                     </td>
                     <td>{{ fieldactivity.actionid.begindatetime }}</td>
-                    <td>{{ fieldactivity.actionid.enddatetime|default:"present" }}</td>
+                    <td>{{ fieldactivity.actionid.enddatetime|default:"Not Defined" }}</td>
                     <td>{{ fieldactivity.actionid.actiondescription }}</td>
                 </tr>
             {% endfor %}

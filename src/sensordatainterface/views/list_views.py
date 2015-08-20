@@ -16,15 +16,17 @@ class EquipmentDeploymentsBySite(ListView):
 
     def get_queryset(self):
         if self.kwargs['current'] == 'current':
-            self.equipment = EquipmentUsed.objects.filter(
-                (Q(actionid__actiontypecv='Equipment deployment') | Q(actionid__actiontypecv='Instrument deployment')),
-                actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id'],
-                actionid__enddatetime__isnull=True
+            self.equipment = Action.objects.filter(
+                (Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment')),
+                # TODO: might need to check if equipment is currently deployed or not. To check this you would have to check
+                # if there is an action of type retrievement (checking details of Site and Dates [Talk to Amber]).
+                # If there is not, the equipment is currently deployed.
+                featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
             )
         else:
-            self.equipment = EquipmentUsed.objects.filter(
-                (Q(actionid__actiontypecv='Equipment deployment') | Q(actionid__actiontypecv='Instrument deployment')),
-                actionid__featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
+            self.equipment = Action.objects.filter(
+                (Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment')),
+                featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
             )
         return self.equipment
 
