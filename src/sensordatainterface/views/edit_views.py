@@ -997,6 +997,8 @@ def edit_action(request, action_type, action_id):
                 'Equipment maintenance': 'field_activity_detail',
                 'Field activity': 'field_activity_detail'
             }
+
+            messages.add_message(request, messages.SUCCESS, action_type + ' action ' + request.POST['action'] + 'd successfully')
             response = HttpResponseRedirect(
                 reverse(url_map[action_type], args=[child_action.actionid])
             )
