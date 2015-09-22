@@ -31,7 +31,7 @@
                     <td data-order="{{ deployment.begindatetime|date:'U' }}">
                         <a href="{% url 'deployment_detail' deployment.actionid %}">
                             {{ deployment.begindatetime }}<br/>to
-                            {{ deployment.enddatetime|default:"present" }}
+                            {{ deployment.enddatetime|default:"Not Defined" }}
                         </a></td>
                     <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td> {# list all equipment linking to single actions #}
                     <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
