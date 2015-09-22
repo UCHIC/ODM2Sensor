@@ -26,17 +26,19 @@
         {% for calibration in Calibrations %}
             {% for site in calibration.featureaction.all %}
                 {% for equipment in calibration.equipmentused.all %}
-                    <tr>
-                        <td data-order="{{ calibration.begindatetime|date:'U' }}">
-                            <a href="{% url 'calibration_detail' calibration.actionid %}">
-                                {{ calibration.begindatetime }}
-                            </a>
-                        </td>
-                        <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
-                        <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelname }}</td>
-                    </tr>
+                    {% if not equipment_id or equipment.equipmentid.equipmentid == equipment_id %}
+                        <tr>
+                            <td data-order="{{ calibration.begindatetime|date:'U' }}">
+                                <a href="{% url 'calibration_detail' calibration.actionid %}">
+                                    {{ calibration.begindatetime }}
+                                </a>
+                            </td>
+                            <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
+                            <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                            <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                            <td>{{ equipment.equipmentid.equipmentmodelid.modelname }}</td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         {% endfor %}

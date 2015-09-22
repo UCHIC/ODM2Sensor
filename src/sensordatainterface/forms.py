@@ -59,7 +59,7 @@ class SiteVisitChoiceField(ModelChoiceField):
         end_time = obj.enddatetime.strftime('%m/%d/%Y')
 
         if end_time is None:
-            end_time = 'Present'
+            end_time = 'Undefined'
 
         description = obj.actiondescription
 
@@ -803,7 +803,6 @@ def get_cv_model_form(form_model, *args, **kwargs):
             widgets = {
                 'term': TextInput,
                 'name': TextInput,
-                'definition': TextInput,
                 'category': TextInput,
                 'sourcevocabularyuri': TextInput
             }
