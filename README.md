@@ -1,7 +1,7 @@
 ODM2 Sensor
 ===========
 
-This project contains a Drupal-based web application for water-related sensor infrastructure and data management. It is based on the Sensors Extension of Version 2 of the Observations Data Model (ODM2).
+This project contains a Python and Django-based web application for water-related sensor infrastructure and data management. It is based on the Sensors Extension of Version 2 of the Observations Data Model (ODM2).
 
 Sponsors
 ---------
