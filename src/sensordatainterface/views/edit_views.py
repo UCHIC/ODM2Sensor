@@ -75,7 +75,7 @@ def edit_factory_service_event(request, bridge_id):
 
         if action_form.is_valid() and maintenance_form.is_valid() and equipment_form.is_valid():
             action_model = action_form.save(commit=False)
-            action_model.actiontypecv = 'Equipment maintenance'
+            action_model.actiontypecv = CvActiontype.objects.get(name='Equipment maintenance')
             action_model.methodid = action_form.cleaned_data['methodid']
             action_model.save()
 
