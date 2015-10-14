@@ -203,13 +203,11 @@ class EquipmentForm(ModelForm):
             'equipmentpurchaseordernumber',
             'equipmentpurchasedate',
             'equipmentdescription',
-
         ]
 
         widgets = {
             'equipmentcode': TextInput,
             'equipmentserialnumber': TextInput,
-            'equipmenttypecv': TextInput,
             'equipmentpurchaseordernumber': TextInput,
             'equipmentpurchasedate': DateTimeInput,
         }
