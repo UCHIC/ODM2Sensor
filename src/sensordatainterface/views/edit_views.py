@@ -26,12 +26,11 @@ def edit_site(request, site_id):
         if samp_feat_form.is_valid() and sites_form.is_valid():
             # IDENTITY_INSERT error solved by changing samplingfeatureid for SamplingFeatures to AutoField in models.py
             samplingfeature = samp_feat_form.save(commit=False)
-            samplingfeature.samplingfeaturetypecv = 'Site'
+            samplingfeature.samplingfeaturetypecv = CvSamplingfeaturetype.objects.get(term='site')
             samplingfeature.save()
 
             site = sites_form.save(commit=False)
             site.samplingfeatureid = samplingfeature
-            site.spatialreferenceid = sites_form.cleaned_data['spatialreferenceid']
             site.save()
 
             messages.add_message(request, messages.SUCCESS, 'Site ' + request.POST['action'] + 'd successfully')

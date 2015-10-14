@@ -1281,6 +1281,12 @@ class SpatialReference(models.Model):
     srsname = models.TextField(db_column='SRSName')  # Field name made lowercase.
     srsdescription = models.TextField(db_column='SRSDescription', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.srsname
+
+    def __unicode__(self):
+        return self.srsname
+
     class Meta:
         # managed = False
         db_table = 'ODM2].[SpatialReferences'

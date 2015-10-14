@@ -7,12 +7,6 @@ from django import forms
 from datetime import datetime
 
 
-
-class SpatialReferenceChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.srsname
-
-
 class SamplingFeatureChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.samplingfeaturename
@@ -146,50 +140,47 @@ class SamplingFeatureForm(ModelForm):
             'samplingfeaturecode',
             'samplingfeaturename',
             'samplingfeaturedescription',
-            'samplingfeaturegeotypecv',
             'elevation_m',
-            'elevationdatumcv'
+            'elevationdatumcv',
+            'samplingfeaturegeotypecv',
         ]
         widgets = {
             'samplingfeaturecode': TextInput,
             'samplingfeaturename': TextInput,
-            'elevationdatumcv': TextInput,
-            'samplingfeaturegeotypecv': TextInput,
             'elevation_m': NumberInput,
         }
         labels = {
             'samplingfeaturecode': _('Site Code'),
             'samplingfeaturename': _('Site Name'),
             'samplingfeaturedescription': _('Site Description'),
-            'samplingfeaturegeotypecv': _('GeoType'),
             'elevation_m': _('Elevation'),
-            'elevationdatumcv': _('ElevationDatum'),
+            'elevationdatumcv': _('Elevation Datum'),
+            'samplingfeaturegeotypecv': _('Geo-Type'),
         }
 
 
 class SiteForm(ModelForm):
     required_css_class = 'form-required'
-    latlondatumid = SpatialReferenceChoiceField(queryset=SpatialReference.objects.all(), label='Spatial Reference')
-    # sitetypecv = ModelChoiceField(queryset=CV_SiteType.objects.all(), to_field_name='term') # Currently CV tables are outdated
 
     class Meta:
         model = Sites
         fields = [
-            'sitetypecv',
             'latitude',
             'longitude',
+            'sitetypecv',
+            'spatialreferenceid'
         ]
 
         widgets = {
-            'sitetypecv': TextInput,
             'samplingfeaturename': TextInput,
             'latitude': NumberInput,
             'longitude': NumberInput,
         }
 
         labels = {
+            'latlondatumid': _('Spatial Reference'),
             'sitetypecv': _('Site Type'),
-            'latlondatumid': _('Spatial Reference')
+            'spatialreferenceid': _('Spatial Reference'),
         }
 
 
@@ -635,7 +626,7 @@ class CrewForm(forms.Form):
     affiliationid = PeopleMultipleChoice(queryset=Affiliation.objects.all(), label="Crew")
 
     def __init__(self, *args, **kwargs):
-        super(forms.Form, self).__init__(*args, **kwargs)
+        super(CrewForm, self).__init__(*args, **kwargs)
         self.fields['affiliationid'].help_text = None
 
 
