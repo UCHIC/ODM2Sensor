@@ -1,3 +1,4 @@
+from django.views.generic import CreateView
 from sensordatainterface.base_views import *
 from sensordatainterface.forms import *
 from django.core.urlresolvers import reverse
@@ -186,9 +187,9 @@ def edit_models(request, model_object, FormClass, modifications, model_name, red
 def set_submitted_data(request, model_object, FormClass, modification, model_name, redirect_url, m_id):
     if request.POST['action'] == 'update':
         model = model_object.get(pk=request.POST['item_id'])
-        model_form = FormClass(request.POST, instance=model)
+        model_form = FormClass(request.POST, request.FILES, instance=model)
     else:
-        model_form = FormClass(request.POST)
+        model_form = FormClass(request.POST, request.FILES,)
 
     if model_form.is_valid():
         model = model_form.save(commit=False)

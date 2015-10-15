@@ -413,8 +413,10 @@ class EquipmentModel(models.Model):
     modelname = models.TextField(db_column='ModelName')  # Field name made lowercase.
     modeldescription = models.TextField(db_column='ModelDescription', blank=True)  # Field name made lowercase.
     isinstrument = models.BooleanField(db_column='IsInstrument', default=None)  # Field name made lowercase.
-    modelspecificationsfilelink = models.TextField(db_column='ModelSpecificationsFileLink',
-                                                   blank=True)  # Field name made lowercase.
+
+    modelspecificationsfilelink = models.FileField(db_column='ModelSpecificationsFileLink',
+                                                   upload_to='modelspecifications', blank=True)
+
     modellink = models.TextField(db_column='ModelLink', blank=True)  # Field name made lowercase.
 
     class Meta:
