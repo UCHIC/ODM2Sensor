@@ -461,7 +461,6 @@ def edit_calibration_standard(request, reference_val_id):
         request,
         'vocabulary/calibration-standard-from.html',
         {'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id}
-
     )
 
 
@@ -751,7 +750,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.save(commit=False)
     site_visit_action.methodid = Method.objects.get(pk=1000)
-    site_visit_action.actiontypecv = 'Site Visit'
+    site_visit_action.actiontypecv = CvActiontype.objects.get(name='Site Visit')
     site_visit_action.save()
 
     if updating:
@@ -770,7 +769,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     for i in range(0, len(action_form)):
         current_action = action_form[i].save(commit=False)
         action_type = action_form[i].cleaned_data['actiontypecv']
-        current_action.actiontypecv = action_type
+        current_action.actiontypecv = CvActiontype.objects.get(name = action_type)
         current_action.save()
 
         if not updating:

@@ -67,14 +67,15 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
+
 class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return str(obj.referencematerialid) + ": "+obj.referencematerialmediumcv
+        return str(obj.referencematerialid) + ": "+obj.referencematerialmediumcv.name
 
 
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.variablecode + ": " + obj.variablenamecv
+        return obj.variablecode + ": " + obj.variablenamecv.name
 
 
 class DeploymentChoiceField(ModelChoiceField):
@@ -84,7 +85,7 @@ class DeploymentChoiceField(ModelChoiceField):
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv
+        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv.name
 
 
 time_zone_choices = (
@@ -340,25 +341,24 @@ class VendorForm(ModelForm):
     class Meta:
         model = Organization
         fields = [
-            'organizationtypecv',
             'organizationcode',
             'organizationname',
             'organizationdescription',
+            'organizationtypecv',
             'organizationlink',
         ]
 
         widgets = {
-            'organizationtypecv': TextInput,
             'organizationcode': TextInput,
             'organizationname': TextInput,
             'organizationlink': TextInput,
         }
 
         labels = {
-            'organizationtypecv': _('Type'),
             'organizationcode': _('Code'),
             'organizationname': _('Name'),
             'organizationdescription': _('Description'),
+            'organizationtypecv': _('Organization Type'),
             'organizationlink': _('Website'),
         }
 
