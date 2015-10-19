@@ -74,7 +74,7 @@ class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
 
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.variablecode + ": " + obj.variablenamecv
+        return obj.variablecode + ": " + str(obj.variablenamecv)
 
 
 class DeploymentChoiceField(ModelChoiceField):
