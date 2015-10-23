@@ -272,6 +272,7 @@ class EquipmentUsedForm(ModelForm):
 
 class PersonForm(ModelForm):
     required_css_class = 'form-required'
+
     class Meta:
         model = People
         fields = [
@@ -413,12 +414,14 @@ class ReferenceMaterialValueForm(ModelForm):
         model = ReferenceMaterialValue
         fields = [
             'referencematerialvalue',
+            'referencematerialaccuracy'
         ]
         widgets = {
-            'referencematerialvalue': NumberInput
+            'referencematerialvalue': NumberInput,
         }
         labels = {
-            'referencematerialvalue': 'Reference Material Value'
+            'referencematerialvalue': 'Reference Material Value',
+            'referencematerialaccuracy': 'Accuracy',
         }
 
 
