@@ -376,7 +376,9 @@ class ReferenceMaterialForm(ModelForm):
         fields = [
             'referencematerialpurchasedate',
             'referencemateriallotcode',
-            'referencematerialexpirationdate'
+            'referencematerialexpirationdate',
+            'referencematerialcertificatelink',
+            'referencematerialmediumcv'
         ]
 
         widgets = {
@@ -388,7 +390,9 @@ class ReferenceMaterialForm(ModelForm):
         labels = {
             'referencematerialpurchasedate': _('Purchase Date'),
             'referencemateriallotcode': _('Lot Code'),
-            'referencematerialexpirationdate': _('Expiration Date')
+            'referencematerialexpirationdate': _('Expiration Date'),
+            'referencematerialcertificatelink': _('Certificate File'),
+            'referencematerialmediumcv': _('Medium'),
         }
 
 

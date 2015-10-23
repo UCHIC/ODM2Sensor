@@ -426,12 +426,13 @@ def edit_calibration_standard(request, reference_val_id):
 
         if reference_mat_form.is_valid() and reference_mat_value_form.is_valid():
             reference_mat = reference_mat_form.save(commit=False)
-            # reference_mat.referencematerialid = ReferenceMaterial.objects.all().count() + 1
+            reference_mat.referencematerialid = ReferenceMaterial.objects.count() + 1
             reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data[
                 'referencematerialorganizationid']
             reference_mat.save()
 
             reference_mat_val = reference_mat_value_form.save(commit=False)
+            reference_mat_val.referencematerialvalueid = ReferenceMaterialValue.objects.count() + 1
             reference_mat_val.referencematerialid = reference_mat
             reference_mat_val.variableid = reference_mat_value_form.cleaned_data['variableid']
             reference_mat_val.unitsid = reference_mat_value_form.cleaned_data['unitsid']

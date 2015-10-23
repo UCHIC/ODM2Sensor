@@ -831,8 +831,9 @@ class ReferenceMaterialExternalIdentifier(models.Model):
 
 
 class ReferenceMaterialValue(models.Model):
+    # TODO: Change database table to identity and update here.
     referencematerialvalueid = models.IntegerField(db_column='ReferenceMaterialValueID',
-                                                   primary_key=True)  # Field name made lowercase.
+                                                   primary_key=True)
     referencematerialid = models.ForeignKey('ReferenceMaterial', related_name='referencematerialvalue',
                                             db_column='ReferenceMaterialID')  # Field name made lowercase.
     referencematerialvalue = models.FloatField(db_column='ReferenceMaterialValue')  # Field name made lowercase.
@@ -849,7 +850,8 @@ class ReferenceMaterialValue(models.Model):
 
 
 class ReferenceMaterial(models.Model):
-    referencematerialid = models.AutoField(db_column='ReferenceMaterialID',
+    # TODO: Change database table to identity and update here.
+    referencematerialid = models.IntegerField(db_column='ReferenceMaterialID',
                                            primary_key=True)  # Field name made lowercase.
     referencematerialmediumcv = models.ForeignKey('CvMedium', db_column='ReferenceMaterialMediumCV')  # Field name made lowercase.
     referencematerialorganizationid = models.ForeignKey(Organization,
@@ -861,7 +863,7 @@ class ReferenceMaterial(models.Model):
                                                          null=True)  # Field name made lowercase.
     referencematerialexpirationdate = models.DateTimeField(db_column='ReferenceMaterialExpirationDate', blank=True,
                                                            null=True)  # Field name made lowercase.
-    referencematerialcertificatelink = models.TextField(db_column='ReferenceMaterialCertificateLink',
+    referencematerialcertificatelink = models.FileField(db_column='ReferenceMaterialCertificateLink',
                                                         blank=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature', db_column='SamplingFeatureID', blank=True,
                                           null=True)  # Field name made lowercase.
