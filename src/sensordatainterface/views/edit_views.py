@@ -1,3 +1,4 @@
+from django.views.generic import CreateView
 from sensordatainterface.base_views import *
 from sensordatainterface.forms import *
 from django.core.urlresolvers import reverse
@@ -75,7 +76,7 @@ def edit_factory_service_event(request, bridge_id):
 
         if action_form.is_valid() and maintenance_form.is_valid() and equipment_form.is_valid():
             action_model = action_form.save(commit=False)
-            action_model.actiontypecv = 'Equipment maintenance'
+            action_model.actiontypecv = CvActiontype.objects.get(name='Equipment maintenance')
             action_model.methodid = action_form.cleaned_data['methodid']
             action_model.save()
 
@@ -186,9 +187,9 @@ def edit_models(request, model_object, FormClass, modifications, model_name, red
 def set_submitted_data(request, model_object, FormClass, modification, model_name, redirect_url, m_id):
     if request.POST['action'] == 'update':
         model = model_object.get(pk=request.POST['item_id'])
-        model_form = FormClass(request.POST, instance=model)
+        model_form = FormClass(request.POST, request.FILES, instance=model)
     else:
-        model_form = FormClass(request.POST)
+        model_form = FormClass(request.POST, request.FILES,)
 
     if model_form.is_valid():
         model = model_form.save(commit=False)
@@ -425,12 +426,13 @@ def edit_calibration_standard(request, reference_val_id):
 
         if reference_mat_form.is_valid() and reference_mat_value_form.is_valid():
             reference_mat = reference_mat_form.save(commit=False)
-            # reference_mat.referencematerialid = ReferenceMaterial.objects.all().count() + 1
+            reference_mat.referencematerialid = ReferenceMaterial.objects.count() + 1
             reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data[
                 'referencematerialorganizationid']
             reference_mat.save()
 
             reference_mat_val = reference_mat_value_form.save(commit=False)
+            reference_mat_val.referencematerialvalueid = ReferenceMaterialValue.objects.count() + 1
             reference_mat_val.referencematerialid = reference_mat
             reference_mat_val.variableid = reference_mat_value_form.cleaned_data['variableid']
             reference_mat_val.unitsid = reference_mat_value_form.cleaned_data['unitsid']
@@ -460,7 +462,6 @@ def edit_calibration_standard(request, reference_val_id):
         request,
         'vocabulary/calibration-standard-from.html',
         {'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id}
-
     )
 
 
@@ -750,7 +751,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.save(commit=False)
     site_visit_action.methodid = Method.objects.get(pk=1000)
-    site_visit_action.actiontypecv = 'Site Visit'
+    site_visit_action.actiontypecv = CvActiontype.objects.get(name='Site Visit')
     site_visit_action.save()
 
     if updating:
@@ -769,7 +770,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     for i in range(0, len(action_form)):
         current_action = action_form[i].save(commit=False)
         action_type = action_form[i].cleaned_data['actiontypecv']
-        current_action.actiontypecv = action_type
+        current_action.actiontypecv = CvActiontype.objects.get(name = action_type)
         current_action.save()
 
         if not updating:

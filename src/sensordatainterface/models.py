@@ -413,8 +413,10 @@ class EquipmentModel(models.Model):
     modelname = models.TextField(db_column='ModelName')  # Field name made lowercase.
     modeldescription = models.TextField(db_column='ModelDescription', blank=True)  # Field name made lowercase.
     isinstrument = models.BooleanField(db_column='IsInstrument', default=None)  # Field name made lowercase.
-    modelspecificationsfilelink = models.TextField(db_column='ModelSpecificationsFileLink',
-                                                   blank=True)  # Field name made lowercase.
+
+    modelspecificationsfilelink = models.FileField(db_column='ModelSpecificationsFileLink',
+                                                   upload_to='modelspecifications', blank=True)
+
     modellink = models.TextField(db_column='ModelLink', blank=True)  # Field name made lowercase.
 
     class Meta:
@@ -829,8 +831,9 @@ class ReferenceMaterialExternalIdentifier(models.Model):
 
 
 class ReferenceMaterialValue(models.Model):
+    # TODO: Change database table to identity and update here.
     referencematerialvalueid = models.IntegerField(db_column='ReferenceMaterialValueID',
-                                                   primary_key=True)  # Field name made lowercase.
+                                                   primary_key=True)
     referencematerialid = models.ForeignKey('ReferenceMaterial', related_name='referencematerialvalue',
                                             db_column='ReferenceMaterialID')  # Field name made lowercase.
     referencematerialvalue = models.FloatField(db_column='ReferenceMaterialValue')  # Field name made lowercase.
@@ -847,7 +850,8 @@ class ReferenceMaterialValue(models.Model):
 
 
 class ReferenceMaterial(models.Model):
-    referencematerialid = models.AutoField(db_column='ReferenceMaterialID',
+    # TODO: Change database table to identity and update here.
+    referencematerialid = models.IntegerField(db_column='ReferenceMaterialID',
                                            primary_key=True)  # Field name made lowercase.
     referencematerialmediumcv = models.ForeignKey('CvMedium', db_column='ReferenceMaterialMediumCV')  # Field name made lowercase.
     referencematerialorganizationid = models.ForeignKey(Organization,
@@ -859,7 +863,7 @@ class ReferenceMaterial(models.Model):
                                                          null=True)  # Field name made lowercase.
     referencematerialexpirationdate = models.DateTimeField(db_column='ReferenceMaterialExpirationDate', blank=True,
                                                            null=True)  # Field name made lowercase.
-    referencematerialcertificatelink = models.TextField(db_column='ReferenceMaterialCertificateLink',
+    referencematerialcertificatelink = models.FileField(db_column='ReferenceMaterialCertificateLink',
                                                         blank=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature', db_column='SamplingFeatureID', blank=True,
                                           null=True)  # Field name made lowercase.
@@ -1654,6 +1658,12 @@ class CvActiontype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_ActionType'
@@ -1665,6 +1675,12 @@ class CvAggregationstatistic(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1678,6 +1694,12 @@ class CvAnnotationtype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_AnnotationType'
@@ -1689,6 +1711,12 @@ class CvCensorcode(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1702,6 +1730,12 @@ class CvDataqualitytype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_DataQualityType'
@@ -1714,6 +1748,12 @@ class CvDatasettype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_DatasetType'
@@ -1725,6 +1765,12 @@ class CvDirectivetype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1756,6 +1802,12 @@ class CvEquipmenttype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_EquipmentType'
@@ -1767,6 +1819,12 @@ class CvMedium(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1780,6 +1838,12 @@ class CvMethodtype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_MethodType'
@@ -1792,6 +1856,12 @@ class CvOrganizationtype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_OrganizationType'
@@ -1803,6 +1873,12 @@ class CvPropertydatatype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1828,6 +1904,12 @@ class CvRelationshiptype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_RelationshipType'
@@ -1839,6 +1921,12 @@ class CvResulttype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1870,6 +1958,12 @@ class CvSpatialoffsettype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_SpatialOffsetType'
@@ -1881,6 +1975,12 @@ class CvSpeciation(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1894,6 +1994,12 @@ class CvSpecimentype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_SpecimenType'
@@ -1905,6 +2011,12 @@ class CvStatus(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1918,6 +2030,12 @@ class CvTaxonomicclassifiertype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_TaxonomicClassifierType'
@@ -1929,6 +2047,12 @@ class CvUnitstype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1942,6 +2066,12 @@ class CvVariablename(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_VariableName'
@@ -1954,6 +2084,12 @@ class CvVariabletype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_VariableType'
@@ -1965,6 +2101,12 @@ class CvSamplingfeaturetype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False

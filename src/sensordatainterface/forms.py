@@ -44,7 +44,7 @@ class UnitChoiceField(ModelChoiceField):
 
 class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.equipmentcode + ": " + obj.equipmentserialnumber
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
 
 class SiteVisitChoiceField(ModelChoiceField):
@@ -65,16 +65,17 @@ class SiteVisitChoiceField(ModelChoiceField):
 
 class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.equipmentcode + ": " + obj.equipmentserialnumber+" ("+obj.equipmenttypecv+", "+obj.equipmentmodelid.modelname+")"
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
+
 
 class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return str(obj.referencematerialid) + ": "+obj.referencematerialmediumcv
+        return str(obj.referencematerialid) + ": "+obj.referencematerialmediumcv.name
 
 
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.variablecode + ": " + str(obj.variablenamecv)
+        return obj.variablecode + ": " + obj.variablenamecv.name
 
 
 class DeploymentChoiceField(ModelChoiceField):
@@ -84,7 +85,7 @@ class DeploymentChoiceField(ModelChoiceField):
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv
+        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv.name
 
 
 time_zone_choices = (
@@ -203,13 +204,11 @@ class EquipmentForm(ModelForm):
             'equipmentpurchaseordernumber',
             'equipmentpurchasedate',
             'equipmentdescription',
-
         ]
 
         widgets = {
             'equipmentcode': TextInput,
             'equipmentserialnumber': TextInput,
-            'equipmenttypecv': TextInput,
             'equipmentpurchaseordernumber': TextInput,
             'equipmentpurchasedate': DateTimeInput,
         }
@@ -273,6 +272,7 @@ class EquipmentUsedForm(ModelForm):
 
 class PersonForm(ModelForm):
     required_css_class = 'form-required'
+
     class Meta:
         model = People
         fields = [
@@ -342,25 +342,24 @@ class VendorForm(ModelForm):
     class Meta:
         model = Organization
         fields = [
-            'organizationtypecv',
             'organizationcode',
             'organizationname',
             'organizationdescription',
+            'organizationtypecv',
             'organizationlink',
         ]
 
         widgets = {
-            'organizationtypecv': TextInput,
             'organizationcode': TextInput,
             'organizationname': TextInput,
             'organizationlink': TextInput,
         }
 
         labels = {
-            'organizationtypecv': _('Type'),
             'organizationcode': _('Code'),
             'organizationname': _('Name'),
             'organizationdescription': _('Description'),
+            'organizationtypecv': _('Organization Type'),
             'organizationlink': _('Website'),
         }
 
@@ -378,7 +377,9 @@ class ReferenceMaterialForm(ModelForm):
         fields = [
             'referencematerialpurchasedate',
             'referencemateriallotcode',
-            'referencematerialexpirationdate'
+            'referencematerialexpirationdate',
+            'referencematerialcertificatelink',
+            'referencematerialmediumcv'
         ]
 
         widgets = {
@@ -390,7 +391,9 @@ class ReferenceMaterialForm(ModelForm):
         labels = {
             'referencematerialpurchasedate': _('Purchase Date'),
             'referencemateriallotcode': _('Lot Code'),
-            'referencematerialexpirationdate': _('Expiration Date')
+            'referencematerialexpirationdate': _('Expiration Date'),
+            'referencematerialcertificatelink': _('Certificate File'),
+            'referencematerialmediumcv': _('Medium'),
         }
 
 
@@ -411,12 +414,14 @@ class ReferenceMaterialValueForm(ModelForm):
         model = ReferenceMaterialValue
         fields = [
             'referencematerialvalue',
+            'referencematerialaccuracy'
         ]
         widgets = {
-            'referencematerialvalue': NumberInput
+            'referencematerialvalue': NumberInput,
         }
         labels = {
-            'referencematerialvalue': 'Reference Material Value'
+            'referencematerialvalue': 'Reference Material Value',
+            'referencematerialaccuracy': 'Accuracy',
         }
 
 
