@@ -452,7 +452,6 @@ class MethodForm(ModelForm):
         widgets = {
             'methodcode': TextInput,
             'methodlink': TextInput,
-            'methodtypecv': TextInput,
             'methodname': TextInput,
         }
         labels = {
@@ -650,6 +649,7 @@ class FeatureActionForm(ModelForm):
             'samplingfeatureid'
         ]
 
+
 class SiteVisitChoiceForm(ModelForm):
     required_css_class = 'form-required'
 
@@ -684,7 +684,7 @@ class SelectWithClassForOptions(Select):
         this_method = args[1]
         class_value = "class=\"\""
         if this_method != "":
-            class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv]
+            class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv.name]
 
         after_tag = 8
         before_tag_close = 7
