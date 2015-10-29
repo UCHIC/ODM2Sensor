@@ -138,7 +138,7 @@ class Vocabularies(ListView):
         context['Models'] = EquipmentModel.objects.all()
         context['OutputVariables'] = InstrumentOutputVariable.objects.all()
         context['People'] = Affiliation.objects.filter(personid__isnull=False)
-        context['CalibrationStandards'] = CalibrationStandard.objects.filter(actionid__isnull=False)
+        context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
         context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
         context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
         context['SiteTypes'] = CvSitetype.objects.all()

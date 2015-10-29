@@ -22,7 +22,7 @@
     <tbody>
     {% for standard in CalibrationStandards %}
         <tr>
-        {% for reference in standard.referencematerialid.referencematerialvalue.all %}
+        {% for reference in standard.referencematerialvalue.all %}
             <td>{{ reference.variableid.variabletypecv }}</td>
             <td>{{ reference.unitsid.unitsname }}</td>
             <td>{{ reference.referencematerialvalue }}</td>
