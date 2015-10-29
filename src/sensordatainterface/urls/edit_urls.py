@@ -31,7 +31,7 @@ urlpatterns = patterns('',
         url(r'^inventory/create-sensor-output-variable/site/(?P<site_id>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
         name='create_output_variable_site'),
 
-       url(r'^inventory/create-sensor-output-variable/deployment/(?P<site_id>\d+)/(?P<deployment>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
+        url(r'^inventory/create-sensor-output-variable/deployment/(?P<site_id>\d+)/(?P<deployment>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
         name='create_output_variable_deployment'),
 
         url(r'^vocabulary/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
@@ -75,6 +75,7 @@ urlpatterns = patterns('',
         url(r'^site-visits/create-site-visit/summary/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit_summary,
         name='create_site_visit_summary'),
 
-        url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?$', edit_views.edit_action, name='create_action'),
+        url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?/$', edit_views.edit_action, name='create_action'),
+        url(r'^site-visits/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
         #url(r'^sites/delete-site/(?P<site_id>\d+)/$', edit_views.delete_site, name='delete_site'),
 )

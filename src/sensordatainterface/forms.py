@@ -787,6 +787,7 @@ class ActionForm(ModelForm):
             'actiondescription': _('Description')
         }
 
+
 def get_cv_model_form(form_model, *args, **kwargs):
     class CVForm(ModelForm):
         required_css_class = 'form-required'

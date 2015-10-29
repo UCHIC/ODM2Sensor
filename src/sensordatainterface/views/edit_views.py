@@ -561,8 +561,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
-                        Q(actionid__actiontypecv='Instrument deployment') | Q(
-                            actionid__actiontypecv='Equipment deployment')),
+                        Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
+                            actionid__actiontypecv=CvActiontype.objects.get(term='equipmentDeployment'))),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -586,8 +586,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
-                        Q(actionid__actiontypecv='Instrument deployment') | Q(
-                            actionid__actiontypecv='Equipment deployment')),
+                        Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
+                            actionid__actiontypecv=CvActiontype.objects.get(term='equipmentDeployment'))),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -774,7 +774,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
         current_action.save()
 
         if not updating:
-            RelatedAction.objects.create(actionid=current_action, relationshiptypecv='Is child of',
+            RelatedAction.objects.create(actionid=current_action, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'),
                                          relatedactionid=site_visit_action)
             FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
         else:
@@ -856,7 +856,7 @@ def edit_site_visit(request, action_id):
         render_actions = True
         action = 'update'
 
-        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv='Is child of')
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
 
         action_form = []
         for child in children_actions:
@@ -932,9 +932,12 @@ def edit_site_visit_summary(request, action_id):
         {'SiteVisit': site_visit, 'Crew': crew, 'ChildActions': related_actions, 'Site': site}
     )
 
+
 @login_required(login_url=LOGIN_URL)
-def edit_action(request, action_type, action_id):
+def edit_action(request, action_type, action_id=None, visit_id=None):
     action = 'create'
+    child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
+
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
         if updating:
@@ -954,20 +957,20 @@ def edit_action(request, action_type, action_id):
             if updating:
                 related_action = RelatedAction.objects.get(
                     actionid=child_action,
-                    relationshiptypecv='Is child of'
+                    relationshiptypecv=child_relationship
                 )
                 related_action.relatedactionid=parent_site_visit
                 related_action.save()
             else:
                 related_action = RelatedAction.objects.create(
                     actionid=child_action,
-                    relationshiptypecv='Is child of',
+                    relationshiptypecv=child_relationship,
                     relatedactionid=parent_site_visit
                 )
 
             sampling_feature = FeatureAction.objects.filter(
                 actionid=parent_site_visit,
-                samplingfeatureid__samplingfeaturetypecv='Site'
+                samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
                 )[0].samplingfeatureid
 
             FeatureAction.objects.get_or_create(
@@ -987,20 +990,20 @@ def edit_action(request, action_type, action_id):
 
             action_type = action_form.cleaned_data['actiontypecv']
 
-            if action_type == 'Instrument calibration':
+            if action_type.term == 'instrumentCalibration':
                 if updating:
                     CalibrationAction.objects.get(actionid=child_action).delete()
                     CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
 
             url_map = {
-                'Equipment deployment': 'deployment_detail',
-                'Instrument calibration': 'calibration_detail',
-                'Equipment maintenance': 'field_activity_detail',
-                'Field activity': 'field_activity_detail'
+                'equipmentDeployment': 'deployment_detail',
+                'instrumentCalibration': 'calibration_detail',
+                'equipmentMaintenance': 'field_activity_detail',
+                'fieldActivity': 'field_activity_detail'
             }
             response = HttpResponseRedirect(
-                reverse(url_map[action_type], args=[child_action.actionid])
+                reverse(url_map[action_type.term], args=[child_action.actionid])
             )
 
             return response
@@ -1008,7 +1011,7 @@ def edit_action(request, action_type, action_id):
     elif action_id:
         child_action = Action.objects.get(pk=action_id)
         parent_action_id = RelatedAction.objects.get(
-            relationshiptypecv='Is child of',
+            relationshiptypecv=child_relationship,
             actionid=action_id
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
@@ -1032,7 +1035,7 @@ def edit_action(request, action_type, action_id):
         action = 'update'
 
     else:
-        site_visit_form = SiteVisitChoiceForm()
+        site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
         action_form = ActionForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
         )
