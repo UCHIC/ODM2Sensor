@@ -609,7 +609,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
 
 @login_required(login_url=LOGIN_URL)
-def create_site_visit(request):
+def create_site_visit(request, site_id=None):
     action = 'create'
     render_actions = False
 
@@ -622,7 +622,7 @@ def create_site_visit(request):
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
     else:
-        sampling_feature_form = FeatureActionForm()
+        sampling_feature_form = FeatureActionForm(initial={'samplingfeatureid': site_id})
         site_visit_form = SiteVisitForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
         crew_form = CrewForm()
