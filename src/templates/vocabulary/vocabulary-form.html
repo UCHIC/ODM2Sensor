@@ -1,5 +1,5 @@
 {% extends "base-form.html" %}
-{% block button_value %}{% block item_name %}{{ cv_name|cut:"Cv" }} Vocabulary{% endblock %}{% endblock %}
+{% block button_value %}{% block item_name %}{{% cv_name|cut:"Cv" %}}Vocabulary{% endblock %}{% endblock %}
 {% block submit_url %}{% url 'create_control_vocabulary' cv_name %}{% endblock %}
 {% block detail_cancel_url %}{% url 'vocabularies' %}{{ tab_name }}{% endblock %}
 {% block list_cancel_url %}{% url 'vocabularies' %}{{ tab_name }}{% endblock %}

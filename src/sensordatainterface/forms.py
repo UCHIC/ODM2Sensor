@@ -154,7 +154,7 @@ class SamplingFeatureForm(ModelForm):
             'samplingfeaturecode': _('Site Code'),
             'samplingfeaturename': _('Site Name'),
             'samplingfeaturedescription': _('Site Description'),
-            'elevation_m': _('Elevation'),
+            'elevation_m': _('Elevation (m)'),
             'elevationdatumcv': _('Elevation Datum'),
             'samplingfeaturegeotypecv': _('Geo-Type'),
         }
@@ -180,6 +180,8 @@ class SiteForm(ModelForm):
 
         labels = {
             'latlondatumid': _('Spatial Reference'),
+            'latitude': _('Latitude (dec deg)'),
+            'longitude': _('Longitude (dec deg)'),
             'sitetypecv': _('Site Type'),
             'spatialreferenceid': _('Spatial Reference'),
         }
@@ -401,7 +403,7 @@ class ReferenceMaterialValueForm(ModelForm):
     required_css_class = 'form-required'
     variableid = VariableChoiceField(
         queryset=Variable.objects.all(),
-        label='Variables',
+        label='Variable',
         empty_label='Choose a Variable'
     )
     unitsid = UnitChoiceField(
