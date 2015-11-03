@@ -7,6 +7,9 @@
     </div>
     <!--buttons -->
     <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'edit_site_visit' Deployment.actionid %}">Delete</a>
+        </div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>
@@ -14,9 +17,6 @@
             <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment Description</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'edit_site_visit' Deployment.actionid %}">Delete</a>
-        </div>
     </div>
 
     <!-- deployment details -->
@@ -58,10 +58,23 @@
         <!-- Equipment Used Table -->
         <div class="row detail-mid">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <h3>Equipment Used</h3>
+                <div class="row">
+                    <div style="float: left;"><h3>Equipment Used</h3></div>
+
+                    <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
+                        <a class="btn btn-primary btn-block"
+                        {% for related in Deployment.relatedaction.all %}
+                            {% if related.relationshiptypecv == 'Is child of' %}
+                                href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                            {% endif %}
+                        {% endfor %}>Go to Site Visit</a>
+                    </div>
+                </div>
+
+
                 {% for equipment in Deployment.equipmentused.all %}
                     <div class="row side-by-side-item">
-                        <div class="col-sm-6 col-xs-12 col-md-4 pull-right">
+                        <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
                             <a class="btn btn-primary btn-block"
                                href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View
                                 Equipment's Deployment History</a>
@@ -110,7 +123,7 @@
                         <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-dependent-table"
                              style="display: none">
                             <div class="row">
-                                <div class="col-sm-12 col-xs-12 col-md-8"><h4>Instrument Measured Variable Table</h4></div>
+                                <div class="col-sm-12 col-xs-12 col-md-8"><h4>Instrument Measured Variable</h4></div>
                                 <div class="col-sm-12 col-xs-12 col-md-4 pull-right">
                                     <a class="btn btn-block btn-primary"
                                        href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New
@@ -188,15 +201,6 @@
         <hr class="divider">
     {% endwith %}
 
-    <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
-            <a class="btn btn-primary btn-block"
-                    {% for related in Deployment.relatedaction.all %}
-                        {% if related.relationshiptypecv == 'Is child of' %}
-               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                        {% endif %}
-                    {% endfor %}>Go to Site Visit</a></div>
-    </div>
     <nav>
         <ul class="pager">
             {% if next_deployment %}
