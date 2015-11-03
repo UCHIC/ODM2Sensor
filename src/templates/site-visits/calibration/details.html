@@ -4,11 +4,11 @@
 {% block content %}
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Calibration Details</h2></div>
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Edit Calibration Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
             <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Delete</a>
         </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Edit Calibration Description</a></div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
             <h3>Calibration</h3>
@@ -25,7 +25,7 @@
                         <th>UTC Offset:</th>
                         <td>{{ Calibration.begindatetimeutcoffset }}</td>
                         <th>Variable Code:</th>
-                        <td> {{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
+                        <td>{{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
                         <th>Check Value:</th>
                         <td>
                             {{ variable.calibrationcheckvalue|default:" -- " }}
@@ -55,7 +55,17 @@
             </table>
         </div>
     <div class="row detail-mid">
-            <h3>Equipment Used</h3>
+        <div class="row">
+            <div style="float: left;"><h3>Equipment Used</h3></div>
+            <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px"><a class="btn btn-primary btn-block"
+                {% for related in Calibration.relatedaction.all %}
+                    {% if related.relationshiptypecv == 'Is child of' %}
+                                                               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                    {% endif %}
+                {% endfor %}>Go to Site Visit</a>
+            </div>
+        </div>
+
         {% for equipment in Calibration.equipmentused.all %}
             <div class="row side-by-side-item small-box-item">
 
@@ -102,7 +112,7 @@
 
             </table>
                 </div>
-                <div class="col-sm-12 col-xs-12 col-md-10 pull-right">
+                <div class="col-sm-12 col-xs-12 col-md-7 pull-left">
             <a class="btn btn-primary btn-block"
                href="{% url 'calibrations_by_equipment' equipment.equipmentid.equipmentid %}">View Equipment's
                 Calibration History</a>
@@ -241,14 +251,6 @@
 
         </div>
 
-    <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                {% for related in Calibration.relatedaction.all %}
-                    {% if related.relationshiptypecv == 'Is child of' %}
-                                                               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                    {% endif %}
-                {% endfor %}>Go to Site Visit</a></div>
-    </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>
