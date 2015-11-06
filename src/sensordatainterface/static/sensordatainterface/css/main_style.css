@@ -176,11 +176,13 @@ input[type=checkbox], input[type=radio] {
 
 input.btn.btn-primary.form-control {
     width: 66%;
+    min-width: 100px;
 }
 
 table a.btn.btn-default {
     margin-right: 2%;
     width: 17%;
+    min-width: 120px;
     float: left;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
