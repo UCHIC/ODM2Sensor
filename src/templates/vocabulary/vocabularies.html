@@ -359,9 +359,13 @@
                     <div class="col-xs-12 col-sm-6 col-md-7">
                         <h2>Organization Types</h2>
                     </div>
+
+                    <!-- Removed for Issue #124. Functionality is broken, but form still exists.
                     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
                         <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvOrganizationtype' %}">New Organization Type</a>
                     </div>
+                    -->
+
                 </div>
                 <table class="data-table">
                     <thead>
@@ -403,12 +407,9 @@
                 </table>
 
             <div class="col-xs-12 col-sm-6 col-md-7"><h2>Organizations</h2></div>
-
-                <!-- Removed for Issue #124. Functionality is broken, but form still exists.
                 <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
                     <a class="btn btn-primary new-btn" href="{% url 'create_vendor' %}">New Organization</a>
                 </div>
-                -->
             
                 <table class="data-table">
                     <thead>
@@ -419,6 +420,7 @@
                         {# isn't this vendor? #}
                         <th>Website</th>
                         <th>Phone</th>
+                        <th>Operations</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -439,6 +441,14 @@
                                         {# how should this number be handled? #}
                                     {% endif %}
                                 {% endfor %}
+                            </td>
+                            <td>
+                                <a class="icon-link" href="{% url 'create_vendor' vendor.organizationid %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a class="icon-link delete-icon" data-href="{% url 'delete_vendor' vendor.organizationid %}">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
