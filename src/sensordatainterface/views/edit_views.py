@@ -394,7 +394,7 @@ def delete_control_vocabularies(request, target_cv, name):
 @login_required(login_url=LOGIN_URL)
 def edit_vendor(request, organization_id):
     modifications = {}
-    arguments = [request, Organization.objects, VendorForm, modifications, 'Vendor', 'vendor_detail',
+    arguments = [request, Organization.objects, VendorForm, modifications, 'Organization', 'vendor_detail',
                  'organizationid', organization_id, 'vocabulary/vendor-form.html']
     return edit_models(*arguments)
 

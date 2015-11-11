@@ -189,8 +189,8 @@ class SiteForm(ModelForm):
 
 class EquipmentForm(ModelForm):
     required_css_class = 'form-required'
-    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Vendor',
-                                                empty_label='Choose a Vendor')
+    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Organization',
+                                                empty_label='Choose an Organization')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
@@ -370,8 +370,8 @@ class ReferenceMaterialForm(ModelForm):
     required_css_class = 'form-required'
     referencematerialorganizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
-        label='Vendor',
-        empty_label='Choose a Vendor'
+        label='Organization',
+        empty_label='Choose an Organization'
     )
 
     class Meta:

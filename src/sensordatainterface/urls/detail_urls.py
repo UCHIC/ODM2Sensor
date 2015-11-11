@@ -70,7 +70,7 @@ urlpatterns = patterns('',
                            name='models_detail'),
 
                        url(r'^inventory/vendor-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
-                           context_object_name='Vendor',
+                           context_object_name='Vendor', # Do not modify - Zach Yoshikawa 11/11/15
                            model=Organization,
                            slug_field='organizationid',
                            template_name='equipment/models/vendor-detail.html'),

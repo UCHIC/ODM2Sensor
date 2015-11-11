@@ -1821,7 +1821,7 @@ class TestURLs(TestCase):
 
         organization2 = Organization.objects.create(
             organizationid = 150,
-            organizationtypecv = 'Vendor',
+            organizationtypecv = 'Organization',
             organizationcode = 'CampSci',
             organizationname = 'Campbell Scientific',
             organizationdescription = 'Measurement & Control Products for Long-term Monitoring',
@@ -1905,7 +1905,7 @@ class TestURLs(TestCase):
 
         organization2 = Organization.objects.create(
             organizationid = 150,
-            organizationtypecv = 'Vendor',
+            organizationtypecv = 'Organization',
             organizationcode = 'CampSci',
             organizationname = 'Campbell Scientific',
             organizationdescription = 'Measurement & Control Products for Long-term Monitoring',
