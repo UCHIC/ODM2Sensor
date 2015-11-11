@@ -84,7 +84,7 @@ function setFormFields(currentForm) {
     currentForm.find('select').addClass('select-two');
 
     currentForm.find(".select-two").select2();
-    currentForm.find('.select2-container').css('width', '85%');
+    currentForm.find('.select2-container').css('width', '100%');
 }
 
 function handleActionTypeChange(formType, currentForm) {
@@ -110,7 +110,7 @@ function handleActionTypeChange(formType, currentForm) {
     //reset select2 to hide disabled options
     var methodSelect = $(currentForm).find('[name="methodid"]');
     methodSelect.select2();
-    $('.select2-container').css('width', '85%');
+    $('.select2-container').css('width', '100%');
 
     var equipmentUsedElem = $(currentForm).find('[name="equipmentused"]');
 
