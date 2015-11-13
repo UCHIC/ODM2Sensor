@@ -346,6 +346,9 @@ label {
 
 .btn-danger {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
+}
+
+.btn-remove-action {
     width: 25%;
 }
 
