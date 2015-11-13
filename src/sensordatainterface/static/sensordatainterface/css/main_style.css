@@ -187,7 +187,7 @@ input.btn.btn-primary.form-control {
 table a.btn.btn-default {
     margin-right: 2%;
     width: 25%;
-    min-width: 120px;
+    min-width: 130px;
     float: left;
 }
 
@@ -350,6 +350,8 @@ label {
 
 .btn-remove-action {
     width: 25%;
+    min-width: 130px;
+    float: left;
 }
 
 .btn-primary:focus, .btn-primary:hover {
