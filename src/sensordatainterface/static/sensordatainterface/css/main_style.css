@@ -149,7 +149,7 @@ table.data-table tbody thead th {
 
 .form-group {
     position: relative;
-    width: 75%;
+    width: 65%;
 }
 
 .form-table th {
@@ -186,7 +186,7 @@ input.btn.btn-primary.form-control {
 
 table a.btn.btn-default {
     margin-right: 2%;
-    width: 17%;
+    width: 25%;
     min-width: 120px;
     float: left;
 }
@@ -346,6 +346,7 @@ label {
 
 .btn-danger {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
+    width: 25%;
 }
 
 .btn-primary:focus, .btn-primary:hover {
