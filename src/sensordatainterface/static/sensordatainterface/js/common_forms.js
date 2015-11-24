@@ -49,7 +49,11 @@ function initDTPicker() {
 
     var currentDateTimePicker = $('.datetimepicker');
     currentDateTimePicker.datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
+        format: 'YYYY-MM-DD HH:mm',
+        sideBySide: true,
+        keyBindings: {
+
+        }
     });
 }
 
@@ -66,7 +70,7 @@ function setDateTimePicker() {
 
 function setDTPickerClose(beginDTElem) {
     //Function to set up begindatetime fields to close automatically when date is picked and open next enddatetime field.
-    beginDTElem.parent('.datetimepicker').on('dp.change', function () {
+    beginDTElem.parent('.datetimepicker').on('dp.hide', function () {
         var beginDTObj = $(this).data('DateTimePicker');
         if (beginDTObj.collapse) {
             beginDTObj.hide();
