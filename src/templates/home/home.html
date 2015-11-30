@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7">
+            <h1>Lame Home Page</h1>
+        </div>
+    </div>
+
+    <div class="table">
+    <table border="1|0|0">
+        <thead>
+            <tr>
+                <th>Quick Links</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td><div >
+                    <a class="btn btn-primary new-btn" href="{% url 'create_site_visit' %}">New Site Visit</a>
+                </div></td>
+            </tr>
+
+            <tr>
+                <td><div >
+                    <a class="btn btn-primary new-btn" href="{% url 'create_action' 'InstrumentCalibration' %}">New Calibration</a>
+                </div></td>
+            </tr>
+
+            <tr>
+                <td><div >
+                    <a class="btn btn-primary new-btn" href="{% url 'create_action' 'EquipmentDeployment' %}">New Deployment</a>
+                </div></td>
+            </tr>
+
+            <tr>
+                <td><div class="col-xs-12 col-sm-6 col-md-3 pull-left">
+                    <a class="btn btn-primary new-btn" href="{% url 'create_action' 'Generic' %}">New Action</a>
+                </div></td>
+            </tr>
+
+            <tr>
+                <td><div class="col-xs-12 col-sm-6 col-md-3 pull-left">
+                    <a class="btn btn-primary new-btn" href="{% url 'create_equipment' %}">New Equipment</a>
+                </div></td>
+            </tr>
+        </tbody>
+
+    </table>
+    </div>
+{% endblock %}

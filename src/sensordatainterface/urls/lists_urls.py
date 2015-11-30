@@ -7,15 +7,25 @@ from django.views.generic import RedirectView
 from django.db.models import Q
 
 urlpatterns = patterns('',
+                       # Home Page Generic View
+                       url(r'^home/$',
+                           GenericListView.as_view(
+                               model=Sites,
+                               context_object_name='Home',
+                               template_name='home/home.html'
+                           ),
+                           name='home'),
+
+                       url(r'^home/$', RedirectView.as_view(url=reverse_lazy('home')), name='home_login'),
+                       url(r'^$', RedirectView.as_view(url=reverse_lazy('home'))),
+
                        # Site Generic View
                        url(r'^sites/$',
                            GenericListView.as_view(
                                model=Sites,
                                context_object_name='Sites',
-                               template_name='sites/sites.html'), name='home'),
-
-                       url(r'^home/$', RedirectView.as_view(url=reverse_lazy('home')), name='home_login'),
-                       url(r'^$', RedirectView.as_view(url=reverse_lazy('home')), name='sites'),
+                               template_name='sites/sites.html'),
+                           name='sites'),
 
                        # Site Visits Generic View
                        url(r'^site-visits/site-visits/$',
@@ -125,7 +135,5 @@ urlpatterns = patterns('',
 
                        url(r'^control-vocabularies/$',
                            Vocabularies.as_view(),
-                           name='vocabularies'),
-
-
+                           name='vocabularies')
 )
