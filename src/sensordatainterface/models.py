@@ -419,6 +419,9 @@ class EquipmentModel(models.Model):
 
     modellink = models.TextField(db_column='ModelLink', blank=True)  # Field name made lowercase.
 
+    def natural_key(self):
+        return self.modelname
+
     class Meta:
         managed = False
         db_table = 'ODM2].[EquipmentModels'

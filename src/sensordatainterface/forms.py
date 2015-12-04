@@ -5,6 +5,34 @@ from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from datetime import datetime
+from django.utils.encoding import force_text
+from django.utils.html import format_html
+from django.forms.util import flatatt
+from django.forms.fields import BooleanField
+
+
+class PrettyCheckboxWidget(forms.widgets.CheckboxInput):
+    def render(self, name, value, attrs=None):
+        final_attrs = self.build_attrs(attrs, type='checkbox', name=name)
+        if self.check_test(value):
+            final_attrs['checked'] = 'checked'
+        if not (value is True or value is False or value is None or value == ''):
+            final_attrs['value'] = force_text(value)
+        if 'prettycheckbox-label' in final_attrs:
+            label = final_attrs.pop('prettycheckbox-label')
+        else:
+            label = ''
+        return format_html('<label class="checkbox-label" for="{0}"><input{1} /> {2}</label>', attrs['id'], flatatt(final_attrs), label.capitalize())
+
+
+class PrettyCheckboxField(BooleanField):
+    widget = PrettyCheckboxWidget
+
+    def __init__(self, *args, **kwargs):
+        if kwargs['label']:
+            kwargs['widget'].attrs['prettycheckbox-label'] = kwargs['label']
+            kwargs['label'] = ''
+        super(PrettyCheckboxField, self).__init__(*args, **kwargs)
 
 
 class SamplingFeatureChoiceField(ModelChoiceField):
@@ -108,19 +136,6 @@ time_zone_choices = (
     (12, '+12:00'),
     (13, '+13:00'),
     (14, '+14:00'),
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
-    # 12: '+12:00',
 )
 
 
@@ -283,21 +298,6 @@ class PersonForm(ModelForm):
         }
 
 
-# class OrganizationForm(ModelForm):
-#     class Meta:
-#         model = Organization
-#         fields = [
-#             'organizationname',
-#         ]
-#
-#         widgets = {
-#             'organizationname': TextInput
-#         }
-#
-#         labels = {
-#             'organizationname': _("Organization")
-#         }
-
 class AffiliationForm(ModelForm):
     required_css_class = 'form-required'
     organizationid = OrganizationChoiceField(
@@ -418,13 +418,6 @@ class ReferenceMaterialValueForm(ModelForm):
             'referencematerialaccuracy': 'Accuracy',
         }
 
-
-# class VariableForm(ModelForm):
-#     class Meta:
-#         model = Variable
-#         fields = [
-#             'variabletypecv'
-#         ]
 
 class MethodForm(ModelForm):
     required_css_class = 'form-required'
@@ -701,15 +694,21 @@ class ActionForm(ModelForm):
 
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
+
     equipmentused = MultipleEquipmentChoiceField(
         queryset=Equipment.objects.all(), label='Equipment Used', required=False
+    )
+
+    equipment_by_site = PrettyCheckboxField(widget=PrettyCheckboxWidget(
+        attrs={'class': 'calibration generic'}), label='Show All Equipment', required=False
     )
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     calibrationstandard = CalibrationStandardMultipleChoiceField(
-    widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
-    queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False)
+        widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+        queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False
+    )
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
@@ -739,7 +738,9 @@ class ActionForm(ModelForm):
     calibrationcheckvalue = forms.DecimalField(
         widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
     calibrationequation = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'calibration'}), label='Calibration Equation', required=False)
+        widget=forms.TextInput(attrs={'class': 'calibration generic'}), label='Calibration Equation', required=False)
+
+
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
