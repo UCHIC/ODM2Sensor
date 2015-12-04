@@ -413,9 +413,8 @@ tr.form-required:after {
 }
 
 span.helptext {
-  display: inline-block;
+    display: inline-block;
 }
-
 
 .side-by-side-item {
     border: 1px solid #CDCACA;
@@ -463,5 +462,9 @@ span.helptext {
 a.add-related-equ-button.btn.btn-primary.btn-block {
     /* margin-right: 66px; */
     width: 97.5%;
+}
+
+p.home_page {
+    width: 50%;
 }
 

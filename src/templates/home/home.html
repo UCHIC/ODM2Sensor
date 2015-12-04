@@ -1,8 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
     <div class="row title">
-        <div class="col-xs-12 col-sm-6 col-md-7">
-            <h1>Lame Home Page</h1>
+        <h1>ODM2 Sensor</h1>
+        <h3>Equipment Management</h3>
+    </div>
+
+    <div class="body">
+        <span><p class="home_page">This web application is used for water-related sensor infrastructure and data management.
+            It is based on the Sensors Extension of Version 2 of the Observations Data Model (ODM2).</p></span>
+    </div>
+
+    <div class="row title">
+        <h3>Sponsors</h3>
+        </div>
+    <div class="sponsors">
+        <div>
+            <span>This project is receiving or has received support from a number of agencies and complementary efforts including:</span>
+        </div>
+        <div>
+            <span>
+                <a href="http://www.iutahepscor.org"><img data-toggle="tooltip" title="hello" src="{% static "sensordatainterface/img/iutah_home_logo.png" %}" height="150" hspace="50" vspace="20"></a>
+                <a href="http://www.nsf.gov"><img src="{% static "sensordatainterface/img/nsf_home_logo.png" %}"></a>
+            </span>
         </div>
     </div>
 
