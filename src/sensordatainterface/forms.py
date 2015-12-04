@@ -49,18 +49,10 @@ class EquipmentChoiceField(ModelChoiceField):
 
 class SiteVisitChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        start_time = obj.begindatetime.strftime('%m/%d/%Y')
-        end_time = obj.enddatetime.strftime('%m/%d/%Y')
+        start_time = str(obj.begindatetime)
+        sampling_feature_code = obj.featureaction.filter(actionid=obj).get().samplingfeatureid.samplingfeaturecode
 
-        if end_time is None:
-            end_time = 'Present'
-
-        description = obj.actiondescription
-
-        if description is None:
-            description = 'No Description'
-
-        return "("+ start_time + " - " + end_time + ") " + description
+        return "(" + start_time + ")  " + sampling_feature_code
 
 
 class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
@@ -656,7 +648,7 @@ class SiteVisitChoiceForm(ModelForm):
     required_css_class = 'form-required'
 
     actionid = SiteVisitChoiceField(
-        queryset=Action.objects.filter(actiontypecv='Site Visit'),
+        queryset=Action.objects.filter(actiontypecv='Site Visit').order_by('-begindatetime'),
         label='Site Visit',
         empty_label='Choose a Site Visit'
     )
