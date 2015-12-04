@@ -465,3 +465,12 @@ a.add-related-equ-button.btn.btn-primary.btn-block {
     width: 97.5%;
 }
 
+label.checkbox-label {
+    font-weight: inherit;
+    line-height: 1.5em;
+}
+
+label.checkbox-label input {
+    margin-right: 5px;
+    height: initial;
+}
