@@ -1,6 +1,7 @@
 import json
 from django.http import HttpResponse
-from sensordatainterface.models import Equipment, SamplingFeature
+from datetime import datetime
+from sensordatainterface.models import Equipment, SamplingFeature, Action
 
 
 def get_equipment_by_site(request):
@@ -12,6 +13,24 @@ def get_equipment_by_site(request):
         )
 
         response_data = prepare_equ_used_options(equipment_deployed)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_sitevisit_dates(request):
+    if request.method == 'POST':
+        site_visit_id = int(request.POST.get('site_visit'))
+        site_visit = Action.objects.get(actionid=site_visit_id)
+        response_data = {
+            'visit_id': site_visit_id,
+            'begin_date': site_visit.begindatetime.strftime('%Y-%m-%d %H:%M'),
+            'end_date': site_visit.enddatetime.strftime('%Y-%m-%d %H:%M')
+        }
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 

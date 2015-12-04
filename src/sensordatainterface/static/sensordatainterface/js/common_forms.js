@@ -49,7 +49,8 @@ function initDTPicker() {
 
     var currentDateTimePicker = $('.datetimepicker');
     currentDateTimePicker.datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
+        format: 'YYYY-MM-DD HH:mm',
+        sideBySide: true
     });
 }
 
@@ -66,7 +67,7 @@ function setDateTimePicker() {
 
 function setDTPickerClose(beginDTElem) {
     //Function to set up begindatetime fields to close automatically when date is picked and open next enddatetime field.
-    beginDTElem.parent('.datetimepicker').on('dp.change', function () {
+    beginDTElem.parent('.datetimepicker').on('dp.hide', function () {
         var beginDTObj = $(this).data('DateTimePicker');
         if (beginDTObj.collapse) {
             beginDTObj.hide();
@@ -174,6 +175,43 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     });
 }
 
+// get site visit dates from get_site_visit_dates, and restrict begindate and enddate
+function filterActionDatesByVisit(siteVisitId) {
+    var apiUrl = $('#site-visit-dates').val();
+    var form = $('form');
+    var token = form.find('[name="csrfmiddlewaretoken"]').val();
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        data: { site_visit: siteVisitId, csrfmiddlewaretoken: token },
+        success: function(data) {
+
+            // get datetimepicker stuff and restrict by the dates received.
+            var minDatetime = moment(data.begin_date);
+            var maxDatetime = moment(data.end_date);
+
+            var beginDateTimeObj = form.find('[name="begindatetime"]').parents('.datetimepicker').data('DateTimePicker');
+            var endDateTimeObj = form.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
+
+            beginDateTimeObj.maxDate(false);
+            beginDateTimeObj.minDate(false);
+            endDateTimeObj.maxDate(false);
+            endDateTimeObj.minDate(false);
+
+            beginDateTimeObj.maxDate(maxDatetime);
+            beginDateTimeObj.minDate(minDatetime);
+            endDateTimeObj.maxDate(maxDatetime);
+            endDateTimeObj.minDate(minDatetime);
+        },
+        error: function(xhr, errmsg) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+
+
 function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
             var currentValue;
             equipmentUsedSelectElems.each(function () {
@@ -198,6 +236,7 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
         }
 
 $(document).ready(function () {
+    var formNames = ['EquipmentDeployment', 'InstrumentCalibration', 'Generic'];
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
     setFormFields($('tbody'));
@@ -215,11 +254,18 @@ $(document).ready(function () {
         });
     });
 
-    $('form').find('[name="actionid"]').change(function () {
-        var form = $('form');
-        var formActionType = form.find('[name="actiontypecv"]').val();
-        if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment")
-            filterEquipmentByAction($(this).val(), form.find('[name="equipmentused"]'));
-    })
+    var currentForm = $('form');
+
+    currentForm.find('[name="actionid"]').change(function (eventData, handler) {
+        var formActionType = currentForm.find('[name="actiontypecv"]').val();
+        if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment") {
+            filterEquipmentByAction($(this).val(), currentForm.find('[name="equipmentused"]'));
+        }
+
+        if (currentForm.hasClass('EquipmentDeployment') || currentForm.hasClass('InstrumentCalibration') || currentForm.hasClass('Generic')) {
+            var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
+            filterActionDatesByVisit(siteVisit);
+        }
+    });
 });
 

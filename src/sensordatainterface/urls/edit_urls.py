@@ -74,7 +74,7 @@ urlpatterns = patterns('',
         url(r'^site-visits/create-site-visit/summary/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit_summary,
         name='create_site_visit_summary'),
 
-        url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?/$', edit_views.edit_action, name='create_action'),
+        url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?$', edit_views.edit_action, name='create_action'),
         url(r'^site-visits/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
         #url(r'^sites/delete-site/(?P<site_id>\d+)/$', edit_views.delete_site, name='delete_site'),
 )
