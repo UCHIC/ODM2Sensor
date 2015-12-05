@@ -160,17 +160,33 @@ urlpatterns = patterns('',
     #################################################################################################
     #                         Controlled Vocabularies Tab
     #################################################################################################
-    url(r'^control-vocabularies/sampling-feature-types/$',
-        SamplingFeatureTypes.as_view(),
-        name='sampling_feature_types'),
+    url(r'^vocabularies/action-type/$',
+        ActionType.as_view(),
+        name='action_type'),
 
-    url(r'^control-vocabularies/site-types/$',
-        SiteTypes.as_view(),
-        name='site_types'),
+    url(r'^vocabularies/equipment-type/$',
+        EquipmentType.as_view(),
+        name='equipment_type'),
 
-    url(r'^control-vocabularies/spatial-offset-types/$',
-        SpatialOffsetTypes.as_view(),
-        name='spatial_offset_types'),
+    url(r'^vocabularies/method-type/$',
+        MethodType.as_view(),
+        name='method_type'),
+
+    url(r'^vocabularies/organization-type/$',
+        OrganizationType.as_view(),
+        name='organization_type'),
+
+    url(r'^vocabularies/sampling-feature-type/$',
+        SamplingFeatureType.as_view(),
+        name='sampling_feature_type'),
+
+    url(r'^vocabularies/site-type/$',
+        SiteType.as_view(),
+        name='site_type'),
+
+    url(r'^vocabularies/spatial-offset-type/$',
+        SpatialOffsetType.as_view(),
+        name='spatial_offset_type'),
 
 
     #################################################################################################

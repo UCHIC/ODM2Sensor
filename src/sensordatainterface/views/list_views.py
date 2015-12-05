@@ -85,13 +85,13 @@ class Humans(ListView):
         return []
 
     def get_context_data(self, **kwargs):
-        context = super(SamplingFeatureTypes, self).get_context_data(**kwargs)
-        context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
+        context = super(SamplingFeatureType, self).get_context_data(**kwargs)
+        context['SamplingFeatureType'] = CvSamplingfeaturetype.objects.all()
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(SamplingFeatureTypes, self).dispatch(*args, **kwargs)
+        return super(SamplingFeatureType, self).dispatch(*args, **kwargs)
 
 
 class SiteVisitsBySite(ListView):
@@ -153,52 +153,112 @@ class OrganizationsView(ListView):
 #################################################################################################
 #                         Controlled Vocabularies Tab
 #################################################################################################
-class SamplingFeatureTypes(ListView):
-    template_name = 'vocabulary/sampling-feature-types.html'
+class ActionType(ListView):
+    template_name = 'vocabulary/action-type.html'
 
     def get_queryset(self):
         return []
 
     def get_context_data(self, **kwargs):
-        context = super(SamplingFeatureTypes, self).get_context_data(**kwargs)
-        context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
+        context = super(ActionType, self).get_context_data(**kwargs)
+        context['ActionType'] = CvActiontype.objects.all();
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(SamplingFeatureTypes, self).dispatch(*args, **kwargs)
+        return super(ActionType, self).dispatch(*args, **kwargs)
 
-
-class SpatialOffsetTypes(ListView):
-    template_name = 'vocabulary/spacial-offset-types.html'
+class EquipmentType(ListView):
+    template_name = 'vocabulary/equipment-type.html'
 
     def get_queryset(self):
         return []
 
     def get_context_data(self, **kwargs):
-        context = super(SpatialOffsetTypes, self).get_context_data(**kwargs)
-        context['SpatialOffsetTypes'] = CvSpatialoffsettype.objects.all()
+        context = super(EquipmentType, self).get_context_data(**kwargs)
+        context['EquipmentType'] = CvEquipmenttype.objects.all();
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(SpatialOffsetTypes, self).dispatch(*args, **kwargs)
+        return super(EquipmentType, self).dispatch(*args, **kwargs)
 
-
-class SiteTypes(ListView):
-    template_name = 'vocabulary/site-types.html'
+class MethodType(ListView):
+    template_name = 'vocabulary/method-type.html'
 
     def get_queryset(self):
         return []
 
     def get_context_data(self, **kwargs):
-        context = super(SiteTypes, self).get_context_data(**kwargs)
-        context['SiteTypes'] = CvSitetype.objects.all()
+        context = super(MethodType, self).get_context_data(**kwargs)
+        context['MethodType'] = CvMethodtype.objects.all();
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(SiteTypes, self).dispatch(*args, **kwargs)
+        return super(MethodType, self).dispatch(*args, **kwargs)
+
+class OrganizationType(ListView):
+    template_name = 'vocabulary/organization-type.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganizationType, self).get_context_data(**kwargs)
+        context['OrganizationType'] = CvOrganizationtype.objects.all();
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(OrganizationType, self).dispatch(*args, **kwargs)
+
+class SamplingFeatureType(ListView):
+    template_name = 'vocabulary/sampling-feature-type.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(SamplingFeatureType, self).get_context_data(**kwargs)
+        context['SamplingFeatureType'] = CvSamplingfeaturetype.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SamplingFeatureType, self).dispatch(*args, **kwargs)
+
+
+class SpatialOffsetType(ListView):
+    template_name = 'vocabulary/spatial-offset-type.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(SpatialOffsetType, self).get_context_data(**kwargs)
+        context['SpatialOffsetType'] = CvSpatialoffsettype.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SpatialOffsetType, self).dispatch(*args, **kwargs)
+
+
+class SiteType(ListView):
+    template_name = 'vocabulary/site-type.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteType, self).get_context_data(**kwargs)
+        context['SiteType'] = CvSitetype.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteType, self).dispatch(*args, **kwargs)
 
 
 
@@ -250,9 +310,9 @@ class EquipmentDeploymentsBySite(ListView):
 #         context['People'] = Affiliation.objects.filter(personid__isnull=False)
 #         context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
 #         context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
-#         context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
-#         context['SiteTypes'] = CvSitetype.objects.all()
-#         context['SpatialOffsetTypes'] = CvSpatialoffsettype.objects.all()
+#         context['SamplingFeatureType'] = CvSamplingfeaturetype.objects.all()
+#         context['SiteType'] = CvSitetype.objects.all()
+#         context['SpatialOffsetType'] = CvSpatialoffsettype.objects.all()
 #         context['EquipmentTypes'] = CvEquipmenttype.objects.all()
 #         context['ActionTypes'] = CvActiontype.objects.all()
 #         context['MethodTypes'] = CvMethodtype.objects.all()

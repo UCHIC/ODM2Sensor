@@ -54,10 +54,7 @@ urlpatterns = patterns('',
         url(r'^vocabulary/delete-calibration-method/(?P<method_id>\d+)/$', edit_views.delete_calibration_method,
         name='delete_calibration_method'),
 
-        url(r'^vocabulary/create-control-vocabulary/(?P<target_cv>\w+)/(?:(?P<name>(.*))/)?$', edit_views.edit_control_vocabularies,
-        name='create_control_vocabulary'),
-        url(r'^vocabulary/delete-control-vocabulary/(?P<target_cv>\w+)/(?P<name>(.*))/$', edit_views.delete_control_vocabularies,
-        name='delete_control_vocabulary'),
+
 
         url(r'^site-visits/create-site-visit/(?:(?P<site_id>\d+)/)?$', edit_views.create_site_visit, name='create_site_visit'),
         url(r'^site-visits/create-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
@@ -72,4 +69,16 @@ urlpatterns = patterns('',
         url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?/$', edit_views.edit_action, name='create_action'),
         url(r'^site-visits/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
         #url(r'^sites/delete-site/(?P<site_id>\d+)/$', edit_views.delete_site, name='delete_site'),
+
+
+        #################################################################################################
+        #                         Considering Deletion
+        #################################################################################################
+
+        # WE DECIDED TO NOT EDIT OR CREATE VOCABULARIES. KEEPING THIS FUNCTIONALITY HERE IN CASE IT'S NEEDED
+
+        # url(r'^vocabulary/create-control-vocabulary/(?P<target_cv>\w+)/(?:(?P<name>(.*))/)?$', edit_views.edit_control_vocabularies,
+        # name='create_control_vocabulary'),
+        # url(r'^vocabulary/delete-control-vocabulary/(?P<target_cv>\w+)/(?P<name>(.*))/$', edit_views.delete_control_vocabularies,
+        # name='delete_control_vocabulary'),
 )

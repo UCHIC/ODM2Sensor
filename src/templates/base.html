@@ -55,9 +55,9 @@
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="{% url 'equipment' %}">Equipment</a></li>
+                        <li><a href="{% url 'models' %}">Equipment Models</a></li>
                         <li><a href="{% url 'factory_service' %}">Factory Service History</a></li>
                         <li><a href="{% url 'sensor_output' %}">Instrument Output Variables</a></li>
-                        <li><a href="{% url 'models' %}">Equipment Models</a></li>
                     </ul>
                 </li>
 
@@ -76,17 +76,18 @@
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <!-- @todo add url refs -->
-                        <li><a href="{% url 'sampling_feature_types' %}">Sampling Feature Types</a></li>
-                        <li><a href="{% url 'site_types' %}">Site Types</a></li>
-                        <li><a href="{% url 'spatial_offset_types' %}">Spatial Offset Types</a></li>
+                        <li><a href="{% url 'action_type' %}">Action Type</a></li>
+                        <li><a href="{% url 'equipment_type' %}">Equipment Type</a></li>
+                        <li><a href="{% url 'method_type' %}">Method Type</a></li>
+                        <li><a href="{% url 'organization_type' %}">Organization Type</a></li>
+                        <li><a href="{% url 'sampling_feature_type' %}">Sampling Feature Type</a></li>
+                        <li><a href="{% url 'site_type' %}">Site Type</a></li>
+                        <li><a href="{% url 'spatial_offset_type' %}">Spatial Offset Type</a></li>
                         <li><a href="http://vocabulary.odm2.org">Complete list at: vocabulary.odm2.org</a></li>
                     </ul>
                 </li>
-
-
-
-
             </ul>
+
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">
                     <li>
