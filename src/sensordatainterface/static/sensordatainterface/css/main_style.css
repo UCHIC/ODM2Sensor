@@ -413,7 +413,7 @@ tr.form-required:after {
 }
 
 span.helptext {
-  display: inline-block;
+    display: inline-block;
 }
 
 
@@ -464,6 +464,40 @@ a.add-related-equ-button.btn.btn-primary.btn-block {
     /* margin-right: 66px; */
     width: 97.5%;
 }
+
+div.home_page {
+    padding-left: 10%;
+    width: 65%;
+    float: left;
+}
+
+div.intro {
+    padding-left: 10%;
+    width: 65%;
+    float: left;
+}
+
+div.quick_links {
+    float: right;
+    margin-right: 10%;
+    border-style: solid;
+    border-radius: 25px;
+    border-color: forestgreen;
+}
+
+div.quick_links_table {
+    margin: 25px;
+}
+
+div.banner {
+	background-image: url(../img/waterfallBanner.jpg);
+	height: 250px;
+}
+
+img.banner {
+    width: 100%;
+}
+
 
 label.checkbox-label {
     font-weight: inherit;

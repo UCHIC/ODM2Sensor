@@ -34,20 +34,15 @@ urlpatterns = patterns('',
         url(r'^inventory/create-sensor-output-variable/deployment/(?P<site_id>\d+)/(?P<deployment>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
         name='create_output_variable_deployment'),
 
-        url(r'^vocabulary/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
+        url(r'^people/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
         name='create_person'),
-        url(r'^vocabulary/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
+        url(r'^people/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
         name='delete_person'),
 
-        url(r'^vocabulary/create-vendor/(?:(?P<organization_id>\d+)/)?$', edit_views.edit_vendor,
-        name='create_vendor'),
-        url(r'^vocabulary/delete-vendor/(?P<organization_id>\d+)/$', edit_views.delete_vendor,
-        name='delete_vendor'),
-
-        url(r'^vocabulary/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
-        name='create_person'),
-        url(r'^vocabulary/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
-        name='delete_person'),
+        url(r'^people/create-organization/(?:(?P<organization_id>\d+)/)?$', edit_views.edit_vendor,
+        name='create_organization'),
+        url(r'^people/delete-organization/(?P<organization_id>\d+)/$', edit_views.delete_vendor,
+        name='delete_organization'),
 
         url(r'^vocabulary/create-calibration-standard/(?:(?P<reference_val_id>\d+)/)?$', edit_views.edit_calibration_standard,
         name='create_calibration_standard'),
@@ -59,10 +54,7 @@ urlpatterns = patterns('',
         url(r'^vocabulary/delete-calibration-method/(?P<method_id>\d+)/$', edit_views.delete_calibration_method,
         name='delete_calibration_method'),
 
-        url(r'^vocabulary/create-control-vocabulary/(?P<target_cv>\w+)/(?:(?P<name>(.*))/)?$', edit_views.edit_control_vocabularies,
-        name='create_control_vocabulary'),
-        url(r'^vocabulary/delete-control-vocabulary/(?P<target_cv>\w+)/(?P<name>(.*))/$', edit_views.delete_control_vocabularies,
-        name='delete_control_vocabulary'),
+
 
         url(r'^site-visits/create-site-visit/(?:(?P<site_id>\d+)/)?$', edit_views.create_site_visit, name='create_site_visit'),
         url(r'^site-visits/create-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
@@ -77,4 +69,16 @@ urlpatterns = patterns('',
         url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?$', edit_views.edit_action, name='create_action'),
         url(r'^site-visits/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
         #url(r'^sites/delete-site/(?P<site_id>\d+)/$', edit_views.delete_site, name='delete_site'),
+
+
+        #################################################################################################
+        #                         Considering Deletion
+        #################################################################################################
+
+        # WE DECIDED TO NOT EDIT OR CREATE VOCABULARIES. KEEPING THIS FUNCTIONALITY HERE IN CASE IT'S NEEDED
+
+        # url(r'^vocabulary/create-control-vocabulary/(?P<target_cv>\w+)/(?:(?P<name>(.*))/)?$', edit_views.edit_control_vocabularies,
+        # name='create_control_vocabulary'),
+        # url(r'^vocabulary/delete-control-vocabulary/(?P<target_cv>\w+)/(?P<name>(.*))/$', edit_views.delete_control_vocabularies,
+        # name='delete_control_vocabulary'),
 )

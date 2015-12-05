@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% load template_tags %}
+{% block content %}
+
+    <div class="col-xs-12 col-sm-6 col-md-7"><h2>Organizations</h2></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary new-btn" href="{% url 'create_organization' %}">New Organization</a>
+        </div>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Website</th>
+                <th>Phone</th>
+                <th>Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for vendor in OrganizationsView %}
+                <tr>
+                    <td>
+                        <a href="{% url 'organization_detail' vendor.organizationid %}">
+                            {{ vendor.organizationcode }}
+                        </a>
+                    </td>
+                    <td>{{ vendor.organizationname }}</td>
+                    <td>{{ vendor.organizationtypecv }}</td>
+                    <td>{{ vendor.organizationlink }}</td>
+                    <td>
+                        {% for aff in vendor.affiliation.all %}
+                            {% if aff.isprimaryorganizationcontact and aff.primaryphone %}
+                                {{ aff.primaryphone }}{% if not forloop.last %}, {% endif %}
+                                {# how should this number be handled? #}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a class="icon-link" href="{% url 'create_organization' vendor.organizationid %}">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        </a>
+                        <a class="icon-link delete-icon" data-href="{% url 'delete_organization' vendor.organizationid %}">
+                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+{% endblock %}

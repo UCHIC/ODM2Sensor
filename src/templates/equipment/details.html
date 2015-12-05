@@ -137,7 +137,7 @@
                 <tr>
                     <th>Name:</th>
                     <td>
-                        <a href="{% url 'vendor_detail' Equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
+                        <a href="{% url 'organization_detail' Equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
                             {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}
                         </a>
                     </td>
@@ -187,7 +187,7 @@
                 <tr>
                     <th>Name:</th>
                     <td>
-                        <a href="{% url 'vendor_detail' Equipment.equipmentvendorid.organizationid %}">
+                        <a href="{% url 'organization_detail' Equipment.equipmentvendorid.organizationid %}">
                             {{ Equipment.equipmentvendorid.organizationname|default:" -- " }}
                         </a>
                     </td>
