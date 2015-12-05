@@ -1,71 +1,64 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <div class="row title">
-        <h1>ODM2 Sensor</h1>
-        <h3>Equipment Management</h3>
+
+    <!-- Waterfall picture used for banner -->
+    <div>
+       <img class="banner" src="{% static "sensordatainterface/img/waterfallBanner.jpg" %}" height="250">
     </div>
 
-    <div class="body">
-        <span><p class="home_page">This web application is used for water-related sensor infrastructure and data management.
-            It is based on the Sensors Extension of Version 2 of the Observations Data Model (ODM2).</p></span>
-    </div>
+    <div><h1 align="center"><font size="150%">ODM2 Sensor</font></h1></div>
 
-    <div class="row title">
-        <h3>Sponsors</h3>
-        </div>
-    <div class="sponsors">
+    <div class="home_page">
         <div>
-            <span>This project is receiving or has received support from a number of agencies and complementary efforts including:</span>
-        </div>
-        <div>
-            <span>
-                <a href="http://www.iutahepscor.org"><img data-toggle="tooltip" title="hello" src="{% static "sensordatainterface/img/iutah_home_logo.png" %}" height="150" hspace="50" vspace="20"></a>
-                <a href="http://www.nsf.gov"><img src="{% static "sensordatainterface/img/nsf_home_logo.png" %}"></a>
-            </span>
+
+            <h3>Equipment Management</h3>
         </div>
     </div>
 
-    <div class="table">
-    <table border="1|0|0">
-        <thead>
-            <tr>
-                <th>Quick Links</th>
-            </tr>
-        </thead>
 
-        <tbody>
-            <tr>
-                <td><div >
-                    <a class="btn btn-primary new-btn" href="{% url 'create_site_visit' %}">New Site Visit</a>
-                </div></td>
-            </tr>
-
-            <tr>
-                <td><div >
-                    <a class="btn btn-primary new-btn" href="{% url 'create_action' 'InstrumentCalibration' %}">New Calibration</a>
-                </div></td>
-            </tr>
-
-            <tr>
-                <td><div >
-                    <a class="btn btn-primary new-btn" href="{% url 'create_action' 'EquipmentDeployment' %}">New Deployment</a>
-                </div></td>
-            </tr>
-
-            <tr>
-                <td><div class="col-xs-12 col-sm-6 col-md-3 pull-left">
-                    <a class="btn btn-primary new-btn" href="{% url 'create_action' 'Generic' %}">New Action</a>
-                </div></td>
-            </tr>
-
-            <tr>
-                <td><div class="col-xs-12 col-sm-6 col-md-3 pull-left">
-                    <a class="btn btn-primary new-btn" href="{% url 'create_equipment' %}">New Equipment</a>
-                </div></td>
-            </tr>
-        </tbody>
-
-    </table>
+    <div class="intro">
+        <p>
+            This equipment management web application provides access to and recording of information
+            on equipment inventory and related actions. It is based on the Sensors Extension of Version 2 of the
+            <a href="http://github.com/odm2/odm2" data-toggle="tooltip" title="github.com/odm2/odm2">Observations Data Model 2 (ODM2)</a>
+            This interface is designed for monitoring networks using in situ sensors to manage physical infrastructure and link it to observational data.
+        </p>
     </div>
+
+
+    <div class="quick_links">
+
+        <div class="quick_links_table">
+            <div><h4>Create a new...</h4></div>
+
+            <div ><a class="btn" href="{% url 'create_site_visit' %}">Site Visit</a></div>
+
+            <div ><a class="btn" href="{% url 'create_action' 'InstrumentCalibration' %}">Calibration</a></div>
+
+            <div ><a class="btn" href="{% url 'create_action' 'EquipmentDeployment' %}">Deployment</a></div>
+
+            <div><a class="btn" href="{% url 'create_action' 'Generic' %}">Generic Action</a></div>
+
+            <div><a class="btn" href="{% url 'create_equipment' %}">Equipment</a></div>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="home_page">
+            <div><h3>Sponsors</h3></div>
+
+            <div><p>This project is receiving or has received support from a number of agencies and complementary efforts including:</p></div>
+
+            <div>
+                <a href="http://www.iutahepscor.org">
+                    <img data-toggle="tooltip" title="iutahepscor.org" src="{% static "sensordatainterface/img/iutah_home_logo.png" %}" height="150" hspace="75" vspace="20"></a>
+                <a href="http://www.nsf.gov">
+                    <img data-toggle="tooltip" title="nsf.gov" src="{% static "sensordatainterface/img/nsf_home_logo.png" %}" height="100" hspace="75"></a>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
