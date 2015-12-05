@@ -2,12 +2,13 @@
 {% load static %}
 {% load template_tags %}
 {% block content %}
+
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Person Details</h2></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_person' Person.affiliationid %}">Edit Person Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_model' Person.affiliationid %}">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_person' Person.affiliationid %}">Delete</a>
         </div>
     </div>
     <div class="row detail-mid">
@@ -86,4 +87,5 @@
             </table>
         </div>
     {% endblock %}
+
 {% endblock %}

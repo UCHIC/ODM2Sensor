@@ -292,7 +292,7 @@ def edit_person(request, affiliation_id):
 
     return render(
         request,
-        'vocabulary/../../templates/people/person-form.html',
+        'people/person-form.html',
         {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
 
     )
@@ -305,7 +305,7 @@ def delete_person(request, affiliation_id):
     affiliation.personid.delete()
     affiliation.delete()
     messages.add_message(request, messages.SUCCESS, 'Person ' + person_name + ' removed from the system')
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
+    return HttpResponseRedirect(reverse('humans') + '?tab=activity')
 
 
 @login_required(login_url=LOGIN_URL)

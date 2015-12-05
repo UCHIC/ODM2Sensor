@@ -34,20 +34,15 @@ urlpatterns = patterns('',
         url(r'^inventory/create-sensor-output-variable/deployment/(?P<site_id>\d+)/(?P<deployment>\d+)/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable_site,
         name='create_output_variable_deployment'),
 
-        url(r'^vocabulary/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
+        url(r'^people/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
         name='create_person'),
-        url(r'^vocabulary/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
+        url(r'^people/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
         name='delete_person'),
 
         url(r'^vocabulary/create-vendor/(?:(?P<organization_id>\d+)/)?$', edit_views.edit_vendor,
         name='create_vendor'),
         url(r'^vocabulary/delete-vendor/(?P<organization_id>\d+)/$', edit_views.delete_vendor,
         name='delete_vendor'),
-
-        url(r'^vocabulary/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
-        name='create_person'),
-        url(r'^vocabulary/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
-        name='delete_person'),
 
         url(r'^vocabulary/create-calibration-standard/(?:(?P<reference_val_id>\d+)/)?$', edit_views.edit_calibration_standard,
         name='create_calibration_standard'),

@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+{% load static %}
+{% load template_tags %}
+{% block content %}
+
 <div class="row title">
     <div class="col-xs-12 col-sm-6 col-md-7">
         <h2>People</h2>
@@ -18,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for person in People %}
+    {% for person in Humans %}
         <tr>
             <td>
                 <a href="{% url 'person_detail' person.affiliationid %}">
@@ -41,3 +46,5 @@
     {% endfor %}
     </tbody>
 </table>
+
+{% endblock %}

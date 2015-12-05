@@ -120,6 +120,7 @@ class Humans(ListView):
     def dispatch(self, *args, **kwargs):
         return super(SamplingFeatureTypes, self).dispatch(*args, **kwargs)
 
+
 class SiteVisitsBySite(ListView):
     context_object_name = 'SiteVisits'
     template_name = 'site-visits/visits.html'
@@ -141,6 +142,28 @@ class SiteVisitsBySite(ListView):
         return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
 
 
+#################################################################################################
+#                         People Tab
+#################################################################################################
+class Humans(ListView):
+    template_name = 'people/person-snippet.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(Humans, self).get_context_data(**kwargs)
+        context['Humans'] = Affiliation.objects.filter(personid__isnull=False)
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(Humans, self).dispatch(*args, **kwargs)
+
+
+#################################################################################################
+#                         Controlled Vocabularies Tab
+#################################################################################################
 class SamplingFeatureTypes(ListView):
     template_name = 'vocabulary/sampling-feature-types.html'
 
