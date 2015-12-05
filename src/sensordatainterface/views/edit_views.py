@@ -292,7 +292,7 @@ def edit_person(request, affiliation_id):
 
     return render(
         request,
-        'vocabulary/person-form.html',
+        'vocabulary/../../templates/people/person-form.html',
         {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
 
     )
@@ -460,7 +460,7 @@ def edit_calibration_standard(request, reference_val_id):
 
     return render(
         request,
-        'vocabulary/calibration-standard-from.html',
+        'vocabulary/../../templates/site-visits/calibration/calibration-standard-from.html',
         {'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id}
     )
 

@@ -38,27 +38,6 @@ class EquipmentDeploymentsBySite(ListView):
         return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
 
 
-class SiteVisitsBySite(ListView):
-    context_object_name = 'SiteVisits'
-    template_name = 'site-visits/visits.html'
-
-    def get_queryset(self):
-        self.site_visits = FeatureAction.objects.filter(
-            actionid__actiontypecv='Site Visit',
-            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-        )
-        return self.site_visits
-
-    def get_context_data(self, **kwargs):
-        context = super(SiteVisitsBySite, self).get_context_data(**kwargs)
-        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
-
-
 class EquipmentDeployments(ListView):
     context_object_name = 'Deployments'
     template_name = 'site-visits/deployment/deployments.html'
@@ -124,6 +103,42 @@ class EquipmentFactoryServiceHistory(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(EquipmentFactoryServiceHistory, self).dispatch(*args, **kwargs)
+
+
+class Humans(ListView):
+    template_name = 'vocabulary/.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(SamplingFeatureTypes, self).get_context_data(**kwargs)
+        context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SamplingFeatureTypes, self).dispatch(*args, **kwargs)
+
+class SiteVisitsBySite(ListView):
+    context_object_name = 'SiteVisits'
+    template_name = 'site-visits/visits.html'
+
+    def get_queryset(self):
+        self.site_visits = FeatureAction.objects.filter(
+            actionid__actiontypecv='Site Visit',
+            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
+        )
+        return self.site_visits
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteVisitsBySite, self).get_context_data(**kwargs)
+        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
 
 
 class SamplingFeatureTypes(ListView):

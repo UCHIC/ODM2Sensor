@@ -87,7 +87,7 @@ urlpatterns = patterns('',
                            context_object_name='Person',
                            model=Affiliation,
                            slug_field='affiliationid',
-                           template_name='vocabulary/person-detail.html'),
+                           template_name='vocabulary/../../templates/people/person-detail.html'),
                            name='person_detail'),
 
                        )

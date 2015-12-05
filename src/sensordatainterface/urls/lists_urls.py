@@ -133,15 +133,15 @@ urlpatterns = patterns('',
                            EquipmentCalibrations.as_view(),
                            name='calibrations_by_equipment'),
 
-                       url(r'^control-vocabularies/sampling-feature-type/$',
+                       url(r'^control-vocabularies/sampling-feature-types/$',
                             SamplingFeatureTypes.as_view(),
                             name='sampling_feature_types'),
 
-                       url(r'^control-vocabularies/spatial-offset-type/$',
+                       url(r'^control-vocabularies/site-types/$',
                             SiteTypes.as_view(),
                             name='site_types'),
 
-                       url(r'^control-vocabularies/spatial-offset-type/$',
+                       url(r'^control-vocabularies/spatial-offset-types/$',
                             SpatialOffsetTypes.as_view(),
                             name='spatial_offset_types'),
 
