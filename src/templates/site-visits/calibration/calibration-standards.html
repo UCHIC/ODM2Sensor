@@ -35,10 +35,10 @@
                 <td>{{ reference.referencematerialid.referencemateriallotcode }}</td>
                 <td>{{ reference.referencematerialid.referencematerialexpirationdate }}</td>
                 <td>
-                <a class="icon-link" href="{% url 'create_calibration_standard' reference.referencematerialvalueid %}">
+                    <a title="Edit" alt="Edit Standard" class="icon-link" href="{% url 'create_calibration_standard' reference.referencematerialvalueid %}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
-                    <a class="icon-link delete-icon" data-href="{% url 'delete_calibration_standard' reference.referencematerialvalueid %}">
+                    <a title="Delete" alt="Destroy Standard" class="icon-link delete-icon" data-href="{% url 'delete_calibration_standard' reference.referencematerialvalueid %}">
                         <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                     </a></td>
             {% endfor %}

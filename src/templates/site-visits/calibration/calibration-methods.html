@@ -24,10 +24,10 @@
                 <td>{{ method.methodname }}</td>
                 <td>{{ method.methoddescription }}</td>
                 <td>
-                <a class="icon-link" href="{% url 'create_calibration_method' method.methodid %}">
+                    <a title="Edit" alt="Edit Method" class="icon-link" href="{% url 'create_calibration_method' method.methodid %}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
-                    <a class="icon-link delete-icon" data-href="{% url 'delete_calibration_method' method.methodid %}">
+                    <a title="Delete" alt='Destroy Method' class="icon-link delete-icon" data-href="{% url 'delete_calibration_method' method.methodid %}">
                         <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                     </a></td>
             </tr>
