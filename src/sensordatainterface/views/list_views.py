@@ -126,29 +126,77 @@ class EquipmentFactoryServiceHistory(ListView):
         return super(EquipmentFactoryServiceHistory, self).dispatch(*args, **kwargs)
 
 
-class Vocabularies(ListView):
-    template_name = 'vocabulary/vocabularies.html'
+class SamplingFeatureTypes(ListView):
+    template_name = 'vocabulary/sampling-feature-types.html'
 
     def get_queryset(self):
         return []
 
     def get_context_data(self, **kwargs):
-        context = super(Vocabularies, self).get_context_data(**kwargs)
-        context['Vendors'] = Organization.objects.all()
-        context['Models'] = EquipmentModel.objects.all()
-        context['OutputVariables'] = InstrumentOutputVariable.objects.all()
-        context['People'] = Affiliation.objects.filter(personid__isnull=False)
-        context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
-        context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
+        context = super(SamplingFeatureTypes, self).get_context_data(**kwargs)
         context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
-        context['SiteTypes'] = CvSitetype.objects.all()
-        context['SpatialOffsetTypes'] = CvSpatialoffsettype.objects.all()
-        context['EquipmentTypes'] = CvEquipmenttype.objects.all()
-        context['ActionTypes'] = CvActiontype.objects.all()
-        context['MethodTypes'] = CvMethodtype.objects.all()
-        context['OrganizationTypes'] = CvOrganizationtype.objects.all()
         return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(Vocabularies, self).dispatch(*args, **kwargs)
+        return super(SamplingFeatureTypes, self).dispatch(*args, **kwargs)
+
+
+class SpatialOffsetTypes(ListView):
+    template_name = 'vocabulary/spacial-offset-types.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(SpatialOffsetTypes, self).get_context_data(**kwargs)
+        context['SpatialOffsetTypes'] = CvSpatialoffsettype.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SpatialOffsetTypes, self).dispatch(*args, **kwargs)
+
+
+class SiteTypes(ListView):
+    template_name = 'vocabulary/site-types.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteTypes, self).get_context_data(**kwargs)
+        context['SiteTypes'] = CvSitetype.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteTypes, self).dispatch(*args, **kwargs)
+
+
+# class Vocabularies(ListView):
+#     template_name = 'vocabulary/vocabularies.html'
+#
+#     def get_queryset(self):
+#         return []
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(Vocabularies, self).get_context_data(**kwargs)
+#         context['Vendors'] = Organization.objects.all()
+#         context['Models'] = EquipmentModel.objects.all()
+#         context['OutputVariables'] = InstrumentOutputVariable.objects.all()
+#         context['People'] = Affiliation.objects.filter(personid__isnull=False)
+#         context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
+#         context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
+#         context['SamplingFeatureTypes'] = CvSamplingfeaturetype.objects.all()
+#         context['SiteTypes'] = CvSitetype.objects.all()
+#         context['SpatialOffsetTypes'] = CvSpatialoffsettype.objects.all()
+#         context['EquipmentTypes'] = CvEquipmenttype.objects.all()
+#         context['ActionTypes'] = CvActiontype.objects.all()
+#         context['MethodTypes'] = CvMethodtype.objects.all()
+#         context['OrganizationTypes'] = CvOrganizationtype.objects.all()
+#         return context
+#
+#     @method_decorator(login_required(login_url=LOGIN_URL))
+#     def dispatch(self, *args, **kwargs):
+#         return super(Vocabularies, self).dispatch(*args, **kwargs)

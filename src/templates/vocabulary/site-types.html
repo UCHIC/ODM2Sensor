@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="row title">
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h2>Site Types</h2>
+    </div>
+
+    <!-- Removed for Issue #124. Functionality is broken, but form still exists.
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_control_vocabulary' 'CvSitetype' %}">New Site Type</a>
+    </div>
+    -->
+
+</div>
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>Term</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Field activity</th>
+
+        <!-- Removed for Issue #124. Functionality is broken, but form still exists.
+        <th>Operations</th>
+        -->
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for cv in SiteTypes %}
+        <tr>
+            <td><a href="{{ cv.sourcevocabularyuri }}">{{ cv.term }}</a>
+            </td>
+            <td>{{ cv.name }}</td>
+            <td>{{ cv.category }}</td>
+            <td>{{ cv.definition }}</td>
+
+            <!-- Removed for Issue #124. Functionality is broken, but form still exists.
+            <td>
+                <a class="icon-link" href="{% url 'create_control_vocabulary' 'CvSitetype' cv.name %}">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+                <a class="icon-link delete-icon" data-href="{% url 'delete_control_vocabulary' 'CvSitetype' cv.name %}">
+                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                </a>
+            </td>
+            -->
+
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

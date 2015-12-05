@@ -27,13 +27,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="{% url 'home' %}"><img id="image_logo" src="{% static "sensordatainterface/img/iutah_logo.png" %}"
+            <a><img id="image_logo" src="{% static "sensordatainterface/img/iutah_logo.png" %}"
                                             width="128" height="45"/></a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <ul class="nav navbar-nav">
+                <li class="" id="sites-nav"><a href="{% url 'home' %}">Home</a></li>
                 <li class="" id="sites-nav"><a href="{% url 'sites' %}">Sites<span class="sr-only">(current)</span></a>
                 </li>
 
@@ -48,6 +49,7 @@
                         <li><a href="{% url 'field_activities' %}">Other Actions</a></li>
                     </ul>
                 </li>
+
                 <li class="dropdown" id="inventory-nav">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Inventory
                         <span class="caret"></span></a>
@@ -58,7 +60,32 @@
                         <li><a href="{% url 'models' %}">Equipment Models</a></li>
                     </ul>
                 </li>
-                <li id="vocabulary-nav"><a href="{% url 'vocabularies' %}">Vocabularies</a></li>
+
+                <li class="dropdown" id="people-nav">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">People
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <!-- @todo add url refs -->
+                        <li><a href="{% url 'home' %}">Humans</a></li>
+                        <li><a href="{% url 'home' %}">Organizations</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown" id="inventory-nav">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Vocabularies
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <!-- @todo add url refs -->
+                        <li><a href="{% url 'sampling_feature_types' %}">Sampling Feature Types</a></li>
+                        <li><a href="{% url 'site_types' %}">Site Types</a></li>
+                        <li><a href="{% url 'spatial_offset_types' %}">Spatial Offset Types</a></li>
+                        <li><a href="http://vocabulary.odm2.org">Complete list at vocabulary.odm2.org</a></li>
+                    </ul>
+                </li>
+
+
+
+
             </ul>
             {% if user.is_authenticated %}
                 <ul class="nav navbar-nav navbar-right">
