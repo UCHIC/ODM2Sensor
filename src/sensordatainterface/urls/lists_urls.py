@@ -33,15 +33,11 @@ urlpatterns = patterns('',
            template_name='sites/sites.html'),
        name='sites'),
 
-
-
-
-
     #################################################################################################
-    #                         Site Visits Tab
+    #                         Actions Tab
     #################################################################################################
     # Site Visits Generic View
-    url(r'^site-visits/site-visits-list/$',
+    url(r'^actions/site-visits/$',
        GenericListView.as_view(
            queryset=FeatureAction.objects.filter(actionid__actiontypecv='Site visit'),
            context_object_name='SiteVisits',
@@ -49,22 +45,12 @@ urlpatterns = patterns('',
        ),
        name='site_visits'),
 
-
-
-    url(r'^site-visits/site-visits/site/(?P<site_id>[-_\w]+)/$',
+    url(r'^actions/site-visits/site/(?P<site_id>[-_\w]+)/$',
        SiteVisitsBySite.as_view(),
        name='site_visits_by_site'),
 
-    url(r'^site-visits/deployments/equipment/(?P<equipment_id>[-_\w]+)/$',
-       EquipmentDeployments.as_view(),
-       name='deployments_by_equipment'),
-
-    url(r'^site-visits/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
-       EquipmentCalibrations.as_view(),
-       name='calibrations_by_equipment'),
-
     # Deployments Generic View
-    url(r'^site-visits/deployments/$',
+    url(r'^actions/deployments/$',
        GenericListView.as_view(
            queryset=Action.objects.filter(
                Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment')
@@ -74,8 +60,16 @@ urlpatterns = patterns('',
        ),
        name='deployments'),
 
+    url(r'^actions/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
+           EquipmentDeploymentsBySite.as_view(),
+           name='deployments_by_site'),
+
+    url(r'^actions/deployments/equipment/(?P<equipment_id>[-_\w]+)/$',
+       EquipmentDeployments.as_view(),
+       name='deployments_by_equipment'),
+
     # Calibrations Generic Views
-    url(r'^site-visits/calibrations/$',
+    url(r'^actions/calibrations/$',
        GenericListView.as_view(
            queryset=Action.objects.filter(
                Q(actiontypecv='Instrument calibration')
@@ -86,8 +80,20 @@ urlpatterns = patterns('',
        ),
        name='calibrations'),
 
+    url(r'^actions/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
+       EquipmentCalibrations.as_view(),
+       name='calibrations_by_equipment'),
+
+    url(r'^actions/calibration-methods/',
+       CalibrationMethods.as_view(),
+       name='calibration_methods'),
+
+    url(r'^actions/calibration-standards/',
+       CalibrationStandards.as_view(),
+       name='calibration_standards'),
+
     #Field Activities Generic View
-    url(r'^site-visits/other-actions/$', #!!!
+    url(r'^actions/other-actions/$', #!!!
        GenericListView.as_view(
            queryset=Action.objects.filter(
                (
@@ -192,14 +198,6 @@ urlpatterns = patterns('',
     #################################################################################################
     #                         Considering Deletion
     #################################################################################################
-
-    # Page Not Found. Pretty sure it's unnecessary
-    url(r'^site-visits/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
-           EquipmentDeploymentsBySite.as_view(),
-           name='deployments_by_site'),
-
-
-
 
     # url(r'^control-vocabularies/$',
     #     Vocabularies.as_view(),

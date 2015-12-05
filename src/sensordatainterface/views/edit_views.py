@@ -983,6 +983,11 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
         )
 
+    # 'equipmentDeployment': 'deployment_detail',
+    #             'instrumentCalibration': 'calibration_detail',
+    #             'equipmentMaintenance': 'field_activity_detail',
+    #             'fieldActivity': 'field_activity_detail'
+
     return render(
         request,
         'site-visits/field-activities/other-action-form.html',

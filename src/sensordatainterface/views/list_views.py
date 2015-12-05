@@ -9,6 +9,28 @@ class GenericListView(ListView):
         return super(GenericListView, self).dispatch(*args, **kwargs)
 
 
+#################################################################################################
+#                         Site Visits Tab
+#################################################################################################
+class SiteVisitsBySite(ListView):
+    context_object_name = 'SiteVisits'
+    template_name = 'site-visits/visits.html'
+
+    def get_queryset(self):
+        self.site_visits = FeatureAction.objects.filter(
+            actionid__actiontypecv='Site Visit',
+            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
+        )
+        return self.site_visits
+
+    def get_context_data(self, **kwargs):
+        context = super(SiteVisitsBySite, self).get_context_data(**kwargs)
+        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
 
 
 class EquipmentDeployments(ListView):
@@ -55,6 +77,41 @@ class EquipmentCalibrations(ListView):
         return super(EquipmentCalibrations, self).dispatch(*args, **kwargs)
 
 
+class CalibrationMethods(ListView):
+    template_name = 'site-visits/calibration/calibration-methods.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(CalibrationMethods, self).get_context_data(**kwargs)
+        context['CalibrationMethods'] = Method.objects.all()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(CalibrationMethods, self).dispatch(*args, **kwargs)
+
+
+class CalibrationStandards(ListView):
+    template_name = 'site-visits/calibration/calibration-standards.html'
+
+    def get_queryset(self):
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(CalibrationStandards, self).get_context_data(**kwargs)
+        context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(CalibrationStandards, self).dispatch(*args, **kwargs)
+
+
+#################################################################################################
+#                         Inventory Tab
+#################################################################################################
 class EquipmentFactoryServiceHistory(ListView):
     service_events = []
     context_object_name = 'FactoryService'
@@ -76,43 +133,6 @@ class EquipmentFactoryServiceHistory(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(EquipmentFactoryServiceHistory, self).dispatch(*args, **kwargs)
-
-
-class Humans(ListView):
-    template_name = 'vocabulary/.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(SamplingFeatureType, self).get_context_data(**kwargs)
-        context['SamplingFeatureType'] = CvSamplingfeaturetype.objects.all()
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SamplingFeatureType, self).dispatch(*args, **kwargs)
-
-
-class SiteVisitsBySite(ListView):
-    context_object_name = 'SiteVisits'
-    template_name = 'site-visits/visits.html'
-
-    def get_queryset(self):
-        self.site_visits = FeatureAction.objects.filter(
-            actionid__actiontypecv='Site Visit',
-            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-        )
-        return self.site_visits
-
-    def get_context_data(self, **kwargs):
-        context = super(SiteVisitsBySite, self).get_context_data(**kwargs)
-        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
 
 
 #################################################################################################

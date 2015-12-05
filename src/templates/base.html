@@ -39,13 +39,14 @@
                 </li>
 
                 <li class="dropdown" id="visits-nav">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Site
-                        Visits
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Actions
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="{% url 'site_visits' %}">Visits</a></li>
+                        <li><a href="{% url 'site_visits' %}">Site Visits</a></li>
                         <li><a href="{% url 'deployments' %}">Deployments</a></li>
                         <li><a href="{% url 'calibrations' %}">Calibrations</a></li>
+                        <li><a href="{% url 'calibration_methods' %}">Methods</a></li>
+                        <li><a href="{% url 'calibration_standards' %}">Calibration Standards</a></li>
                         <li><a href="{% url 'field_activities' %}">Other Actions</a></li>
                     </ul>
                 </li>

@@ -56,18 +56,18 @@ urlpatterns = patterns('',
 
 
 
-        url(r'^site-visits/create-site-visit/(?:(?P<site_id>\d+)/)?$', edit_views.create_site_visit, name='create_site_visit'),
-        url(r'^site-visits/create-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
+        url(r'^actions/create-site-visit/(?:(?P<site_id>\d+)/)?$', edit_views.create_site_visit, name='create_site_visit'),
+        url(r'^actions/create-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
         name='edit_site_visit'),
-        url(r'^site-visits/delete-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.delete_site_visit,
+        url(r'^actions/delete-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.delete_site_visit,
         name='delete_site_visit'),
         # url(r'^vocabulary/delete-calibration-method/(?P<method_id>\d+)/$', edit_views.delete_calibration_method,
         # name='delete_calibration_method'),
-        url(r'^site-visits/create-site-visit/summary/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit_summary,
+        url(r'^actions/create-site-visit/summary/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit_summary,
         name='create_site_visit_summary'),
 
-        url(r'^site-visits/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?$', edit_views.edit_action, name='create_action'),
-        url(r'^site-visits/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
+        url(r'^actions/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?$', edit_views.edit_action, name='create_action'),
+        url(r'^actions/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
         #url(r'^sites/delete-site/(?P<site_id>\d+)/$', edit_views.delete_site, name='delete_site'),
 
 
