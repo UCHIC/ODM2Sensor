@@ -7,6 +7,9 @@ from django.views.generic import RedirectView
 from django.db.models import Q
 
 urlpatterns = patterns('',
+    #################################################################################################
+    #                         Home Tab
+    #################################################################################################
     # Home Page Generic View
     url(r'^home/$',
        GenericListView.as_view(
@@ -46,9 +49,7 @@ urlpatterns = patterns('',
        ),
        name='site_visits'),
 
-    url(r'^site-visits/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
-       EquipmentDeploymentsBySite.as_view(),
-       name='deployments_by_site'),
+
 
     url(r'^site-visits/site-visits/site/(?P<site_id>[-_\w]+)/$',
        SiteVisitsBySite.as_view(),
@@ -151,6 +152,11 @@ urlpatterns = patterns('',
         Humans.as_view(),
         name='humans'),
 
+    url(r'^people/organizations/$',
+        OrganizationsView.as_view(),
+        name='organizations'),
+
+
     #################################################################################################
     #                         Controlled Vocabularies Tab
     #################################################################################################
@@ -165,6 +171,16 @@ urlpatterns = patterns('',
     url(r'^control-vocabularies/spatial-offset-types/$',
         SpatialOffsetTypes.as_view(),
         name='spatial_offset_types'),
+
+
+    #################################################################################################
+    #                         Considering Deletion
+    #################################################################################################
+
+    # Page Not Found. Pretty sure it's unnecessary
+    url(r'^site-visits/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
+           EquipmentDeploymentsBySite.as_view(),
+           name='deployments_by_site'),
 
 
 

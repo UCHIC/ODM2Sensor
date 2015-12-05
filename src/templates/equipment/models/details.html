@@ -26,7 +26,7 @@
                 </tr>
                 <tr>
                     <th>Manufacturer Name:</th>
-                    <td><a href="{% url 'vendor_detail' Model.modelmanufacturerid.organizationid %}">
+                    <td><a href="{% url 'organization_detail' Model.modelmanufacturerid.organizationid %}">
                         {{ Model.modelmanufacturerid.organizationname }}</a>
                     </td>
                 </tr>
@@ -88,7 +88,7 @@
                         <td>{{ equipment.equipmenttypecv }}</td>
 
                         <td>
-                            <a href="{% url 'vendor_detail' equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
+                            <a href="{% url 'organization_detail' equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
                                 {{ equipment.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}
                             </a>
                         </td>

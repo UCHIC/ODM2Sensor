@@ -394,8 +394,8 @@ def delete_control_vocabularies(request, target_cv, name):
 @login_required(login_url=LOGIN_URL)
 def edit_vendor(request, organization_id):
     modifications = {}
-    arguments = [request, Organization.objects, VendorForm, modifications, 'Organization', 'vendor_detail',
-                 'organizationid', organization_id, 'vocabulary/vendor-form.html']
+    arguments = [request, Organization.objects, VendorForm, modifications, 'Organization', 'organization_detail',
+                 'organizationid', organization_id, 'people/organization-form.html']
     return edit_models(*arguments)
 
 
@@ -406,7 +406,7 @@ def delete_vendor(request, organization_id):
     organization_name = organization.organizationname
     organization.delete()
     messages.add_message(request, messages.SUCCESS, 'Organization ' + organization_name + ' removed successfully.')
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=vendor')
+    return HttpResponseRedirect(reverse('organizations') + '?tab=vendor')
 
 
 @login_required(login_url=LOGIN_URL)

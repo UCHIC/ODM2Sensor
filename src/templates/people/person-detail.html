@@ -21,7 +21,7 @@
                 <tr>
                     <th>Organization:</th>
                     <td>
-                        <a href="{% url 'vendor_detail' Person.organizationid.organizationid %}">
+                        <a href="{% url 'organization_detail' Person.organizationid.organizationid %}">
                         {{ Person.organizationid.organizationname|default:" -- " }}
                     </a>
                     </td>
@@ -76,7 +76,7 @@
                         <td>{{ equipment.equipmenttypecv }}</td>
 
                         <td>
-                            <a href="{% url 'vendor_detail' equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
+                            <a href="{% url 'organization_detail' equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
                                 {{ equipment.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}
                             </a>
                         </td>
