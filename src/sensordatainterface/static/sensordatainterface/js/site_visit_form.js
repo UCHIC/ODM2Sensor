@@ -6,7 +6,7 @@ function addActionForm(that) {
     //Move add button and insert delete button
     thisForm.insertBefore(button);
     button.prev().prepend(
-        '<tr><th></th><td><a class="btn btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
+        '<tr><th></th><td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
     );
 
     setChildActionDateTimePicker(thisForm);

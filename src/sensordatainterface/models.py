@@ -51,7 +51,7 @@ class ActionExtensionPropertyValue(models.Model):
 
 class Action(models.Model):
     actionid = models.AutoField(db_column='ActionID', primary_key=True)  # Field name made lowercase.
-    actiontypecv = models.TextField(db_column='ActionTypeCV')  # Field name made lowercase.
+    actiontypecv = models.ForeignKey('CvActiontype', db_column='ActionTypeCV')  # Field name made lowercase.
     methodid = models.ForeignKey('Method', db_column='MethodID')  # Field name made lowercase.
     begindatetime = models.DateTimeField(db_column='BeginDateTime')  # Field name made lowercase.
     begindatetimeutcoffset = models.IntegerField(db_column='BeginDateTimeUTCOffset')  # Field name made lowercase.
@@ -91,7 +91,7 @@ class Affiliation(models.Model):
 
 class Annotation(models.Model):
     annotationid = models.IntegerField(db_column='AnnotationID', primary_key=True)  # Field name made lowercase.
-    annotationtypecv = models.TextField(db_column='AnnotationTypeCV')  # Field name made lowercase.
+    annotationtypecv = models.ForeignKey('CvAnnotationtype', db_column='AnnotationTypeCV')  # Field name made lowercase.
     annotationcode = models.TextField(db_column='AnnotationCode', blank=True)  # Field name made lowercase.
     annotationtext = models.TextField(db_column='AnnotationText')  # Field name made lowercase.
     annotationdatetime = models.DateTimeField(db_column='AnnotationDateTime', blank=True,
@@ -187,7 +187,7 @@ class CategoricalResultValue(models.Model):
     valuedatetimeutcoffset = models.IntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[CategoricalResultValues'
 
 
@@ -204,10 +204,10 @@ class CategoricalResult(models.Model):
                                            null=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey('SpatialReference', db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
-    qualitycodecv = models.BigIntegerField(db_column='QualityCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[CategoricalResults'
 
 
@@ -218,7 +218,7 @@ class CitationExtensionPropertyValue(models.Model):
     propertyvalue = models.TextField(db_column='PropertyValue')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[CitationExtensionPropertyValues'
 
 
@@ -232,7 +232,7 @@ class CitationExternalIdentifier(models.Model):
                                                     blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[CitationExternalIdentifiers'
 
 
@@ -244,7 +244,7 @@ class Citation(models.Model):
     citationlink = models.TextField(db_column='CitationLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Citations'
 
 
@@ -257,13 +257,13 @@ class DataloggerFile(models.Model):
     dataloggerfilelink = models.TextField(db_column='DataLoggerFileLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataLoggerFiles'
 
 
 class DataQuality(models.Model):
     dataqualityid = models.IntegerField(db_column='DataQualityID', primary_key=True)  # Field name made lowercase.
-    dataqualitytypecv = models.TextField(db_column='DataQualityTypeCV')  # Field name made lowercase.
+    dataqualitytypecv = models.ForeignKey('CvDataqualitytype', db_column='DataQualityTypeCV')  # Field name made lowercase.
     dataqualitycode = models.TextField(db_column='DataQualityCode')  # Field name made lowercase.
     dataqualityvalue = models.FloatField(db_column='DataQualityValue', blank=True,
                                          null=True)  # Field name made lowercase.
@@ -274,31 +274,31 @@ class DataQuality(models.Model):
     dataqualitylink = models.TextField(db_column='DataQualityLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataQuality'
 
 
 class DatasetCitation(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     datasetid = models.ForeignKey('Dataset', db_column='DataSetID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     citationid = models.ForeignKey(Citation, db_column='CitationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataSetCitations'
 
 
 class Dataset(models.Model):
     datasetid = models.IntegerField(db_column='DataSetID', primary_key=True)  # Field name made lowercase.
     datasetuuid = models.TextField(db_column='DataSetUUID')  # Field name made lowercase.
-    datasettypecv = models.TextField(db_column='DataSetTypeCV')  # Field name made lowercase.
+    datasettypecv = models.ForeignKey('CvDatasettype', db_column='DataSetTypeCV')  # Field name made lowercase.
     datasetcode = models.TextField(db_column='DataSetCode')  # Field name made lowercase.
     datasettitle = models.TextField(db_column='DataSetTitle')  # Field name made lowercase.
     datasetabstract = models.TextField(db_column='DataSetAbstract')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataSets'
 
 
@@ -308,7 +308,7 @@ class DatasetsResult(models.Model):
     resultid = models.ForeignKey('Result', db_column='ResultID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataSetsResults'
 
 
@@ -331,11 +331,11 @@ class DataloggerFileColumn(models.Model):
     recordingintervalunitsid = models.ForeignKey('Units', related_name='column_recordingintervalunitsid',
                                                  db_column='RecordingIntervalUnitsID', blank=True,
                                                  null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV',
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV',
                                               blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataloggerFileColumns'
 
 
@@ -348,7 +348,7 @@ class DataloggerProgramFile(models.Model):
     programfilelink = models.TextField(db_column='ProgramFileLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DataloggerProgramFiles'
 
 
@@ -358,17 +358,17 @@ class DerivationEquation(models.Model):
     derivationequation = models.TextField(db_column='DerivationEquation')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[DerivationEquations'
 
 
 class Directive(models.Model):
     directiveid = models.IntegerField(db_column='DirectiveID', primary_key=True)  # Field name made lowercase.
-    directivetypecv = models.TextField(db_column='DirectiveTypeCV')  # Field name made lowercase.
+    directivetypecv = models.ForeignKey('CvDirectivetype', db_column='DirectiveTypeCV')  # Field name made lowercase.
     directivedescription = models.TextField(db_column='DirectiveDescription')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Directives'
 
 
@@ -376,7 +376,7 @@ class Equipment(models.Model):
     equipmentid = models.AutoField(db_column='EquipmentID', primary_key=True)  # Field name made lowercase.
     equipmentcode = models.TextField(db_column='EquipmentCode')  # Field name made lowercase.
     equipmentname = models.TextField(db_column='EquipmentName')  # Field name made lowercase.
-    equipmenttypecv = models.TextField(db_column='EquipmentTypeCV')  # Field name made lowercase.
+    equipmenttypecv = models.ForeignKey('CvEquipmenttype', db_column='EquipmentTypeCV')  # Field name made lowercase.
     equipmentmodelid = models.ForeignKey('EquipmentModel', related_name='equipment',
                                          db_column='EquipmentModelID')  # Field name made lowercase.
     equipmentserialnumber = models.TextField(db_column='EquipmentSerialNumber')  # Field name made lowercase.
@@ -391,7 +391,7 @@ class Equipment(models.Model):
                                                   blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Equipment'
 
 
@@ -401,7 +401,7 @@ class EquipmentAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[EquipmentAnnotations'
 
 
@@ -413,12 +413,17 @@ class EquipmentModel(models.Model):
     modelname = models.TextField(db_column='ModelName')  # Field name made lowercase.
     modeldescription = models.TextField(db_column='ModelDescription', blank=True)  # Field name made lowercase.
     isinstrument = models.BooleanField(db_column='IsInstrument', default=None)  # Field name made lowercase.
-    modelspecificationsfilelink = models.TextField(db_column='ModelSpecificationsFileLink',
-                                                   blank=True)  # Field name made lowercase.
+
+    modelspecificationsfilelink = models.FileField(db_column='ModelSpecificationsFileLink',
+                                                   upload_to='modelspecifications', blank=True)
+
     modellink = models.TextField(db_column='ModelLink', blank=True)  # Field name made lowercase.
 
+    def natural_key(self):
+        return self.modelname
+
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[EquipmentModels'
 
 
@@ -430,7 +435,7 @@ class EquipmentUsed(models.Model):
                                     db_column='EquipmentID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[EquipmentUsed'
 
 
@@ -438,12 +443,12 @@ class ExtensionProperties(models.Model):
     propertyid = models.IntegerField(db_column='PropertyID', primary_key=True)  # Field name made lowercase.
     propertyname = models.TextField(db_column='PropertyName')  # Field name made lowercase.
     propertydescription = models.TextField(db_column='PropertyDescription', blank=True)  # Field name made lowercase.
-    propertydatatypecv = models.TextField(db_column='PropertyDataTypeCV')  # Field name made lowercase.
+    propertydatatypecv = models.ForeignKey('CvPropertydatatype', db_column='PropertyDataTypeCV')  # Field name made lowercase.
     propertyunitsid = models.ForeignKey('Units', db_column='PropertyUnitsID', blank=True,
                                         null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ExtensionProperties'
 
 
@@ -460,7 +465,7 @@ class ExternalIdentifierSystem(models.Model):
                                                    blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ExternalIdentifierSystems'
 
 
@@ -472,7 +477,7 @@ class FeatureAction(models.Model):
                                  db_column='ActionID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[FeatureActions'
 
 
@@ -490,7 +495,7 @@ class InstrumentOutputVariable(models.Model):
                                                    db_column='InstrumentRawOutputUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[InstrumentOutputVariables'
 
 
@@ -502,7 +507,7 @@ class MaintenanceAction(models.Model):
     maintenancereason = models.TextField(db_column='MaintenanceReason', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MaintenanceActions'
 
 
@@ -512,7 +517,7 @@ class MeasurementResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MeasurementResultValueAnnotations'
 
 
@@ -524,7 +529,7 @@ class MeasurementResultValue(models.Model):
     valuedatetimeutcoffset = models.IntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MeasurementResultValues'
 
 
@@ -543,16 +548,16 @@ class MeasurementResult(models.Model):
                                          null=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey('SpatialReference', db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
                                                        related_name='measurement_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MeasurementResults'
 
 
@@ -562,18 +567,18 @@ class MethodAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MethodAnnotations'
 
 
 class MethodCitation(models.Model):
     bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     methodid = models.ForeignKey('Method', db_column='MethodID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     citationid = models.ForeignKey(Citation, db_column='CitationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MethodCitations'
 
 
@@ -584,7 +589,7 @@ class MethodExtensionPropertyValue(models.Model):
     propertyvalue = models.TextField(db_column='PropertyValue')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MethodExtensionPropertyValues'
 
 
@@ -598,13 +603,13 @@ class MethodExternalIdentifier(models.Model):
                                                    blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[MethodExternalIdentifiers'
 
 
 class Method(models.Model):
     methodid = models.AutoField(db_column='MethodID', primary_key=True)  # Field name made lowercase.
-    methodtypecv = models.TextField(db_column='MethodTypeCV')  # Field name made lowercase.
+    methodtypecv = models.ForeignKey('CvMethodtype', db_column='MethodTypeCV')  # Field name made lowercase.
     methodcode = models.TextField(db_column='MethodCode')  # Field name made lowercase.
     methodname = models.TextField(db_column='MethodName')  # Field name made lowercase.
     methoddescription = models.TextField(db_column='MethodDescription', blank=True)  # Field name made lowercase.
@@ -613,7 +618,7 @@ class Method(models.Model):
                                        null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Methods'
 
 
@@ -625,7 +630,7 @@ class ModelAffiliation(models.Model):
     roledescription = models.TextField(db_column='RoleDescription', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ModelAffiliations'
 
 
@@ -639,13 +644,13 @@ class Models(models.Model):
     modellink = models.TextField(db_column='ModelLink', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Models'
 
 
 class Organization(models.Model):
     organizationid = models.AutoField(db_column='OrganizationID', primary_key=True)  # Field name made lowercase.
-    organizationtypecv = models.TextField(db_column='OrganizationTypeCV')  # Field name made lowercase.
+    organizationtypecv = models.ForeignKey('CvOrganizationtype', db_column='OrganizationTypeCV')  # Field name made lowercase.
     organizationcode = models.TextField(db_column='OrganizationCode')  # Field name made lowercase.
     organizationname = models.TextField(db_column='OrganizationName')  # Field name made lowercase.
     organizationdescription = models.TextField(db_column='OrganizationDescription',
@@ -655,7 +660,7 @@ class Organization(models.Model):
                                              null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Organizations'
 
 
@@ -666,7 +671,7 @@ class People(models.Model):
     personlastname = models.TextField(db_column='PersonLastName')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[People'
 
 
@@ -680,7 +685,7 @@ class PersonExternalIdentifier(models.Model):
                                                   blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[PersonExternalIdentifiers'
 
 
@@ -690,7 +695,7 @@ class PointCoverageResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[PointCoverageResultValueAnnotations'
 
 
@@ -706,11 +711,11 @@ class PointCoverageResultValue(models.Model):
     ylocation = models.FloatField(db_column='YLocation')  # Field name made lowercase.
     ylocationunitsid = models.ForeignKey('Units', related_name='point_ylocationunitsid',
                                          db_column='YLocationUnitsID')  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[PointCoverageResultValues'
 
 
@@ -731,13 +736,13 @@ class PointCoverageResult(models.Model):
     intendedyspacingunitsid = models.ForeignKey('Units', related_name='point_intendedyspacingunitsid',
                                                 db_column='IntendedYSpacingUnitsID', blank=True,
                                                 null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.IntegerField(
         db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[PointCoverageResults'
 
 
@@ -749,7 +754,7 @@ class ProcessingLevel(models.Model):
     explanation = models.TextField(db_column='Explanation', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ProcessingLevels'
 
 
@@ -759,7 +764,7 @@ class ProfileResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ProfileResultValueAnnotations'
 
 
@@ -772,15 +777,15 @@ class ProfileResultValue(models.Model):
     zlocation = models.FloatField(db_column='ZLocation')  # Field name made lowercase.
     zaggregationinterval = models.FloatField(db_column='ZAggregationInterval')  # Field name made lowercase.
     zlocationunitsid = models.ForeignKey('Units', db_column='ZLocationUnitsID')  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
                                                        related_name='profile_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ProfileResultValues'
 
 
@@ -805,10 +810,10 @@ class ProfileResult(models.Model):
     intendedtimespacingunitsid = models.ForeignKey('Units', related_name='profile_intendedtimespacingunitsid',
                                                    db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ProfileResults'
 
 
@@ -824,13 +829,14 @@ class ReferenceMaterialExternalIdentifier(models.Model):
                                                               blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ReferenceMaterialExternalIdentifiers'
 
 
 class ReferenceMaterialValue(models.Model):
+    # TODO: Change database table to identity and update here.
     referencematerialvalueid = models.IntegerField(db_column='ReferenceMaterialValueID',
-                                                   primary_key=True)  # Field name made lowercase.
+                                                   primary_key=True)
     referencematerialid = models.ForeignKey('ReferenceMaterial', related_name='referencematerialvalue',
                                             db_column='ReferenceMaterialID')  # Field name made lowercase.
     referencematerialvalue = models.FloatField(db_column='ReferenceMaterialValue')  # Field name made lowercase.
@@ -842,14 +848,15 @@ class ReferenceMaterialValue(models.Model):
                                    null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ReferenceMaterialValues'
 
 
 class ReferenceMaterial(models.Model):
-    referencematerialid = models.AutoField(db_column='ReferenceMaterialID',
+    # TODO: Change database table to identity and update here.
+    referencematerialid = models.IntegerField(db_column='ReferenceMaterialID',
                                            primary_key=True)  # Field name made lowercase.
-    referencematerialmediumcv = models.TextField(db_column='ReferenceMaterialMediumCV')  # Field name made lowercase.
+    referencematerialmediumcv = models.ForeignKey('CvMedium', db_column='ReferenceMaterialMediumCV')  # Field name made lowercase.
     referencematerialorganizationid = models.ForeignKey(Organization,
                                                         db_column='ReferenceMaterialOrganizationID')  # Field name made lowercase.
     referencematerialcode = models.TextField(db_column='ReferenceMaterialCode')  # Field name made lowercase.
@@ -859,13 +866,13 @@ class ReferenceMaterial(models.Model):
                                                          null=True)  # Field name made lowercase.
     referencematerialexpirationdate = models.DateTimeField(db_column='ReferenceMaterialExpirationDate', blank=True,
                                                            null=True)  # Field name made lowercase.
-    referencematerialcertificatelink = models.TextField(db_column='ReferenceMaterialCertificateLink',
+    referencematerialcertificatelink = models.FileField(db_column='ReferenceMaterialCertificateLink',
                                                         blank=True)  # Field name made lowercase.
     samplingfeatureid = models.ForeignKey('SamplingFeature', db_column='SamplingFeatureID', blank=True,
                                           null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ReferenceMaterials'
 
 
@@ -873,12 +880,12 @@ class RelatedAction(models.Model):
     relationid = models.AutoField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey(Action, related_name='relatedaction',
                                  db_column='ActionID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relatedactionid = models.ForeignKey(Action, related_name='parent_relatedaction',
                                         db_column='RelatedActionID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedActions'
 
 
@@ -886,12 +893,12 @@ class RelatedAnnotation(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     annotationid = models.ForeignKey(Annotation, related_name='relatedannonations_annotationid',
                                      db_column='AnnotationID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relatedannotationid = models.ForeignKey(Annotation, related_name='relatedannotation_relatedannontationid',
                                             db_column='RelatedAnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedAnnotations'
 
 
@@ -899,12 +906,12 @@ class RelatedCitation(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     citationid = models.ForeignKey(Citation, related_name='relatedcitations_citationid',
                                    db_column='CitationID')  # Field name made lowercase.
-    relationshiptypecv = models.IntegerField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relatedcitationid = models.ForeignKey(Citation, related_name='relatedcitations_relatedcitationid',
                                           db_column='RelatedCitationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedCitations'
 
 
@@ -912,13 +919,13 @@ class RelatedDataset(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     datasetid = models.ForeignKey(Dataset, related_name='relateddatasets_datasetid',
                                   db_column='DataSetID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relateddatasetid = models.ForeignKey(Dataset, related_name='relateddatasets_relateddatasetid',
                                          db_column='RelatedDatasetID')  # Field name made lowercase.
     versioncode = models.TextField(db_column='VersionCode', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedDatasets'
 
 
@@ -926,7 +933,7 @@ class RelatedEquipment(models.Model):
     relationid = models.AutoField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     equipmentid = models.ForeignKey(Equipment, related_name='relatedequipment_equipmentid',
                                     db_column='EquipmentID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relatedequipmentid = models.ForeignKey(Equipment, related_name='relatedequipment_relatedequipmentid',
                                            db_column='RelatedEquipmentID')  # Field name made lowercase.
     relationshipstartdatetime = models.DateTimeField(
@@ -939,7 +946,7 @@ class RelatedEquipment(models.Model):
                                                            null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedEquipment'
 
 
@@ -948,32 +955,32 @@ class RelatedFeatures(models.Model):
     samplingfeatureid = models.ForeignKey('SamplingFeature',
                                           related_name='relatedfeatures_samplingfeatureid',
                                           db_column='SamplingFeatureID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relatedfeatureid = models.ForeignKey('SamplingFeature', related_name='relatedfeature_relatedfeatureid',
                                          db_column='RelatedFeatureID')  # Field name made lowercase.
     spatialoffsetid = models.ForeignKey('SpatialOffsets', db_column='SpatialOffsetID', blank=True,
                                         null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedFeatures'
 
 
 class RelatedModel(models.Model):
     relatedid = models.IntegerField(db_column='RelatedID', primary_key=True)  # Field name made lowercase.
     modelid = models.ForeignKey(Models, db_column='ModelID')  # Field name made lowercase.
-    relationshiptypecv = models.CharField(db_column='RelationshipTypeCV', max_length=1)  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV', max_length=1)  # Field name made lowercase.
     relatedmodelid = models.BigIntegerField(db_column='RelatedModelID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedModels'
 
 
 class RelatedResult(models.Model):
     relationid = models.IntegerField(db_column='RelationID', primary_key=True)  # Field name made lowercase.
     resultid = models.ForeignKey('Result', db_column='ResultID')  # Field name made lowercase.
-    relationshiptypecv = models.TextField(db_column='RelationshipTypeCV')  # Field name made lowercase.
+    relationshiptypecv = models.ForeignKey('CvRelationshiptype', db_column='RelationshipTypeCV')  # Field name made lowercase.
     relatedresultid = models.ForeignKey('Result', related_name='relatedresults_relatedresultid',
                                         db_column='RelatedResultID')  # Field name made lowercase.
     versioncode = models.TextField(db_column='VersionCode', blank=True)  # Field name made lowercase.
@@ -981,7 +988,7 @@ class RelatedResult(models.Model):
                                                       null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[RelatedResults'
 
 
@@ -993,7 +1000,7 @@ class ResultAnnotation(models.Model):
     enddatetime = models.DateTimeField(db_column='EndDateTime')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ResultAnnotations'
 
 
@@ -1003,7 +1010,7 @@ class ResultDerivationEquation(models.Model):
                                              db_column='DerivationEquationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ResultDerivationEquations'
 
 
@@ -1014,7 +1021,7 @@ class ResultExtensionPropertyValue(models.Model):
     propertyvalue = models.TextField(db_column='PropertyValue')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ResultExtensionPropertyValues'
 
 
@@ -1024,7 +1031,7 @@ class ResultNormalizationValue(models.Model):
                                                              db_column='NormalizedByReferenceMaterialValueID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ResultNormalizationValues'
 
 
@@ -1041,7 +1048,7 @@ class ResultTypeCV(models.Model):
         db_column='VariableMeasurementFramework')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ResultTypeCV'
 
 
@@ -1062,12 +1069,12 @@ class Result(models.Model):
     validdatetime = models.DateTimeField(db_column='ValidDateTime', blank=True, null=True)  # Field name made lowercase.
     validdatetimeutcoffset = models.BigIntegerField(db_column='ValidDateTimeUTCOffset', blank=True,
                                                     null=True)  # Field name made lowercase.
-    statuscv = models.TextField(db_column='StatusCV', blank=True)  # Field name made lowercase.
-    sampledmediumcv = models.TextField(db_column='SampledMediumCV')  # Field name made lowercase.
+    statuscv = models.ForeignKey('CvStatus', db_column='StatusCV', blank=True)  # Field name made lowercase.
+    sampledmediumcv = models.ForeignKey('CvMedium', db_column='SampledMediumCV')  # Field name made lowercase.
     valuecount = models.IntegerField(db_column='ValueCount')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Results'
 
 
@@ -1077,7 +1084,7 @@ class ResultsDataQuality(models.Model):
     dataqualityid = models.ForeignKey(DataQuality, db_column='DataQualityID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[ResultsDataQuality'
 
 
@@ -1088,7 +1095,7 @@ class SamplingFeatureAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SamplingFeatureAnnotations'
 
 
@@ -1100,7 +1107,7 @@ class SamplingFeatureExtPropertyVal(models.Model):
     propertyvalue = models.TextField(db_column='PropertyValue')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SamplingFeatureExtensionPropertyValues'
 
 
@@ -1116,27 +1123,25 @@ class SamplingFeatureExternalIdentifier(models.Model):
                                                            blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SamplingFeatureExternalIdentifiers'
 
 
 class SamplingFeature(models.Model):
     samplingfeatureid = models.AutoField(db_column='SamplingFeatureID',
                                          primary_key=True)  # Field name made lowercase.
-    samplingfeaturetypecv = models.TextField(db_column='SamplingFeatureTypeCV')  # Field name made lowercase.
+    samplingfeaturetypecv = models.ForeignKey('CvSamplingfeaturetype', db_column='SamplingFeatureTypeCV')  # Field name made lowercase.
     samplingfeaturecode = models.TextField(db_column='SamplingFeatureCode')  # Field name made lowercase.
     samplingfeaturename = models.TextField(db_column='SamplingFeatureName', blank=True)  # Field name made lowercase.
     samplingfeaturedescription = models.TextField(db_column='SamplingFeatureDescription',
                                                   blank=True)  # Field name made lowercase.
-    samplingfeaturegeotypecv = models.TextField(db_column='SamplingFeatureGeotypeCV',
+    samplingfeaturegeotypecv = models.ForeignKey('CvSamplingfeaturegeotype', db_column='SamplingFeatureGeotypeCV',
                                                 blank=True)  # Field name made lowercase.
-    # featuregeometry = models.TextField(db_column='FeatureGeometry',
-    #                                   blank=True)  # Field name made lowercase. This field type is a guess.
     elevation_m = models.FloatField(db_column='Elevation_m', blank=True, null=True)  # Field name made lowercase.
-    elevationdatumcv = models.TextField(db_column='ElevationDatumCV', blank=True)  # Field name made lowercase.
+    elevationdatumcv = models.ForeignKey('CvElevationdatum', db_column='ElevationDatumCV', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SamplingFeatures'
 
 
@@ -1146,7 +1151,7 @@ class SectionResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SectionResultValueAnnotations'
 
 
@@ -1164,16 +1169,16 @@ class SectionResultValue(models.Model):
     zaggregationinterval = models.FloatField(db_column='ZAggregationInterval')  # Field name made lowercase.
     zlocationunitsid = models.ForeignKey('Units', related_name='sectionresults_zlocationunitsid',
                                          db_column='ZLocationUnitsID')  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
                                                        related_name='sectionresults_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SectionResultValues'
 
 
@@ -1200,10 +1205,10 @@ class SectionResult(models.Model):
     intendedtimespacingunitsid = models.ForeignKey('Units', related_name='sectionresults_intendedtimespacingunitsid',
                                                    db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SectionResults'
 
 
@@ -1226,7 +1231,7 @@ class Simulation(models.Model):
     modelid = models.ForeignKey(Models, db_column='ModelID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Simulations'
 
 
@@ -1234,20 +1239,20 @@ class Sites(models.Model):
     samplingfeatureid = models.ForeignKey(SamplingFeature, related_name='sites',
                                           db_column='SamplingFeatureID',
                                           primary_key=True)  # Field name made lowercase.
-    sitetypecv = models.TextField(db_column='SiteTypeCV')  # Field name made lowercase.
+    sitetypecv = models.ForeignKey('CvSitetype', db_column='SiteTypeCV')  # Field name made lowercase.
     latitude = models.FloatField(db_column='Latitude')  # Field name made lowercase.
     longitude = models.FloatField(db_column='Longitude')  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey('SpatialReference',
                                            db_column='SpatialReferenceID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Sites'
 
 
 class SpatialOffsets(models.Model):
     spatialoffsetid = models.IntegerField(db_column='SpatialOffsetID', primary_key=True)  # Field name made lowercase.
-    spatialoffsettypecv = models.TextField(db_column='SpatialOffsetTypeCV')  # Field name made lowercase.
+    spatialoffsettypecv = models.ForeignKey('CvSpatialoffsettype', db_column='SpatialOffsetTypeCV')  # Field name made lowercase.
     offset1value = models.FloatField(db_column='Offset1Value')  # Field name made lowercase.
     offset1unitid = models.IntegerField(db_column='Offset1UnitID')  # Field name made lowercase.
     offset2value = models.FloatField(db_column='Offset2Value', blank=True, null=True)  # Field name made lowercase.
@@ -1256,7 +1261,7 @@ class SpatialOffsets(models.Model):
     offset3unitid = models.IntegerField(db_column='Offset3UnitID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpatialOffsets'
 
 
@@ -1272,7 +1277,7 @@ class SpatialReferenceExternalIdentifier(models.Model):
                                                              blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpatialReferenceExternalIdentifiers'
 
 
@@ -1283,8 +1288,14 @@ class SpatialReference(models.Model):
     srsname = models.TextField(db_column='SRSName')  # Field name made lowercase.
     srsdescription = models.TextField(db_column='SRSDescription', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.srsname
+
+    def __unicode__(self):
+        return self.srsname
+
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpatialReferences'
 
 
@@ -1295,7 +1306,7 @@ class SpecimenBatchPostion(models.Model):
     batchpositionlabel = models.TextField(db_column='BatchPositionLabel', blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpecimenBatchPostions'
 
 
@@ -1307,19 +1318,19 @@ class SpecimenTaxonomicClassifier(models.Model):
     citationid = models.IntegerField(db_column='CitationID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpecimenTaxonomicClassifiers'
 
 
 class Specimens(models.Model):
     samplingfeatureid = models.ForeignKey(SamplingFeature, db_column='SamplingFeatureID',
                                           primary_key=True)  # Field name made lowercase.
-    specimentypecv = models.TextField(db_column='SpecimenTypeCV')  # Field name made lowercase.
-    specimenmediumcv = models.TextField(db_column='SpecimenMediumCV')  # Field name made lowercase.
+    specimentypecv = models.ForeignKey('CvSpecimentype', db_column='SpecimenTypeCV')  # Field name made lowercase.
+    specimenmediumcv = models.ForeignKey('CvMedium', db_column='SpecimenMediumCV')  # Field name made lowercase.
     isfieldspecimen = models.BooleanField(db_column='IsFieldSpecimen', default=None)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Specimens'
 
 
@@ -1329,7 +1340,7 @@ class SpectraResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpectraResultValueAnnotations'
 
 
@@ -1343,14 +1354,14 @@ class SpectraResultValue(models.Model):
     emissionwavelength = models.FloatField(db_column='EmissionWavelength')  # Field name made lowercase.
     wavelengthunitsid = models.ForeignKey('Units', related_name='spectralresultsvalues_wavelengthunitsid',
                                           db_column='WavelengthUnitsID')  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpectraResultValues'
 
 
@@ -1375,10 +1386,10 @@ class SpectraResult(models.Model):
                                                          related_name='spectralresult_intendedwavelengthspacingunitsid',
                                                          db_column='IntendedWavelengthSpacingUnitsID',
                                                          blank=True, null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[SpectraResults'
 
 
@@ -1394,14 +1405,14 @@ class TaxonomicClassifierExtId(models.Model):
                                                                 blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TaxonomicClassifierExternalIdentifiers'
 
 
 class TaxonomicClassifier(models.Model):
     taxonomicclassifierid = models.IntegerField(db_column='TaxonomicClassifierID',
                                                 primary_key=True)  # Field name made lowercase.
-    taxonomicclassifiertypecv = models.TextField(db_column='TaxonomicClassifierTypeCV')  # Field name made lowercase.
+    taxonomicclassifiertypecv = models.ForeignKey('CvTaxonomicclassifiertype', db_column='TaxonomicClassifierTypeCV')  # Field name made lowercase.
     taxonomicclassifiername = models.TextField(db_column='TaxonomicClassifierName')  # Field name made lowercase.
     taxonomicclassifiercommonname = models.TextField(db_column='TaxonomicClassifierCommonName',
                                                      blank=True)  # Field name made lowercase.
@@ -1411,7 +1422,7 @@ class TaxonomicClassifier(models.Model):
                                                     null=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TaxonomicClassifiers'
 
 
@@ -1421,7 +1432,7 @@ class TimeSeriesResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TimeSeriesResultValueAnnotations'
 
 
@@ -1431,14 +1442,14 @@ class TimeSeriesResultValue(models.Model):
     datavalue = models.FloatField(db_column='DataValue')  # Field name made lowercase.
     valuedatetime = models.DateTimeField(db_column='ValueDateTime')  # Field name made lowercase.
     valuedatetimeutcoffset = models.IntegerField(db_column='ValueDateTimeUTCOffset')  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TimeSeriesResultValues'
 
 
@@ -1463,10 +1474,10 @@ class TimeSeriesResult(models.Model):
     intendedtimespacingunitsid = models.ForeignKey('Units', related_name='timeseriesresults_intendedtimespacingunitsid',
                                                    db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TimeSeriesResults'
 
 
@@ -1476,7 +1487,7 @@ class TrajectoryResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TrajectoryResultValueAnnotations'
 
 
@@ -1500,14 +1511,14 @@ class TrajectoryResultValue(models.Model):
         db_column='TrajectoryDistanceAggregationInterval')  # Field name made lowercase.
     trajectorydistanceunitsid = models.IntegerField(db_column='TrajectoryDistanceUnitsID')  # Field name made lowercase.
     censorcode = models.TextField(db_column='CensorCode')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.ForeignKey('Units',
                                                        related_name='trajectoryresultvalues_timeaggregationintervalunitsid',
                                                        db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TrajectoryResultValues'
 
 
@@ -1526,10 +1537,10 @@ class TrajectoryResult(models.Model):
     intendedtimespacingunitsid = models.ForeignKey('Units', related_name='trajectoryresults_intendedtimespacingunitsid',
                                                    db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TrajectoryResults'
 
 
@@ -1539,7 +1550,7 @@ class TransectResultValueAnnotation(models.Model):
     annotationid = models.ForeignKey(Annotation, db_column='AnnotationID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TransectResultValueAnnotations'
 
 
@@ -1557,15 +1568,15 @@ class TransectResultValue(models.Model):
     transectdistanceaggregationinterval = models.FloatField(
         db_column='TransectDistanceAggregationInterval')  # Field name made lowercase.
     transectdistanceunitsid = models.IntegerField(db_column='TransectDistanceUnitsID')  # Field name made lowercase.
-    censorcodecv = models.TextField(db_column='CensorCodeCV')  # Field name made lowercase.
-    qualitycodecv = models.TextField(db_column='QualityCodeCV')  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    censorcodecv = models.ForeignKey('CvCensorcode', db_column='CensorCodeCV')  # Field name made lowercase.
+    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='QualityCodeCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
     timeaggregationinterval = models.FloatField(db_column='TimeAggregationInterval')  # Field name made lowercase.
     timeaggregationintervalunitsid = models.IntegerField(
         db_column='TimeAggregationIntervalUnitsID')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TransectResultValues'
 
 
@@ -1586,21 +1597,21 @@ class TransectResult(models.Model):
     intendedtimespacingunitsid = models.ForeignKey('Units', related_name='transectresults_intendedtimespacingunitsid',
                                                    db_column='IntendedTimeSpacingUnitsID', blank=True,
                                                    null=True)  # Field name made lowercase.
-    aggregationstatisticcv = models.TextField(db_column='AggregationStatisticCV')  # Field name made lowercase.
+    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='AggregationStatisticCV')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[TransectResults'
 
 
 class Units(models.Model):
     unitsid = models.IntegerField(db_column='UnitsID', primary_key=True)  # Field name made lowercase.
-    unitstypecv = models.TextField(db_column='UnitsTypeCV')  # Field name made lowercase.
+    unitstypecv = models.ForeignKey('CvUnitstype', db_column='UnitsTypeCV')  # Field name made lowercase.
     unitsabbreviation = models.TextField(db_column='UnitsAbbreviation')  # Field name made lowercase.
     unitsname = models.TextField(db_column='UnitsName')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Units'
 
 
@@ -1611,7 +1622,7 @@ class VariableExtensionPropertyValue(models.Model):
     propertyvalue = models.TextField(db_column='PropertyValue')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[VariableExtensionPropertyValues'
 
 
@@ -1625,21 +1636,21 @@ class VariableExternalIdentifier(models.Model):
                                                      blank=True)  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[VariableExternalIdentifiers'
 
 
 class Variable(models.Model):
     variableid = models.IntegerField(db_column='VariableID', primary_key=True)  # Field name made lowercase.
-    variabletypecv = models.TextField(db_column='VariableTypeCV')  # Field name made lowercase.
+    variabletypecv = models.ForeignKey('CvVariabletype', db_column='VariableTypeCV')  # Field name made lowercase.
     variablecode = models.TextField(db_column='VariableCode')  # Field name made lowercase.
-    variablenamecv = models.TextField(db_column='VariableNameCV')  # Field name made lowercase.
+    variablenamecv = models.ForeignKey('CvVariablename', db_column='VariableNameCV')  # Field name made lowercase.
     variabledefinition = models.TextField(db_column='VariableDefinition', blank=True)  # Field name made lowercase.
-    speciationcv = models.TextField(db_column='SpeciationCV', blank=True)  # Field name made lowercase.
+    speciationcv = models.ForeignKey('CvSpeciation', db_column='SpeciationCV', blank=True)  # Field name made lowercase.
     nodatavalue = models.FloatField(db_column='NoDataValue')  # Field name made lowercase.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'ODM2].[Variables'
 
 
@@ -1649,6 +1660,12 @@ class CvActiontype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1662,6 +1679,12 @@ class CvAggregationstatistic(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_AggregationStatistic'
@@ -1673,6 +1696,12 @@ class CvAnnotationtype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1686,6 +1715,12 @@ class CvCensorcode(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_CensorCode'
@@ -1697,6 +1732,12 @@ class CvDataqualitytype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1710,6 +1751,12 @@ class CvDatasettype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_DatasetType'
@@ -1721,6 +1768,12 @@ class CvDirectivetype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1734,6 +1787,12 @@ class CvElevationdatum(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_ElevationDatum'
@@ -1745,6 +1804,12 @@ class CvEquipmenttype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1758,6 +1823,12 @@ class CvMedium(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_Medium'
@@ -1769,6 +1840,12 @@ class CvMethodtype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1782,6 +1859,12 @@ class CvOrganizationtype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_OrganizationType'
@@ -1793,6 +1876,12 @@ class CvPropertydatatype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1818,6 +1907,12 @@ class CvRelationshiptype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_RelationshipType'
@@ -1829,6 +1924,12 @@ class CvResulttype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1842,6 +1943,12 @@ class CvSitetype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_SiteType'
@@ -1853,6 +1960,12 @@ class CvSpatialoffsettype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1866,6 +1979,12 @@ class CvSpeciation(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_Speciation'
@@ -1877,6 +1996,12 @@ class CvSpecimentype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1890,6 +2015,12 @@ class CvStatus(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_Status'
@@ -1901,6 +2032,12 @@ class CvTaxonomicclassifiertype(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1914,6 +2051,12 @@ class CvUnitstype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_UnitsType'
@@ -1925,6 +2068,12 @@ class CvVariablename(models.Model):
     definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -1938,6 +2087,12 @@ class CvVariabletype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_VariableType'
@@ -1950,9 +2105,34 @@ class CvSamplingfeaturetype(models.Model):
     category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
     sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'ODM2].[CV_SamplingFeatureType'
+
+
+class CvSamplingfeaturegeotype(models.Model):
+    term = models.TextField(db_column='Term')  # Field name made lowercase.
+    name = models.TextField(db_column='Name', primary_key=True)  # Field name made lowercase.
+    definition = models.TextField(db_column='Definition', blank=True)  # Field name made lowercase.
+    category = models.TextField(db_column='Category', blank=True)  # Field name made lowercase.
+    sourcevocabularyuri = models.TextField(db_column='SourceVocabularyURI', blank=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        managed = False
+        db_table = 'ODM2].[CV_SamplingFeatureGeoType'
+
 
 class Sysdiagrams(models.Model):
     name = models.CharField(max_length=128)
@@ -1962,5 +2142,5 @@ class Sysdiagrams(models.Model):
     definition = models.BinaryField(blank=True, null=True)
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'sysdiagrams'

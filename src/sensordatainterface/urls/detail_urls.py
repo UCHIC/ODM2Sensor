@@ -69,12 +69,12 @@ urlpatterns = patterns('',
                            template_name='equipment/models/details.html'),
                            name='models_detail'),
 
-                       url(r'^inventory/vendor-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
-                           context_object_name='Vendor',
+                       url(r'^people/organization-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                           context_object_name='Vendor', # Do not modify - Zach Yoshikawa 11/11/15
                            model=Organization,
                            slug_field='organizationid',
-                           template_name='equipment/models/vendor-detail.html'),
-                           name='vendor_detail'),
+                           template_name='people/organization-detail.html'),
+                           name='organization_detail'),
 
                        # Following detail urls are not in the main navigation (i.e. in the navbar)
                        # Measured Variable detail
@@ -87,7 +87,7 @@ urlpatterns = patterns('',
                            context_object_name='Person',
                            model=Affiliation,
                            slug_field='affiliationid',
-                           template_name='vocabulary/person-detail.html'),
+                           template_name='people/person-detail.html'),
                            name='person_detail'),
 
                        )

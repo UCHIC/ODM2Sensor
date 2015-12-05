@@ -12,7 +12,7 @@
         <th>Type</th>
         <th>Units</th>
         <th>Value</th>
-        <th>Vendor Name</th>
+        <th>Organization Name</th>
         <th>Purchased</th>
         <th>Lot Code</th>
         <th>Expires</th>
@@ -22,7 +22,7 @@
     <tbody>
     {% for standard in CalibrationStandards %}
         <tr>
-        {% for reference in standard.referencematerialid.referencematerialvalue.all %}
+        {% for reference in standard.referencematerialvalue.all %}
             <td>{{ reference.variableid.variabletypecv }}</td>
             <td>{{ reference.unitsid.unitsname }}</td>
             <td>{{ reference.referencematerialvalue }}</td>

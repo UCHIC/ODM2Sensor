@@ -4,280 +4,253 @@
 {% block content %}
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Calibration Details</h2></div>
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block"
-               href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Edit Calibration
-                Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button"
-               href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Delete</a>
         </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Edit Calibration Description</a></div>
     </div>
-    <div class="row">
-        {#calibrationactions is one to one with actions #}
-        {% with variable=Calibration.calibrationaction.all.0 %}
-            <div class="col-xs-12 col-sm-12 col-md-6 pull-right">
-                <h3>Site</h3>
-                <table class="table">
-                    {% if Calibration.featureaction.get %}
-                        <tr>
+    <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
+            <h3>Calibration</h3>
+            <table class="table">
+                {#calibrationactions is one to one with actions #}
+                {% with variable=Calibration.calibrationaction.all.0 %}
+                    <tr>
+                        {% if Calibration.featureaction.get %}
                             <th>Site Code:</th>
                             <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturecode }}</td>
-                        </tr>
-                        <tr>
-                            <th>Site Name:</th>
-                            <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
-                        </tr>
-                    {% endif %}
-                </table>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 pull-left">
-                <h3>Calibration</h3>
-                <table class="table">
-                    <tr>
+                        {% endif %}
                         <th>Action Begin DateTime:</th>
                         <td>{{ Calibration.begindatetime }}</td>
-                    </tr>
-                    <tr>
                         <th>UTC Offset:</th>
                         <td>{{ Calibration.begindatetimeutcoffset }}</td>
-                    </tr>
-                    <tr>
+                        <th>Variable Code:</th>
+                        <td>{{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
                         <th>Check Value:</th>
                         <td>
                             {{ variable.calibrationcheckvalue|default:" -- " }}
                         </td>
                     </tr>
                     <tr>
+                        {% if Calibration.featureaction.get %}
+                            <th>Site Name:</th>
+                            <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
+                        {% endif %}
                         <th>Action End DateTime:</th>
-                        <td>{{ Calibration.enddatetime|default:"Not Defined" }}</td>
-                    </tr>
-                    <tr>
+                        <td>{{ Calibration.enddatetime|default:"present" }}</td>
+                        <th>Variable Name:</th>
+                        <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
                         <th>Calibration Equation:</th>
                         <td>
                             {{ variable.calibrationequation|default:" -- " }}
                         </td>
-                    </tr>
-                    <tr>
                         <th>Calibration Link:</th>
-                        <td><a href="{{ MEDIA_URL }}{{ Calibration.actionfilelink }}">{{ Calibration.actionfilelink|get_media_file_name|default:" -- " }}</a>
-                        </td>
+                        <td><a href="{{ MEDIA_URL }}{{ Calibration.actionfilelink }}">{{ Calibration.actionfilelink|get_media_file_name|default:" -- " }}</a></td>
                     </tr>
                     <tr>
                         <th>Action Description:</th>
                         <td colspan="4"> {{ Calibration.actiondescription }}</td>
                     </tr>
-                </table>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 pull-right">
-                <h3>Variable</h3>
-                <table class="table">
-                    <tr>
-                        <th>Variable Code:</th>
-                        <td> {{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
-                    </tr>
-                    <tr>
-                        <th>Variable Name:</th>
-                        <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
-                    </tr>
-                </table>
-            </div>
-        {% endwith %}
-    </div>
+                {% endwith %}
+            </table>
+        </div>
     <div class="row detail-mid">
-        <h3>Equipment Used</h3>
-        <table class="data-table">
-            <thead>
-            <tr>
-                <th>Equipment Serial Number</th>
-                <th>Equipment Code</th>
-                <th>Equipment Name</th>
-                <th>Equipment Type</th>
-                <th>Equipment Model Name</th>
-                <th>Manufacturer Name</th>
-                <th>Owner Name</th>
-                <th>Options</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for equipment in Calibration.equipmentused.all %}
+        <div class="row">
+            <div style="float: left;"><h3>Equipment Used</h3></div>
+            <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px"><a class="btn btn-primary btn-block"
+                {% for related in Calibration.relatedaction.all %}
+                    {% if related.relationshiptypecv == 'Is child of' %}
+                                                               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                    {% endif %}
+                {% endfor %}>Go to Site Visit</a>
+            </div>
+        </div>
+
+        {% for equipment in Calibration.equipmentused.all %}
+            <div class="row side-by-side-item small-box-item">
+
+                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                    <table class="table">
                 <tr>
+                    <th>Equipment Serial Number:</th>
                     <td>
                         <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">{{ equipment.equipmentid.equipmentserialnumber }}</a>
                     </td>
+                </tr>
+                <tr>
+                    <th>Equipment Code:</th>
                     <td>{{ equipment.equipmentid.equipmentcode }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Name:</th>
                     <td>{{ equipment.equipmentid.equipmentname }}</td>
+                </tr>
+                <tr>
+                    <th>Equipment Type:</th>
                     <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
-                    <td>
-                        <a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
-                            {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
+                </tr>
+                <tr>
+                    <th>Equipment Model Name:</th>
+                    <td><a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                        {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
                     </td>
+                </tr>
+                <tr>
+                    <th>Manufacturer Name:</th>
                     <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                </tr>
+                <tr>
+                    <th>Owner Name:</th>
+
                     <td>
                         <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
                             {{ equipment.equipmentid.equipmentownerid.personfirstname }}
                             {{ equipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}
                         </a>
                     </td>
-                    <td>
-                        <div class="cal-equ-used-option col-sm-12 col-xs-12 col-md-10 pull-right">
-                            <a class="view-hist-button btn btn-primary btn-block"
-                               href="{% url 'calibrations_by_equipment' equipment.equipmentid.equipmentid %}">View Calibration History</a>
-                        </div>
-                    </td>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
 
-        <div class="modal fade" id="related-equ-modal" tabindex="-1" role="dialog"
-             aria-labelledby="related-equ-modalTitle">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <h3 class="modal-title" id="related-equ-modalTitle">Reference Material</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <table class="data-table">
-                            <thead>
+            </table>
+                </div>
+                <div class="col-sm-12 col-xs-12 col-md-7 pull-left">
+            <a class="btn btn-primary btn-block"
+               href="{% url 'calibrations_by_equipment' equipment.equipmentid.equipmentid %}">View Equipment's
+                Calibration History</a>
+        </div>
+            </div>
+        {% endfor %}
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h3>Reference Material</h3>
+        </div>
+
+                {% for calibrationactions in Calibration.calibrationaction.all %}
+                    {% for referencematerial in calibrationactions.calibrationstandard.all %}
+                <div class="row side-by-side-item small-box-item">
+                    <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                        <table class="table">
                             <tr>
-                                <th>Reference Material Medium</th>
-                                <th>Organization Name</th>
-                                <th>Reference Material Code</th>
-                                <th>Reference Material Lot Code</th>
-                                <th>Purchase Date</th>
-                                <th>Expiration Date</th>
-                                <th>Certificate Link</th>
-                                <th>Value</th>
-                                <th>Value Accuracy</th>
-                                <th>Units</th>
+                                <th>Reference Material Medium:</th>
+                                <td>{{ referencematerial.referencematerialid.referencematerialmediumcv|default:" -- " }}</td>
+                                {# Detail Pages for later... #}
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for calibrationactions in Calibration.calibrationaction.all %}
-                                {% for referencematerial in calibrationactions.calibrationstandard.all %}
-                                    <tr>
-                                    <td>{{ referencematerial.referencematerialid.referencematerialmediumcv|default:" -- " }}</td>
-                                    {# Detail Pages for later... #}
-                                    <td>{{ referencematerial.referencematerialid.referencematerialorganizationid.organizationname|default:" -- " }}</td>
-                                    <td>{{ referencematerial.referencematerialid.referencematerialcode|default:" -- " }}</td>
-                                    <td>{{ referencematerial.referencematerialid.referencemateriallotcode|default:" -- " }}</td>
-                                    <td>{{ referencematerial.referencematerialid.referencematerialpurchasedate|default:" -- " }}</td>
-                                    <td>{{ referencematerial.referencematerialid.referencematerialexpirationdate|default:" -- " }}</td>
-                                    <td>
-                                        {% if referencematerial.referencematerialid.referencematerialcertificatelink %}
-                                            <a href="{{ referencematerial.referencematerialid.referencematerialcertificatelink }}">
-                                                {# check for correct link format #}
-                                                {{ referencematerial.referencematerialid.referencematerialcertificatelink }}</a>
-                                        {% else %}
-                                            --
-                                        {% endif %}
-                                    </td>
-                                    {% for materialvalue in referencematerial.referencematerialid.referencematerialvalue.all %}
-                                        {% if materialvalue.variableid == calibrationactions.istrumentoutputvariableid.variableid %}
+
+                            <tr>
+                                <th>Organization Name:</th>
+                                <td>{{ referencematerial.referencematerialid.referencematerialorganizationid.organizationname|default:" -- " }}</td>
+                            </tr>
+                            <tr>
+                                <th>Reference Material Code:</th>
+                                <td>{{ referencematerial.referencematerialid.referencematerialcode|default:" -- " }}</td>
+                            </tr>
+                            <tr>
+                                <th>Reference Material Lot Code:</th>
+                                <td>{{ referencematerial.referencematerialid.referencemateriallotcode|default:" -- " }}</td>
+                            </tr>
+                            <tr>
+                                <th>Purchase Date:</th>
+                                <td>{{ referencematerial.referencematerialid.referencematerialpurchasedate|default:" -- " }}</td>
+                            </tr>
+                            <tr>
+                                <th>Expiration Date:</th>
+                                <td>{{ referencematerial.referencematerialid.referencematerialexpirationdate|default:" -- " }}</td>
+                            </tr>
+                            <tr>
+                                <th>Certificate Link:</th>
+                                <td>{% if referencematerial.referencematerialid.referencematerialcertificatelink %}
+                                    <a href="{{ referencematerial.referencematerialid.referencematerialcertificatelink }}">
+                                        {# check for correct link format #}
+                                        {{ referencematerial.referencematerialid.referencematerialcertificatelink }}</a>
+                                {% else %}
+                                    --
+                                {% endif %}
+                                </td>
+                                {% for materialvalue in referencematerial.referencematerialid.referencematerialvalue.all %}
+                                    {% if materialvalue.variableid == calibrationactions.istrumentoutputvariableid.variableid %}
+                                        <tr>
+                                            <th>Value:</th>
                                             <td>{{ materialvalue.referencematerialvalue|default:" -- " }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Value Accuracy:</th>
                                             <td>{{ materialvalue.referencematerialaccuracy|default:" -- " }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Units:</th>
                                             <td>{{ materialvalue.unitsid.unitsname|default:" -- " }}</td>
-                                        {% else %}
-                                            <td> --</td>
-                                            <td> --</td>
-                                            <td> --</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endfor %}
+                                        </tr>
+                                {% endif %}
                             {% endfor %}
-                            </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="reference-equ-modal" tabindex="-1" role="dialog"
-             aria-labelledby="reference-equ-modalTitle">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <h3 class="modal-title" id="reference-equ-modalTitle">Reference Equipment</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <table class="data-table">
-                            <thead>
+                    {% empty %}
+                        <table class="table">
                             <tr>
-                                <th>Equipment Serial Number</th>
-                                <th>Equipment Code</th>
-                                <th>Equipment Name</th>
-                                <th>Equipment Type</th>
-                                <th>Manufacturer Name</th>
-                                <th>Equipment Model Name</th>
-                                <th>Owner Name</th>
+                                <td>No Reference Material information for this calibration.</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for calibrationactions in Calibration.calibrationaction.all %}
-                                {% for referenceequipment in calibrationactions.calibrationreferenceequipment.all %}
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'equipment_detail' referenceequipment.equipmentid.equipmentid %}">
-                                                {{ referenceequipment.equipmentid.equipmentserialnumber|default:" -- " }}</a>
-                                        </td>
-                                        <td>{{ referenceequipment.equipmentid.equipmentcode|default:" -- " }}</td>
-                                        <td>{{ referenceequipment.equipmentid.equipmentname|default:" -- " }}</td>
-                                        <td>{{ referenceequipment.equipmentid.equipmenttypecv|default:" -- " }}</td>
-                                        <td>{{ referenceequipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}</td>
-                                        <td>
-                                            <a href="{% url 'equipment_detail' referenceequipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
-                                                {{ referenceequipment.equipmentid.equipmentmodelid.modelname|default:" -- " }}</a>
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'person_detail' referenceequipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
-                                                {{ referenceequipment.equipmentid.equipmentownerid.personfirstname }}
-                                                {{ referenceequipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            {% endfor %}
-                            </tbody>
                         </table>
-                    </div>
-                </div>
+                    {% endfor %}
+                {% endfor %}
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h3>Reference Equipment</h3>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                {% for related in Calibration.relatedaction.all %}
-                    {% if related.relationshiptypecv == 'Is child of' %}
-                                                               href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                    {% endif %}
-                {% endfor %}>Go to Site Visit</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <button type="button" class="btn btn-primary btn-block"
-                    data-toggle="modal"
-                    data-target="#related-equ-modal">Show Related Equipment Table</button>
+
+                {% for calibrationactions in Calibration.calibrationaction.all %}
+                    {% for referenceequipment in calibrationactions.calibrationreferenceequipment.all %}
+                        <div class="row side-by-side-item small-box-item">
+                    <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                        <table class="table">
+                        <tr>
+                            <th>Equipment Serial Number:</th>
+                            <td><a href="{% url 'equipment_detail' referenceequipment.equipmentid.equipmentid %}">
+                                {{ referenceequipment.equipmentid.equipmentserialnumber|default:" -- " }}</a></td>
+                        </tr>
+
+                        <tr>
+                            <th>Equipment Code:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentcode|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Equipment Name:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentname|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Equipment Type:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmenttypecv|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Manufacturer Name:</th>
+                            <td>{{ referenceequipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}</td>
+                        </tr>
+                        <tr>
+                            <th>Equipment Model Name:</th>
+                            <td>
+                                <a href="{% url 'equipment_detail' referenceequipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                    {{ referenceequipment.equipmentid.equipmentmodelid.modelname|default:" -- " }}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Owner Name:</th>
+                            <td>
+                                <a href="{% url 'person_detail' referenceequipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                    {{ referenceequipment.equipmentid.equipmentownerid.personfirstname }}
+                                    {{ referenceequipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}
+                                </a>
+                            </td>
+                        </tr>
+                        </table>
+                        </div>
+                        </div>
+
+                    {% empty %}
+                        <tr>
+                            <td>No Reference Equipment information for this calibration.</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <button type="button" class="btn btn-primary btn-block"
-                    data-toggle="modal"
-                    data-target="#reference-equ-modal">Show Reference Equipment Table</button>
-        </div>
-    </div>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>

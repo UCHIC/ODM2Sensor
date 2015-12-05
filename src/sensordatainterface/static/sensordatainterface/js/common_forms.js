@@ -49,7 +49,8 @@ function initDTPicker() {
 
     var currentDateTimePicker = $('.datetimepicker');
     currentDateTimePicker.datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
+        format: 'YYYY-MM-DD HH:mm',
+        sideBySide: true
     });
 }
 
@@ -66,7 +67,7 @@ function setDateTimePicker() {
 
 function setDTPickerClose(beginDTElem) {
     //Function to set up begindatetime fields to close automatically when date is picked and open next enddatetime field.
-    beginDTElem.parent('.datetimepicker').on('dp.change', function () {
+    beginDTElem.parent('.datetimepicker').on('dp.hide', function () {
         var beginDTObj = $(this).data('DateTimePicker');
         if (beginDTObj.collapse) {
             beginDTObj.hide();
@@ -84,7 +85,7 @@ function setFormFields(currentForm) {
     currentForm.find('select').addClass('select-two');
 
     currentForm.find(".select-two").select2();
-    currentForm.find('.select2-container').css('width', '85%');
+    currentForm.find('.select2-container').css('width', '100%');
 }
 
 function handleActionTypeChange(formType, currentForm) {
@@ -92,7 +93,8 @@ function handleActionTypeChange(formType, currentForm) {
         'Field activity': 'notypeclass',
         'Equipment deployment': 'deployment',
         'Instrument calibration': 'calibration',
-        'Equipment maintenance': 'maintenance'
+        'Equipment maintenance': 'maintenance',
+        '': 'generic'
     };
 
     for (var key in formClasses) {
@@ -110,7 +112,7 @@ function handleActionTypeChange(formType, currentForm) {
     //reset select2 to hide disabled options
     var methodSelect = $(currentForm).find('[name="methodid"]');
     methodSelect.select2();
-    $('.select2-container').css('width', '85%');
+    $('.select2-container').css('width', '100%');
 
     var equipmentUsedElem = $(currentForm).find('[name="equipmentused"]');
 
@@ -150,8 +152,9 @@ function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
 }
 
 function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
-    if(selected == "")
+    if(selected == "") {
         return;
+    }
 
     var equipmentByActionUrl = $('#equipment-by-action-api').val();
 
@@ -174,36 +177,111 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     });
 }
 
-function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
-            var currentValue;
-            equipmentUsedSelectElems.each(function () {
-                currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
-                var currentEquipmentSelect = this;
-                if (currentValue !== "Equipment deployment") {
-                    $(currentEquipmentSelect).empty();
-                    $.each(json, function (key, value) {
-                        $(currentEquipmentSelect).append('<option value=' + key + '>' + value + '</option>');
-                    });
-                } else {
-                    var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
-                    if (defaultElements.length > 0) {
-                        $(currentEquipmentSelect).empty();
-                        $(currentEquipmentSelect).append($(defaultElements).clone());
-                    }
-                }
+function showAllEquipment(equipmentUsedSelectElems) {
+    var equipmentByActionUrl = $('#equipment-by-action-api').val();
+    $.ajax({
+        url: equipmentByActionUrl,
+        type: "POST",
+        data :{
+            action_id: false,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
 
-                // Clear value of equipment selected. An equipment can't be deployed at two locations.
-                //$(currentEquipmentSelect).select2("val", "");
+        success: function (json) {
+            handle_equ_used_filter_response(json, equipmentUsedSelectElems)
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+// get site visit dates from get_site_visit_dates, and restrict begindate and enddate
+function filterActionDatesByVisit(siteVisitId) {
+    if (siteVisitId == '') {
+        return;
+    }
+
+    var apiUrl = $('#site-visit-dates').val();
+    var form = $('form');
+    var token = form.find('[name="csrfmiddlewaretoken"]').val();
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        data: { site_visit: siteVisitId, csrfmiddlewaretoken: token },
+        success: function(data) {
+
+            // get datetimepicker stuff and restrict by the dates received.
+            var minDatetime = moment(data.begin_date);
+            var maxDatetime = moment(data.end_date);
+
+            var beginDateTimeObj = form.find('[name="begindatetime"]').parents('.datetimepicker').data('DateTimePicker');
+            var endDateTimeObj = form.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
+
+            beginDateTimeObj.maxDate(false);
+            beginDateTimeObj.minDate(false);
+            endDateTimeObj.maxDate(false);
+            endDateTimeObj.minDate(false);
+
+            beginDateTimeObj.maxDate(maxDatetime);
+            beginDateTimeObj.minDate(minDatetime);
+            endDateTimeObj.maxDate(maxDatetime);
+            endDateTimeObj.minDate(minDatetime);
+        },
+        error: function(xhr, errmsg) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+
+
+function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
+    var currentValue;
+    json = JSON.parse(json);
+    equipmentUsedSelectElems.each(function () {
+        currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
+        var currentEquipmentSelect = $(this);
+        if (currentValue !== "Equipment deployment") {
+            var options = [];
+            currentEquipmentSelect.empty();
+            json.forEach(function(object) {
+                var equipment = object.fields;
+                var equipmentElement = ['<option value=', object.pk, '>',
+                    equipment.equipmentcode, ': ', equipment.equipmentserialnumber,
+                    ' (', equipment.equipmenttypecv, ', ', equipment.equipmentmodelid, ')',
+                    '</option>'
+                ];
+                options.push(equipmentElement.join(''));
             });
+            currentEquipmentSelect.append(options.join(''));
+        } else {
+            var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
+            if (defaultElements.length > 0) {
+                currentEquipmentSelect.empty();
+                currentEquipmentSelect.append($(defaultElements).clone());
+            }
         }
 
+        // Clear value of equipment selected. An equipment can't be deployed at two locations.
+        //$(currentEquipmentSelect).select2("val", "");
+    });
+}
+
 $(document).ready(function () {
+    var formNames = ['EquipmentDeployment', 'InstrumentCalibration', 'Generic'];
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
     setFormFields($('tbody'));
     setOtherActions();
 
+    var currentForm = $('form');
     var allForms = $('tbody').has('[name="actiontypecv"]');
+    var filterEquipmentCheck = $('#id_equipment_by_site');
+    var siteVisitSelect = currentForm.find('[name="actionid"]');
 
     allForms.each(function (index) {
         var actionType = $(this).find('.select-two[name="actiontypecv"]');
@@ -215,11 +293,23 @@ $(document).ready(function () {
         });
     });
 
-    $('form').find('[name="actionid"]').change(function () {
-        var form = $('form');
-        var formActionType = form.find('[name="actiontypecv"]').val();
-        if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment")
-            filterEquipmentByAction($(this).val(), form.find('[name="equipmentused"]'));
-    })
+    siteVisitSelect.change(function (eventData, handler) {
+        var formActionType = currentForm.find('[name="actiontypecv"]').val();
+
+        if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment" && !filterEquipmentCheck.prop('checked')) {
+            filterEquipmentByAction($(this).val(), currentForm.find('[name="equipmentused"]'));
+        } else {
+            showAllEquipment(currentForm.find('[name="equipmentused"]'));
+        }
+
+        if (currentForm.hasClass('EquipmentDeployment') || currentForm.hasClass('InstrumentCalibration') || currentForm.hasClass('Generic')) {
+            var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
+            filterActionDatesByVisit(siteVisit);
+        }
+    });
+
+    filterEquipmentCheck.change(function(eventData) {
+        siteVisitSelect.trigger('change');
+    });
 });
 

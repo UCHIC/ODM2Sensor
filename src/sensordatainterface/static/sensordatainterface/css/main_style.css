@@ -148,11 +148,16 @@ table.data-table tbody thead th {
 /*/!* width: 100%; *!/*/
 /*}*/
 
+.form-group {
+    position: relative;
+    width: 65%;
+}
+
 .form-table th {
     width: 20%;
     text-align: right;
     padding-right: 3%;
-    vertical-align: middle;;
+    vertical-align: middle;
 }
 
 .form-table tr {
@@ -176,15 +181,15 @@ input[type=checkbox], input[type=radio] {
 }
 
 input.btn.btn-primary.form-control {
-    width: 66%;
+    width: 50%;
+    min-width: 250px;
 }
 
 table a.btn.btn-default {
     margin-right: 2%;
-    width: 17%;
+    width: 25%;
+    min-width: 130px;
     float: left;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
 }
 
 .form-table label {
@@ -200,7 +205,7 @@ table a.btn.btn-default {
 /*}*/
 
 .input-group {
-    width: 85%;
+    width: 100%;
 }
 
 .form-table .row {
@@ -344,6 +349,12 @@ label {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
 }
 
+.btn-remove-action {
+    width: 25%;
+    min-width: 130px;
+    float: left;
+}
+
 .btn-primary:focus, .btn-primary:hover {
     background-color: #4D89BF;
     background-position: 0 -15px;
@@ -373,7 +384,7 @@ label {
 }
 
 .select2-container {
-    width: 85%;
+    width: 100%;
 !important;
 }
 
@@ -382,7 +393,7 @@ label {
 }
 
 .select2-container, form.input-group input.form-control, form.input-group textarea.form-control {
-    width: 85%;
+    width: 100%;
 }
 
 form.form-control input[type="submit"].form-control {
@@ -399,12 +410,11 @@ tr.form-required:after {
     font-weight: bold;
     font-size: 1.2em;
     position: relative;
-    right: 113px;
     top: 14px;
 }
 
 span.helptext {
-  display: inline-block;
+    display: inline-block;
 }
 
 
@@ -505,3 +515,46 @@ span.helptext {
     width: 20%;
 }
 
+div.home_page {
+    padding-left: 10%;
+    width: 65%;
+    float: left;
+}
+
+div.intro {
+    padding-left: 10%;
+    width: 65%;
+    float: left;
+}
+
+div.quick_links {
+    float: right;
+    margin-right: 10%;
+    border-style: solid;
+    border-radius: 25px;
+    border-color: forestgreen;
+}
+
+div.quick_links_table {
+    margin: 25px;
+}
+
+div.banner {
+	background-image: url(../img/waterfallBanner.jpg);
+	height: 250px;
+}
+
+img.banner {
+    width: 100%;
+}
+
+
+label.checkbox-label {
+    font-weight: inherit;
+    line-height: 1.5em;
+}
+
+label.checkbox-label input {
+    margin-right: 5px;
+    height: initial;
+}

@@ -1,3 +1,4 @@
+from django.views.generic import CreateView
 from sensordatainterface.base_views import *
 from sensordatainterface.forms import *
 from django.core.urlresolvers import reverse
@@ -26,12 +27,11 @@ def edit_site(request, site_id):
         if samp_feat_form.is_valid() and sites_form.is_valid():
             # IDENTITY_INSERT error solved by changing samplingfeatureid for SamplingFeatures to AutoField in models.py
             samplingfeature = samp_feat_form.save(commit=False)
-            samplingfeature.samplingfeaturetypecv = 'Site'
+            samplingfeature.samplingfeaturetypecv = CvSamplingfeaturetype.objects.get(term='site')
             samplingfeature.save()
 
             site = sites_form.save(commit=False)
             site.samplingfeatureid = samplingfeature
-            site.spatialreferenceid = sites_form.cleaned_data['spatialreferenceid']
             site.save()
 
             messages.add_message(request, messages.SUCCESS, 'Site ' + request.POST['action'] + 'd successfully')
@@ -76,7 +76,7 @@ def edit_factory_service_event(request, bridge_id):
 
         if action_form.is_valid() and maintenance_form.is_valid() and equipment_form.is_valid():
             action_model = action_form.save(commit=False)
-            action_model.actiontypecv = 'Equipment maintenance'
+            action_model.actiontypecv = CvActiontype.objects.get(name='Equipment maintenance')
             action_model.methodid = action_form.cleaned_data['methodid']
             action_model.save()
 
@@ -187,9 +187,9 @@ def edit_models(request, model_object, FormClass, modifications, model_name, red
 def set_submitted_data(request, model_object, FormClass, modification, model_name, redirect_url, m_id):
     if request.POST['action'] == 'update':
         model = model_object.get(pk=request.POST['item_id'])
-        model_form = FormClass(request.POST, instance=model)
+        model_form = FormClass(request.POST, request.FILES, instance=model)
     else:
-        model_form = FormClass(request.POST)
+        model_form = FormClass(request.POST, request.FILES,)
 
     if model_form.is_valid():
         model = model_form.save(commit=False)
@@ -292,7 +292,7 @@ def edit_person(request, affiliation_id):
 
     return render(
         request,
-        'vocabulary/person-form.html',
+        'people/person-form.html',
         {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
 
     )
@@ -305,67 +305,10 @@ def delete_person(request, affiliation_id):
     affiliation.personid.delete()
     affiliation.delete()
     messages.add_message(request, messages.SUCCESS, 'Person ' + person_name + ' removed from the system')
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
+    return HttpResponseRedirect(reverse('humans') + '?tab=activity')
 
 
-@login_required(login_url=LOGIN_URL)
-def edit_control_vocabularies(request, target_cv, name):
-    action = 'create'
-    sdi_app_config = apps.get_app_config('sensordatainterface')
-    id_modified = False
-    new_name_temp = None
 
-    if request.method == 'POST':
-        if request.POST['action'] == 'update':
-            cv_model = sdi_app_config.get_model(target_cv)
-            cv_instance = cv_model.objects.get(pk=request.POST['item_id'])
-
-            if request.POST['name'] != request.POST['item_id']:
-                new_name_temp = request.POST['name']
-                request.POST['name'] = request.POST['item_id']
-                cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
-                id_modified = True
-
-            else:
-                cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
-
-        else:
-            cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv), request.POST)
-
-        if cv_form.is_valid():
-            if id_modified:
-                cv = cv_form.save(commit=False)
-                cv.name = new_name_temp
-                cv.save()
-                cv_model.objects.get(pk=request.POST['name']).delete()
-            else:
-                cv = cv_form.save()
-
-            messages.add_message(request, messages.SUCCESS,
-                                 'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
-            return HttpResponseRedirect(reverse('vocabularies') + get_cv_tab(target_cv)) # change tab according to target_cv
-
-    elif name:
-        cv_model = sdi_app_config.get_model(target_cv)
-        cv_instance = cv_model.objects.get(pk=name)
-        cv_form = get_cv_model_form(cv_model, instance=cv_instance)
-        action = 'update'
-
-    else:
-        cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv))
-        cv_form.initial ={'modelname': target_cv}
-
-    return render(
-        request,
-        'vocabulary/vocabulary-form.html',
-        {
-            'render_forms': [cv_form],
-            'action': action,
-            'item_id': name,
-            'cv_name': target_cv,
-            'tab_name': get_cv_tab(target_cv)
-        }
-    )
 
 
 def get_cv_tab(model_name):
@@ -394,8 +337,8 @@ def delete_control_vocabularies(request, target_cv, name):
 @login_required(login_url=LOGIN_URL)
 def edit_vendor(request, organization_id):
     modifications = {}
-    arguments = [request, Organization.objects, VendorForm, modifications, 'Vendor', 'vendor_detail',
-                 'organizationid', organization_id, 'vocabulary/vendor-form.html']
+    arguments = [request, Organization.objects, VendorForm, modifications, 'Organization', 'organization_detail',
+                 'organizationid', organization_id, 'people/organization-form.html']
     return edit_models(*arguments)
 
 
@@ -406,7 +349,7 @@ def delete_vendor(request, organization_id):
     organization_name = organization.organizationname
     organization.delete()
     messages.add_message(request, messages.SUCCESS, 'Organization ' + organization_name + ' removed successfully.')
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=vendor')
+    return HttpResponseRedirect(reverse('organizations') + '?tab=vendor')
 
 
 @login_required(login_url=LOGIN_URL)
@@ -426,12 +369,13 @@ def edit_calibration_standard(request, reference_val_id):
 
         if reference_mat_form.is_valid() and reference_mat_value_form.is_valid():
             reference_mat = reference_mat_form.save(commit=False)
-            # reference_mat.referencematerialid = ReferenceMaterial.objects.all().count() + 1
+            reference_mat.referencematerialid = ReferenceMaterial.objects.count() + 1
             reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data[
                 'referencematerialorganizationid']
             reference_mat.save()
 
             reference_mat_val = reference_mat_value_form.save(commit=False)
+            reference_mat_val.referencematerialvalueid = ReferenceMaterialValue.objects.count() + 1
             reference_mat_val.referencematerialid = reference_mat
             reference_mat_val.variableid = reference_mat_value_form.cleaned_data['variableid']
             reference_mat_val.unitsid = reference_mat_value_form.cleaned_data['unitsid']
@@ -459,9 +403,8 @@ def edit_calibration_standard(request, reference_val_id):
 
     return render(
         request,
-        'vocabulary/calibration-standard-from.html',
+        'vocabulary/../../templates/site-visits/calibration/calibration-standard-from.html',
         {'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id}
-
     )
 
 
@@ -561,8 +504,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
-                        Q(actionid__actiontypecv='Instrument deployment') | Q(
-                            actionid__actiontypecv='Equipment deployment')),
+                        Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
+                            actionid__actiontypecv=CvActiontype.objects.get(term='equipmentDeployment'))),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -586,8 +529,8 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
             outputvar_form.fields['deployments'] = DeploymentChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
-                        Q(actionid__actiontypecv='Instrument deployment') | Q(
-                            actionid__actiontypecv='Equipment deployment')),
+                        Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
+                            actionid__actiontypecv=CvActiontype.objects.get(term='equipmentDeployment'))),
                     actionid__featureaction__samplingfeatureid=site_id, actionid__equipmentused__isnull=False
                 ),
                 label='Deployment',
@@ -609,7 +552,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
 
 @login_required(login_url=LOGIN_URL)
-def create_site_visit(request):
+def create_site_visit(request, site_id=None):
     action = 'create'
     render_actions = False
 
@@ -622,7 +565,7 @@ def create_site_visit(request):
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
     else:
-        sampling_feature_form = FeatureActionForm()
+        sampling_feature_form = FeatureActionForm(initial={'samplingfeatureid': site_id})
         site_visit_form = SiteVisitForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
         crew_form = CrewForm()
@@ -751,7 +694,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.save(commit=False)
     site_visit_action.methodid = Method.objects.get(pk=1000)
-    site_visit_action.actiontypecv = 'Site Visit'
+    site_visit_action.actiontypecv = CvActiontype.objects.get(name='Site Visit')
     site_visit_action.save()
 
     if updating:
@@ -770,11 +713,11 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     for i in range(0, len(action_form)):
         current_action = action_form[i].save(commit=False)
         action_type = action_form[i].cleaned_data['actiontypecv']
-        current_action.actiontypecv = action_type
+        current_action.actiontypecv = CvActiontype.objects.get(name = action_type)
         current_action.save()
 
         if not updating:
-            RelatedAction.objects.create(actionid=current_action, relationshiptypecv='Is child of',
+            RelatedAction.objects.create(actionid=current_action, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'),
                                          relatedactionid=site_visit_action)
             FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
         else:
@@ -856,7 +799,7 @@ def edit_site_visit(request, action_id):
         render_actions = True
         action = 'update'
 
-        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv='Is child of')
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
 
         action_form = []
         for child in children_actions:
@@ -932,11 +875,15 @@ def edit_site_visit_summary(request, action_id):
         {'SiteVisit': site_visit, 'Crew': crew, 'ChildActions': related_actions, 'Site': site}
     )
 
+
 @login_required(login_url=LOGIN_URL)
-def edit_action(request, action_type, action_id):
+def edit_action(request, action_type, action_id=None, visit_id=None):
     action = 'create'
+    child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
+
     if request.method == 'POST':
-        if request.POST['action'] == 'update':
+        updating = request.POST['action'] == 'update'
+        if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
             child_action = Action.objects.get(pk=request.POST['item_id'])
 
@@ -950,23 +897,23 @@ def edit_action(request, action_type, action_id):
         if site_visit_form.is_valid() and action_form.is_valid():
             child_action = action_form.save()
             parent_site_visit = site_visit_form.cleaned_data['actionid']
-            if request.POST['action'] == 'update':
+            if updating:
                 related_action = RelatedAction.objects.get(
                     actionid=child_action,
-                    relationshiptypecv='Is child of'
+                    relationshiptypecv=child_relationship
                 )
                 related_action.relatedactionid=parent_site_visit
                 related_action.save()
             else:
                 related_action = RelatedAction.objects.create(
                     actionid=child_action,
-                    relationshiptypecv='Is child of',
+                    relationshiptypecv=child_relationship,
                     relatedactionid=parent_site_visit
                 )
 
             sampling_feature = FeatureAction.objects.filter(
                 actionid=parent_site_visit,
-                samplingfeatureid__samplingfeaturetypecv='Site'
+                samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
                 )[0].samplingfeatureid
 
             FeatureAction.objects.get_or_create(
@@ -986,21 +933,20 @@ def edit_action(request, action_type, action_id):
 
             action_type = action_form.cleaned_data['actiontypecv']
 
-            if action_type == 'Instrument calibration':
-                CalibrationAction.objects.get(actionid=child_action).delete()
-                CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
+            if action_type.term == 'instrumentCalibration':
+                if updating:
+                    CalibrationAction.objects.get(actionid=child_action).delete()
+                    CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
 
             url_map = {
-                'Equipment deployment': 'deployment_detail',
-                'Instrument calibration': 'calibration_detail',
-                'Equipment maintenance': 'field_activity_detail',
-                'Field activity': 'field_activity_detail'
+                'equipmentDeployment': 'deployment_detail',
+                'instrumentCalibration': 'calibration_detail',
+                'equipmentMaintenance': 'field_activity_detail',
+                'fieldActivity': 'field_activity_detail'
             }
-
-            messages.add_message(request, messages.SUCCESS, action_type + ' action ' + request.POST['action'] + 'd successfully')
             response = HttpResponseRedirect(
-                reverse(url_map[action_type], args=[child_action.actionid])
+                reverse(url_map[action_type.term], args=[child_action.actionid])
             )
 
             return response
@@ -1008,7 +954,7 @@ def edit_action(request, action_type, action_id):
     elif action_id:
         child_action = Action.objects.get(pk=action_id)
         parent_action_id = RelatedAction.objects.get(
-            relationshiptypecv='Is child of',
+            relationshiptypecv=child_relationship,
             actionid=action_id
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
@@ -1032,7 +978,7 @@ def edit_action(request, action_type, action_id):
         action = 'update'
 
     else:
-        site_visit_form = SiteVisitChoiceForm()
+        site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
         action_form = ActionForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
         )
@@ -1042,3 +988,69 @@ def edit_action(request, action_type, action_id):
         'site-visits/field-activities/other-action-form.html',
         {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'action_type': action_type}
     )
+
+
+#################################################################################################
+#                         Considering Deletion
+#################################################################################################
+
+# WE DECIDED TO NOT EDIT OR CREATE VOCABULARIES. KEEPING THIS FUNCTIONALITY HERE IN CASE IT'S NEEDED
+
+# @login_required(login_url=LOGIN_URL)
+# def edit_control_vocabularies(request, target_cv, name):
+#     action = 'create'
+#     sdi_app_config = apps.get_app_config('sensordatainterface')
+#     id_modified = False
+#     new_name_temp = None
+#
+#     if request.method == 'POST':
+#         if request.POST['action'] == 'update':
+#             cv_model = sdi_app_config.get_model(target_cv)
+#             cv_instance = cv_model.objects.get(pk=request.POST['item_id'])
+#
+#             if request.POST['name'] != request.POST['item_id']:
+#                 new_name_temp = request.POST['name']
+#                 request.POST['name'] = request.POST['item_id']
+#                 cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
+#                 id_modified = True
+#
+#             else:
+#                 cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
+#
+#         else:
+#             cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv), request.POST)
+#
+#         if cv_form.is_valid():
+#             if id_modified:
+#                 cv = cv_form.save(commit=False)
+#                 cv.name = new_name_temp
+#                 cv.save()
+#                 cv_model.objects.get(pk=request.POST['name']).delete()
+#             else:
+#                 cv = cv_form.save()
+#
+#             messages.add_message(request, messages.SUCCESS,
+#                                  'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
+#             return HttpResponseRedirect(reverse('vocabularies') + get_cv_tab(target_cv)) # change tab according to target_cv
+#
+#     elif name:
+#         cv_model = sdi_app_config.get_model(target_cv)
+#         cv_instance = cv_model.objects.get(pk=name)
+#         cv_form = get_cv_model_form(cv_model, instance=cv_instance)
+#         action = 'update'
+#
+#     else:
+#         cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv))
+#         cv_form.initial ={'modelname': target_cv}
+#
+#     return render(
+#         request,
+#         'vocabulary/vocabulary-form.html',
+#         {
+#             'render_forms': [cv_form],
+#             'action': action,
+#             'item_id': name,
+#             'cv_name': target_cv,
+#             'tab_name': get_cv_tab(target_cv)
+#         }
+#     )

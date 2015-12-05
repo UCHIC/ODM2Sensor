@@ -7,26 +7,22 @@
     </div>
     <!--buttons -->
     <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" href="{% url 'edit_site_visit' Deployment.actionid %}">Delete</a>
+        </div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
             <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block"
-               href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment
-                Description</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button"
-               href="{% url 'edit_site_visit' Deployment.actionid %}">Delete</a>
-        </div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment Description</a></div>
     </div>
 
     <!-- deployment details -->
-    <div class="row">
     {% with samplingfeature=Deployment.featureaction.all.0.samplingfeatureid %}
-        <div class="col-xs-12 col-sm-12 col-md-6 pull-right">
-        <h3>Site</h3>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h3>Deployment</h3>
             <table class="table">
                 <tr>
                     <th>Site Code:</th>
@@ -34,37 +30,20 @@
                         <a href="{% url 'site_detail' samplingfeature.samplingfeatureid %}">
                             {{ samplingfeature.samplingfeaturecode }}</a>
                     </td>
-                </tr>
-                <tr>
-                    <th>Site Name:</th>
-                    <td>{{ samplingfeature.samplingfeaturename }}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 pull-left">
-            <h3>Deployment</h3>
-            <table class="table">
-                <tr>
                     <th>Begin Date Time:</th>
                     <td>{{ Deployment.begindatetime }}</td>
-                </tr>
-                <tr>
                     <th>UTC Offset:</th>
                     <td>{{ Deployment.begindatetimeutcoffset }}</td>
-                </tr>
-                <tr>
                     <th>Action Description:</th>
                     <td>{{ Deployment.actiondescription|default:" -- " }}</td>
                 </tr>
                 <tr>
+                    <th>Site Name:</th>
+                    <td>{{ samplingfeature.samplingfeaturename }}</td>
                     <th>End Date Time:</th>
-                    <td>{{ Deployment.enddatetime|default:"Not Defined" }}</td>
-                </tr>
-                <tr>
+                    <td>{{ Deployment.enddatetime|default:"present" }}</td>
                     <th>Currently Deployed:</th>
                     <td>{% if Deployment.enddatetime %} No {% else %} Yes {% endif %}</td>
-                </tr>
-                <tr>
                     <th>Action Link:</th>
                     <td>
                         {% if Deployment.actionfilelink %}
@@ -76,201 +55,171 @@
                 </tr>
             </table>
         </div>
-    </div>
-
         <!-- Equipment Used Table -->
         <div class="row detail-mid">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <h3>Equipment Used</h3>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row">
+                    <div style="float: left;"><h3>Equipment Used</h3></div>
 
-            <table class="data-table">
-                <thead>
-                <tr>
-                    <th>Serial Number</th>
-                    <th>Name</th>
-                    <th>Model Name</th>
-                    <th>Owner</th>
-                    <th>Purchase Date</th>
-                    <th>Code</th>
-                    <th>Type</th>
-                    <th>Manufacturer</th>
-                    <th>Description</th>
-                    <th>Link</th>
-                    <th>Options</th>
-                    <th style="display: none">Measured Variables</th>
-                    <th style="display: none">Related Equipment</th>
-                </tr>
-                </thead>
-                <tbody>
+                    <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
+                        <a class="btn btn-primary btn-block"
+                        {% for related in Deployment.relatedaction.all %}
+                            {% if related.relationshiptypecv == 'Is child of' %}
+                                href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
+                            {% endif %}
+                        {% endfor %}>Go to Site Visit</a>
+                    </div>
+                </div>
+
+
                 {% for equipment in Deployment.equipmentused.all %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">
-                                {{ equipment.equipmentid.equipmentserialnumber }}</a>
-                        </td>
-
-                        <td>{{ equipment.equipmentid.equipmentname }}</td>
-                        <td>
-                            <a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
-                                {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
-                        </td>
-                        <td>
-                            <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
-                                {{ equipment.equipmentid.equipmentownerid.personfirstname }} {{ equipment.equipmentid.equipmentownerid.personlastname }}</a>
-                        </td>
-                        <td>{{ equipment.equipmentid.equipmentpurchasedate }}</td>
-                        <td>{{ equipment.equipmentid.equipmentcode }}</td>
-                        <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
-                        <td>{{ equipment.equipmentid.equipmentdescription }}</td>
-                        <td>{{ equipment.equipmentid.equipmentdocumentationlink }}</td>
-                        <td>
-                            <div class="equ-used-options col-sm-6 col-xs-12 col-md-4 pull-right">
-                                <a class="view-hist-button btn btn-primary btn-block"
-                                   href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View Deployment History</a>
-                                <button type="button" class="add-inst-meas-variables-button btn btn-primary btn-block"
-                                        data-toggle="modal"
-                                        data-target="#meas-var-{{ equipment.equipmentid.equipmentid }}">Show Measured Variables
-                                </button>
-                                <button type="button" class="add-related-equ-button btn btn-primary btn-block"
-                                        data-toggle="modal"
-                                        data-target="#rel-equ-{{ equipment.equipmentid.equipmentid }}">Show Related Equipment</button>
-                            </div>
-                        </td>
-                        <td class="hiddenMeasVar">
-                            <div class="modal fade" id="meas-var-{{ equipment.equipmentid.equipmentid }}" tabindex="-1"
-                                 role="dialog" aria-labelledby="modalTitle-{{ equipment.equipmentid.equipmentid }}">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <div class="row">
-                                                <div class="col-sm-12 col-xs-12 col-md-8"><h4 class="modal-title"
-                                                                                              id="modalTitle-{{ equipment.equipmentid.equipmentid }}">Instrument Measured Variable Table</h4></div>
-                                                <div class="col-sm-12 col-xs-12 col-md-4 pull-right">
-                                                    <a class="btn btn-block btn-primary"
-                                                       href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New Deployment Measured Variable</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <table class="data-table">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Variable Code</th>
-                                                        <th>Variable Name</th>
-                                                        <th>Model Name</th>
-                                                        <th>Method Code</th>
-                                                        <th>Method Name</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    {% for variable in equipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
-                                                        {% if variable.modelid.isinstrument %}
-                                                            <tr>
-                                                                <td>
-                                                                    {#                                                                    <a href="{% url 'measured_variable_detail' variable.instrumentoutputvariableid Deployment.bridgeid samplingfeature.samplingfeatureid %}">#}
-                                                                    {{ variable.variableid.variablecode }}
-                                                                    {#                                                                    </a>#}
-                                                                </td>
-                                                                <td>{{ variable.variableid.variablenamecv }}</td>
-                                                                <td>{{ variable.modelid.modelname }}</td>
-                                                                <td>{{ variable.instrumentmethodid.methodcode }}</td>
-                                                                <td>{{ variable.instrumentmethodid.methodname }}</td>
-                                                            </tr>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="row side-by-side-item">
+                        <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
+                            <a class="btn btn-primary btn-block"
+                               href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View
+                                Equipment's Deployment History</a>
+                        </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <th>Equipment Serial Number</th>
+                                    <td>
+                                        <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">
+                                            {{ equipment.equipmentid.equipmentserialnumber }}</a>
+                                    </td>
+                                    <th>Equipment Name</th>
+                                    <td>{{ equipment.equipmentid.equipmentname }}</td>
+                                    <th>Equipment Model Name</th>
+                                    <td>
+                                        <a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                            {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
+                                    </td>
+                                    <th>Equipment Owner</th>
+                                    <td>
+                                        <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                            {{ equipment.equipmentid.equipmentownerid.personfirstname }} {{ equipment.equipmentid.equipmentownerid.personlastname }}</a>
+                                    </td>
+                                    <th>Purchase Date</th>
+                                    <td>{{ equipment.equipmentid.equipmentpurchasedate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Equipment Code</th>
+                                    <td>{{ equipment.equipmentid.equipmentcode }}</td>
+                                    <th>Equipment Type</th>
+                                    <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                                    <th>Equipment Manufacturer</th>
+                                    <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                                    <th>Equipment Description</th>
+                                    <td>{{ equipment.equipmentid.equipmentdescription }}</td>
+                                    <th>Link</th>
+                                    <td>{{ equipment.equipmentid.equipmentdocumentationlink }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
+                                <a class="add-inst-meas-variables-button btn btn-primary btn-block">Show Instrument Measured Variables</a></div>
+                        </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-dependent-table"
+                             style="display: none">
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12 col-md-8"><h4>Instrument Measured Variable</h4></div>
+                                <div class="col-sm-12 col-xs-12 col-md-4 pull-right">
+                                    <a class="btn btn-block btn-primary"
+                                       href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New
+                                        Deployment Measured Variable</a>
                                 </div>
                             </div>
-                        </td>
-                        <td class="hiddenRelEqu">
-                            <div class="modal fade" id="rel-equ-{{ equipment.equipmentid.equipmentid }}" tabindex="-1"
-                                 role="dialog" aria-labelledby="equ-modalTitle-{{ equipment.equipmentid.equipmentid }}">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <h4 class="modal-title"
-                                                id="equ-modalTitle-{{ equipment.equipmentid.equipmentid }}">Related
-                                                Equipment</h4>
+                            <div class="row">
+                                <table class="data-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Variable Code</th>
+                                        <th>Variable Name</th>
+                                        <th>Model Name</th>
+                                        <th>Method Code</th>
+                                        <th>Method Name</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for variable in equipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
+                                        {% if variable.modelid.isinstrument %}
+                                            <tr>
+                                                <td>
+                                                    {#                                                                    <a href="{% url 'measured_variable_detail' variable.instrumentoutputvariableid Deployment.bridgeid samplingfeature.samplingfeatureid %}">#}
+                                                    {{ variable.variableid.variablecode }}
+                                                    {#                                                                    </a>#}
+                                                </td>
+                                                <td>{{ variable.variableid.variablenamecv }}</td>
+                                                <td>{{ variable.modelid.modelname }}</td>
+                                                <td>{{ variable.instrumentmethodid.methodcode }}</td>
+                                                <td>{{ variable.instrumentmethodid.methodname }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
 
+                            <a class="add-related-equ-button btn btn-primary btn-block">Show Related Equipment</a></div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 related-equipment-table"
+                             style="display: none">
+                            <h4>Related Equipment</h4>
+                                {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
+                                    {% if parent.relationshiptypecv == 'Is child of' %}
+                                        {# this should be displayed. It's related equipment not children equipment #}
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-left">
+                                            <table class="table">
+                                            <tr>
+                                                <th>Equipment Serial Number:</th>
+                                                <td>
+                                                    <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                                        {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Relationship Type:</th>
+                                                <td>{{ parent.relationshiptypecv }}</td>
+                                            </tr>
+                                            </table>
                                         </div>
-                                        <div class="modal-body">
-                                            {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
-                                                {% if parent.relationshiptypecv == 'Is child of' %}
-                                                    {# this should be displayed. It's related equipment not children equipment #}
-                                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-left">
-                                                        <table class="table">
-                                                            <tr>
-                                                                <th>Equipment Serial Number:</th>
-                                                                <td>
-                                                                    <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
-                                                                        {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Relationship Type:</th>
-                                                                <td>{{ parent.relationshiptypecv }}</td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                {% endif %}
-                                            {% empty %}
-                                                <p>No relationships found.</p>
-                                            {% endfor %}
-                                            <div class="modal-body">
-                                            </div>
-                                        </div>
-                                    </div>
-                        </td>
-                    </tr>
+                                    {% endif %}
+                                {% empty %}
+                                    <p>No relationships found.</p>
+                                {% endfor %}
+
+
+                        </div>
+                    </div>
+
                 {% endfor %}
-                </tbody>
-            </table>
-
-        </div>
+            </div>
         </div>
         <hr class="divider">
     {% endwith %}
 
-<div class="row">
-    <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
-        <a class="btn btn-primary btn-block"
-                {% for related in Deployment.relatedaction.all %}
-                    {% if related.relationshiptypecv == 'Is child of' %}
-           href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                    {% endif %}
-                {% endfor %}>Go to Site Visit</a></div>
-</div>
-<nav>
-    <ul class="pager">
-        {% if next_deployment %}
-            <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
-                                                                      href="{% url 'deployment_detail' next_deployment %}">Next<span
-                    aria-hidden="true">&rarr;</span></a></li>
-        {% endif %}
-        {% if previous_deployment %}
-            <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
-                                                                         href="{% url 'deployment_detail' previous_deployment %}"><span
-                    aria-hidden="true">&larr;</span>
-                Previous</a></li>
-        {% endif %}
-    </ul>
-</nav>
+    <nav>
+        <ul class="pager">
+            {% if next_deployment %}
+                <li class="next col-sm-3 col-xs-6 col-md-2 pull-right"><a class="btn btn-block"
+                                                                          href="{% url 'deployment_detail' next_deployment %}">Next<span
+                        aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+            {% if previous_deployment %}
+                <li class="previous col-sm-3 col-xs-6 col-md-2 pull-left"><a class="btn btn-block"
+                                                                             href="{% url 'deployment_detail' previous_deployment %}"><span
+                        aria-hidden="true">&larr;</span>
+                    Previous</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 
-<script type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
-</script>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
+    </script>
 
-<script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
+    <script type="text/javascript" src="{% static "sensordatainterface/js/google_maps.js" %}"></script>
 {% endblock %}

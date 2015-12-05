@@ -5,15 +5,16 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-4 col-md-4"><h2>Site Visit Details</h2></div>
 
+        <div class="col-xs-12 col-sm-8 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_site_visit' SiteVisit.actionid.actionid %}">Delete</a>
+        </div>
         <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
             <a class="btn btn-primary btn-block"
                href="{% url 'site_visits_by_site' SiteVisit.samplingfeatureid.samplingfeatureid %}">View Full Visit
                 History for Site</a></div>
         <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'edit_site_visit' SiteVisit.actionid.actionid %}">Edit Site Visit Description</a></div>
-        <div class="col-xs-12 col-sm-8 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_site_visit' SiteVisit.actionid.actionid %}">Delete</a>
-        </div>
+
     </div>
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right" id="map-canvas"></div>
@@ -79,12 +80,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9"><h3>Related Actions Table</h3></div>
-    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_site_visit' %}">Add New Site Visit</a>
+        <div class="col-md-9"><h3>Related Actions</h3></div>
     </div>
-    </div>
+
     <hr class="divider">
+
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="{% url 'create_site_visit' %}">Add New Site Visit</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="{% url 'create_action_from_visit' 'Generic' SiteVisit.actionid.actionid %}">Add Another Action</a></div> <!-- Add reference to Site Visit later-->
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="{% url 'create_action_from_visit' 'EquipmentDeployment' SiteVisit.actionid.actionid %}">Add New Deployment</a></div> <!-- Add reference to Site Visit later-->
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="{% url 'create_action_from_visit' 'InstrumentCalibration' SiteVisit.actionid.actionid %}">Add New Calibration</a></div> <!-- Add reference to Site Visit later-->
+    </div>
 
     <div class="row">
         <table class="data-table">
@@ -119,14 +129,7 @@
             </tbody>
         </table>
     </div>
-    <div class="row">
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="{% url 'create_action' 'Generic' %}">Add Another Action</a></div> <!-- Add reference to Site Visit later-->
-        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'create_action' 'EquipmentDeployment' %}">Add New Deployment</a></div> <!-- Add reference to Site Visit later-->
-        <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'create_action' 'InstrumentCalibration' %}">Add New Calibration</a></div> <!-- Add reference to Site Visit later-->
-    </div>
+
     <nav>
     <ul class="pager">
         {% if next_site_visit %}

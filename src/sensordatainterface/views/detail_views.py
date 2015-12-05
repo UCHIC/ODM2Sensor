@@ -9,6 +9,7 @@ class GenericDetailView(DetailView):
     def dispatch(self, *args, **kwargs):
         return super(GenericDetailView, self).dispatch(*args, **kwargs)
 
+
 class SiteVisitDetailView(DetailView):
     model = FeatureAction
     slug_field = 'actionid'

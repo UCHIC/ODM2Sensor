@@ -4,14 +4,33 @@
 {% block content %}
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Equipment Details</h2></div>
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block"
-               href="{% url 'create_equipment' Equipment.equipmentid %}">Edit Equipment Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
             <a class="btn btn-danger btn-block" id="danger-button"
                data-href="{% url 'delete_equipment' Equipment.equipmentid %}">Delete</a>
         </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block"
+               href="{% url 'create_equipment' Equipment.equipmentid %}">Edit Equipment Description</a></div>
     </div>
+
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-left">
+            <a class="btn btn-primary btn-block" href="{% url 'calibrations_by_equipment' Equipment.equipmentid %}">
+                Calibration History
+            </a>
+        </div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-left">
+            <a class="btn btn-primary btn-block" href="{% url 'service_events_by_equipment' Equipment.equipmentid %}">
+                Factory Service History
+            </a>
+        </div>
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-left">
+            <a class="btn btn-primary btn-block" href="{% url 'deployments_by_equipment' Equipment.equipmentid %}">
+                Deployment History
+            </a>
+        </div>
+    </div>
+
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
@@ -118,7 +137,7 @@
                 <tr>
                     <th>Name:</th>
                     <td>
-                        <a href="{% url 'vendor_detail' Equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
+                        <a href="{% url 'organization_detail' Equipment.equipmentmodelid.modelmanufacturerid.organizationid %}">
                             {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationname|default:" -- " }}
                         </a>
                     </td>
@@ -163,12 +182,12 @@
                     </td>
                 </tr>
             </table>
-                <h3>Vendor</h3>
+                <h3>Organization</h3>
             <table class="table">
                 <tr>
                     <th>Name:</th>
                     <td>
-                        <a href="{% url 'vendor_detail' Equipment.equipmentvendorid.organizationid %}">
+                        <a href="{% url 'organization_detail' Equipment.equipmentvendorid.organizationid %}">
                             {{ Equipment.equipmentvendorid.organizationname|default:" -- " }}
                         </a>
                     </td>
@@ -212,23 +231,7 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'calibrations_by_equipment' Equipment.equipmentid %}">
-                Calibration History
-            </a>
-        </div>
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'service_events_by_equipment' Equipment.equipmentid %}">
-                Factory Service History
-            </a>
-        </div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'deployments_by_equipment' Equipment.equipmentid %}">
-                Deployment History
-            </a>
-        </div>
-    </div>
+
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>

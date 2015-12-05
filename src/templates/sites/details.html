@@ -4,14 +4,16 @@
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7"><h2>Site Details</h2></div>
 
-        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block"
-               href="{% url 'create_site' Site.samplingfeatureid.samplingfeatureid %}">Edit Site Description</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
             <a class="btn btn-danger btn-block" data-toggle="confirmation-popout" data-placement="bottom"
                id="danger-button"
                data-href="{% url 'delete_site' Site.samplingfeatureid.samplingfeatureid %}">Delete</a>
         </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block"
+               href="{% url 'create_site' Site.samplingfeatureid.samplingfeatureid %}">Edit Site Description</a>
+        </div>
+
     </div>
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right" id="map-canvas"></div>
@@ -32,7 +34,7 @@
                     <td>{{ Site.sitetypecv }}</td>
                 </tr>
                 <tr>
-                    <th>Elevation:</th>
+                    <th>Elevation (m):</th>
                     <td>{{ Site.samplingfeatureid.elevation_m }}</td>
                 </tr>
                 <tr>
@@ -40,11 +42,11 @@
                     <td>{{ Site.samplingfeatureid.elevationdatumcv }}</td>
                 </tr>
                 <tr>
-                    <th>Latitude:</th>
+                    <th>Latitude (dec deg):</th>
                     <td>{{ Site.latitude }}</td>
                 </tr>
                 <tr>
-                    <th>Longitude:</th>
+                    <th>Longitude (dec deg):</th>
                     <td>{{ Site.longitude }}</td>
                 </tr>
                 <tr>
@@ -54,14 +56,26 @@
             </table>
         </div>
     </div>
+
     <div class="row">
-        <div class="col-md-9"><h3>Instrument Output Variables Table</h3></div>
-        <div class="col-md-3"><a class="btn btn-primary btn-block"
-                                 href="{% url 'create_output_variable_site' Site.samplingfeatureid.samplingfeatureid %}">New
-            Deployment Measured Variable</a></div>
+        <div class="col-md-9"><h3>Instrument Output Variables</h3></div>
     </div>
     <hr class="divider">
     <div class="row">
+
+    <div class="row">
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
+                                 href="{% url 'create_output_variable_site' Site.samplingfeatureid.samplingfeatureid %}">New
+            Deployment Measured Variable</a></div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
+                                                               href="{% url 'deployments_by_site' 'current' Site.samplingfeatureid.samplingfeatureid %}">View
+            Deployed Equipment</a></div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="{% url 'site_visits_by_site' Site.samplingfeatureid.samplingfeatureid %}">View
+            Site Visits</a></div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
+                                                               href="{% url 'create_site_visit' Site.samplingfeatureid.samplingfeatureid %}">New Site Visit</a></div>
+    </div>
 
         <table class="data-table">
             <thead>
@@ -93,11 +107,6 @@
                                     <td>{{ outputvar.instrumentmethodid.methodcode }}</td>
                                     <td>{{ outputvar.instrumentmethodid.methodname }}</td>
                                 </tr>
-                                {#                        {% for stat in outputvar.dataloggerfilecolum.all %}#}
-                                {#                            <td>{{ stat.aggregationstatisticcv }}</td>#}
-                                {#                        {% empty %}#}
-                                {#                            <td></td>#}
-                                {#                        {% endfor %}#}
                             {% endfor %}
                         {% endfor %}
                     {% endif %}{% endif %}
@@ -105,16 +114,7 @@
             </tbody>
         </table>
     </div>
-    <div class="row">
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="{% url 'deployments_by_site' 'current' Site.samplingfeatureid.samplingfeatureid %}">View
-            Deployed Equipment</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'site_visits_by_site' Site.samplingfeatureid.samplingfeatureid %}">View
-            Site Visits</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="#">New Site Visit</a></div>
-    </div>
+
 
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
