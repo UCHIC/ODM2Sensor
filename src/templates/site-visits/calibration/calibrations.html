@@ -27,26 +27,28 @@
         {% for calibration in Calibrations %}
             {% for site in calibration.featureaction.all %}
                 {% for equipment in calibration.equipmentused.all %}
-                    <tr>
-                        <td data-order="{{ calibration.begindatetime|date:'U' }}">
-                            <a href="{% url 'calibration_detail' calibration.actionid %}">
-                                {{ calibration.begindatetime }}
-                            </a>
-                        </td>
-                        <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
-                        <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelname }}</td>
+                    {% if not equipment_id or equipment.equipmentid.equipmentid == equipment_id %}
+                        <tr>
+                            <td data-order="{{ calibration.begindatetime|date:'U' }}">
+                                <a href="{% url 'calibration_detail' calibration.actionid %}">
+                                    {{ calibration.begindatetime }}
+                                </a>
+                            </td>
+                            <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
+                            <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                            <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                            <td>{{ equipment.equipmentid.equipmentmodelid.modelname }}</td>
 
-                        <td>
-                            <a title="Edit" alt="Edit Calibration" class="icon-link" href="{% url 'create_action' 'InstrumentCalibration' calibration.actionid %}">
-                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                            </a>
-                            <a title="Delete" alt="Destroy Calibration" class="icon-link delete-icon" data-href="#">
-                                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                            </a>
-                        </td>
-                    </tr>
+                            <td>
+                                <a title="Edit" alt="Edit Calibration" class="icon-link" href="{% url 'create_action' 'InstrumentCalibration' calibration.actionid %}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a title="Delete" alt="Destroy Calibration" class="icon-link delete-icon" data-href="#">
+                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         {% endfor %}
