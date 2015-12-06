@@ -383,7 +383,7 @@ def edit_calibration_standard(request, reference_val_id):
 
             messages.add_message(request, messages.SUCCESS,
                                  'Calibration Standard ' + request.POST['action'] + 'd successfully')
-            return HttpResponseRedirect(reverse('vocabularies') + '?tab=activity')
+            return HttpResponseRedirect(reverse('calibration_standards') + '?tab=activity')
 
     elif reference_val_id:
         reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
@@ -403,7 +403,7 @@ def edit_calibration_standard(request, reference_val_id):
 
     return render(
         request,
-        'vocabulary/../../templates/site-visits/calibration/calibration-standard-from.html',
+        'site-visits/calibration/calibration-standard-form.html',
         {'render_forms': [reference_mat_value_form, reference_mat_form], 'action': action, 'item_id': reference_val_id}
     )
 
@@ -415,7 +415,7 @@ def delete_calibration_standard(request, reference_val_id):
     reference_mat_val.referencematerialid.delete()  # deletereferencematerialquestion
     reference_mat_val.delete()
     messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + "deleted successfully")
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
+    return HttpResponseRedirect(reverse('calibration_standards'))
 
 
 @login_required(login_url=LOGIN_URL)
@@ -423,8 +423,8 @@ def edit_calibration_method(request, method_id):
     modifications = {
         'organizationid': ['organizationid'],
     }
-    arguments = [request, Method.objects, MethodForm, modifications, 'Method', 'vocabularies',
-                 'methodid', method_id, 'vocabulary/calibration-method-form.html']
+    arguments = [request, Method.objects, MethodForm, modifications, 'Method', 'calibration_methods',
+                 'methodid', method_id, 'site-visits/calibration/calibration-method-form.html']
 
     return edit_models(*arguments)
 
@@ -435,7 +435,7 @@ def delete_calibration_method(request, method_id):
     method_name = method.methodname
     method.delete()
     messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' succesfully deleted')
-    return HttpResponseRedirect(reverse('vocabularies') + '?tab=calibration')
+    return HttpResponseRedirect(reverse('calibration_methods'))
 
 
 @login_required(login_url=LOGIN_URL)
@@ -982,6 +982,11 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
         action_form = ActionForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
         )
+
+    # 'equipmentDeployment': 'deployment_detail',
+    #             'instrumentCalibration': 'calibration_detail',
+    #             'equipmentMaintenance': 'field_activity_detail',
+    #             'fieldActivity': 'field_activity_detail'
 
     return render(
         request,

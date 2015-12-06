@@ -13,16 +13,16 @@ urlpatterns = patterns('',
                            name='site_detail'),
 
                        # Site Visit detail
-                       url(r'^site-visits/visit-detail/(?P<slug>[-_\w]+)/$', SiteVisitDetailView.as_view(),
+                       url(r'^actions/visit-detail/(?P<slug>[-_\w]+)/$', SiteVisitDetailView.as_view(),
                            name='site_visit_detail'
                            ),
 
                        # Deployment detail
-                       url(r'^site-visits/deployment-detail/(?P<slug>[-_\w]+)/$',
+                       url(r'^actions/deployment-detail/(?P<slug>[-_\w]+)/$',
                            DeploymentDetail.as_view(), name='deployment_detail'),
 
                        # Calibration detail
-                       url(r'^site-visits/calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                       url(r'^actions/calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Calibration',
                            model=Action,
                            slug_field='actionid',
@@ -30,7 +30,7 @@ urlpatterns = patterns('',
                            name='calibration_detail'),
 
                        # Field Activity detail
-                       url(r'^site-visits/action-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                       url(r'^actions/action-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Activity',
                            model=FeatureAction,
                            slug_field='actionid',

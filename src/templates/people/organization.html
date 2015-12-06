@@ -16,7 +16,7 @@
                 <th>Type</th>
                 <th>Website</th>
                 <th>Phone</th>
-                <th>Operations</th>
+                <th>Edit/Delete</th>
             </tr>
             </thead>
             <tbody>
@@ -39,10 +39,10 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <a class="icon-link" href="{% url 'create_organization' vendor.organizationid %}">
+                        <a title="Edit" alt="Edit Organization" class="icon-link" href="{% url 'create_organization' vendor.organizationid %}">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
-                        <a class="icon-link delete-icon" data-href="{% url 'delete_organization' vendor.organizationid %}">
+                        <a title="Delete" alt="Destroy Organization" class="icon-link delete-icon" data-href="{% url 'delete_organization' vendor.organizationid %}">
                             <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                         </a>
                     </td>

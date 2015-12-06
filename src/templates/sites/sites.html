@@ -15,6 +15,7 @@
             <th>Site Name</th>
             <th>Site Type</th>
             <th>Site Group</th>
+            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -25,8 +26,11 @@
                         {{ site.samplingfeatureid.samplingfeaturecode }}
                     </a>
                 </td>
+
                 <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
+
                 <td>{{ site.sitetypecv }}</td>
+
                 <td>
                     {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
                         Logan River
@@ -35,6 +39,15 @@
                     {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
                         Provo River
                     {% endif %}
+                </td>
+
+                <td>
+                    <a title="Edit" alt="Edit Site" class="icon-link" href="{% url 'create_site' site.samplingfeatureid.samplingfeatureid %}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                    <a title="Delete" alt="Destroy Site" class="icon-link delete-icon" data-href="{% url 'delete_site' site.samplingfeatureid.samplingfeatureid %}">
+                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                    </a>
                 </td>
             </tr>
         {% endfor %}

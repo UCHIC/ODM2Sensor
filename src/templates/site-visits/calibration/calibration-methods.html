@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7">
+        <h2>Calibration Methods</h2>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_calibration_method' %}">New Calibration Method</a>
+    </div>
+    </div>
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Edit/Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for method in CalibrationMethods %}
+            <tr>
+                <td>{{ method.methodname }}</td>
+                <td>{{ method.methoddescription }}</td>
+                <td>
+                    <a title="Edit" alt="Edit Method" class="icon-link" href="{% url 'create_calibration_method' method.methodid %}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                    <a title="Delete" alt='Destroy Method' class="icon-link delete-icon" data-href="{% url 'delete_calibration_method' method.methodid %}">
+                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                    </a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

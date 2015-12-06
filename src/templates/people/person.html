@@ -19,7 +19,7 @@
         <th>Address</th>
         <th>Phone</th>
         <th>Email</th>
-        <th>Operations</th>
+        <th>Edit/Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -35,10 +35,10 @@
             <td>{{ person.primaryphone }}</td>
             <td>{{ person.primaryemail }}</td>
             <td>
-                <a class="icon-link" href="{% url 'create_person' person.affiliationid %}">
+                <a title="Edit" alt="Edit Human" class="icon-link" href="{% url 'create_person' person.affiliationid %}">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 </a>
-                <a class="icon-link delete-icon" data-href="{% url 'delete_person' person.affiliationid %}">
+                <a title="Delete" alt="Destroy Human" class="icon-link delete-icon" data-href="{% url 'delete_person' person.affiliationid %}">
                     <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                 </a>
             </td>
