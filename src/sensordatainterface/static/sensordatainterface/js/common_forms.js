@@ -229,6 +229,9 @@ function filterActionDatesByVisit(siteVisitId) {
             beginDateTimeObj.minDate(minDatetime);
             endDateTimeObj.maxDate(maxDatetime);
             endDateTimeObj.minDate(minDatetime);
+
+            beginDateTimeObj.date(minDatetime);
+            endDateTimeObj.date(maxDatetime);
         },
         error: function(xhr, errmsg) {
             console.log(errmsg);
