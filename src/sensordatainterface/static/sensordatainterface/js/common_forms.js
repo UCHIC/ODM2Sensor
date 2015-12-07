@@ -220,9 +220,6 @@ function filterActionDatesByVisit(siteVisitId) {
             var beginDateTimeObj = form.find('[name="begindatetime"]').parents('.datetimepicker').data('DateTimePicker');
             var endDateTimeObj = form.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
 
-            beginDateTimeObj.date(minDatetime);
-            endDateTimeObj.date(maxDatetime);
-
             beginDateTimeObj.maxDate(false);
             beginDateTimeObj.minDate(false);
             endDateTimeObj.maxDate(false);
@@ -232,6 +229,9 @@ function filterActionDatesByVisit(siteVisitId) {
             beginDateTimeObj.minDate(minDatetime);
             endDateTimeObj.maxDate(maxDatetime);
             endDateTimeObj.minDate(minDatetime);
+
+            beginDateTimeObj.date(minDatetime);
+            endDateTimeObj.date(maxDatetime);
 
             beginDateTimeObj.date(minDatetime);
             endDateTimeObj.date(maxDatetime);
