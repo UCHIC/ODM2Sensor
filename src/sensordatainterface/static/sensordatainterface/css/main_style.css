@@ -465,28 +465,30 @@ a.add-related-equ-button.btn.btn-primary.btn-block {
     width: 97.5%;
 }
 
+div.home_title {
+    min-width: 1000px;
+}
+
 div.home_page {
     padding-left: 10%;
     width: 65%;
     float: left;
+    min-width: 700px;
 }
 
 div.quick_links {
     float: right;
+    margin-left: 800px;
     margin-right: 10%;
     margin-top: 25px;
     border-style: solid;
     border-radius: 25px;
     border-color: forestgreen;
+    position: absolute;
 }
 
 div.quick_links_table {
     margin: 25px;
-}
-
-div.banner {
-	background-image: url(../img/waterfallBanner.jpg);
-	height: 250px;
 }
 
 div.sponsors {
@@ -495,6 +497,7 @@ div.sponsors {
 
 img.banner {
     width: 100%;
+    min-width: 1100px;
 }
 
 
