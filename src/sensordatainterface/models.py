@@ -1035,28 +1035,11 @@ class ResultNormalizationValue(models.Model):
         db_table = 'ODM2].[ResultNormalizationValues'
 
 
-class ResultTypeCV(models.Model):
-    resulttypecv = models.TextField(db_column='ResultTypeCV', primary_key=True)  # Field name made lowercase.
-    resulttypecategory = models.TextField(db_column='ResultTypeCategory')  # Field name made lowercase.
-    datatype = models.TextField(db_column='DataType')  # Field name made lowercase.
-    resulttypedefinition = models.TextField(db_column='ResultTypeDefinition')  # Field name made lowercase.
-    fixeddimensions = models.TextField(db_column='FixedDimensions')  # Field name made lowercase.
-    varyingdimensions = models.TextField(db_column='VaryingDimensions')  # Field name made lowercase.
-    spacemeasurementframework = models.TextField(db_column='SpaceMeasurementFramework')  # Field name made lowercase.
-    timemeasurementframework = models.TextField(db_column='TimeMeasurementFramework')  # Field name made lowercase.
-    variablemeasurementframework = models.TextField(
-        db_column='VariableMeasurementFramework')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'ODM2].[ResultTypeCV'
-
-
 class Result(models.Model):
     resultid = models.BigIntegerField(db_column='ResultID', primary_key=True)  # Field name made lowercase.
     resultuuid = models.TextField(db_column='ResultUUID')  # Field name made lowercase.
     featureactionid = models.ForeignKey(FeatureAction, db_column='FeatureActionID')  # Field name made lowercase.
-    resulttypecv = models.ForeignKey(ResultTypeCV, db_column='ResultTypeCV')  # Field name made lowercase.
+    resulttypecv = models.ForeignKey('CvResulttype', db_column='ResultTypeCV')  # Field name made lowercase.
     variableid = models.ForeignKey('Variable', db_column='VariableID')  # Field name made lowercase.
     unitsid = models.ForeignKey('Units', db_column='UnitsID')  # Field name made lowercase.
     taxonomicclassifierid = models.ForeignKey('TaxonomicClassifier', db_column='TaxonomicClassifierID', blank=True,

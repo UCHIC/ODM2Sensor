@@ -92,6 +92,14 @@ urlpatterns = patterns('',
        CalibrationStandards.as_view(),
        name='calibration_standards'),
 
+    url(r'^actions/results/$',
+       GenericListView.as_view(
+           model=Result,
+           context_object_name='Results',
+           template_name='site-visits/results/results.html'
+       ),
+       name='results'),
+
     #Field Activities Generic View
     url(r'^actions/other-actions/$', #!!!
        GenericListView.as_view(
