@@ -127,8 +127,19 @@ function handleActionTypeChange(formType, currentForm) {
     filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
 
     if (formType == 'Instrument deployment') {
-        // organize the result fields and add a button to add more results
+        // temporary hack to organize results fields.
+        var fields = $('.results_field').parent('td').parent('tr');
+        var resultsRow = $('<tr class="results-row"><th></th><td class="results-label"><label>Results</label></td></tr>');
+        var newResultButton = $('<tbody><tr><th></th><td><div class="row"><a class="btn btn-default col-xs-12 col-sm-12" onclick="javascript:addResultsFields(this)">+ Add Result</a></div></td></tr></tbody>');
+
+        currentForm.append(resultsRow);
+        currentForm.append(fields);
+        currentForm.append(newResultButton);
     }
+}
+
+function addResultsFields(form) {
+
 }
 
 function filterEquipmentBySite(selected, equipmentUsedSelectElems) {

@@ -660,6 +660,7 @@ class SiteVisitChoiceForm(ModelForm):
 
 
 class SelectWithClassForOptions(Select):
+    # TODO: figure out how to add the missing methods.
     def render_option(self, *args, **kwargs):
         option_html = super(SelectWithClassForOptions, self).render_option(*args, **kwargs)
 
@@ -667,6 +668,7 @@ class SelectWithClassForOptions(Select):
         methodtypes = {
             'Instrument calibration': 'calibration',
             'Equipment deployment': 'deployment',
+            'Insntrument deployment': 'deployment',
             'Equipment maintenance': 'maintenance',
             'Equipment retrieval': 'notypeclass',
             'Field activity': 'notypeclass',
