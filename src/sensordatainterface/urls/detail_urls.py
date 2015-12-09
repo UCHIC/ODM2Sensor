@@ -21,6 +21,14 @@ urlpatterns = patterns('',
                        url(r'^actions/deployment-detail/(?P<slug>[-_\w]+)/$',
                            DeploymentDetail.as_view(), name='deployment_detail'),
 
+                       # Results detail
+                       url(r'^actions/result-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+                           context_object_name='Result',
+                           model=Result,
+                           slug_field='resultid',
+                           template_name='site-visits/results/details.html'),
+                           name='results_detail'),
+
                        # Calibration detail
                        url(r'^actions/calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
                            context_object_name='Calibration',

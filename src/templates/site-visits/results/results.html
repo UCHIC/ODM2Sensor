@@ -14,23 +14,25 @@
     <table class="data-table">
         <thead>
         <tr>
+            <th>Result Date</th>
             <th>Site Code</th>
             <th>Site Name</th>
             <th>Variable Code</th>
             <th>Variable Name</th>
             <th>Result Type</th>
-            <th>Result Date</th>
         </tr>
         </thead>
         <tbody>
         {% for result in Results %}
             <tr>
+
+                <td data-order="{{ result.resultdatetime|date:'U' }}"><a href="{% url 'results_detail' result.resultid %}">{{ result.resultdatetime }}</a></td>
                 <td>{{ result.featureactionid.samplingfeatureid.samplingfeaturecode }}</td>
                 <td>{{ result.featureactionid.samplingfeatureid.samplingfeaturename }}</td>
                 <td>{{ result.variableid.variablecode }}</td>
                 <td>{{ result.variableid.variablenamecv.name }}</td>
                 <td>{{ result.resulttypecv.name }}</td>
-                <td data-order="{{ result.resultdatetime|date:'U' }}">{{ result.resultdatetime }}</td>
+
             </tr>
 
         {% endfor %}
