@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
     , ModelMultipleChoiceField, FileInput, HiddenInput
+from django.forms.models import modelformset_factory
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -68,6 +69,11 @@ class MethodChoiceField(ModelChoiceField):
 class UnitChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.unitsname
+
+
+class ProcessingLevelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.processinglevelcode
 
 
 class EquipmentChoiceField(ModelChoiceField):
@@ -732,13 +738,28 @@ class ActionForm(ModelForm):
 
     # fields for calibration
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
-        widget=forms.Select(attrs={'class': 'calibration'}),
+        widget=forms.Select(attrs={'class': 'calibration instrument_deployment results_field'}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
 
     calibrationcheckvalue = forms.DecimalField(
         widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
+
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'calibration generic'}), label='Calibration Equation', required=False)
+
+    #Field for results generation
+    unitsid = UnitChoiceField(
+        widget=forms.Select(attrs={'class': 'instrument_deployment results_field'}),
+        queryset=Units.objects.all(), label='Units', required=False)#, empty_label='Choose a Unit')
+
+    processing_level_id = ProcessingLevelChoiceField(
+        widget=forms.Select(attrs={'class': 'instrument_deployment results_field'}),
+        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=False)#, empty_label='Choose a Processing Level')
+
+    sampledmediumcv = forms.ModelChoiceField(
+        widget=forms.Select(attrs={'class': 'instrument_deployment results_field'}),
+        queryset=CvMedium.objects.all(), label='Sampled Medium', required=False)#, empty_label='Choose a Sampled Medium')
+
 
 
 

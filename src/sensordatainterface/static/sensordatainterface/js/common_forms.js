@@ -92,6 +92,7 @@ function handleActionTypeChange(formType, currentForm) {
     var formClasses = {
         'Field activity': 'notypeclass',
         'Equipment deployment': 'deployment',
+        'Instrument deployment': 'instrument_deployment',
         'Instrument calibration': 'calibration',
         'Equipment maintenance': 'maintenance',
         '': 'generic'
@@ -124,6 +125,10 @@ function handleActionTypeChange(formType, currentForm) {
 
     //Filter equipmentUsed
     filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
+
+    if (formType == 'Instrument deployment') {
+        // organize the result fields and add a button to add more results
+    }
 }
 
 function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
