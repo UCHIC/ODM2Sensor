@@ -7,25 +7,7 @@
        <img class="banner" src="{% static "sensordatainterface/img/waterfallBanner.jpg" %}" height="250">
     </div>
 
-    <div><h1 align="center"><font size="150%">ODM2 Sensor</font></h1></div>
-
-    <div class="home_page">
-        <div>
-
-            <h3>Equipment Management</h3>
-        </div>
-    </div>
-
-
-    <div class="intro">
-        <p>
-            This equipment management web application provides access to and recording of information
-            on equipment inventory and related actions. It is based on the Sensors Extension of Version 2 of the
-            <a href="http://github.com/odm2/odm2" data-toggle="tooltip" title="github.com/odm2/odm2">Observations Data Model 2 (ODM2)</a>
-            This interface is designed for monitoring networks using in situ sensors to manage physical infrastructure and link it to observational data.
-        </p>
-    </div>
-
+    <div><h1 align="center"><font size="150%">ODM2 Equipment Management</font></h1></div>
 
     <div class="quick_links">
 
@@ -44,21 +26,30 @@
         </div>
     </div>
 
+    <div class="home_page">
+        <div>
+            <h3>Description</h3>
+        </div>
 
-    <div>
-        <div class="home_page">
-            <div><h3>Sponsors</h3></div>
+        <div>
+            <p>
+                This equipment management web application provides access to and recording of information
+                on equipment inventory and related actions. It is based on the Equipment Extension of Version 2 of the
+                <a href="http://github.com/odm2/odm2" data-toggle="tooltip" title="github.com/odm2/odm2">Observations Data Model (ODM2)</a>
+                This interface is designed for monitoring networks using in situ sensors to manage physical infrastructure and link it to observational data.
+            </p>
+        </div>
 
-            <div><p>This project is receiving or has received support from a number of agencies and complementary efforts including:</p></div>
+        <div><h3>Sponsors</h3></div>
 
-            <div>
-                <a href="http://www.iutahepscor.org">
-                    <img alt="iUTAH website" data-toggle="tooltip" title="iutahepscor.org" src="{% static "sensordatainterface/img/iutah_home_logo.png" %}" height="150" hspace="75" vspace="20"></a>
-                <a href="http://www.nsf.gov">
-                    <img alt = "National Science Foundation website" data-toggle="tooltip" title="nsf.gov" src="{% static "sensordatainterface/img/nsf_logo.jpg" %}" height="150" hspace="75"></a>
-            </div>
+        <div><p>This project is receiving or has received support from a number of agencies and complementary efforts including:</p></div>
+
+        <div class="sponsors">
+            <a href="http://www.iutahepscor.org">
+                <img alt="iUTAH website" data-toggle="tooltip" title="iutahepscor.org" src="{% static "sensordatainterface/img/iutah_home_logo.png" %}" height="150" vspace="50" hspace="50"></a>
+            <a href="http://www.nsf.gov">
+                <img alt = "National Science Foundation website" data-toggle="tooltip" title="nsf.gov" src="{% static "sensordatainterface/img/nsf_logo.jpg" %}" height="150" hspace="50"></a>
         </div>
     </div>
-
 
 {% endblock %}

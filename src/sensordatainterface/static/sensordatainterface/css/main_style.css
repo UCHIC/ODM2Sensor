@@ -471,15 +471,10 @@ div.home_page {
     float: left;
 }
 
-div.intro {
-    padding-left: 10%;
-    width: 65%;
-    float: left;
-}
-
 div.quick_links {
     float: right;
     margin-right: 10%;
+    margin-top: 25px;
     border-style: solid;
     border-radius: 25px;
     border-color: forestgreen;
@@ -492,6 +487,10 @@ div.quick_links_table {
 div.banner {
 	background-image: url(../img/waterfallBanner.jpg);
 	height: 250px;
+}
+
+div.sponsors {
+    min-width: 500px;
 }
 
 img.banner {
