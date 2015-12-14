@@ -434,7 +434,7 @@ def delete_calibration_method(request, method_id):
     method = Method.objects.get(pk=method_id)
     method_name = method.methodname
     method.delete()
-    messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' succesfully deleted')
+    messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' successfully deleted')
     return HttpResponseRedirect(reverse('calibration_methods'))
 
 
@@ -459,7 +459,7 @@ def delete_output_variable(request, outputvar_id):
     output_var_name = output_var.variableid.variablecode
     output_var.delete()
     messages.add_message(request, messages.SUCCESS,
-                         'Instrument Output Variable for variable ' + output_var_name + ' succesfully deleted')
+                         'Instrument Output Variable for variable ' + output_var_name + ' successfully deleted')
     return HttpResponseRedirect(reverse('sensor_output'))
 
 
@@ -858,7 +858,7 @@ def delete_site_visit(request, action_id):
 
     site_visit.delete()
     messages.add_message(request, messages.SUCCESS,
-                         'Site Visit ' + str(site_visit_name) + ' succesfully deleted')
+                         'Site Visit ' + str(site_visit_name) + ' successfully deleted')
     return HttpResponseRedirect(reverse('site_visits'))
 
 
