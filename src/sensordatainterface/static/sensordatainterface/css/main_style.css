@@ -470,21 +470,19 @@ div.home_title {
 }
 
 div.home_page {
-    padding-left: 10%;
-    width: 65%;
-    float: left;
-    min-width: 700px;
+    margin-left: 400px;
+    position: absolute;
+    width: 600px;
 }
 
 div.quick_links {
-    float: right;
-    margin-left: 800px;
-    margin-right: 10%;
+    float: left;
+    margin-left: 100px;
     margin-top: 25px;
+    margin-bottom: 500px;
     border-style: solid;
     border-radius: 25px;
     border-color: forestgreen;
-    position: absolute;
 }
 
 div.quick_links_table {
