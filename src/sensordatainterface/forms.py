@@ -740,7 +740,7 @@ class ActionForm(ModelForm):
 
     # fields for calibration
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
-        widget=forms.Select(attrs={'class': 'calibration instrument_deployment results_field'}),
+        widget=forms.Select(attrs={'class': 'calibration'}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
 
     calibrationcheckvalue = forms.DecimalField(
@@ -748,19 +748,6 @@ class ActionForm(ModelForm):
 
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'calibration generic'}), label='Calibration Equation', required=False)
-
-    #Field for results generation
-    unitsid = UnitChoiceField(
-        widget=forms.Select(attrs={'class': 'instrument_deployment results_field'}),
-        queryset=Units.objects.all(), label='Units', required=False)#, empty_label='Choose a Unit')
-
-    processing_level_id = ProcessingLevelChoiceField(
-        widget=forms.Select(attrs={'class': 'instrument_deployment results_field'}),
-        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=False)#, empty_label='Choose a Processing Level')
-
-    sampledmediumcv = forms.ModelChoiceField(
-        widget=forms.Select(attrs={'class': 'instrument_deployment results_field'}),
-        queryset=CvMedium.objects.all(), label='Sampled Medium', required=False)#, empty_label='Choose a Sampled Medium')
 
 
 
@@ -804,6 +791,24 @@ class ActionForm(ModelForm):
             'actionfilelink': _('Action File'),
             'actiondescription': _('Description')
         }
+
+
+class ResultsForm(forms.Form):
+    instrumentoutputvariable = InstrumentOutputVariableChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
+
+    unitsid = UnitChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=Units.objects.all(), label='Units', required=False)
+
+    processing_level_id = ProcessingLevelChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=False)
+
+    sampledmediumcv = forms.ModelChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=CvMedium.objects.all(), label='Sampled Medium', required=False)
 
 
 def get_cv_model_form(form_model, *args, **kwargs):

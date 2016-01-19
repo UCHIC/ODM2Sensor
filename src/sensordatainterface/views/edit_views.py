@@ -577,6 +577,7 @@ def create_site_visit(request, site_id=None):
         {
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
+            'mock_results_form': ResultsForm(),
             'actions_form': action_form,
             'render_actions': render_actions,
             'action': action,

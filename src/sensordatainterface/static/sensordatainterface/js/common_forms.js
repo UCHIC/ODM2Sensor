@@ -127,19 +127,35 @@ function handleActionTypeChange(formType, currentForm) {
     filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
 
     if (formType == 'Instrument deployment') {
-        // temporary hack to organize results fields.
-        var fields = $('.results_field').parent('td').parent('tr');
-        var resultsRow = $('<tr class="results-row"><th></th><td class="results-label"><label>Results</label></td></tr>');
-        var newResultButton = $('<tbody><tr><th></th><td><div class="row"><a class="btn btn-default col-xs-12 col-sm-12" onclick="javascript:addResultsFields(this)">+ Add Result</a></div></td></tr></tbody>');
-
-        currentForm.append(resultsRow);
-        currentForm.append(fields);
-        currentForm.append(newResultButton);
+        var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+        addResultButton.insertAfter(currentForm);
+        addResultForm(addResultButton, true);
+    } else {
+        $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
+        $(currentForm).next('tbody.add-result-btn').remove();
     }
 }
 
-function addResultsFields(form) {
+function addResultForm(that, firstResult) {
+    var removeButton = $('<tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>');
+    var fields = $('#results-form').children().clone();
 
+    if (firstResult) {
+        var resultsRow = $('<tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>');
+        var btnForm = $(that);
+        fields.prepend(resultsRow);
+
+    } else {
+        var btnForm = $(that).parents('tbody.add-result-btn');
+        fields.prepend(removeButton);
+    }
+
+    fields.find(".select-two").select2();
+    fields.insertBefore(btnForm);
+}
+
+function removeResultForm(that) {
+    $(that).parents('tbody').remove();
 }
 
 function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
@@ -300,6 +316,7 @@ $(document).ready(function () {
     setFormFields($('tbody'));
     setOtherActions();
 
+
     var currentForm = $('form');
     var allForms = $('tbody').has('[name="actiontypecv"]');
     var filterEquipmentCheck = $('#id_equipment_by_site');
@@ -333,5 +350,9 @@ $(document).ready(function () {
     filterEquipmentCheck.change(function(eventData) {
         siteVisitSelect.trigger('change');
     });
+
+    $('#results-form').find('.select-two').select2('destroy');
+    $('#results-form').find(".select2-container").remove();
+
 });
 

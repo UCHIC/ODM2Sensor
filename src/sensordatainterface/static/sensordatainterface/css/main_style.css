@@ -328,7 +328,7 @@ label {
 /*left: 217;*/
 /*}*/
 
-#action-form {
+#action-form, #results-form {
     display: none;
 }
 
@@ -348,10 +348,14 @@ label {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
 }
 
-.btn-remove-action {
+.btn-remove-action, .btn-remove-result {
     width: 25%;
     min-width: 130px;
     float: left;
+}
+
+.btn-remove-result {
+    float: right;
 }
 
 .btn-primary:focus, .btn-primary:hover {
@@ -383,8 +387,7 @@ label {
 }
 
 .select2-container {
-    width: 100%;
-!important;
+    width: 100% !important;
 }
 
 .row form.input-group  textarea.form-control {
@@ -519,3 +522,24 @@ td.results-label {
 td.results-label label {
     color: rgba(0, 0, 0, 0.7);
 }
+
+tbody.action-fields + tbody.results-set {
+    border: none !important;
+}
+
+tbody.results-set + tbody.results-set {
+    border-top: 1px solid rgba(200, 200, 200, .8) !important;
+}
+
+.add-result-btn + tbody {
+    border-top: 2px solid #ddd;
+}
+
+tbody + tbody.add-result-btn {
+    border-top: none;
+}
+
+a.add-result-btn {
+  float: right !important;
+}
+

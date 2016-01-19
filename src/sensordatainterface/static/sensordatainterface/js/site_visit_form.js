@@ -1,7 +1,11 @@
+//var actionNumber = 1;
+
 function addActionForm(that) {
     var button = $(that).parents('tbody');
     var form = $('#action-form').children();
     var thisForm = form.clone();
+    //thisForm.data('action-number', actionNumber++);
+
 
     //Move add button and insert delete button
     thisForm.insertBefore(button);
@@ -28,7 +32,7 @@ function addActionForm(that) {
 
     handleActionTypeChange('Field activity', thisForm);
 
-   setFormFields($(thisForm));
+    setFormFields($(thisForm));
 
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").not('option').parents('tr').hide();
@@ -73,6 +77,8 @@ function setIsFactoryServiceFlag() {
 }
 
 function deleteActionForm(that) {
+    $(that).parents('tbody').nextUntil('tbody.add-result-btn', '.results-set').remove();
+    $(that).parents('tbody').next('tbody.add-result-btn').remove();
     $(that).parents('tbody').remove();
 }
 
