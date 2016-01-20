@@ -77,9 +77,13 @@ function setIsFactoryServiceFlag() {
 }
 
 function deleteActionForm(that) {
-    $(that).parents('tbody').nextUntil('tbody.add-result-btn', '.results-set').remove();
-    $(that).parents('tbody').next('tbody.add-result-btn').remove();
-    $(that).parents('tbody').remove();
+    var form = $(that).parents('tbody');
+    if (form.next('tbody').hasClass('results-set')) {
+        form.nextUntil('tbody.add-result-btn', '.results-set').remove();
+        form.next('tbody.add-result-btn').remove();
+    }
+
+    form.remove();
 }
 
 function addEquipmentField(that) {
