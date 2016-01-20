@@ -92,11 +92,12 @@ function handleActionTypeChange(formType, currentForm) {
     var formClasses = {
         'Field activity': 'notypeclass',
         'Equipment deployment': 'deployment',
-        'Instrument deployment': 'instrument_deployment',
         'Instrument calibration': 'calibration',
-        'Equipment maintenance': 'maintenance',
-        '': 'generic'
+        'Equipment maintenance': 'maintenance'
     };
+
+
+    var formClass = formClasses[formType] || 'notypeclass';
 
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
@@ -105,10 +106,8 @@ function handleActionTypeChange(formType, currentForm) {
         }
     }
 
-    if (formClasses.hasOwnProperty(formType)) {
-        $(currentForm).find('.' + formClasses[formType]).not('option').parents('tr:hidden').show();
-        $(currentForm).find('option.' + formClasses[formType]).removeAttr('disabled');
-    }
+    $(currentForm).find('.' + formClass).not('option').parents('tr:hidden').show();
+    $(currentForm).find('option.' + formClass).removeAttr('disabled');
 
     //reset select2 to hide disabled options
     var methodSelect = $(currentForm).find('[name="methodid"]');
