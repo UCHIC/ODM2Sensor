@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import uuid
 
 from django.db import models
 
@@ -1036,8 +1037,8 @@ class ResultNormalizationValue(models.Model):
 
 
 class Result(models.Model):
-    resultid = models.BigIntegerField(db_column='ResultID', primary_key=True)  # Field name made lowercase.
-    resultuuid = models.TextField(db_column='ResultUUID')  # Field name made lowercase.
+    resultid = models.AutoField(db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultuuid = models.TextField(db_column='ResultUUID', default=uuid.uuid4)  # Field name made lowercase.
     featureactionid = models.ForeignKey(FeatureAction, db_column='FeatureActionID')  # Field name made lowercase.
     resulttypecv = models.ForeignKey('CvResulttype', db_column='ResultTypeCV')  # Field name made lowercase.
     variableid = models.ForeignKey('Variable', db_column='VariableID')  # Field name made lowercase.

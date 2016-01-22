@@ -587,11 +587,14 @@ def create_site_visit(request, site_id=None):
 
 def get_forms_from_request(request, action_id=False):
     forms_returned = len(request.POST.getlist('actiontypecv'))
+    outputvariables = request.POST.getlist('instrumentoutputvariable')
     action_form = []
+    results_counter = 0
     maintenance_counter = 0
     equipment_used_position = 0
     calibration_standard_position = 0
     calibration_reference_equipment_position = 0
+
 
     site_visit_data = {
         'begindatetime': request.POST.getlist('begindatetime')[0],
@@ -602,10 +605,27 @@ def get_forms_from_request(request, action_id=False):
     }
 
     for i in range(1, forms_returned + 1):
+        results = []
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
         calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
         calibration_reference_equipment_count = request.POST.getlist('calibrationreferenceequipmentnumber')[i - 1]
+
+        if action_type == 'Instrument deployment':
+            output_variable = outputvariables[i + results_counter] # get instrument output variable corresponding to the result
+            while output_variable != u'':
+                result = {
+                    'instrument_output_variable': output_variable,
+                    'unit': request.POST.getlist('unitsid')[results_counter],
+                    'processing_level': request.POST.getlist('processing_level_id')[results_counter],
+                    'sampled_medium': request.POST.getlist('sampledmediumcv')[results_counter],
+                }
+                results.append(result)
+                results_counter += 1
+                try:
+                    output_variable = outputvariables[i + results_counter]
+                except IndexError:
+                    output_variable = u''
 
         form_data = {
             'actiontypecv': action_type,
@@ -634,8 +654,9 @@ def get_forms_from_request(request, action_id=False):
             'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
                                               calibration_reference_equipment_position:int(
                                               calibration_reference_equipment_count) + calibration_reference_equipment_position
-                                              ]
+                                              ],
         }
+
         try:
             action_file = request.FILES.getlist('actionfilelink')[i - 1]
         except:
@@ -653,11 +674,9 @@ def get_forms_from_request(request, action_id=False):
             form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
             maintenance_counter += 1
 
-        if action_id:
-            action_form.append(ActionForm(form_data, form_files,
-                                          instance=Action.objects.get(pk=request.POST.getlist('thisactionid')[i - 1])))
-        else:
-            action_form.append(ActionForm(form_data, form_files))
+        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=request.POST.getlist('thisactionid')[i - 1])) if action_id else ActionForm(form_data, form_files)
+        action.results = results
+        action_form.append(action)
 
         if action_type != 'Generic':
             action_form[-1].fields['equipmentused'].required = True
@@ -732,14 +751,30 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 equipmentid=equ
             )
 
-        if action_type == 'Instrument calibration':
+        if action_type.term == 'instrumentDeployment':
+            feature_action = current_action.featureaction.get(samplingfeatureid=sampling_feature)
+            result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
+            status = CvStatus.objects.get(term='ongoing')
+
+            for result in action_form[i].results:
+                output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
+                units = Units.objects.get(pk=result['unit'])
+                processing_level = ProcessingLevel.objects.get(pk=result['processing_level'])
+                medium = CvMedium.objects.get(name=result['sampled_medium'])
+
+                Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
+                                      variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
+                                      resultdatetime=current_action.begindatetime, resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                                      statuscv=status, sampledmediumcv=medium, valuecount=0)
+
+        if action_type.term == 'instrumentCalibration':
             if updating:
                 CalibrationAction.objects.get(actionid=current_action).delete()
                 CalibrationReferenceEquipment.objects.filter(actionid=current_action).delete()
 
             add_calibration_fields(current_action, action_form[i])
 
-        elif action_type == 'Equipment maintenance':
+        elif action_type.term == 'equipmentMaintenance':
             if updating:
                 MaintenanceAction.objects.get(actionid=current_action).delete()
             add_maintenance_fields(current_action, action_form[i])

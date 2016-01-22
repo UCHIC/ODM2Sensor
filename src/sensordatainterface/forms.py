@@ -749,9 +749,6 @@ class ActionForm(ModelForm):
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'calibration generic'}), label='Calibration Equation', required=False)
 
-
-
-
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     class Meta:
@@ -796,19 +793,19 @@ class ActionForm(ModelForm):
 class ResultsForm(forms.Form):
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
+        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=True)
 
     unitsid = UnitChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=Units.objects.all(), label='Units', required=False)
+        queryset=Units.objects.all(), label='Units', required=True)
 
     processing_level_id = ProcessingLevelChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=False)
+        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=True)
 
     sampledmediumcv = forms.ModelChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=CvMedium.objects.all(), label='Sampled Medium', required=False)
+        queryset=CvMedium.objects.all(), label='Sampled Medium', required=True)
 
 
 def get_cv_model_form(form_model, *args, **kwargs):
