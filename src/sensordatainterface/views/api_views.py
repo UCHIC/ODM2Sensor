@@ -42,22 +42,18 @@ def get_sitevisit_dates(request):
 
 def get_equipment_by_action(request):
     if request.method == 'POST':
-        action_id = request.POST.get('action_id')
+        site_visit_id = request.POST.get('action_id')
 
-        if action_id == 'false':
+        if site_visit_id == 'false':
             equipment_deployed = Equipment.objects.all()
         else:
-            sampling_feature = SamplingFeature.objects.filter(
-                featureaction__actionid=action_id,
-                featureaction__samplingfeatureid__samplingfeaturetypecv='Site'
-            )[0].samplingfeatureid
-
-            # might need to extend query to use feature action, but this should suffice
-            # If the equipment that should be shown is the exquipment in deployments under the site visit selected,
-            # make the query filter by the parent action through relatedactions
-            equipment_deployed = Equipment.objects.filter(
-                equipmentused__actionid__featureaction__samplingfeatureid=sampling_feature
-            )
+            site_visit = Action.objects.get(pk=site_visit_id)
+            actions = Action.objects.filter(featureaction__samplingfeatureid__featureaction__actionid=site_visit,
+                                            begindatetime__lt=site_visit.begindatetime,
+                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+            actions = actions.exclude(relatedaction__relationshiptypecv__term='isRetrievalOf',
+                                      relatedaction__relatedactionid__begindatetime__lt=site_visit.begindatetime)
+            equipment_deployed = Equipment.objects.filter(equipmentused__actionid__in=actions)
 
         response_data = serializers.serialize('json', equipment_deployed, use_natural_keys=True)
     else:
