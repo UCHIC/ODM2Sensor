@@ -224,15 +224,49 @@ def set_update_form(model_object, model_id, FormClass, modifications):
 
 @login_required(login_url=LOGIN_URL)
 def edit_equipment(request, equipment_id):
-    modifications = {
-        'equipmentvendorid': ['equipmentvendorid', 'organizationid'],
-        'equipmentmodelid': ['equipmentmodelid', 'equipmentmodelid'],
-        'equipmentownerid': ['equipmentownerid', 'personid']
-    }
-    arguments = [request, Equipment.objects, EquipmentForm, modifications, 'Equipment', 'equipment_detail',
-                 'equipmentid', equipment_id, 'equipment/equipment-form.html']
+    # modifications = {
+    #     'equipmentvendorid': ['equipmentvendorid', 'organizationid'],
+    #     'equipmentmodelid': ['equipmentmodelid', 'equipmentmodelid'],
+    #     'equipmentownerid': ['equipmentownerid', 'personid']
+    # }
 
-    return edit_models(*arguments)
+    action = 'create'
+    if request.method == 'POST':
+        equipment_model = None
+
+        if request.POST['action'] == 'update':
+            equipment = Equipment.objects.get(pk=request.POST['equipmentid'])
+            equipment_form = EquipmentForm(request.POST, instance=equipment.equipmentid)
+        else:
+            equipment_form = PersonForm(request.POST)
+
+        if 'modelname' in request.POST:
+            equipment_model_form = EquipmentModelForm(request.POST)
+            if equipment_model_form.valid():
+                equipment_model = equipment_model_form.save()
+
+        if equipment_form.is_valid():
+            equipment = equipment_form.save(commit=False)
+            equipment.modelid = equipment_model
+            equipment.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 'Equipment ' + equipment.equipmentserialnumber + ' added successfully')
+            return HttpResponseRedirect(
+                reverse('equipment_detail', args=[equipment.equipmentid])
+            )
+    elif equipment_id:
+        equipment = Equipment.objects.get(pk=equipment_id)
+        equipment_form = EquipmentForm(instance=equipment)
+        action = 'update'
+    else:
+        equipment_form = EquipmentForm()
+
+    return render(
+        request, 'equipment/equipment-form.html',
+        {'render_forms': [equipment_form], 'action': action, 'equipment_id': equipment_id, 'mock_model_form': EquipmentModelForm()}
+
+    )
 
 
 @login_required(login_url=LOGIN_URL)
