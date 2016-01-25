@@ -206,9 +206,10 @@ class EquipmentForm(ModelForm):
                                                 empty_label='Choose an Organization')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
-    equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
 
     equipmentpurchasedate = forms.DateTimeField(initial=datetime.now())
+
+    equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
 
     class Meta:
         model = Equipment
@@ -219,6 +220,7 @@ class EquipmentForm(ModelForm):
             'equipmentpurchaseordernumber',
             'equipmentpurchasedate',
             'equipmentdescription',
+            'equipmentownerid',
         ]
 
         widgets = {

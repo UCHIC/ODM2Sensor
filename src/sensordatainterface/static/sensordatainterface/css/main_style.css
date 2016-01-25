@@ -328,7 +328,7 @@ label {
 /*left: 217;*/
 /*}*/
 
-#action-form, #results-form {
+#action-form, #results-form, #model-form {
     display: none;
 }
 
@@ -348,13 +348,13 @@ label {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
 }
 
-.btn-remove-action, .btn-remove-result {
+.btn-remove-action, .btn-remove-result, .btn-remove-model {
     width: 25%;
     min-width: 130px;
     float: left;
 }
 
-.btn-remove-result {
+.btn-remove-result, .btn-remove-model {
     float: right;
 }
 

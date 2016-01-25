@@ -308,6 +308,27 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
     });
 }
 
+function onEquipmentModelChange(event) {
+    var modelForm = $('#model-form');
+    var modelFields = $('tbody.model-fields');
+    var modelSelect = $('#id_equipmentmodelid');
+
+    if (modelSelect.find(':selected').val() == 'new') {
+        cleanFields(modelFields);
+        modelFields.insertAfter(modelSelect.parents('tbody'));
+    } else {
+        modelForm.append(modelFields);
+    }
+}
+
+function cleanFields(fields) {
+    fields.find('textarea, input').val('');
+    fields.find('input[type="checkbox"]').prop('checked', false);
+    fields.find('select').val(undefined).trigger('change');
+    fields.find('select').prop('checked', false);
+}
+
+
 $(document).ready(function () {
     var formNames = ['EquipmentDeployment', 'InstrumentCalibration', 'Generic'];
     setDateTimePicker();
@@ -320,6 +341,12 @@ $(document).ready(function () {
     var allForms = $('tbody').has('[name="actiontypecv"]');
     var filterEquipmentCheck = $('#id_equipment_by_site');
     var siteVisitSelect = currentForm.find('[name="actionid"]');
+
+    if (currentForm.attr('action').indexOf('create-equipment')) { // if current form is the create new equipment form
+        var modelSelect = $('#id_equipmentmodelid');
+        $('<option value="new">New Equipment Model</option>').insertAfter(modelSelect.children().first());
+        modelSelect.on('change', onEquipmentModelChange);
+    }
 
     allForms.each(function (index) {
         var actionType = $(this).find('.select-two[name="actiontypecv"]');
