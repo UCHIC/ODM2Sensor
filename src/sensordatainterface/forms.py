@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
     , ModelMultipleChoiceField, FileInput, HiddenInput
 from django.forms.models import modelformset_factory
@@ -49,6 +50,21 @@ class OrganizationChoiceField(ModelChoiceField):
 class EquipmentModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.modelname
+
+    def validate(self, value):
+        pass
+
+    def to_python(self, value):
+        try:
+            value = super(EquipmentModelChoiceField, self).to_python(value)
+        except self.queryset.model.DoesNotExist:
+            key = self.to_field_name or 'pk'
+            value = EquipmentModel.objects.filter(**{key: value})
+            if not value.exists():
+                raise ValidationError(self.error_messages['invalid_choice'], code='invalid_choice')
+            else:
+                value = value.first()
+        return value
 
 
 class PeopleChoiceField(ModelChoiceField):
@@ -206,9 +222,7 @@ class EquipmentForm(ModelForm):
                                                 empty_label='Choose an Organization')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
-
     equipmentpurchasedate = forms.DateTimeField(initial=datetime.now())
-
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
 
     class Meta:

@@ -235,19 +235,25 @@ def edit_equipment(request, equipment_id):
         equipment_model = None
 
         if request.POST['action'] == 'update':
-            equipment = Equipment.objects.get(pk=request.POST['equipmentid'])
-            equipment_form = EquipmentForm(request.POST, instance=equipment.equipmentid)
+            equipment = Equipment.objects.get(pk=equipment_id)
+            equipment_form = EquipmentForm(request.POST, instance=equipment)
         else:
-            equipment_form = PersonForm(request.POST)
+            equipment_form = EquipmentForm(request.POST)
 
         if 'modelname' in request.POST:
             equipment_model_form = EquipmentModelForm(request.POST)
-            if equipment_model_form.valid():
-                equipment_model = equipment_model_form.save()
+            if equipment_model_form.is_valid():
+                equipment_model = equipment_model_form.save(commit=False)
+                equipment_model.modelmanufacturerid = equipment_model_form.cleaned_data['modelmanufacturerid']
+                equipment_model.save()
+                equipment_form.errors.pop('equipmentmodelid', None)
+        else:
+            equipment_model = equipment_form.cleaned_data['equipmentmodelid']
 
         if equipment_form.is_valid():
             equipment = equipment_form.save(commit=False)
-            equipment.modelid = equipment_model
+            equipment.equipmentmodelid = equipment_model
+            equipment.equipmentvendorid = equipment_form.cleaned_data['equipmentvendorid']
             equipment.save()
 
             messages.add_message(request, messages.SUCCESS,

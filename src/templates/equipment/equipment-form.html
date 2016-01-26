@@ -1,6 +1,13 @@
 {% extends "base-form.html" %}
 {% block button_value %}{% block item_name %}Equipment{% endblock %}{% endblock %}
-{% block submit_url %}{% url 'create_equipment' %}{% endblock %}
+{% block submit_url %}
+    {% if equipment_id %}
+        {% url 'create_equipment' equipment_id %}
+    {% else %}
+        {% url 'create_equipment' %}
+    {% endif %}
+
+{% endblock %}
 {% block detail_cancel_url %}{% url 'equipment_detail' equipment_id %}{% endblock %}
 {% block list_cancel_url %}{% url 'equipment' %}{% endblock %}
 
