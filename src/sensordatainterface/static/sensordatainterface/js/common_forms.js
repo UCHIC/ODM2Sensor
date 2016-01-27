@@ -209,24 +209,8 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
 }
 
 function showAllEquipment(equipmentUsedSelectElems) {
-    var equipmentByActionUrl = $('#equipment-by-action-api').val();
-    $.ajax({
-        url: equipmentByActionUrl,
-        type: "POST",
-        data :{
-            action_id: false,
-            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
-        },
-
-        success: function (json) {
-            handle_equ_used_filter_response(json, equipmentUsedSelectElems)
-        },
-
-        error: function (xhr, errmsg, err) {
-            console.log(errmsg);
-            console.log(xhr.status+": "+xhr.responseText)
-        }
-    });
+    equipmentUsedSelectElems.empty();
+    equipmentUsedSelectElems.append($('#all-equipment-select').children().clone());
 }
 
 // get site visit dates from get_site_visit_dates, and restrict begindate and enddate
@@ -330,7 +314,6 @@ function cleanFields(fields) {
 
 
 $(document).ready(function () {
-    var formNames = ['EquipmentDeployment', 'InstrumentCalibration', 'Generic'];
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
     setFormFields($('tbody'));
@@ -341,6 +324,9 @@ $(document).ready(function () {
     var allForms = $('tbody').has('[name="actiontypecv"]');
     var filterEquipmentCheck = $('#id_equipment_by_site');
     var siteVisitSelect = currentForm.find('[name="actionid"]');
+
+    var equipmentSelect = $('#all-equipment-select');
+    equipmentSelect.append($('#id_equipmentused').children().clone());
 
     if (currentForm.attr('action').indexOf('create-equipment')) { // if current form is the create new equipment form
         var modelSelect = $('#id_equipmentmodelid');

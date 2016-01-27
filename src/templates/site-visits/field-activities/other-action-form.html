@@ -12,3 +12,10 @@
 {% block submit_url %}{% url 'create_action' action_type %}{% endblock %}
 {% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
 {% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="all-equipment-wrapper">
+        <select id="all-equipment-select" title="all equipment"></select>
+    </div>
+{% endblock %}
