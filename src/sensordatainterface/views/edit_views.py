@@ -735,6 +735,7 @@ def get_forms_from_request(request, action_id=False):
 def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form):
     # validate crew
     # validate extra data
+    # TODO: validate results forms, maybe.
     crew_form_valid = crew_form.is_valid()
     affiliation_list = request.POST.getlist('affiliationid')
     for i in range(0, len(affiliation_list)):
@@ -1009,6 +1010,34 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
 
             action_type = action_form.cleaned_data['actiontypecv']
 
+            if action_type.term == 'instrumentDeployment':
+                feature_action = child_action.featureaction.get(samplingfeatureid=sampling_feature)
+                result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
+                status = CvStatus.objects.get(term='ongoing')
+
+                results = []
+                output_variables = request.POST.getlist('instrumentoutputvariable')
+
+                for result_index in range(len(output_variables) - 1):
+                    result = {
+                        'instrument_output_variable': output_variables[result_index + 1],
+                        'unit': request.POST.getlist('unitsid')[result_index],
+                        'processing_level': request.POST.getlist('processing_level_id')[result_index],
+                        'sampled_medium': request.POST.getlist('sampledmediumcv')[result_index],
+                    }
+                    results.append(result)
+
+                for result in results:  # wat
+                    output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
+                    units = Units.objects.get(pk=result['unit'])
+                    processing_level = ProcessingLevel.objects.get(pk=result['processing_level'])
+                    medium = CvMedium.objects.get(name=result['sampled_medium'])
+
+                    Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
+                                          variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
+                                          resultdatetime=child_action.begindatetime, resultdatetimeutcoffset=child_action.begindatetimeutcoffset,
+                                          statuscv=status, sampledmediumcv=medium, valuecount=0)
+
             if action_type.term == 'instrumentCalibration':
                 if updating:
                     CalibrationAction.objects.get(actionid=child_action).delete()
@@ -1017,6 +1046,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
 
             url_map = {
                 'equipmentDeployment': 'deployment_detail',
+                'instrumentDeployment': 'deployment_detail',
                 'instrumentCalibration': 'calibration_detail',
                 'equipmentMaintenance': 'field_activity_detail',
                 'fieldActivity': 'field_activity_detail'
@@ -1067,7 +1097,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
     return render(
         request,
         'site-visits/field-activities/other-action-form.html',
-        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'action_type': action_type}
+        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id,
+         'action_type': action_type, 'mock_results_form': ResultsForm()}
     )
 
 

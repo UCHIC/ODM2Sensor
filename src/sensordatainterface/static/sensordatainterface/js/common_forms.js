@@ -94,6 +94,7 @@ function handleActionTypeChange(formType, currentForm) {
     var formClasses = {
         'Field activity': 'notypeclass',
         'Equipment deployment': 'deployment',
+        'Instrument deployment': 'deployment',
         'Instrument calibration': 'calibration',
         'Equipment maintenance': 'maintenance'
     };
@@ -321,6 +322,8 @@ $(document).ready(function () {
     setFormFields($('tbody'));
     setOtherActions();
 
+    $('#results-form').find('.select-two').select2('destroy');
+    $('#results-form').find(".select2-container").remove();
 
     var currentForm = $('form');
     var allForms = $('tbody').has('[name="actiontypecv"]');
@@ -330,7 +333,7 @@ $(document).ready(function () {
     var equipmentSelect = $('#all-equipment-select');
     equipmentSelect.append($('#id_equipmentused').children().clone());
 
-    if (currentForm.attr('action').indexOf('create-equipment')) { // if current form is the create new equipment form
+    if (currentForm.attr('action').indexOf('create-equipment') > -1) { // if current form is the create new equipment form
         var modelSelect = $('#id_equipmentmodelid');
         $('<option value="new">New Equipment Model</option>').insertAfter(modelSelect.children().first());
         modelSelect.on('change', onEquipmentModelChange);
@@ -364,9 +367,5 @@ $(document).ready(function () {
     filterEquipmentCheck.change(function(eventData) {
         siteVisitSelect.trigger('change');
     });
-
-    $('#results-form').find('.select-two').select2('destroy');
-    $('#results-form').find(".select2-container").remove();
-
 });
 
