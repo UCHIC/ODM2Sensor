@@ -55,6 +55,40 @@
                 </tr>
             </table>
         </div>
+
+        <!-- Results Table -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            {% if Deployment.featureaction.get.result_set.all|length > 0 %}
+                <h3>Results</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>UUID</th>
+                            <th>Result Type</th>
+                            <th>Variable</th>
+                            <th>Unit</th>
+                            <th>Sampled Medium</th>
+                            <th>Processing Level</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in Deployment.featureaction.get.result_set.all %}
+                            <tr>
+                                <td><a href="{% url 'results_detail' result.resultid %}">{{ result.resultuuid }}</a></td>
+                                <td>{{ result.resulttypecv.name }}</td>
+                                <td>{{ result.variableid.variablecode|add:": "|add:result.variableid.variablenamecv.name }}</td>
+                                <td>{{ result.unitsid.unitsname }}</td>
+                                <td>{{ result.sampledmediumcv.name }}</td>
+                                <td>{{ result.processinglevelid.processinglevelcode }}</td>
+                                <td>{{ result.statuscv.name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+
         <!-- Equipment Used Table -->
         <div class="row detail-mid">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
