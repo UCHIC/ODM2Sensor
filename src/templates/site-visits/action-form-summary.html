@@ -33,7 +33,7 @@
                             {{ equipment.equipmentid.equipmentmodelid.modelname }}
                             {% if not forloop.last %} | {% endif %}
                         {% endfor %}<br/>
-                        {% if child_action.actionid.actiontypecv == 'Instrument calibration' %}
+                        {% if child_action.actionid.actiontypecv.name == 'Instrument calibration' %}
                             {% with calibration_action=child_action.actionid.calibrationaction.all.0 %}
                                 <strong>Instrument Output Variable:</strong>
                                 {{ calibration_action.instrumentoutputvariableid.variableid.variablenamecv }}
@@ -49,7 +49,22 @@
                                 {% endfor %}
                                 <br/>
                             {% endwith %}
-                        {% elif child_action.actionid.actiontypecv == 'Equipment maintenance' %}
+                        {% elif child_action.actionid.actiontypecv.name == 'Instrument deployment' %}
+                            {% with results=child_action.actionid.featureaction.get.result_set.all %}
+                                <br/>
+                                <strong>Results:</strong><br/>
+                                <ul>
+                                    {% for result in results %}
+                                        <li style="font-size:13px">
+                                        <strong>Variable Code:</strong> <a href="{% url 'results_detail' result.resultid %}">{{ result.variableid.variablecode|add:": "|add:result.variableid.variablenamecv.name }}</a> |
+                                        <strong>Units:</strong> {{ result.unitsid.unitsname }} |
+                                        <strong>Sampled Medium:</strong> {{ result.sampledmediumcv.name }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <br/>
+                            {% endwith %}
+                        {% elif child_action.actionid.actiontypecv.name == 'Equipment maintenance' %}
                             <strong>Is Factory Service?</strong>
                             {{ child_action.actionid.maintenanceaction.all.0.isfactoryservice }}
                             <br/>
