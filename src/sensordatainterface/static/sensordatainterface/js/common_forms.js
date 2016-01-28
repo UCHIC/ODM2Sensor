@@ -11,6 +11,7 @@ function setOtherActions() {
         $('.Generic .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.Generic [name="actiontypecv"]');
         actionTypeElem.children('[value="Equipment deployment"]').remove();
+        actionTypeElem.children('[value="Instrument deployment"]').remove();
         actionTypeElem.children('[value="Instrument calibration"]').remove();
 
     } else if (mainForm.hasClass('InstrumentCalibration')) {
@@ -24,7 +25,8 @@ function setOtherActions() {
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
-        actionTypeElem.select2('val', 'Equipment deployment');
+        // TODO: ASK AMBER IS IT EQUIPMENT OR INSTRUMENT DEPLOYMENT?
+        actionTypeElem.select2('val', 'Instrument deployment');
         actionTypeElem.parents('tr').hide();
     }
 }
@@ -266,7 +268,7 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
     equipmentUsedSelectElems.each(function () {
         currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
         var currentEquipmentSelect = $(this);
-        if (currentValue !== "Equipment deployment") {
+        if (currentValue !== "Equipment deployment" && currentValue !== "Instrument deployment") {
             var options = [];
             currentEquipmentSelect.empty();
             json.forEach(function(object) {
