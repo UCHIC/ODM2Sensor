@@ -160,6 +160,45 @@ function removeResultForm(that) {
     $(that).parents('tbody').remove();
 }
 
+function filterVariablesByEquipment(equipmentList) {
+    var outputVariablesSelect = $('select[name="instrumentoutputvariable"]');
+
+    if (equipmentList.length === 0) {
+        outputVariablesSelect.empty();
+        outputVariablesSelect.append($('#all-variables-select').children().clone());
+        return;
+    }
+
+    var variablesByEquipment = $('#output-variables-by-equipment').val();
+
+    $.ajax({
+        url: variablesByEquipment,
+        type: "POST",
+        data :{
+            equipment: equipmentList,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var optionElements = [];
+            var variables = JSON.parse(json);
+
+            outputVariablesSelect.empty();
+            variables.forEach(function(variable) {
+                optionElements.push('<option value="', variable.pk, '">',
+                    variable.fields['modelid'], ': ', variable.fields['variableid'], '</option>'
+                );
+            });
+            outputVariablesSelect.append(optionElements.join(''));
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
 function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
     if (selected == "")
         return;
@@ -329,9 +368,13 @@ $(document).ready(function () {
     var allForms = $('tbody').has('[name="actiontypecv"]');
     var filterEquipmentCheck = $('#id_equipment_by_site');
     var siteVisitSelect = currentForm.find('[name="actionid"]');
+    var equipmentUsedSelect = $('#id_equipmentused');
 
+    // Cache instrument output variables and equipments
+    var variableSelect = $('#all-variables-select');
     var equipmentSelect = $('#all-equipment-select');
-    equipmentSelect.append($('#id_equipmentused').children().clone());
+    equipmentSelect.append(equipmentUsedSelect.children().clone());
+    variableSelect.append($('#id_instrumentoutputvariable').children().clone());
 
     if (currentForm.attr('action').indexOf('create-equipment') > -1) { // if current form is the create new equipment form
         var modelSelect = $('#id_equipmentmodelid');
@@ -347,6 +390,10 @@ $(document).ready(function () {
             var currentActionForm = $(this).parents('tbody');
             handleActionTypeChange(selected, currentActionForm);
         });
+    });
+
+    equipmentUsedSelect.change(function(eventData, handler) {
+        filterVariablesByEquipment(equipmentUsedSelect.val());
     });
 
     siteVisitSelect.change(function (eventData, handler) {

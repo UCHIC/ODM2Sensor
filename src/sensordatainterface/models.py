@@ -388,6 +388,7 @@ class Equipment(models.Model):
     equipmentpurchaseordernumber = models.TextField(db_column='EquipmentPurchaseOrderNumber',
                                                     blank=True)  # Field name made lowercase.
     equipmentdescription = models.TextField(db_column='EquipmentDescription', blank=True)  # Field name made lowercase.
+    equipmentdescription = models.TextField(db_column='EquipmentDescription', blank=True)  # Field name made lowercase.
     equipmentdocumentationlink = models.TextField(db_column='EquipmentDocumentationLink',
                                                   blank=True)  # Field name made lowercase.
 
@@ -1632,6 +1633,9 @@ class Variable(models.Model):
     variabledefinition = models.TextField(db_column='VariableDefinition', blank=True)  # Field name made lowercase.
     speciationcv = models.ForeignKey('CvSpeciation', db_column='SpeciationCV', blank=True)  # Field name made lowercase.
     nodatavalue = models.FloatField(db_column='NoDataValue')  # Field name made lowercase.
+
+    def natural_key(self):
+        return self.variablecode + ' ' + self.variabletypecv.name
 
     class Meta:
         managed = False

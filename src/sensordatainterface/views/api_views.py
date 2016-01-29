@@ -1,7 +1,7 @@
 import json
 from django.http import HttpResponse
 from django.core import serializers
-from sensordatainterface.models import Equipment, SamplingFeature, Action
+from sensordatainterface.models import Equipment, InstrumentOutputVariable, Action, EquipmentModel
 
 
 def get_equipment_by_site(request):
@@ -63,5 +63,20 @@ def get_equipment_by_action(request):
 
     return HttpResponse(
         json_data,
+        content_type="application/json"
+    )
+
+
+def get_equipment_output_variables(request):
+    if request.method == 'POST':
+        equipments = request.POST.getlist('equipment[]')
+        models = EquipmentModel.objects.filter(equipment__equipmentid__in=equipments).distinct()
+        variables = InstrumentOutputVariable.objects.filter(modelid__in=models).distinct()
+        response_data = serializers.serialize('json', variables, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
         content_type="application/json"
     )
