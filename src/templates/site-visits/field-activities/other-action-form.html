@@ -12,12 +12,3 @@
 {% block submit_url %}{% url 'create_action' action_type %}{% endblock %}
 {% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
 {% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}
-
-{% block content %}
-    {{ block.super }}
-    <table id="results-form">
-        <tbody class="results-set">
-            {{ mock_results_form }}
-        </tbody>
-    </table>
-{% endblock %}

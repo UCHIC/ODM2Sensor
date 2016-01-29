@@ -328,7 +328,7 @@ label {
 /*left: 217;*/
 /*}*/
 
-#action-form, #results-form, #model-form, .all-equipment-wrapper, .all-variables-wrapper {
+#action-form, #results-form, #model-form, .all-equipment-wrapper, .all-variables-wrapper, .all-units-wrapper {
     display: none;
 }
 
