@@ -127,7 +127,7 @@ class DeploymentChoiceField(ModelChoiceField):
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv.name
+        return obj.modelid.modelname + ": " + obj.variableid.variablecode + ' ' + obj.variableid.variablenamecv.name
 
 
 time_zone_choices = (
