@@ -160,10 +160,14 @@ function removeResultForm(that) {
     $(that).parents('tbody').remove();
 }
 
-function filterVariablesByEquipment(equipmentList) {
-    var outputVariablesSelect = $('select[name="instrumentoutputvariable"]');
+function filterVariablesByEquipment(equipmentElement) {
+    var outputVariablesSelect = equipmentElement.parents('tbody')
+        .nextUntil('.action-fields', '.results-set')
+        .find('select[name="instrumentoutputvariable"]');
 
-    if (equipmentList.length === 0) {
+    var equipmentList = equipmentElement.val();
+
+    if (!equipmentList) {
         outputVariablesSelect.empty();
         outputVariablesSelect.append($('#all-variables-select').children().clone());
         return;
@@ -347,6 +351,13 @@ function onEquipmentModelChange(event) {
     }
 }
 
+
+function bindEquipmentUsedFiltering(selectElement) {
+    selectElement.change(function(eventData, handler) {
+        filterVariablesByEquipment(selectElement);
+    });
+}
+
 function cleanFields(fields) {
     fields.find('textarea, input').val('');
     fields.find('input[type="checkbox"]').prop('checked', false);
@@ -392,9 +403,7 @@ $(document).ready(function () {
         });
     });
 
-    equipmentUsedSelect.change(function(eventData, handler) {
-        filterVariablesByEquipment(equipmentUsedSelect.val());
-    });
+    bindEquipmentUsedFiltering(equipmentUsedSelect);
 
     siteVisitSelect.change(function (eventData, handler) {
         var formActionType = currentForm.find('[name="actiontypecv"]').val();

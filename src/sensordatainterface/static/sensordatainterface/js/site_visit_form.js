@@ -16,11 +16,13 @@ function addActionForm(that) {
     setChildActionDateTimePicker(thisForm);
 
     //add handler for when the actiontypecv is changed
-    $(thisForm).find('.select-two[name="actiontypecv"]').change(function () {
+    $(thisForm).find('.select-two[name="actiontypecv"]').change(function() {
         var selected = $(this).val();
         var currentActionForm = $(this).parents('tbody');
         handleActionTypeChange(selected, currentActionForm);
     });
+
+    bindEquipmentUsedFiltering($(thisForm).find('.select-two[name="equipmentused"]'));
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();
