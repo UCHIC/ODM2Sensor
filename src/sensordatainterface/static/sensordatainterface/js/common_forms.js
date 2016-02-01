@@ -91,16 +91,25 @@ function setFormFields(currentForm) {
 }
 
 function handleActionTypeChange(formType, currentForm) {
-    var formClasses = {
-        'Field activity': 'notypeclass',
-        'Equipment deployment': 'deployment',
-        'Instrument deployment': 'deployment',
-        'Instrument calibration': 'calibration',
-        'Equipment maintenance': 'maintenance'
-    };
+    //var formClasses = {
+    //    'Field activity': 'notypeclass',
+    //    'Equipment deployment': 'deployment',
+    //    'Instrument deployment': 'deployment',
+    //    'Instrument calibration': 'calibration',
+    //    'Equipment maintenance': 'maintenance'
+    //};
+
+    var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function(option) {
+        return option.value;
+    }).reduce(function(map, actiontype) {
+        map[actiontype] = actiontype.replace(' ', '');
+        return map;
+    }, {});
+    formClasses[""] = "Fieldactivity";
 
 
     var formClass = formClasses[formType] || 'notypeclass';
+
 
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {

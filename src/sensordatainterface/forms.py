@@ -676,26 +676,13 @@ class SiteVisitChoiceForm(ModelForm):
 
 
 class SelectWithClassForOptions(Select):
-    # TODO: figure out how to add the missing methods.
     def render_option(self, *args, **kwargs):
         option_html = super(SelectWithClassForOptions, self).render_option(*args, **kwargs)
-
-        # method types are currently not equal to actiontypes so this dictionary temporarily corrects that.
-        methodtypes = {
-            'Instrument calibration': 'calibration',
-            'Equipment deployment': 'deployment',
-            'Insntrument deployment': 'deployment',
-            'Equipment maintenance': 'maintenance',
-            'Equipment retrieval': 'notypeclass',
-            'Field activity': 'notypeclass',
-            'Observation': 'notypeclass',
-            'Specimen collection': 'notypeclass',
-        }
 
         this_method = args[1]
         class_value = "class=\"\""
         if this_method != "":
-            class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv.name]
+            class_value = Method.objects.get(pk=this_method).methodtypecv.name.replace(' ', '')
 
         after_tag = 8
         before_tag_close = 7
@@ -724,20 +711,20 @@ class ActionForm(ModelForm):
     )
 
     equipment_by_site = PrettyCheckboxField(widget=PrettyCheckboxWidget(
-        attrs={'class': 'calibration generic'}), label='Show All Equipment', required=False
+        attrs={'class': 'Instrumentcalibration Fieldactivity'}), label='Show All Equipment', required=False
     )
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     calibrationstandard = CalibrationStandardMultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+        widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False
     )
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     calibrationreferenceequipment = MultipleEquipmentChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+        widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=Equipment.objects.all(), label='Reference Equipment',
         required=False
     )
@@ -745,25 +732,25 @@ class ActionForm(ModelForm):
     calibrationreferenceequipmentnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     isfactoryservice = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service', required=False)
+        widget=forms.CheckboxInput(attrs={'class': 'Equipmentmaintenance'}), label='Is Factory Service', required=False)
     isfactoryservicebool = forms.BooleanField(
         widget=HiddenInput(), initial='False', required=False
     )
     maintenancecode = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'maintenance'}), label='Maintenance Code', required=False)
+        widget=forms.TextInput(attrs={'class': 'Equipmentmaintenance'}), label='Maintenance Code', required=False)
     maintenancereason = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'maintenance'}), label='Maintenance Reason', required=False)
+        widget=forms.Textarea(attrs={'class': 'Equipmentmaintenance'}), label='Maintenance Reason', required=False)
 
     # fields for calibration
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
-        widget=forms.Select(attrs={'class': 'calibration'}),
+        widget=forms.Select(attrs={'class': 'Instrumentcalibration'}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
 
     calibrationcheckvalue = forms.DecimalField(
-        widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
+        widget=forms.NumberInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Check Value', required=False)
 
     calibrationequation = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'calibration generic'}), label='Calibration Equation', required=False)
+        widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation', required=False)
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
@@ -807,6 +794,8 @@ class ActionForm(ModelForm):
 
 
 class ResultsForm(forms.Form):
+    required_css_class = 'form-required'
+
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
         widget=forms.Select(attrs={'class': ''}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=True)
