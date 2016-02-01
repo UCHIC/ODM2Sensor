@@ -916,6 +916,7 @@ def edit_site_visit(request, action_id):
         {
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
+            'mock_results_form': ResultsForm(),
             'actions_form': action_form,
             'render_actions': render_actions,
             'action': action, 'item_id': action_id
