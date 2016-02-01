@@ -112,7 +112,14 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
 
 class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.referencematerialmediumcv.name + ' : ' + obj.referencematerialcode + " " + obj.referencemateriallotcode
+        if obj.referencematerialvalue.count() > 0:
+            value_information = ": " + obj.referencematerialvalue.get().variableid.variablenamecv.name + " " + \
+                                "(" + obj.referencematerialvalue.get().unitsid.unitsabbreviation + ")"
+        else:
+            value_information = ''
+
+        return obj.referencematerialmediumcv.name + ' : ' + obj.referencematerialcode + " " + \
+               obj.referencemateriallotcode + value_information
 
 
 class VariableChoiceField(ModelChoiceField):
