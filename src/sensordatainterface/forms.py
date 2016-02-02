@@ -718,7 +718,7 @@ class ActionForm(ModelForm):
     )
 
     equipment_by_site = PrettyCheckboxField(widget=PrettyCheckboxWidget(
-        attrs={'class': 'Instrumentcalibration Fieldactivity'}), label='Show All Equipment', required=False
+        attrs={'class': 'Instrumentcalibration Notype'}), label='Show All Equipment', required=False
     )
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)

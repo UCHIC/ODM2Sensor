@@ -91,24 +91,16 @@ function setFormFields(currentForm) {
 }
 
 function handleActionTypeChange(formType, currentForm) {
-    //var formClasses = {
-    //    'Field activity': 'notypeclass',
-    //    'Equipment deployment': 'deployment',
-    //    'Instrument deployment': 'deployment',
-    //    'Instrument calibration': 'calibration',
-    //    'Equipment maintenance': 'maintenance'
-    //};
-
     var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function(option) {
         return option.value;
     }).reduce(function(map, actiontype) {
         map[actiontype] = actiontype.replace(' ', '');
         return map;
     }, {});
-    formClasses[""] = "Fieldactivity";
+    formClasses[""] = "Notype";
 
 
-    var formClass = formClasses[formType] || 'notypeclass';
+    var formClass = formClasses[formType];
 
 
     for (var key in formClasses) {
@@ -170,7 +162,7 @@ function removeResultForm(that) {
 }
 
 function filterVariablesByEquipment(equipmentElement) {
-    var siblingForms = equipmentElement.parents('tbody').nextUntil('.action-fields', '.results-set');
+    var siblingForms = equipmentElement.parents('tbody').nextUntil('.action-fields', '.results-set').andSelf();
     var outputVariablesSelect = siblingForms.find('select[name="instrumentoutputvariable"]');
     var unitsSelect = siblingForms.find('select[name="unitsid"]');
 
@@ -404,7 +396,6 @@ $(document).ready(function () {
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
     setFormFields($('tbody'));
-    setOtherActions();
     cacheUnfilteredSelects();
     bindEquipmentUsedFiltering($('#id_equipmentused'));
 
@@ -450,5 +441,7 @@ $(document).ready(function () {
     filterEquipmentCheck.change(function(eventData) {
         siteVisitSelect.trigger('change');
     });
+
+    setOtherActions();
 });
 
