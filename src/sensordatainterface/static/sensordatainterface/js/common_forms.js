@@ -399,8 +399,11 @@ $(document).ready(function () {
     cacheUnfilteredSelects();
     bindEquipmentUsedFiltering($('#id_equipmentused'));
 
-    $('#results-form').find('.select-two').select2('destroy');
-    $('#results-form').find(".select2-container").remove();
+    var resultSelects = $('#results-form').find('.select-two');
+    if (resultSelects.length !== 0) {
+        $('#results-form').find('.select-two').select2('destroy');
+        $('#results-form').find(".select2-container").remove();
+    }
 
     var currentForm = $('form');
     var allForms = $('tbody').has('[name="actiontypecv"]');
