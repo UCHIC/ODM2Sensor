@@ -714,7 +714,8 @@ def get_forms_from_request(request, action_id=False):
             form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
             maintenance_counter += 1
 
-        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=request.POST.getlist('thisactionid')[i - 1])) if action_id else ActionForm(form_data, form_files)
+        child_action_id = request.POST.getlist('thisactionid')[i - 1]
+        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data, form_files)
         action.results = results
         action_form.append(action)
 
