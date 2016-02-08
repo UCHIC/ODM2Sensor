@@ -91,6 +91,8 @@ function setFormFields(currentForm) {
 }
 
 function handleActionTypeChange(formType, currentForm) {
+    var requiredEquipmentClasses = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
+        'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval'];
     var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function(option) {
         return option.value;
     }).reduce(function(map, actiontype) {
@@ -99,10 +101,7 @@ function handleActionTypeChange(formType, currentForm) {
     }, {});
     formClasses[""] = "Notype";
 
-
     var formClass = formClasses[formType];
-
-
     for (var key in formClasses) {
         if (formClasses.hasOwnProperty(key) && key !== formType) {
             $(currentForm).find('.' + formClasses[key]).not('option').parents('tr').hide();
@@ -121,10 +120,11 @@ function handleActionTypeChange(formType, currentForm) {
     var equipmentUsedElem = $(currentForm).find('[name="equipmentused"]');
 
     //Set EquipmentUsed required
-    if (formType !== 'Generic')
+    if (requiredEquipmentClasses.indexOf(formType) > -1) {
         equipmentUsedElem.parents('tr').addClass('form-required');
-    else
+    } else {
         equipmentUsedElem.parents('tr').removeClass('form-required');
+    }
 
     //Filter equipmentUsed
     filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
