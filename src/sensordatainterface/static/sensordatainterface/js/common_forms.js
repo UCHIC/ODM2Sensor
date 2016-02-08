@@ -25,9 +25,7 @@ function setOtherActions() {
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
-        // TODO: ASK AMBER IS IT EQUIPMENT OR INSTRUMENT DEPLOYMENT?
-        actionTypeElem.select2('val', 'Instrument deployment');
-        actionTypeElem.parents('tr').hide();
+        actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
     }
 }
 
@@ -113,7 +111,7 @@ function handleActionTypeChange(formType, currentForm) {
     $(currentForm).find('option.' + formClass).removeAttr('disabled');
 
     $(currentForm).find('#id_methodid').siblings('.errorlist').remove();
-    if ($(currentForm).find('option.' + formClass).length === 0) {
+    if (formClass !== 'Notype' && $(currentForm).find('option.' + formClass).length === 0) {
         $('<ul class="errorlist"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
     }
 
