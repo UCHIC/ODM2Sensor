@@ -112,6 +112,11 @@ function handleActionTypeChange(formType, currentForm) {
     $(currentForm).find('.' + formClass).not('option').parents('tr:hidden').show();
     $(currentForm).find('option.' + formClass).removeAttr('disabled');
 
+    $(currentForm).find('#id_methodid').siblings('.errorlist').remove();
+    if ($(currentForm).find('option.' + formClass).length === 0) {
+        $('<ul class="errorlist"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
+    }
+
     //reset select2 to hide disabled options
     var methodSelect = $(currentForm).find('[name="methodid"]');
     methodSelect.select2();
@@ -137,6 +142,8 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
         $(currentForm).next('tbody.add-result-btn').remove();
     }
+
+
 }
 
 function addResultForm(that, firstResult) {
