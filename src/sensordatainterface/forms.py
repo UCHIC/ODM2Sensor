@@ -113,8 +113,10 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
 class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         if obj.referencematerialvalue.count() > 0:
-            value_information = ": " + obj.referencematerialvalue.get().variableid.variablenamecv.name + " " + \
-                                "(" + obj.referencematerialvalue.get().unitsid.unitsabbreviation + ")"
+            referencematerialvalue = obj.referencematerialvalue.get()
+            value_information = ": " + referencematerialvalue.variableid.variablenamecv.name + " " + \
+                                str(referencematerialvalue.referencematerialvalue) + " " + \
+                                referencematerialvalue.unitsid.unitsabbreviation
         else:
             value_information = ''
 
@@ -818,6 +820,13 @@ class ResultsForm(forms.Form):
     sampledmediumcv = forms.ModelChoiceField(
         widget=forms.Select(attrs={'class': ''}),
         queryset=CvMedium.objects.all(), label='Sampled Medium', required=True)
+
+
+class ActionAnnotationForm(forms.Form):
+    required_css_class = 'form-required'
+
+    # annotationcode =
+    # annotationtext =
 
 
 def get_cv_model_form(form_model, *args, **kwargs):
