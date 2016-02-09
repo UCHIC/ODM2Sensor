@@ -38,6 +38,7 @@ function initDTPicker() {
     dateElements.push($("[name='enddatetime']"));
     dateElements.push($("[name='referencematerialpurchasedate']"));
     dateElements.push($("[name='referencematerialexpirationdate']"));
+    dateElements.push($("[name='annotationdatetime']"));
 
     dateElements.forEach(function (element) {
         element.wrap("<div class='datetimepicker input-group date'></div");

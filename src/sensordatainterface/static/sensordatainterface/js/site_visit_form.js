@@ -47,6 +47,8 @@ function addAnnotationForm(that) {
     var fields = $('#annotation-form').children().clone();
     var btnForm = $(that).parents('tbody');
 
+    setAnnotationDateTimePicker(fields);
+
     fields.prepend(removeButton);
 
     var annotationSelect = fields.find('[name="annotationid"]');
@@ -75,6 +77,23 @@ function onAnnotationChange(event) {
         newAnnotationFields.hide();
         annotationSelect.parents('tr').addClass('form-required');
     }
+}
+
+function setAnnotationDateTimePicker(annotationForm) {
+    var siteVisitForm = $('.form-table').children('tbody').first();
+    var beginDTInitialValue = moment(siteVisitForm.find("[name='begindatetime']").val());
+    var endDTInitialValue = moment(siteVisitForm.find("[name='enddatetime']").val());
+
+    //restart datetimepicker
+    $(annotationForm).find('.datetimepicker').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm',
+        sideBySide: true
+    });
+
+    //Initialize data and UTCOffset for children action forms
+    //set the value of the begin time in the action form to the site visit form begin time
+    annotationForm.find("[name='annotationdatetime']").parent('.datetimepicker').data('DateTimePicker').date(beginDTInitialValue);
+    annotationForm.find("[name='annotationutcoffset']").val(siteVisitForm.find("[name='begindatetimeutcoffset']").val());
 }
 
 function setChildActionDateTimePicker(childForm) {
