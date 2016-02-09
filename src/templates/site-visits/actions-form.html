@@ -39,6 +39,8 @@
                         <div class="row action_buttons">
                             <a class='btn btn-default col-xs-12 col-sm-12'
                                onclick='javascript:addActionForm(this)'>+ Add Action</a>
+                            <a class='btn btn-default col-xs-12 col-sm-12'
+                               onclick='javascript:addAnnotationForm(this)'>+ Add Annotation</a>
                         </div>
                     </td>
                 </tr>
@@ -71,6 +73,12 @@
     <table id="results-form">
         <tbody class="results-set">
             {{ mock_results_form }}
+        </tbody>
+    </table>
+    <table id="annotation-form">
+        <tbody class="annotation-fields">
+            {{ annotation_field }}
+            {{ mock_annotation_form }}
         </tbody>
     </table>
 {% endblock %}

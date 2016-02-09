@@ -598,10 +598,10 @@ def create_site_visit(request, site_id=None):
 
     if request.method == 'POST':
         render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form = get_forms_from_request(request)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form)
+        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
         if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form)
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
     else:
@@ -618,6 +618,7 @@ def create_site_visit(request, site_id=None):
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
             'mock_results_form': ResultsForm(),
+            'mock_annotation_form': AnnotationForm(),
             'actions_form': action_form,
             'render_actions': render_actions,
             'action': action,
@@ -626,9 +627,12 @@ def create_site_visit(request, site_id=None):
 
 
 def get_forms_from_request(request, action_id=False):
-    forms_returned = len(request.POST.getlist('actiontypecv'))
+    actions_returned = len(request.POST.getlist('actiontypecv'))
     outputvariables = request.POST.getlist('instrumentoutputvariable')
+    annotations = request.POST.getlist('annotationid')
+
     action_form = []
+    annotation_forms = []
     results_counter = 0
     maintenance_counter = 0
     equipment_used_position = 0
@@ -644,7 +648,18 @@ def get_forms_from_request(request, action_id=False):
         'actiondescription': request.POST.getlist('actiondescription')[0],
     }
 
-    for i in range(1, forms_returned + 1):
+    for i in range(0, len(annotations)):
+        annotation_data = {
+            'annotationid': annotations[i],
+            'annotationcode': request.POST.getlist('annotationcode')[i],
+            'annotationtext': request.POST.getlist('annotationtext')[i],
+            'annotationdatetime': request.POST.getlist('annotationdatetime')[i],
+            'annotationutcoffset': request.POST.getlist('annotationutcoffset')[i]
+        }
+        annotation_form = AnnotationForm(annotation_data)
+        annotation_forms.append(annotation_form)
+
+    for i in range(1, actions_returned + 1):
         results = []
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
@@ -721,6 +736,7 @@ def get_forms_from_request(request, action_id=False):
 
         if action_type != 'Generic':
             action_form[-1].fields['equipmentused'].required = True
+
     if action_id:
         sampling_feature_form = FeatureActionForm(request.POST, instance=FeatureAction.objects.get(actionid=action_id))
         site_visit_form = SiteVisitForm(site_visit_data, instance=Action.objects.get(actionid=action_id))
@@ -730,10 +746,10 @@ def get_forms_from_request(request, action_id=False):
 
     crew_form = CrewForm(request.POST)
 
-    return crew_form, site_visit_form, sampling_feature_form, action_form
+    return crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms
 
 
-def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form):
+def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms):
     # validate crew
     # validate extra data
     # TODO: validate results forms, maybe.
@@ -748,10 +764,18 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
 
+    for annotation in annotation_forms:
+        annotationid = annotation.data['annotationid']
+        if annotationid == u'new':
+            all_forms_valid = all_forms_valid and 'annotationtext' not in annotation.errors
+        else:
+            all_forms_valid = all_forms_valid and True if annotationid.isnumeric() else all_forms_valid and False
+        annotation.errors.pop('annotationid', None)
+
     return all_forms_valid
 
 
-def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, updating=False):
+def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, updating=False):
     # set up site visit
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.save(commit=False)
@@ -770,6 +794,20 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     for affiliation in crew_form.cleaned_data['affiliationid']:
         ActionBy.objects.create(affiliationid=affiliation, actionid=site_visit_action,
                                 isactionlead=0)  # isactionlead?
+
+    # set up annotations
+    for annotation_form in annotation_forms:
+        annotation_id = annotation_form.data['annotationid']
+        if annotation_id == u'new':
+            annotation = annotation_form.save(commit=False)
+            annotation_type = CvAnnotationtype.objects.get(term='actionAnnotation')
+            annotation.annotationtypecv = annotation_type
+            annotation.save()
+        else:
+            annotation = Annotation.objects.get(pk=annotation_id)
+
+        # setup action annotation
+        ActionAnnotation.objects.create(actionid=site_visit_action, annotationid=annotation)
 
     # set up child actions
     for i in range(0, len(action_form)):

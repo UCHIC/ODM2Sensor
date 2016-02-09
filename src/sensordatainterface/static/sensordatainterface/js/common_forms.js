@@ -166,6 +166,7 @@ function removeResultForm(that) {
     $(that).parents('tbody').remove();
 }
 
+
 function filterVariablesByEquipment(equipmentElement) {
     var siblingForms = equipmentElement.parents('tbody').nextUntil('.action-fields', '.results-set').andSelf();
     var outputVariablesSelect = siblingForms.find('select[name="instrumentoutputvariable"]');

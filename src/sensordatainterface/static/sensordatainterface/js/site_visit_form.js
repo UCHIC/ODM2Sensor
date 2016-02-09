@@ -41,6 +41,42 @@ function addActionForm(that) {
     $(thisForm).find(".maintenance").not('option').parents('tr').hide();
 }
 
+
+function addAnnotationForm(that) {
+    var removeButton = $('<tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javascript:removeAnnotation(this)">- Remove Annotation</a></td></tr>');
+    var fields = $('#annotation-form').children().clone();
+    var btnForm = $(that).parents('tbody');
+
+    fields.prepend(removeButton);
+
+    var annotationSelect = fields.find('[name="annotationid"]');
+    fields.find('tr:not(.remove-button)').not(annotationSelect.parents('tr')).hide();
+    fields.find(".select-two").select2();
+
+    $('<option value="new">New Annotation</option>').insertAfter(annotationSelect.children().first());
+    annotationSelect.on('change', { form: fields }, onAnnotationChange);
+
+    fields.insertBefore(btnForm);
+}
+
+function removeAnnotation(that) {
+    $(that).parents('tbody').remove();
+}
+
+function onAnnotationChange(event) {
+    var annotationForm = event.data['form'];
+    var annotationSelect = annotationForm.find('[name="annotationid"]');
+    var newAnnotationFields = annotationForm.find('tr:not(.remove-button)').not(annotationSelect.parents('tr'));
+
+    if (annotationSelect.find(':selected').val() == 'new') {
+        newAnnotationFields.show();
+        annotationSelect.parents('tr').removeClass('form-required');
+    } else {
+        newAnnotationFields.hide();
+        annotationSelect.parents('tr').addClass('form-required');
+    }
+}
+
 function setChildActionDateTimePicker(childForm) {
     var siteVisitForm = $('.form-table').children().first();
     var beginDTInitialValue = moment(siteVisitForm.find("[name='begindatetime']").val());
@@ -140,5 +176,11 @@ $(document).ready(function () {
     setEquipmentUsedFilter();
 
     $('tbody').has('[name="actiontypecv"]').find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
+
+    var annotationSelects = $('#annotation-form').find('.select-two');
+    if (annotationSelects.length !== 0) {
+        annotationSelects.select2('destroy');
+        $('#annotation-form').find(".select2-container").remove();
+    }
 
 });

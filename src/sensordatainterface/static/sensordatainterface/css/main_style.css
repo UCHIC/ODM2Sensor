@@ -328,7 +328,7 @@ label {
 /*left: 217;*/
 /*}*/
 
-#action-form, #results-form, #model-form, .all-equipment-wrapper, .all-variables-wrapper, .all-units-wrapper {
+#action-form, #results-form, #annotation-form, #model-form, .all-equipment-wrapper, .all-variables-wrapper, .all-units-wrapper {
     display: none;
 }
 
@@ -348,8 +348,8 @@ label {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
 }
 
-.btn-remove-action, .btn-remove-result, .btn-remove-model {
-    width: 25%;
+.btn-remove-action, .btn-remove-result, .btn-remove-model, .btn-remove-annotation {
+    width: 28%;
     min-width: 130px;
     float: left;
 }

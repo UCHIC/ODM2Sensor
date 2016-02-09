@@ -139,6 +139,11 @@ class InstrumentOutputVariableChoiceField(ModelChoiceField):
         return obj.modelid.modelname + ": " + obj.variableid.variablecode + ' ' + obj.variableid.variablenamecv.name
 
 
+class ActionAnnotationChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.annotationtext
+
+
 time_zone_choices = (
     (-12, '-12:00'),
     (-11, '-11:00'),
@@ -822,11 +827,35 @@ class ResultsForm(forms.Form):
         queryset=CvMedium.objects.all(), label='Sampled Medium', required=True)
 
 
-class ActionAnnotationForm(forms.Form):
+class AnnotationForm(forms.ModelForm):
     required_css_class = 'form-required'
+    annotationid = ActionAnnotationChoiceField(queryset=Annotation.objects.all(),
+                                               label='Annotation', empty_label='Choose an Annotation')
 
-    # annotationcode =
-    # annotationtext =
+    class Meta:
+        model = Annotation
+        fields = [
+            'annotationid',
+            'annotationcode',
+            'annotationtext',
+            'annotationdatetime',
+            'annotationutcoffset'
+        ]
+
+        widgets = {
+            'annotationcode': forms.TextInput,
+            'annotationtext': forms.TextInput,
+            'annotationdatetime': DateTimeInput,
+            'annotationutcoffset': Select(choices=time_zone_choices),
+        }
+
+        labels = {
+            'annotationid': _('Annotation'),
+            'annotationcode': _('Annotation Code'),
+            'annotationtext': _('Annotation Text'),
+            'annotationdatetime': _('Annotation Date Time'),
+            'annotationutcoffset': _('Annotation UTC Offset')
+        }
 
 
 def get_cv_model_form(form_model, *args, **kwargs):

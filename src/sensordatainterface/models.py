@@ -7,7 +7,7 @@ from django.db import models
 
 
 class ActionAnnotation(models.Model):
-    bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
+    bridgeid = models.AutoField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey('Action', db_column='ActionID')  # Field name made lowercase.
     annotationid = models.ForeignKey('Annotation', db_column='AnnotationID')  # Field name made lowercase.
 
@@ -91,7 +91,7 @@ class Affiliation(models.Model):
 
 
 class Annotation(models.Model):
-    annotationid = models.IntegerField(db_column='AnnotationID', primary_key=True)  # Field name made lowercase.
+    annotationid = models.AutoField(db_column='AnnotationID', primary_key=True)  # Field name made lowercase.
     annotationtypecv = models.ForeignKey('CvAnnotationtype', db_column='AnnotationTypeCV')  # Field name made lowercase.
     annotationcode = models.TextField(db_column='AnnotationCode', blank=True)  # Field name made lowercase.
     annotationtext = models.TextField(db_column='AnnotationText')  # Field name made lowercase.
