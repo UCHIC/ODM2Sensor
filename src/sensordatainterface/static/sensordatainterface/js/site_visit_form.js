@@ -23,6 +23,10 @@ function addActionForm(that) {
     });
 
     bindEquipmentUsedFiltering($(thisForm).find('.select-two[name="equipmentused"]'));
+    $(thisForm).find('[name="equipment_by_site"]').change(function() {
+        filterEquipmentUsed(filterEquipmentBySite, $('form').find('[name="samplingfeatureid"]').val(), $(thisForm));
+    });
+
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();

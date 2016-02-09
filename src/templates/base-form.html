@@ -40,21 +40,35 @@
             </table>
         </form>
     </div>
-    <table id="results-form">
-        <tbody class="results-set">
-            {{ mock_results_form }}
-        </tbody>
-    </table>
-
-    <div class="all-equipment-wrapper">
-        <select id="all-equipment-select" title="all equipment"></select>
-    </div>
-    <div class="all-variables-wrapper">
-        <select id="all-variables-select" title="all variables"></select>
-    </div>
-    <div class="all-units-wrapper">
-        <select id="all-units-select" title="all units"></select>
-    </div>
+    {% block mock_forms %}
+        <table id="action-form">
+            <tbody class="action-fields">
+                {{ mock_action_form }}
+            </tbody>
+        </table>
+        <table id="results-form">
+            <tbody class="results-set">
+                {{ mock_results_form }}
+            </tbody>
+        </table>
+        <table id="annotation-form">
+            <tbody class="annotation-fields">
+                {{ annotation_field }}
+                {{ mock_annotation_form }}
+            </tbody>
+        </table>
+    {% endblock %}
+    {% block fields_cache %}
+        <div class="all-equipment-wrapper">
+            <select id="all-equipment-select" title="all equipment"></select>
+        </div>
+        <div class="all-variables-wrapper">
+            <select id="all-variables-select" title="all variables"></select>
+        </div>
+        <div class="all-units-wrapper">
+            <select id="all-units-select" title="all units"></select>
+        </div>
+    {% endblock %}
 {% endblock %}
 
 {% block scripts %}

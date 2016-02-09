@@ -433,25 +433,31 @@ $(document).ready(function () {
         });
     });
 
-    siteVisitSelect.change(function (eventData, handler) {
-        var formActionType = currentForm.find('[name="actiontypecv"]').val();
+    if (siteVisitSelect.length !== 0) {
+        siteVisitSelect.change(function (eventData, handler) {
+            filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
+            if (currentForm.hasClass('EquipmentDeployment') || currentForm.hasClass('InstrumentCalibration') || currentForm.hasClass('Generic')) {
+                var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
+                filterActionDatesByVisit(siteVisit);
+            }
+        });
 
-        if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment" && !filterEquipmentCheck.prop('checked')) {
-            filterEquipmentByAction($(this).val(), currentForm.find('[name="equipmentused"]'));
-        } else {
-            showAllEquipment(currentForm.find('[name="equipmentused"]'));
-        }
-
-        if (currentForm.hasClass('EquipmentDeployment') || currentForm.hasClass('InstrumentCalibration') || currentForm.hasClass('Generic')) {
-            var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
-            filterActionDatesByVisit(siteVisit);
-        }
-    });
-
-    filterEquipmentCheck.change(function(eventData) {
-        siteVisitSelect.trigger('change');
-    });
+        filterEquipmentCheck.change(function(eventData) {
+            siteVisitSelect.trigger('change');
+        });
+    }
 
     setOtherActions();
 });
 
+function filterEquipmentUsed(filter, filteringValue, currentForm) {
+    var filterEquipmentCheck = $('#id_equipment_by_site');
+    var formActionType = currentForm.find('[name="actiontypecv"]').val();
+    var equipmentUsedSelect = currentForm.find('[name="equipmentused"]');
+
+    if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment" && !filterEquipmentCheck.prop('checked')) {
+        filter(filteringValue, equipmentUsedSelect);
+    } else {
+        showAllEquipment(equipmentUsedSelect);
+    }
+}
