@@ -77,7 +77,16 @@
                     <td>{{ SiteVisit.actionid.actiondescription }}</td>
                 </tr>
             </table>
+            {% if SiteVisit.actionid.actionannotation_set.all|length > 0 %}
+                <h3>Annotations</h3>
+                <ul>
+                {% for annotation in SiteVisit.actionid.actionannotation_set.all %}
+                    <li>{{ annotation.annotationid.annotationtext }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
         </div>
+
     </div>
     <div class="row">
         <div class="col-md-9"><h3>Related Actions</h3></div>
