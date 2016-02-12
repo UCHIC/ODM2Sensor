@@ -13,6 +13,8 @@
     <table class="data-table">
         <thead>
         <tr>
+            <th>MethodID</th>
+            <th>MethodTypeCV</th>
             <th>Name</th>
             <th>Description</th>
             <th>Edit/Delete</th>
@@ -21,6 +23,8 @@
         <tbody>
         {% for method in CalibrationMethods %}
             <tr>
+                <td>{{ method.methodid }}</td>
+                <td>{{ method.methodtypecv }}</td>
                 <td>{{ method.methodname }}</td>
                 <td>{{ method.methoddescription }}</td>
                 <td>
