@@ -1098,6 +1098,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
             return response
 
     elif action_id:
+        action = 'update'
         child_action = Action.objects.get(pk=action_id)
         parent_action_id = RelatedAction.objects.get(
             relationshiptypecv=child_relationship,
@@ -1119,9 +1120,18 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
             action_form.initial['instrumentoutputvariable'] = CalibrationAction.objects.get(pk=action_id).instrumentoutputvariableid
             action_form.initial['calibrationcheckvalue'] = CalibrationAction.objects.get(pk=action_id).calibrationcheckvalue
             action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
+        elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
+            action_form = ActionForm(
+                initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+            )
+            action_form.initial['actionid'] = None
+            action_form.initial['methodid'] = None
+            action_form.initial['actiontypecv'] = CvActiontype.objects.get(term='equipmentRetrieval' if child_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
+            action_form.initial['begindatetime'] = datetime.today()
+            action_form.initial['actiondescription'] = ''
+            action = 'create'
 
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
-        action = 'update'
 
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})

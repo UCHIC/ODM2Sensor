@@ -14,7 +14,7 @@
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>
         <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'RetrieveDeployment' %}">Retrieve</a></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment Description</a></div>
     </div>

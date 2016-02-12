@@ -77,6 +77,18 @@ class PeopleMultipleChoice(ModelMultipleChoiceField):
         return obj.organizationid.organizationname + ": " + obj.personid.personfirstname + " " + obj.personid.personlastname
 
 
+class DeploymentActionChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        action = obj.actionid
+        equipment = obj.equipmentid
+        info = str(action.begindatetime) + " " + \
+               str(action.featureaction.get().samplingfeatureid.samplingfeaturecode) + ' ' + \
+               str(equipment.equipmentserialnumber) + ' ' + \
+               str(equipment.equipmentmodelid.modelmanufacturerid.organizationname) + ' ' + \
+               str(equipment.equipmentmodelid.modelpartnumber)
+        return info
+
+
 class MethodChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.methodname
@@ -131,7 +143,7 @@ class VariableChoiceField(ModelChoiceField):
 
 class DeploymentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return str(obj.actionid.begindatetime) + ": " + obj.equipmentid.equipmentname
+        return obj.methodname
 
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
@@ -765,6 +777,12 @@ class ActionForm(ModelForm):
 
     calibrationequation = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation', required=False)
+
+    # fields for retrieval
+    deploymentaction = DeploymentActionChoiceField(
+        widget=form.sSelect(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment',
+        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
+    )
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 

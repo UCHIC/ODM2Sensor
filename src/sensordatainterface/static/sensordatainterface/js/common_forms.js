@@ -13,19 +13,26 @@ function setOtherActions() {
         actionTypeElem.children('[value="Equipment deployment"]').remove();
         actionTypeElem.children('[value="Instrument deployment"]').remove();
         actionTypeElem.children('[value="Instrument calibration"]').remove();
-
+        actionTypeElem.children('[value="Equipment retrieval"]').remove();
+        actionTypeElem.children('[value="Instrument retrieval"]').remove();
     } else if (mainForm.hasClass('InstrumentCalibration')) {
         /* Careful when deleting parents of calibration etc tr */
         $('.InstrumentCalibration .maintenance').not('option').parents('tr').remove();
         actionTypeElem = $('.InstrumentCalibration [name="actiontypecv"]');
         actionTypeElem.select2('val', 'Instrument calibration');
         actionTypeElem.parents('tr').hide();
-
     } else if (mainForm.hasClass('EquipmentDeployment')) {
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
+    } else if (mainForm.hasClass('EquipmentRetrieval') || mainForm.hasClass('InstrumentRetrieval')) {
+        var form = $('.InstrumentRetrieval, .EquipmentRetrieval');
+        form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
+        form.find('[name="actiontypecv"]').parents('tr').hide();
+        form.find('[name="enddatetime"]').parents('tr').hide();
+        form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
+        form.find('[name="actionfilelink"]').parents('tr').hide()
     }
 }
 
@@ -76,7 +83,7 @@ function setDTPickerClose(beginDTElem) {
             endDTObj.show();
             endDTObj.date(beginDTObj.date())
         }
-    })
+    });
 }
 
 function setFormFields(currentForm) {
@@ -133,7 +140,7 @@ function handleActionTypeChange(formType, currentForm) {
     //Filter equipmentUsed
     filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
 
-    if (formType == 'Instrument deployment') {
+    if (formType === 'Instrument deployment') {
         var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
         addResultButton.insertAfter(currentForm);
         addResultForm(addResultButton, true);
@@ -142,7 +149,13 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).next('tbody.add-result-btn').remove();
     }
 
-
+    //if (formType === 'Instrument retrieval' || formType === 'Equipment retrieval') {
+    //    $(currentForm).find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
+    //    $(currentForm).find('[name="actiontypecv"]').parents('tr').hide();
+    //    $(currentForm).find('[name="enddatetime"]').parents('tr').hide();
+    //    $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
+    //    $(currentForm).find('[name="actionfilelink"]').parents('tr').hide();
+    //}
 }
 
 function addResultForm(that, firstResult) {
