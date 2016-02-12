@@ -898,10 +898,10 @@ def edit_site_visit(request, action_id):
 
     if request.method == 'POST':
         render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form = get_forms_from_request(request, action_id)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form)
+        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request, action_id)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
         if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, True)
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, True)
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
