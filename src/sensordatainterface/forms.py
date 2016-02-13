@@ -772,13 +772,13 @@ class ActionForm(ModelForm):
         model = Action
         fields = [
             'actiontypecv',
+            'methodid',
             'begindatetime',
             'begindatetimeutcoffset',
             'enddatetime',
             'enddatetimeutcoffset',
             'actiondescription',
             'actionfilelink',
-            'methodid'
         ]
 
         widgets = {
@@ -788,12 +788,12 @@ class ActionForm(ModelForm):
                 ('Instrument calibration', 'Calibration'),
                 ('Equipment maintenance', 'Maintenance')
             ]),
+            # 'methodid': SelectWithClassForOptions, # taken care of above
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
             'enddatetimeutcoffset': Select(choices=time_zone_choices),
             'actionfilelink': FileInput,
-            # 'methodid': SelectWithClassForOptions,
         }
 
         labels = {
