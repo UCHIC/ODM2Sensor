@@ -781,7 +781,9 @@ class ActionForm(ModelForm):
 
     # fields for retrieval
     deploymentaction = DeploymentActionChoiceField(
-        widget=form.sSelect(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment',
+        widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment',
+
+        # .order_by(-begindatetime) does not work for this filter. Why?
         queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
     )
 

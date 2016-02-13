@@ -1105,10 +1105,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
             actionid=action_id
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
-
-        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
-
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionForm(
             instance=child_action,
             initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
@@ -1120,6 +1118,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
             action_form.initial['instrumentoutputvariable'] = CalibrationAction.objects.get(pk=action_id).instrumentoutputvariableid
             action_form.initial['calibrationcheckvalue'] = CalibrationAction.objects.get(pk=action_id).calibrationcheckvalue
             action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
+
         elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
             action_form = ActionForm(
                 initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}

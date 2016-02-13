@@ -27,6 +27,8 @@ function setOtherActions() {
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
     } else if (mainForm.hasClass('EquipmentRetrieval') || mainForm.hasClass('InstrumentRetrieval')) {
+        actionTypeElem = $('.Generic [name="actiontypecv"]');
+        actionTypeElem.children('[value="Site visit"]').remove();
         var form = $('.InstrumentRetrieval, .EquipmentRetrieval');
         form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
         form.find('[name="actiontypecv"]').parents('tr').hide();
