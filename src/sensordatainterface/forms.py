@@ -105,7 +105,7 @@ class SiteVisitChoiceField(ModelChoiceField):
         return "(" + start_time + ")  " + sampling_feature_code
 
 
-class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
+class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
@@ -720,7 +720,7 @@ class ActionForm(ModelForm):
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
 
-    equipmentused = MultipleEquipmentChoiceField(
+    equipmentused = EquipmentChoiceField(
         queryset=Equipment.objects.all(), label='Equipment Used', required=False
     )
 
@@ -737,7 +737,7 @@ class ActionForm(ModelForm):
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
-    calibrationreferenceequipment = MultipleEquipmentChoiceField(
+    calibrationreferenceequipment = EquipmentChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=Equipment.objects.all(), label='Reference Equipment',
         required=False
