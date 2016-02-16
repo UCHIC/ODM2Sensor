@@ -92,7 +92,7 @@ class ProcessingLevelChoiceField(ModelChoiceField):
         return obj.processinglevelcode
 
 
-class EquipmentChoiceField(ModelChoiceField):
+class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
@@ -720,7 +720,7 @@ class ActionForm(ModelForm):
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
 
-    equipmentused = EquipmentChoiceField(
+    equipmentused = MultipleEquipmentChoiceField(
         queryset=Equipment.objects.all(), label='Equipment Used', required=False
     )
 
@@ -737,7 +737,7 @@ class ActionForm(ModelForm):
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
-    calibrationreferenceequipment = EquipmentChoiceField(
+    calibrationreferenceequipment = MultipleEquipmentChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=Equipment.objects.all(), label='Reference Equipment',
         required=False
