@@ -206,4 +206,20 @@ $(document).ready(function () {
         $('#annotation-form').find(".select2-container").remove();
     }
 
+    $('.annotation-fields').each(function(index, annotationForm) {
+        annotationForm = $(annotationForm);
+
+        if (annotationForm.parent().attr('id') === 'annotation-form') {
+            return;
+        }
+
+        setAnnotationDateTimePicker(annotationForm);
+        var annotationSelect = annotationForm.find('[name="annotationid"]');
+        annotationForm.find('tr:not(.remove-button)').not(annotationSelect.parents('tr')).hide();
+        annotationForm.find(".select-two").select2();
+
+        $('<option value="new">New Annotation</option>').insertAfter(annotationSelect.children().first());
+        annotationSelect.on('change', { form: annotationForm }, onAnnotationChange);
+    });
+
 });

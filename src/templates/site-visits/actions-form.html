@@ -13,16 +13,23 @@
             <input type="hidden" value="{{ action }}" name="action">
             <input type="hidden" value="{{ item_id }}" name="item_id">
             <table class="table form-table form-group">
-                <tbody>
+                <tbody class="">
                 {% for render_form in render_forms %}
                     {{ render_form.as_table }}
                 {% endfor %}
                 </tbody>
 
+            {% for curr_annotation in annotation_forms %}
+
+                <tbody class="annotation-fields">
+                    <tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javascript:removeAnnotation(this)">- Remove Annotation</a></td></tr>
+                    {{ curr_annotation.as_table }}
+            {% endfor %}
+
                 {% if render_actions %}
                     <tbody>
                     {% for action_form in actions_form %}
-                        <tbody>
+                        <tbody class="action-fields">
                         <tr>
                             <th></th>
                             <td><a class="btn btn-danger btn-remove-action col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">-
