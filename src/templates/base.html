@@ -141,9 +141,11 @@
 {% block data %}
     <input id="equipment-by-site-api" type="hidden" value="{% url 'get_equipment_by_site' %}">
     <input id="equipment-by-action-api" type="hidden" value="{% url 'get_equipment_by_action' %}">
+    <input id="equipment-by-deployment-api" type="hidden" value="{% url 'get_equipment_by_deployment' %}">
     <input id="site-visit-dates" type="hidden" value="{% url 'get_site_visit_dates' %}">
     <input id="output-variables-by-equipment" type="hidden" value="{% url 'get_equipment_output_variables' %}">
     <input id="deployment-type-api" type="hidden" value="{% url 'get_deployment_type' %}">
+    <input id="deployments-by-site-api" type="hidden" value="{% url 'get_deployments_by_site' %}">
 {% endblock %}
 
 </body>

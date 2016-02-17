@@ -299,6 +299,74 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     });
 }
 
+
+function filterDeployments(selectedId, is_visit, deploymentsSelect) {
+    if(selectedId == "") {
+        deploymentsSelect.children('option').removeAttr('disabled');
+        deploymentsSelect.select2();
+        return;
+    }
+
+    var deploymentsUrl = $('#deployments-by-site-api').val();
+
+    $.ajax({
+        url: deploymentsUrl,
+        type: "POST",
+        data :{
+            id: selectedId,
+            is_visit: is_visit,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var deployments = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
+
+            deploymentsSelect.children('option').each(function(index, element) {
+                if (deployments.indexOf(element.value) === -1) {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+            deploymentsSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+
+
+function setDeploymentEquipment(deploymentId, equipmentUsedSelect) {
+    if(deploymentId == "") {
+        return;
+    }
+
+    var equipmentByActionUrl = $('#equipment-by-deployment-api').val();
+
+    $.ajax({
+        url: equipmentByActionUrl,
+        type: "POST",
+        data :{
+            action_id: deploymentId,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (equipmentId) {
+            equipmentUsedSelect.val(equipmentId);
+            equipmentUsedSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
 function showAllEquipment(equipmentUsedSelectElems) {
     equipmentUsedSelectElems.empty();
     equipmentUsedSelectElems.append($('#all-equipment-select').children().clone());
@@ -473,7 +541,7 @@ function bindDeploymentField(form) {
     deploymentSelect.change(function() {
         var deploymentId = deploymentSelect.val();
         getDeploymentType(deploymentId, form);
-        filterEquipmentByAction(deploymentId, form.find('[name="equipmentused"]'))
+        setDeploymentEquipment(deploymentId, form.find('[name="equipmentused"]'));
     });
 }
 

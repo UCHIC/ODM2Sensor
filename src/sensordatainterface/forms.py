@@ -840,7 +840,7 @@ class RetrievalForm(ModelForm):
         queryset=Equipment.objects.all(), label='Equipment Used', required=False
     )
 
-    # equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+    equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     # fields for retrieval
     deploymentaction = DeploymentActionChoiceField(widget=forms.Select(), label='Deployment', to_field_name='actionid',
@@ -863,12 +863,12 @@ class RetrievalForm(ModelForm):
         ]
 
         widgets = {
-            'actiontypecv': Select(choices=[
-                ('Field activity', 'Generic'),
-                ('Equipment deployment', 'Deployment'),
-                ('Instrument calibration', 'Calibration'),
-                ('Equipment maintenance', 'Maintenance')
-            ]),
+            # 'actiontypecv': Select(choices=[
+            #     ('Field activity', 'Generic'),
+            #     ('Equipment deployment', 'Deployment'),
+            #     ('Instrument calibration', 'Calibration'),
+            #     ('Equipment maintenance', 'Maintenance')
+            # ]),
             # 'methodid': SelectWithClassForOptions, # taken care of above
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),

@@ -28,6 +28,7 @@ function addActionForm(that) {
     });
 
     bindDeploymentField($(thisForm));
+    filterDeployments($('form').find('[name="samplingfeatureid"]').val(), false, $(thisForm).find('[name="deploymentaction"]'));
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();
@@ -175,6 +176,7 @@ function setEquipmentUsedFilter() {
     //add handler for when the actiontypecv is changed
     $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
         filterEquipmentBySite($(this).val(), $('form [name="equipmentused"]'));
+        filterDeployments($(this).val(), false, $('form').find('[name="deploymentaction"]'))
     });
 }
 

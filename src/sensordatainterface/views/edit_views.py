@@ -660,7 +660,6 @@ def get_forms_from_request(request, action_id=False):
 
     for i in range(1, actions_returned + 1):
         results = []
-        ActionFormClass = ActionForm
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
         calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
@@ -681,8 +680,6 @@ def get_forms_from_request(request, action_id=False):
                     output_variable = outputvariables[i + results_counter]
                 except IndexError:
                     output_variable = u''
-        elif action_type == 'Instrument retrieval' or action_type == 'Equipment retrieval':
-            ActionFormClass = RetrievalForm
 
         form_data = {
             'actiontypecv': action_type,
@@ -733,7 +730,7 @@ def get_forms_from_request(request, action_id=False):
             maintenance_counter += 1
 
         child_action_id = request.POST.getlist('thisactionid')[i - 1]
-        action = ActionFormClass(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionFormClass(form_data, form_files)
+        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data, form_files)
         action.results = results
         action_form.append(action)
 
