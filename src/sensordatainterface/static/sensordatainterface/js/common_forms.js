@@ -28,7 +28,9 @@ function setOtherActions() {
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
     } else if (mainForm.hasClass('Retrieval')) {
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
+        $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($('.Retrieval'));
+
     }
 }
 
@@ -157,8 +159,10 @@ function handleActionTypeChange(formType, currentForm) {
     }
 
     if (formType === 'Instrument retrieval' || formType === 'Equipment retrieval') {
+        $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($(currentForm));
     } else {
+        $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
         showNonRetrievalFields($(currentForm));
     }
 }
