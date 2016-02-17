@@ -301,6 +301,7 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
 
 
 function filterDeployments(selectedId, is_visit, deploymentsSelect) {
+    deploymentsSelect.val('');
     if(selectedId == "") {
         deploymentsSelect.children('option').removeAttr('disabled');
         deploymentsSelect.select2();
@@ -322,7 +323,7 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
             var deployments = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
 
             deploymentsSelect.children('option').each(function(index, element) {
-                if (deployments.indexOf(element.value) === -1) {
+                if (deployments.indexOf(element.value) === -1 && element.value !== '') {
                     $(element).attr('disabled', 'disabled');
                 } else {
                     $(element).removeAttr('disabled');
@@ -524,6 +525,7 @@ $(document).ready(function () {
                 var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
                 filterActionDatesByVisit(siteVisit);
             }
+            filterDeployments(siteVisitSelect.val(), true, $(currentForm).find('[name="deploymentaction"]'));
         });
 
         filterEquipmentCheck.change(function(eventData) {
