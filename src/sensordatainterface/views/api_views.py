@@ -46,12 +46,12 @@ def get_deployments_by_site(request):
             samplingfeature = SamplingFeature.objects.filter(samplingfeaturetypecv__term="site", featureaction__actionid_id=selected_id)
             deployments = Action.objects.filter(
                 Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='instrumentDeployment'),
-                featureaction__samplingfeatureid=samplingfeature
+                featureaction__samplingfeatureid=samplingfeature, enddatetime=None
             )
         else:
             deployments = Action.objects.filter(
                 Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='instrumentDeployment'),
-                featureaction__samplingfeatureid=selected_id
+                featureaction__samplingfeatureid=selected_id, enddatetime=None
             )
 
         response_data = serializers.serialize('json', deployments, use_natural_keys=True)

@@ -27,6 +27,7 @@ function setOtherActions() {
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
     } else if (mainForm.hasClass('Retrieval')) {
+        $('.Retrieval').find('[name="actiontypecv"]').val('Instrument retrieval');
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
         filterNonRetrievalFields($('.Retrieval'));
     }
@@ -134,7 +135,10 @@ function handleActionTypeChange(formType, currentForm) {
     }
 
     //Filter equipmentUsed
-    filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
+    var siteSelect = $('form').find('[name="samplingfeatureid"]');
+    if (siteSelect.length !== 0) {
+        filterEquipmentBySite(siteSelect.val(), equipmentUsedElem);
+    }
 
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
     if (formType == 'Instrument deployment' || formType == 'Equipment deployment') {
@@ -520,7 +524,10 @@ $(document).ready(function () {
 
     if (siteVisitSelect.length !== 0) {
         siteVisitSelect.change(function (eventData, handler) {
-            filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
+            var actionType = currentForm.find('[name="actiontypecv"]').val()
+            if (actionType !== 'Instrument retrieval' && actionType !== 'Equipment retrieval') {
+                filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
+            }
             if (currentForm.hasClass('EquipmentDeployment') || currentForm.hasClass('InstrumentCalibration') || currentForm.hasClass('Generic')) {
                 var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
                 filterActionDatesByVisit(siteVisit);
