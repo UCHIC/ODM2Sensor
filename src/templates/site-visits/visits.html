@@ -47,7 +47,7 @@
                 {% endfor %}</td>
 
                 <td>
-                    <a title="Edit" alt="Edit Site Visit" class="icon-link" href="{% url 'create_site_visit' visit.actionid.actionid %}">
+                    <a title="Edit" alt="Edit Site Visit" class="icon-link" href="{% url 'edit_site_visit' visit.actionid.actionid %}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
                     <a title="Delete" alt="Destroy Site Visit" class="icon-link delete-icon" data-href="{% url 'delete_site_visit' visit.actionid.actionid %}">

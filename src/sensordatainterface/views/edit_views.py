@@ -799,6 +799,11 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                                 isactionlead=0)  # isactionlead?
 
     # set up annotations
+    # TODO: Change this to update actions without having to delete every time
+    existing_annotations = ActionAnnotation.objects.filter(actionid=site_visit_action)
+    for annotation in existing_annotations:
+        annotation.delete()
+
     for annotation_form in annotation_forms:
         annotation_id = annotation_form.data['annotationid']
         if annotation_id == u'new':
@@ -953,14 +958,22 @@ def edit_site_visit(request, action_id):
                 initial=initial_action_data
             ))
 
+        annotations = site_visit.actionannotation_set.all()
+        annotation_forms = []
+        for curr_annotation in annotations:
+            annotation_forms.append(AnnotationForm(instance=curr_annotation))
+
+
     return render(
         request,
         'site-visits/actions-form.html',
         {
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
+            'mock_annotation_form': AnnotationForm(),
             'mock_results_form': ResultsForm(),
             'actions_form': action_form,
+            'annotation_forms': annotation_forms,
             'render_actions': render_actions,
             'action': action, 'item_id': action_id
         }

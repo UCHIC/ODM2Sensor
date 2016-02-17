@@ -136,7 +136,16 @@ function handleActionTypeChange(formType, currentForm) {
     //Filter equipmentUsed
     filterEquipmentBySite($('form').find('.select-two[name="samplingfeatureid"]').val(), equipmentUsedElem);
 
-    if (formType === 'Instrument deployment') {
+    var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
+    if (formType == 'Instrument deployment' || formType == 'Equipment deployment') {
+        equipmentSelect.removeAttr('multiple');
+        equipmentSelect.select2();
+    } else {
+        equipmentSelect.attr('multiple', 'multiple');
+        equipmentSelect.select2();
+    }
+
+    if (formType == 'Instrument deployment') {
         var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
         addResultButton.insertAfter(currentForm);
         addResultForm(addResultButton, true);
