@@ -1154,11 +1154,10 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
 @login_required(login_url=LOGIN_URL)
 def edit_retrieval(request, deployment_id=None, retrieval_id=None):
     action = 'create'
-
+    child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
+    retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
 
     if request.method == 'POST':
-        child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
-        retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
         updating = request.POST['action'] == 'update'
         deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
 
@@ -1231,37 +1230,23 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
             return response
 
     elif retrieval_id:
-        pass
-        # action = 'update'
-        # retrieval_action = Action.objects.get(pk=retrieval_id)
-        # parent_action_id = RelatedAction.objects.get(
-        #     relationshiptypecv=child_relationship,
-        #     actionid=retrieval_id
-        # )
-        # site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
-        # site_visit_form = SiteVisitChoiceForm(instance=site_visit)
-        # equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
-        # retrieval_form = ActionForm(
-        #     instance=retrieval_action,
-        #     initial={
-        #         'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used],
-        #
-        #
-        #     }
-        # )
-        #
-        # # elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
-        # #     retrieval_form = ActionForm(
-        # #         initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
-        # #     )
-        # #     retrieval_form.initial['actionid'] = None
-        # #     retrieval_form.initial['methodid'] = None
-        # #     retrieval_form.initial['actiontypecv'] = CvActiontype.objects.get(term='equipmentRetrieval' if retrieval_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
-        # #     retrieval_form.initial['begindatetime'] = datetime.today()
-        # #     retrieval_form.initial['actiondescription'] = ''
-        # #     action = 'create'
-        #
-        # retrieval_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
+        action = 'update'
+        retrieval_action = Action.objects.get(pk=retrieval_id)
+        parent_action_id = RelatedAction.objects.get(
+            relationshiptypecv=child_relationship,
+            actionid=retrieval_id
+        )
+        site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
+        site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
+        retrieval_form = RetrievalForm(
+            instance=retrieval_action,
+            initial={
+                'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used],
+                'deploymentaction': RelatedAction.objects.get(relationshiptypecv=retrieval_relationship, actionid=retrieval_id).relatedactionid.actionid
+            }
+        )
+        retrieval_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
 
     elif deployment_id:
         deployment_action = Action.objects.get(pk=deployment_id)
