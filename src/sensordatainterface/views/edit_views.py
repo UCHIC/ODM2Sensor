@@ -845,6 +845,11 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
             status = CvStatus.objects.get(term='ongoing')
 
+            # TODO: Change this to update actions without having to delete every time
+            existing_results = Result.objects.filter(featureactionid=feature_action)
+            for result in existing_results:
+                result.delete()
+
             for result in action_form[i].results:
                 output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
                 units = Units.objects.get(pk=result['unit'])
@@ -925,10 +930,8 @@ def edit_site_visit(request, action_id):
         action = 'update'
 
         children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
-
         action_form = []
         for child in children_actions:
-
             initial_action_data = {
                 'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid),
                 'thisactionid': child.actionid.actionid
@@ -953,10 +956,20 @@ def edit_site_visit(request, action_id):
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
                 initial_action_data['maintenancereason'] = maintenance_action.maintenancereason
 
-            action_form.append(ActionForm(
+            child_action_form = ActionForm(
                 instance=child.actionid,
                 initial=initial_action_data
-            ))
+            )
+            child_action_form.results = []
+            for result in child.actionid.featureaction.get().result_set.all():
+                result_data = {
+                    'instrumentoutputvariable': result.variableid_id,
+                    'unitsid': result.unitsid_id,
+                    'processing_level_id': result.processinglevelid_id,
+                    'sampledmediumcv': result.sampledmediumcv_id
+                }
+                child_action_form.results.append(ResultsForm(result_data))
+            action_form.append(child_action_form)
 
         annotations = site_visit.actionannotation_set.all()
         annotation_forms = []
