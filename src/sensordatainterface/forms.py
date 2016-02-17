@@ -118,7 +118,7 @@ class SiteVisitChoiceField(ModelChoiceField):
         return "(" + start_time + ")  " + sampling_feature_code
 
 
-class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
+class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
@@ -733,7 +733,7 @@ class ActionForm(ModelForm):
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
 
-    equipmentused = MultipleEquipmentChoiceField(
+    equipmentused = EquipmentChoiceField(
         queryset=Equipment.objects.all(), label='Equipment Used', required=False
     )
 
@@ -750,7 +750,7 @@ class ActionForm(ModelForm):
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
-    calibrationreferenceequipment = MultipleEquipmentChoiceField(
+    calibrationreferenceequipment = EquipmentChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=Equipment.objects.all(), label='Reference Equipment',
         required=False
@@ -793,13 +793,13 @@ class ActionForm(ModelForm):
         model = Action
         fields = [
             'actiontypecv',
+            'methodid',
             'begindatetime',
             'begindatetimeutcoffset',
             'enddatetime',
             'enddatetimeutcoffset',
             'actiondescription',
             'actionfilelink',
-            'methodid'
         ]
 
         widgets = {
@@ -809,12 +809,12 @@ class ActionForm(ModelForm):
                 ('Instrument calibration', 'Calibration'),
                 ('Equipment maintenance', 'Maintenance')
             ]),
+            # 'methodid': SelectWithClassForOptions, # taken care of above
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
             'enddatetimeutcoffset': Select(choices=time_zone_choices),
             'actionfilelink': FileInput,
-            # 'methodid': SelectWithClassForOptions,
         }
 
         labels = {
