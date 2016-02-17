@@ -143,9 +143,11 @@ function handleActionTypeChange(formType, currentForm) {
     }
 
     if (formType == 'Instrument deployment') {
-        var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
-        addResultButton.insertAfter(currentForm);
-        addResultForm(addResultButton, true);
+        if ($('form').find('[name="action"]').val() !== 'update') {
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            addResultButton.insertAfter(currentForm);
+            addResultForm(addResultButton, true);
+        }
     } else {
         $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
         $(currentForm).next('tbody.add-result-btn').remove();
