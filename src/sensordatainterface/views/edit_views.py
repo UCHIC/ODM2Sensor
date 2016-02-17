@@ -639,7 +639,6 @@ def get_forms_from_request(request, action_id=False):
     calibration_standard_position = 0
     calibration_reference_equipment_position = 0
 
-
     site_visit_data = {
         'begindatetime': request.POST.getlist('begindatetime')[0],
         'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
@@ -661,6 +660,7 @@ def get_forms_from_request(request, action_id=False):
 
     for i in range(1, actions_returned + 1):
         results = []
+        ActionFormClass = ActionForm
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
         calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
@@ -681,6 +681,8 @@ def get_forms_from_request(request, action_id=False):
                     output_variable = outputvariables[i + results_counter]
                 except IndexError:
                     output_variable = u''
+        elif action_type == 'Instrument retrieval' or action_type == 'Equipment retrieval':
+            ActionFormClass = RetrievalForm
 
         form_data = {
             'actiontypecv': action_type,
@@ -699,6 +701,7 @@ def get_forms_from_request(request, action_id=False):
             'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
             'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
             'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
+            'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
             'equipmentused': request.POST.getlist('equipmentused')[
                              equipment_used_position:int(equipment_used_count) + equipment_used_position
                              ],
@@ -730,7 +733,7 @@ def get_forms_from_request(request, action_id=False):
             maintenance_counter += 1
 
         child_action_id = request.POST.getlist('thisactionid')[i - 1]
-        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data, form_files)
+        action = ActionFormClass(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionFormClass(form_data, form_files)
         action.results = results
         action_form.append(action)
 
@@ -820,6 +823,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             RelatedAction.objects.create(actionid=current_action, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'),
                                          relatedactionid=site_visit_action)
             FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
+
         else:
             EquipmentUsed.objects.filter(actionid=current_action).delete()
             CalibrationStandard.objects.filter(actionid=current_action).delete()
@@ -1209,15 +1213,10 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
                 samplingfeatureid=sampling_feature
             )
 
-            equipment_used = request.POST.get('equipmentused')
-            current_equipment = [equ.equipmentid.equipmentid for equ in EquipmentUsed.objects.filter(actionid=retrieval_action)]
-
-            for equ in equipment_used:
-                EquipmentUsed.objects.get_or_create(actionid=retrieval_action, equipmentid=Equipment.objects.get(pk=equ))
-
-            for equ in current_equipment:
-                if str(equ) not in equipment_used:
-                    EquipmentUsed.objects.filter(actionid=retrieval_action, equipmentid=equ).delete()
+            equipment_used = deployment_action.equipmentused.get().equipmentid
+            current_equipment = EquipmentUsed.objects.filter(actionid=retrieval_action)
+            current_equipment.delete()
+            EquipmentUsed.objects.create(actionid=retrieval_action, equipmentid=equipment_used)
 
             deployment_action.enddatetime = retrieval_action.begindatetime
             deployment_action.enddatetimeutcoffset = retrieval_action.begindatetimeutcoffset

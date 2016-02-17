@@ -781,12 +781,9 @@ class ActionForm(ModelForm):
         widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation', required=False)
 
     # fields for retrieval
-    # deploymentaction = DeploymentActionChoiceField(
-    #     widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment',
-    #
-    #     # .order_by(-begindatetime) does not work for this filter. Why?
-    #     queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
-    # )
+    deploymentaction = DeploymentActionChoiceField(widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment', to_field_name='actionid',
+        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
+    )
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 

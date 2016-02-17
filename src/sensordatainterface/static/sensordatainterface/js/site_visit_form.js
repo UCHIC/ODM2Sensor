@@ -27,6 +27,7 @@ function addActionForm(that) {
         filterEquipmentUsed(filterEquipmentBySite, $('form').find('[name="samplingfeatureid"]').val(), $(thisForm));
     });
 
+    bindDeploymentField($(thisForm));
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();

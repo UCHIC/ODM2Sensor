@@ -27,6 +27,7 @@ function setOtherActions() {
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
     } else if (mainForm.hasClass('Retrieval')) {
+        $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
         filterNonRetrievalFields($('.Retrieval'));
     }
 }
@@ -144,13 +145,11 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).next('tbody.add-result-btn').remove();
     }
 
-    //if (formType === 'Instrument retrieval' || formType === 'Equipment retrieval') {
-    //    $(currentForm).find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
-    //    $(currentForm).find('[name="actiontypecv"]').parents('tr').hide();
-    //    $(currentForm).find('[name="enddatetime"]').parents('tr').hide();
-    //    $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
-    //    $(currentForm).find('[name="actionfilelink"]').parents('tr').hide();
-    //}
+    if (formType === 'Instrument retrieval' || formType === 'Equipment retrieval') {
+        filterNonRetrievalFields($(currentForm));
+    } else {
+        showNonRetrievalFields($(currentForm));
+    }
 }
 
 function addResultForm(that, firstResult) {
@@ -465,6 +464,7 @@ function bindDeploymentField(form) {
     deploymentSelect.change(function() {
         var deploymentId = deploymentSelect.val();
         getDeploymentType(deploymentId, form);
+        filterEquipmentByAction(deploymentId, form.find('[name="equipmentused"]'))
     });
 }
 
@@ -500,10 +500,16 @@ function getDeploymentType(deploymentId, form) {
 
 function filterNonRetrievalFields(form) {
     form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
-    form.find('[name="actiontypecv"]').parents('tr').hide();
     form.find('[name="enddatetime"]').parents('tr').hide();
     form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
     form.find('[name="actionfilelink"]').parents('tr').hide()
+}
+
+function showNonRetrievalFields(form) {
+    form.find('[name="equipmentused"]').parents('tr').show();
+    form.find('[name="enddatetime"]').parents('tr').show();
+    form.find('[name="enddatetimeutcoffset"]').parents('tr').show();
+    form.find('[name="actionfilelink"]').parents('tr').show()
 }
 
 
