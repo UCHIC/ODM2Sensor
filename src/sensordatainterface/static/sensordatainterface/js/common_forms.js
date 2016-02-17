@@ -26,15 +26,8 @@ function setOtherActions() {
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
-    } else if (mainForm.hasClass('EquipmentRetrieval') || mainForm.hasClass('InstrumentRetrieval')) {
-        actionTypeElem = $('.Generic [name="actiontypecv"]');
-        actionTypeElem.children('[value="Site visit"]').remove();
-        var form = $('.InstrumentRetrieval, .EquipmentRetrieval');
-        form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
-        form.find('[name="actiontypecv"]').parents('tr').hide();
-        form.find('[name="enddatetime"]').parents('tr').hide();
-        form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
-        form.find('[name="actionfilelink"]').parents('tr').hide()
+    } else if (mainForm.hasClass('Retrieval')) {
+        filterNonRetrievalFields($('.Retrieval'));
     }
 }
 
@@ -462,8 +455,57 @@ $(document).ready(function () {
         });
     }
 
+    bindDeploymentField(currentForm);
     setOtherActions();
 });
+
+
+function bindDeploymentField(form) {
+    var deploymentSelect = form.find('[name="deploymentaction"]');
+    deploymentSelect.change(function() {
+        var deploymentId = deploymentSelect.val();
+        getDeploymentType(deploymentId, form);
+    });
+}
+
+
+function getDeploymentType(deploymentId, form) {
+    if(deploymentId == "") {
+        return;
+    }
+
+    var deploymentTypeApi = $('#deployment-type-api').val();
+
+    $.ajax({
+        url: deploymentTypeApi,
+        type: "POST",
+        data :{
+            deployment_id: deploymentId,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (deploymentType) {
+            var actiontypeSelect = form.find('[name="actiontypecv"]');
+            actiontypeSelect.val(deploymentType);
+            actiontypeSelect.trigger('change');
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+
+function filterNonRetrievalFields(form) {
+    form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
+    form.find('[name="actiontypecv"]').parents('tr').hide();
+    form.find('[name="enddatetime"]').parents('tr').hide();
+    form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
+    form.find('[name="actionfilelink"]').parents('tr').hide()
+}
+
 
 function filterEquipmentUsed(filter, filteringValue, currentForm) {
     var filterEquipmentCheck = $('#id_equipment_by_site');

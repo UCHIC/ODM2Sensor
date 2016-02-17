@@ -82,11 +82,12 @@ class DeploymentActionChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         action = obj.actionid
         equipment = obj.equipmentid
-        info = str(action.begindatetime) + " " + \
-               str(action.featureaction.get().samplingfeatureid.samplingfeaturecode) + ' ' + \
+
+        info = str(action.begindatetime) + " " + str(action.featureaction.get().samplingfeatureid.samplingfeaturecode) + ' ' + \
                str(equipment.equipmentserialnumber) + ' ' + \
                str(equipment.equipmentmodelid.modelmanufacturerid.organizationname) + ' ' + \
                str(equipment.equipmentmodelid.modelpartnumber)
+
         return info
 
 
@@ -780,18 +781,80 @@ class ActionForm(ModelForm):
         widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation', required=False)
 
     # fields for retrieval
-    deploymentaction = DeploymentActionChoiceField(
-        widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment',
-
-        # .order_by(-begindatetime) does not work for this filter. Why?
-        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
-    )
+    # deploymentaction = DeploymentActionChoiceField(
+    #     widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment',
+    #
+    #     # .order_by(-begindatetime) does not work for this filter. Why?
+    #     queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
+    # )
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     class Meta:
         model = Action
         fields = [
+            'actiontypecv',
+            'begindatetime',
+            'begindatetimeutcoffset',
+            'enddatetime',
+            'enddatetimeutcoffset',
+            'actiondescription',
+            'actionfilelink',
+            'methodid',
+        ]
+
+        widgets = {
+            # 'actiontypecv': Select(choices=[
+            #     ('Field activity', 'Generic'),
+            #     ('Equipment deployment', 'Deployment'),
+            #     ('Instrument calibration', 'Calibration'),
+            #     ('Equipment maintenance', 'Maintenance')
+            # ]),
+            'begindatetime': DateTimeInput,
+            'begindatetimeutcoffset': Select(choices=time_zone_choices),
+            'enddatetime': DateTimeInput,
+            'enddatetimeutcoffset': Select(choices=time_zone_choices),
+            'actionfilelink': FileInput,
+            # 'methodid': SelectWithClassForOptions,
+        }
+
+        labels = {
+            'actiontypecv': _('Action Type'),
+            'begindatetime': _('Begin Date Time'),
+            'begindatetimeutcoffset': _('Begin UTC Offset'),
+            'enddatetime': _('End Date Time'),
+            'enddatetimeutcoffset': _('End UTC Offset'),
+            'actionfilelink': _('Action File'),
+            'actiondescription': _('Description')
+        }
+
+
+class RetrievalForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RetrievalForm, self).__init__(*args, **kwargs)
+        self.fields['equipmentused'].help_text = None
+
+    required_css_class = 'form-required'
+
+    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
+                                 empty_label='Choose a Method', widget=SelectWithClassForOptions)
+
+    equipmentused = EquipmentChoiceField(
+        queryset=Equipment.objects.all(), label='Equipment Used', required=False
+    )
+
+    # equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+
+    # fields for retrieval
+    deploymentaction = DeploymentActionChoiceField(widget=forms.Select(), label='Deployment', to_field_name='actionid',
+        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
+    )
+    thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+
+    class Meta:
+        model = Action
+        fields = [
+            'deploymentaction',
             'actiontypecv',
             'methodid',
             'begindatetime',

@@ -1151,67 +1151,137 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
     )
 
 
-#################################################################################################
-#                         Considering Deletion
-#################################################################################################
+@login_required(login_url=LOGIN_URL)
+def edit_retrieval(request, deployment_id=None, retrieval_id=None):
+    action = 'create'
 
-# WE DECIDED TO NOT EDIT OR CREATE VOCABULARIES. KEEPING THIS FUNCTIONALITY HERE IN CASE IT'S NEEDED
 
-# @login_required(login_url=LOGIN_URL)
-# def edit_control_vocabularies(request, target_cv, name):
-#     action = 'create'
-#     sdi_app_config = apps.get_app_config('sensordatainterface')
-#     id_modified = False
-#     new_name_temp = None
-#
-#     if request.method == 'POST':
-#         if request.POST['action'] == 'update':
-#             cv_model = sdi_app_config.get_model(target_cv)
-#             cv_instance = cv_model.objects.get(pk=request.POST['item_id'])
-#
-#             if request.POST['name'] != request.POST['item_id']:
-#                 new_name_temp = request.POST['name']
-#                 request.POST['name'] = request.POST['item_id']
-#                 cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
-#                 id_modified = True
-#
-#             else:
-#                 cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
-#
-#         else:
-#             cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv), request.POST)
-#
-#         if cv_form.is_valid():
-#             if id_modified:
-#                 cv = cv_form.save(commit=False)
-#                 cv.name = new_name_temp
-#                 cv.save()
-#                 cv_model.objects.get(pk=request.POST['name']).delete()
-#             else:
-#                 cv = cv_form.save()
-#
-#             messages.add_message(request, messages.SUCCESS,
-#                                  'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
-#             return HttpResponseRedirect(reverse('vocabularies') + get_cv_tab(target_cv)) # change tab according to target_cv
-#
-#     elif name:
-#         cv_model = sdi_app_config.get_model(target_cv)
-#         cv_instance = cv_model.objects.get(pk=name)
-#         cv_form = get_cv_model_form(cv_model, instance=cv_instance)
-#         action = 'update'
-#
-#     else:
-#         cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv))
-#         cv_form.initial ={'modelname': target_cv}
-#
-#     return render(
-#         request,
-#         'vocabulary/vocabulary-form.html',
-#         {
-#             'render_forms': [cv_form],
-#             'action': action,
-#             'item_id': name,
-#             'cv_name': target_cv,
-#             'tab_name': get_cv_tab(target_cv)
-#         }
-#     )
+    if request.method == 'POST':
+        child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
+        retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
+        updating = request.POST['action'] == 'update'
+        deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
+
+        if updating:
+            site_visit = Action.objects.get(pk=request.POST['actionid'])
+            retrieval_action = Action.objects.get(pk=request.POST['item_id'])
+
+            site_visit_form = SiteVisitChoiceForm(request.POST, instance=site_visit)
+            retrieval_form = ActionForm(request.POST, request.FILES, instance=retrieval_action)
+        else:
+            site_visit_form = SiteVisitChoiceForm(request.POST)
+            retrieval_form = ActionForm(request.POST, request.FILES)
+
+        if site_visit_form.is_valid() and retrieval_form.is_valid():
+            retrieval_action = retrieval_form.save()
+            parent_site_visit = site_visit_form.cleaned_data['actionid']
+            if updating:
+                related_action = RelatedAction.objects.get(
+                    actionid=retrieval_action,
+                    relationshiptypecv=child_relationship
+                )
+                retrieval_related_action = RelatedAction.objects.get(
+                    actionid=retrieval_action,
+                    relationshiptypecv=retrieval_relationship
+                )
+                retrieval_related_action.relatedactionid = deployment_action
+                related_action.relatedactionid=parent_site_visit
+                retrieval_related_action.save()
+                related_action.save()
+            else:
+                RelatedAction.objects.create(
+                    actionid=retrieval_action,
+                    relationshiptypecv=child_relationship,
+                    relatedactionid=parent_site_visit
+                )
+                RelatedAction.objects.create(
+                    actionid=retrieval_action,
+                    relationshiptypecv=retrieval_relationship,
+                    relatedactionid=deployment_action
+                )
+
+            sampling_feature = FeatureAction.objects.filter(
+                actionid=parent_site_visit,
+                samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
+            )[0].samplingfeatureid
+
+            FeatureAction.objects.get_or_create(
+                actionid=retrieval_action,
+                samplingfeatureid=sampling_feature
+            )
+
+            equipment_used = request.POST.get('equipmentused')
+            current_equipment = [equ.equipmentid.equipmentid for equ in EquipmentUsed.objects.filter(actionid=retrieval_action)]
+
+            for equ in equipment_used:
+                EquipmentUsed.objects.get_or_create(actionid=retrieval_action, equipmentid=Equipment.objects.get(pk=equ))
+
+            for equ in current_equipment:
+                if str(equ) not in equipment_used:
+                    EquipmentUsed.objects.filter(actionid=retrieval_action, equipmentid=equ).delete()
+
+            deployment_action.enddatetime = retrieval_action.begindatetime
+            deployment_action.enddatetimeutcoffset = retrieval_action.begindatetimeutcoffset
+            deployment_action.save()
+
+            response = HttpResponseRedirect(
+                reverse('deployment_detail', args=[deployment_action.actionid])
+            )
+
+            return response
+
+    elif retrieval_id:
+        pass
+        # action = 'update'
+        # retrieval_action = Action.objects.get(pk=retrieval_id)
+        # parent_action_id = RelatedAction.objects.get(
+        #     relationshiptypecv=child_relationship,
+        #     actionid=retrieval_id
+        # )
+        # site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
+        # site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        # equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
+        # retrieval_form = ActionForm(
+        #     instance=retrieval_action,
+        #     initial={
+        #         'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used],
+        #
+        #
+        #     }
+        # )
+        #
+        # # elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
+        # #     retrieval_form = ActionForm(
+        # #         initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+        # #     )
+        # #     retrieval_form.initial['actionid'] = None
+        # #     retrieval_form.initial['methodid'] = None
+        # #     retrieval_form.initial['actiontypecv'] = CvActiontype.objects.get(term='equipmentRetrieval' if retrieval_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
+        # #     retrieval_form.initial['begindatetime'] = datetime.today()
+        # #     retrieval_form.initial['actiondescription'] = ''
+        # #     action = 'create'
+        #
+        # retrieval_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
+
+    elif deployment_id:
+        deployment_action = Action.objects.get(pk=deployment_id)
+        site_visit_form = SiteVisitChoiceForm()
+        retrieval_form = RetrievalForm(
+            initial={
+                'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'deploymentaction': deployment_id,
+                'actiontypecv': CvActiontype.objects.get(term='equipmentRetrieval' if deployment_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
+            })
+
+    else:
+        site_visit_form = SiteVisitChoiceForm()
+        retrieval_form = RetrievalForm(
+            initial={
+                'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7
+            }
+        )
+
+    return render(
+        request,
+        'site-visits/deployment/retrieval_form.html',
+        {'render_forms': [site_visit_form, retrieval_form], 'action': action, 'item_id': retrieval_id }
+    )

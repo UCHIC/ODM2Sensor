@@ -4,6 +4,19 @@ from django.core import serializers
 from sensordatainterface.models import Equipment, InstrumentOutputVariable, Action, EquipmentModel
 
 
+def get_deployment_type(request):
+    if request.method == 'POST':
+        deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
+        response_data = 'Instrument retrieval' \
+            if deployment_action.actiontypecv.term == 'instrumentDeployment' else 'Equipment retrieval'
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
 def get_equipment_by_site(request):
     if request.method == 'POST':
         site_selected = request.POST.get('site_selected')
