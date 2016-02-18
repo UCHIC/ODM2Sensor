@@ -782,7 +782,8 @@ class ActionForm(ModelForm):
 
     # fields for retrieval
     deploymentaction = DeploymentActionChoiceField(widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment', to_field_name='actionid',
-        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))
+        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment')),
+        required=False
     )
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)

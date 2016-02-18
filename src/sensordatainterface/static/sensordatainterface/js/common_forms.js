@@ -29,7 +29,9 @@ function setOtherActions() {
     } else if (mainForm.hasClass('Retrieval')) {
         $('.Retrieval').find('[name="actiontypecv"]').val('Instrument retrieval');
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
+        $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($('.Retrieval'));
+
     }
 }
 
@@ -150,17 +152,21 @@ function handleActionTypeChange(formType, currentForm) {
     }
 
     if (formType == 'Instrument deployment') {
-        var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
-        addResultButton.insertAfter(currentForm);
-        addResultForm(addResultButton, true);
+        if ($('form').find('[name="action"]').val() !== 'update') {
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            addResultButton.insertAfter(currentForm);
+            addResultForm(addResultButton, true);
+        }
     } else {
         $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
         $(currentForm).next('tbody.add-result-btn').remove();
     }
 
     if (formType === 'Instrument retrieval' || formType === 'Equipment retrieval') {
+        $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($(currentForm));
     } else {
+        $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
         showNonRetrievalFields($(currentForm));
     }
 }
