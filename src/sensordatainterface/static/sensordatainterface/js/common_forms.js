@@ -137,7 +137,7 @@ function handleActionTypeChange(formType, currentForm) {
     //Filter equipmentUsed
     var siteSelect = $('form').find('[name="samplingfeatureid"]');
     if (siteSelect.length !== 0) {
-        filterEquipmentBySite(siteSelect.val(), equipmentUsedElem);
+        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm));
     }
 
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
@@ -524,7 +524,7 @@ $(document).ready(function () {
 
     if (siteVisitSelect.length !== 0) {
         siteVisitSelect.change(function (eventData, handler) {
-            var actionType = currentForm.find('[name="actiontypecv"]').val()
+            var actionType = currentForm.find('[name="actiontypecv"]').val();
             if (actionType !== 'Instrument retrieval' && actionType !== 'Equipment retrieval') {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
             }

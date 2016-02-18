@@ -818,7 +818,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     for i in range(0, len(action_form)):
         current_action = action_form[i].save(commit=False)
         action_type = action_form[i].cleaned_data['actiontypecv']
-        current_action.actiontypecv = CvActiontype.objects.get(name = action_type)
+        current_action.actiontypecv = CvActiontype.objects.get(name=action_type)
         current_action.save()
 
         if not updating:

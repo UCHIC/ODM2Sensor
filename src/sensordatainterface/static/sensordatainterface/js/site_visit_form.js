@@ -175,7 +175,11 @@ function setMultipleFieldsNumber(event) {
 function setEquipmentUsedFilter() {
     //add handler for when the actiontypecv is changed
     $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
-        filterEquipmentBySite($(this).val(), $('form [name="equipmentused"]'));
+        var actionType = $('form').find('[name="actiontypecv"]').val();
+        if (actionType !== 'Instrument retrieval' && actionType !== 'Equipment retrieval') {
+            filterEquipmentBySite($(this).val(), $('form [name="equipmentused"]'));
+        }
+
         filterDeployments($(this).val(), false, $('form').find('[name="deploymentaction"]'))
     });
 }
