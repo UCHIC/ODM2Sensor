@@ -853,7 +853,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                                       resultdatetime=current_action.begindatetime, resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
                                       statuscv=status, sampledmediumcv=medium, valuecount=0)
 
-        if action_type.term == 'instrumentCalibration':
+        elif action_type.term == 'instrumentCalibration':
             if updating:
                 CalibrationAction.objects.get(actionid=current_action).delete()
                 CalibrationReferenceEquipment.objects.filter(actionid=current_action).delete()
@@ -864,6 +864,23 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             if updating:
                 MaintenanceAction.objects.get(actionid=current_action).delete()
             add_maintenance_fields(current_action, action_form[i])
+
+        elif action_type.term == 'intrumentRetrieval' or action_type.term == 'equipmentRetrieval':
+            retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
+            deployment_action = Action.objects.get(pk=action_form[0].data['deploymentaction'])
+            if updating:
+                retrieval_related_action = RelatedAction.objects.get(actionid=current_action, relationshiptypecv=retrieval_relationship)
+                retrieval_related_action.relatedactionid = deployment_action
+                retrieval_related_action.save()
+            else:
+                RelatedAction.objects.create(
+                    actionid=current_action,
+                    relationshiptypecv=retrieval_relationship,
+                    relatedactionid=deployment_action
+                )
+            deployment_action.enddatetime = current_action.begindatetime
+            deployment_action.enddatetimeutcoffset = current_action.begindatetimeutcoffset
+            deployment_action.save()
 
     return site_visit_action
 
