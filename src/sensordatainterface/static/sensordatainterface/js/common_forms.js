@@ -600,11 +600,13 @@ function showNonRetrievalFields(form) {
 
 
 function filterEquipmentUsed(filter, filteringValue, currentForm) {
-    var filterEquipmentCheck = $('#id_equipment_by_site');
+    var filterEquipmentCheck = currentForm.find('#id_equipment_by_site');
     var formActionType = currentForm.find('[name="actiontypecv"]').val();
     var equipmentUsedSelect = currentForm.find('[name="equipmentused"]');
 
-    if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment" && !filterEquipmentCheck.prop('checked')) {
+    if (formActionType == 'Equipment retrieval' || formActionType == 'Instrument retrieval') {
+        showAllEquipment(equipmentUsedSelect);
+    } else if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment" && !filterEquipmentCheck.prop('checked')) {
         filter(filteringValue, equipmentUsedSelect);
     } else {
         showAllEquipment(equipmentUsedSelect);
