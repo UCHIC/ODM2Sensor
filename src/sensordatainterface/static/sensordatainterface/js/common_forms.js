@@ -578,6 +578,7 @@ function getDeploymentType(deploymentId, form) {
 
         success: function (deploymentType) {
             var actiontypeSelect = form.find('[name="actiontypecv"]');
+            form.find('[name="methodid"]').val('');
             actiontypeSelect.val(deploymentType);
             actiontypeSelect.trigger('change');
         },

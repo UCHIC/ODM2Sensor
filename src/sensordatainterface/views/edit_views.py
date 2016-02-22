@@ -870,7 +870,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 MaintenanceAction.objects.get(actionid=current_action).delete()
             add_maintenance_fields(current_action, action_form[i])
 
-        elif action_type.term == 'intrumentRetrieval' or action_type.term == 'equipmentRetrieval':
+        elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
             retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
             deployment_action = Action.objects.get(pk=action_form[0].data['deploymentaction'])
             if updating:
@@ -918,6 +918,7 @@ def add_calibration_fields(current_action, action_form):
             actionid=calibration_action,
             equipmentid=equ
         )
+
 
 @login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
