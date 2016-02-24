@@ -26,6 +26,10 @@ function setOtherActions() {
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
+        $('.EquipmentDeployment').find('[name="enddatetime"]').parents('tr').val('').hide();
+        $('.EquipmentDeployment').find('[name="enddatetimeutcoffset"]').parents('tr').hide();
+        $('.EquipmentDeployment [name="equipmentused"]').removeAttr('multiple');
+        $('.EquipmentDeployment [name="equipmentused"]').select2();
     } else if (mainForm.hasClass('Retrieval')) {
         $('.Retrieval').find('[name="actiontypecv"]').val('Instrument retrieval');
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
@@ -142,12 +146,22 @@ function handleActionTypeChange(formType, currentForm) {
         filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm));
     }
 
+    var isDeployment = formType == 'Instrument deployment' || formType == 'Equipment deployment';
+    var isRetrieval = formType === 'Instrument retrieval' || formType === 'Equipment retrieval';
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
-    if (formType == 'Instrument deployment' || formType == 'Equipment deployment') {
+
+    if (isDeployment) {
+        $(currentForm).find('[name="enddatetime"]').val('').parents('tr').hide();
+        $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
         equipmentSelect.removeAttr('multiple');
         equipmentSelect.select2();
-    } else {
+    } else if (isRetrieval) {
+        $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
+        filterNonRetrievalFields($(currentForm));
+    } else if (!isDeployment && !isRetrieval) {
+        $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
         equipmentSelect.attr('multiple', 'multiple');
+        showNonRetrievalFields($(currentForm));
         equipmentSelect.select2();
     }
 
@@ -160,14 +174,6 @@ function handleActionTypeChange(formType, currentForm) {
     } else {
         $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
         $(currentForm).next('tbody.add-result-btn').remove();
-    }
-
-    if (formType === 'Instrument retrieval' || formType === 'Equipment retrieval') {
-        $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
-        filterNonRetrievalFields($(currentForm));
-    } else {
-        $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
-        showNonRetrievalFields($(currentForm));
     }
 }
 
