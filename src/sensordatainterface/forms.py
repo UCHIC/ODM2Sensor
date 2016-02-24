@@ -84,7 +84,7 @@ class DeploymentActionChoiceField(ModelChoiceField):
         equipment = obj.equipmentid
 
         info = str(action.begindatetime) + " " + str(action.featureaction.get().samplingfeatureid.samplingfeaturecode) + ' ' + \
-               str(equipment.equipmentserialnumber) + ' ' + \
+               str(equipment.equipmentserialnumber) + ' ' + str(equipment.equipmenttypecv.name) + ' ' + \
                str(equipment.equipmentmodelid.modelmanufacturerid.organizationname) + ' ' + \
                str(equipment.equipmentmodelid.modelpartnumber)
 
