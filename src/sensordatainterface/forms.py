@@ -83,7 +83,8 @@ class DeploymentActionChoiceField(ModelChoiceField):
         action = obj.actionid
         equipment = obj.equipmentid
         equipment_model = equipment.equipmentmodelid
-        feature_action = action.featureaction.get()
+        feature_actions = action.featureaction.all()
+        feature_action = feature_actions[0] if feature_actions.count() > 0 else None
         manufacturer = equipment_model.modelmanufacturerid if equipment_model is not None else None
         info = str(action.begindatetime) + ' '
         info += (str(feature_action.samplingfeatureid.samplingfeaturecode) + ' ') if feature_action is not None else ''
