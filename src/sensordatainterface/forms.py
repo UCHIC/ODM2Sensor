@@ -82,12 +82,14 @@ class DeploymentActionChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         action = obj.actionid
         equipment = obj.equipmentid
-
-        info = str(action.begindatetime) + " " + str(action.featureaction.get().samplingfeatureid.samplingfeaturecode) + ' ' + \
-               str(equipment.equipmentserialnumber) + ' ' + str(equipment.equipmenttypecv.name) + ' ' + \
-               str(equipment.equipmentmodelid.modelmanufacturerid.organizationname) + ' ' + \
-               str(equipment.equipmentmodelid.modelpartnumber)
-
+        equipment_model = equipment.equipmentmodelid
+        feature_action = action.featureaction.get()
+        manufacturer = equipment_model.modelmanufacturerid if equipment_model is not None else None
+        info = str(action.begindatetime) + ' '
+        info += (str(feature_action.samplingfeatureid.samplingfeaturecode) + ' ') if feature_action is not None else ''
+        info += (str(equipment.equipmentserialnumber) + ' ' + str(equipment.equipmenttypecv.name) + ' ') if equipment is not None else ''
+        info += (str(manufacturer.organizationname) + ' ') if manufacturer is not None else ''
+        info += (str(equipment_model.modelpartnumber) + ' ') if equipment_model is not None else ''
         return info
 
 
