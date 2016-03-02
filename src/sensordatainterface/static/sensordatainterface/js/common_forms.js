@@ -153,7 +153,7 @@ function handleActionTypeChange(formType, currentForm) {
     if (isDeployment) {
         $(currentForm).find('[name="enddatetime"]').val('').parents('tr').hide();
         $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
-        // equipmentSelect.parents('tr').show(); may be fix for issue #157
+        equipmentSelect.parents('tr').show();
         equipmentSelect.removeAttr('multiple');
         equipmentSelect.select2();
     } else if (isRetrieval) {

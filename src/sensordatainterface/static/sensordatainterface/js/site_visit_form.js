@@ -173,15 +173,13 @@ function setMultipleFieldsNumber(event) {
 }
 
 function setEquipmentUsedFilter() {
-    //add handler for when the actiontypecv is changed
     $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
         var actionTypeSelects = $('form').find('[name="actiontypecv"]');
         actionTypeSelects.each(function(index, select) {
             var actionType = $(select).val();
             var currentForm = $(select).parents('tbody');
             filterEquipmentUsed(filterEquipmentBySite, $(this).val(), currentForm);
-            $(select).trigger('change');
-            //filterDeploymentsByType(actionType, currentForm);
+            filterDeploymentsByType(actionType, currentForm.find('[name="deploymentaction"]'));
         });
     });
 }
