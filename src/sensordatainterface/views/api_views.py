@@ -169,9 +169,9 @@ def get_equipment_by_deployment(request):
 
 def get_equipment_output_variables(request):
     if request.method == 'POST':
-        equipments = request.POST.getlist('equipment[]')
-        models = EquipmentModel.objects.filter(equipment__equipmentid__in=equipments).distinct()
-        variables = InstrumentOutputVariable.objects.filter(modelid__in=models).distinct()
+        equipment = request.POST.get('equipment')
+        model = EquipmentModel.objects.filter(equipment__equipmentid=equipment)
+        variables = InstrumentOutputVariable.objects.filter(modelid=model)
         response_data = serializers.serialize('json', variables, use_natural_keys=True)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
