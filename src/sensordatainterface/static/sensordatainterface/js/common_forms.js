@@ -599,6 +599,9 @@ $(document).ready(function () {
     }
 
     bindDeploymentField(currentForm);
+    if (currentForm.find('[name="deploymentaction"]').val() !== '') {
+        currentForm.find('[name="deploymentaction"]').trigger('change');
+    }
     setOtherActions();
 });
 
