@@ -317,7 +317,7 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
 
 
 function filterDeployments(selectedId, is_visit, deploymentsSelect) {
-    deploymentsSelect.val('');
+
     if(selectedId == "") {
         deploymentsSelect.children('option').removeAttr('disabled');
         deploymentsSelect.select2();
@@ -345,7 +345,53 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
                     $(element).removeAttr('disabled');
                 }
             });
+
+            if (deployments.indexOf(deploymentsSelect.val()) === -1) {
+                deploymentsSelect.val('');
+            }
             deploymentsSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+function filterVisits(deploymentId, visitsSelect) {
+    if(deploymentId == "") {
+        visitsSelect.children('option').removeAttr('disabled');
+        visitsSelect.select2();
+        return;
+    }
+
+    var url = $('#visits-by-site-api').val();
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data :{
+            id: deploymentId,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var visits = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
+
+            visitsSelect.children('option').each(function(index, element) {
+                if (visits.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+
+            if (visits.indexOf(visitsSelect.val()) === -1) {
+                visitsSelect.val('');
+            }
+
+            visitsSelect.select2();
         },
 
         error: function (xhr, errmsg, err) {
@@ -561,8 +607,13 @@ function bindDeploymentField(form) {
     var deploymentSelect = form.find('[name="deploymentaction"]');
     deploymentSelect.change(function() {
         var deploymentId = deploymentSelect.val();
+        var siteVisitSelect = form.find('[name="actionid"]');
         getDeploymentType(deploymentId, form);
         setDeploymentEquipment(deploymentId, form.find('[name="equipmentused"]'));
+
+        if (siteVisitSelect.length > 0) {
+            filterVisits(deploymentId, siteVisitSelect);
+        }
     });
 }
 

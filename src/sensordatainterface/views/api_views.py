@@ -3,7 +3,7 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.core import serializers
 from sensordatainterface.models import Equipment, InstrumentOutputVariable, Action, EquipmentModel, EquipmentUsed, \
-    SamplingFeature
+    SamplingFeature, FeatureAction
 
 
 def get_deployment_type(request):
@@ -55,6 +55,21 @@ def get_deployments_by_site(request):
             )
 
         response_data = serializers.serialize('json', deployments, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_visits_by_site(request):
+    if request.method == 'POST':
+        deployment_id = request.POST.get('id')
+        site = FeatureAction.objects.get(actionid__actionid=deployment_id).samplingfeatureid
+        visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid=site)
+        response_data = serializers.serialize('json', visits, use_natural_keys=True)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
