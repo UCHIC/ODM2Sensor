@@ -179,9 +179,10 @@ function setEquipmentUsedFilter() {
         actionTypeSelects.each(function(index, select) {
             var actionType = $(select).val();
             var currentForm = $(select).parents('tbody');
-            filterEquipmentUsed(filterEquipmentBySite, $(this).val(), currentForm)
+            filterEquipmentUsed(filterEquipmentBySite, $(this).val(), currentForm);
+            $(select).trigger('change');
+            //filterDeploymentsByType(actionType, currentForm);
         });
-        filterDeployments($(this).val(), false, $('form').find('[name="deploymentaction"]'))
     });
 }
 

@@ -140,10 +140,10 @@ function handleActionTypeChange(formType, currentForm) {
         equipmentUsedElem.parents('tr').removeClass('form-required');
     }
 
-    //Filter equipmentUsed
     var siteSelect = $('form').find('[name="samplingfeatureid"]');
     if (siteSelect.length !== 0) {
-        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm));
+        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm)); //Filter equipmentUsed
+        filterDeploymentsByType(formType, $(currentForm).find('[name="deploymentaction"]')); //Filter deployments by action type
     }
 
     var isDeployment = formType == 'Instrument deployment' || formType == 'Equipment deployment';
@@ -153,6 +153,7 @@ function handleActionTypeChange(formType, currentForm) {
     if (isDeployment) {
         $(currentForm).find('[name="enddatetime"]').val('').parents('tr').hide();
         $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
+        // equipmentSelect.parents('tr').show(); may be fix for issue #157
         equipmentSelect.removeAttr('multiple');
         equipmentSelect.select2();
     } else if (isRetrieval) {
@@ -315,6 +316,58 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     });
 }
 
+function filterDeploymentsByType(formType, deploymentsSelect) {
+    if (formType !== 'Instrument retrieval' && formType !== 'Equipment retrieval') {
+        return;
+    }
+
+    var selectedSite = $('form').find('[name="samplingfeatureid"]').val();
+
+    if(formType == "" && selectedSite == "") {
+        deploymentsSelect.children('option').removeAttr('disabled');
+        deploymentsSelect.select2();
+        return;
+    } else if (formType == "" && selectedSite !== "") {
+        filterDeployments(selectedSite, false, deploymentsSelect);
+        return;
+    }
+
+
+
+    var deploymentsUrl = $('#deployments-by-type-api').val();
+
+    $.ajax({
+        url: deploymentsUrl,
+        type: "POST",
+        data :{
+            type: formType,
+            site: selectedSite,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var deployments = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
+
+            deploymentsSelect.children('option').each(function(index, element) {
+                if (deployments.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+
+            if (deployments.indexOf(deploymentsSelect.val()) === -1) {
+                deploymentsSelect.val('');
+            }
+            deploymentsSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
 
 function filterDeployments(selectedId, is_visit, deploymentsSelect) {
 
@@ -581,8 +634,8 @@ $(document).ready(function () {
     });
 
     if (siteVisitSelect.length !== 0) {
+        var actionType = currentForm.find('[name="actiontypecv"]').val();
         siteVisitSelect.change(function (eventData, handler) {
-            var actionType = currentForm.find('[name="actiontypecv"]').val();
             if (actionType !== 'Instrument retrieval' && actionType !== 'Equipment retrieval') {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
             }
@@ -596,6 +649,7 @@ $(document).ready(function () {
         filterEquipmentCheck.change(function(eventData) {
             siteVisitSelect.trigger('change');
         });
+
     }
 
     bindDeploymentField(currentForm);

@@ -38,6 +38,34 @@ def get_equipment_by_site(request):
     )
 
 
+def get_deployments_by_type(request):
+    if request.method == 'POST':
+        action_type = request.POST.get('type')
+        site_id = request.POST.get('site')
+        deployment_type = 'equipmentDeployment' if action_type == 'Equipment retrieval' else 'instrumentDeployment'
+
+        if site_id == '':
+            deployments = Action.objects.filter(
+                actiontypecv__term=deployment_type,
+                enddatetime=None
+            )
+        else:
+            deployments = Action.objects.filter(
+                actiontypecv__term=deployment_type,
+                featureaction__samplingfeatureid=site_id, enddatetime=None
+            )
+
+
+        response_data = serializers.serialize('json', deployments, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
 def get_deployments_by_site(request):
     if request.method == 'POST':
         selected_id = request.POST.get('id')
