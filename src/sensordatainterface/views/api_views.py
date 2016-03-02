@@ -26,7 +26,7 @@ def get_equipment_by_site(request):
 
         equipment_deployed = Equipment.objects.filter(
             equipmentused__actionid__featureaction__samplingfeatureid=site_selected
-        )
+        ).distinct()
 
         response_data = serializers.serialize('json', equipment_deployed, use_natural_keys=True)
     else:

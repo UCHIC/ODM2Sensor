@@ -270,13 +270,14 @@ function filterVariablesByEquipment(equipmentElement) {
 }
 
 function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
-    if (selected == "")
+    if (!selected) {
         return;
+    }
 
     var equipmentBySiteUrl = $('#equipment-by-site-api').val();
 
     $.ajax({
-        url: equipmentBySiteUrl, /*needs to be changed depending on application name. ie in development it's ODM2Sensor, in sandbox it's equipment*/
+        url: equipmentBySiteUrl,
         type: "POST",
         data: {
             site_selected: selected,

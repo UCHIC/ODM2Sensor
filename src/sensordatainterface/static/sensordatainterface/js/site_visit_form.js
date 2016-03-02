@@ -24,7 +24,7 @@ function addActionForm(that) {
 
     bindEquipmentUsedFiltering($(thisForm).find('.select-two[name="equipmentused"]'));
     $(thisForm).find('[name="equipment_by_site"]').change(function() {
-        filterEquipmentUsed(filterEquipmentBySite, $('form').find('[name="samplingfeatureid"]').val(), $(thisForm));
+        filterEquipmentUsed(filterEquipmentBySite, $('form').find('[name="samplingfeatureid"]').val(), $(thisForm)); // what is this?
     });
 
     bindDeploymentField($(thisForm));
@@ -173,12 +173,12 @@ function setMultipleFieldsNumber(event) {
 }
 
 function setEquipmentUsedFilter() {
-    $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
+    $('form').find('.select-two[name="samplingfeatureid"]').change(function(event) {
         var actionTypeSelects = $('form').find('[name="actiontypecv"]');
         actionTypeSelects.each(function(index, select) {
             var actionType = $(select).val();
             var currentForm = $(select).parents('tbody');
-            filterEquipmentUsed(filterEquipmentBySite, $(this).val(), currentForm);
+            filterEquipmentUsed(filterEquipmentBySite, $(event.target).val(), currentForm);
             filterDeploymentsByType(actionType, currentForm.find('[name="deploymentaction"]'));
         });
     });
