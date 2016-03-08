@@ -633,20 +633,18 @@ $(document).ready(function () {
     if (siteVisitSelect.length !== 0) {
         var actionType = currentForm.find('[name="actiontypecv"]').val();
         siteVisitSelect.change(function (eventData, handler) {
+            var selectedVisit = siteVisitSelect.val();
             if (actionType !== 'Instrument retrieval' && actionType !== 'Equipment retrieval') {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
             }
-            if (currentForm.hasClass('EquipmentDeployment') || currentForm.hasClass('InstrumentCalibration') || currentForm.hasClass('Generic')) {
-                var siteVisit = eventData.target.options[eventData.target.selectedIndex].value;
-                filterActionDatesByVisit(siteVisit);
-            }
-            filterDeployments(siteVisitSelect.val(), true, $(currentForm).find('[name="deploymentaction"]'));
+
+            filterActionDatesByVisit(selectedVisit);
+            filterDeployments(selectedVisit, true, $(currentForm).find('[name="deploymentaction"]'));
         });
 
         filterEquipmentCheck.change(function(eventData) {
             siteVisitSelect.trigger('change');
         });
-
     }
 
     bindDeploymentField(currentForm);
