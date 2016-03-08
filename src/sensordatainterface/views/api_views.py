@@ -73,12 +73,12 @@ def get_deployments_by_site(request):
         if is_visit == 'true':
             samplingfeature = SamplingFeature.objects.filter(samplingfeaturetypecv__term="site", featureaction__actionid_id=selected_id)
             deployments = Action.objects.filter(
-                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='instrumentDeployment'),
+                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='equipmentDeployment'),
                 featureaction__samplingfeatureid=samplingfeature, enddatetime=None
             )
         else:
             deployments = Action.objects.filter(
-                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='instrumentDeployment'),
+                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='equipmentDeployment'),
                 featureaction__samplingfeatureid=selected_id, enddatetime=None
             )
 
