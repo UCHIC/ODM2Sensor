@@ -49,16 +49,6 @@
                     {% endfor %}
                     </td>
                 </tr>
-                {#            <tr>#}
-                {#                    <th>People:</th>#}
-                {#                    <td>#}
-                {#                        {% for person in Activity.actionid.actionby.all %}#}
-                {#                            {{ person.affiliationid.personid.personfirstname }}#}
-                {#                            {{ person.affiliationid.personid.personlastname }}#}
-                {#                            {% if not forloop.last %}, {% endif %}#}
-                {#                        {% endfor %}#}
-                {#                    </td>#}
-                {#                </tr>#}
                 <tr>
                     <th>Action Description:</th>
                     <td>
@@ -138,6 +128,107 @@
             {% endfor %}
         </div>
     </div>
+
+
+
+
+    <!-- Equipment Used Table -->
+
+    <div class="row detail-mid">
+        <div class="col-xs-12 pull-right">
+            <h3>Equipment Used</h3>
+
+
+
+            {% for equipment in Activity.actionid.equipmentused.all %}
+                <div class="row side-by-side-item">
+
+                    <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <th>Equipment Serial Number</th>
+                                <td>
+                                    <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">
+                                        {{ equipment.equipmentid.equipmentserialnumber }}</a>
+                                </td>
+                                <th>Equipment Name</th>
+                                <td>{{ equipment.equipmentid.equipmentname }}</td>
+                                <th>Equipment Model Name</th>
+                                <td>
+                                    <a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                        {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
+                                </td>
+                                <th>Equipment Owner</th>
+                                <td>
+                                    <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                        {{ equipment.equipmentid.equipmentownerid.personfirstname }} {{ equipment.equipmentid.equipmentownerid.personlastname }}</a>
+                                </td>
+                                <th>Purchase Date</th>
+                                <td>{{ equipment.equipmentid.equipmentpurchasedate }}</td>
+                            </tr>
+                            <tr>
+                                <th>Equipment Code</th>
+                                <td>{{ equipment.equipmentid.equipmentcode }}</td>
+                                <th>Equipment Type</th>
+                                <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                                <th>Equipment Manufacturer</th>
+                                <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                                <th>Equipment Description</th>
+                                <td>{{ equipment.equipmentid.equipmentdescription }}</td>
+                                <th>Link</th>
+                                <td>{{ equipment.equipmentid.equipmentdocumentationlink }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
+                            <a class="btn btn-primary btn-block"
+                               href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View
+                                Equipment's Deployment History</a>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 related-equipment-table"
+                         style="display: none">
+                        <h4>Related Equipment</h4>
+                            {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
+                                {% if parent.relationshiptypecv == 'Is child of' %}
+                                    {# this should be displayed. It's related equipment not children equipment #}
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-left">
+                                        <table class="table">
+                                        <tr>
+                                            <th>Equipment Serial Number:</th>
+                                            <td>
+                                                <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                                    {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Relationship Type:</th>
+                                            <td>{{ parent.relationshiptypecv }}</td>
+                                        </tr>
+                                        </table>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <p>No relationships found.</p>
+                            {% endfor %}
+
+
+                    </div>
+                </div>
+
+            {% empty %}
+                <p>No equipment was used in this action.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+
+
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>
