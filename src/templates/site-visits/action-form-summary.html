@@ -15,16 +15,20 @@
                     Time:</strong> {{ SiteVisit.enddatetime }} |
                     <strong>UTCOffset:</strong> {{ SiteVisit.begindatetimeutcoffset }}
                     <br/>
-                    <strong>Crew:</strong> {% for person in Crew %}
-                    {{ person.affiliationid.personid.personfirstname }}
-                    {{ person.affiliationid.personid.personlastname }}{% if not forloop.last %}, {% endif %}
-                    <br/><strong>Annotations:</strong><br/>
+                    <strong>Crew:</strong>
+                    {% for person in Crew %}
+                        {{ person.affiliationid.personid.personfirstname }}
+                        {{ person.affiliationid.personid.personlastname }}
+                        {% if not forloop.last %},
+                        {% endif %}
+                    {% endfor %}
+                    <br/>
+                    <strong>Annotations:</strong><br/>
                     <ul>
                         {% for annotation in SiteVisit.actionannotation_set.all %}
                             <li style="font-size:13px">{{ annotation.annotationid.annotationtext }}</li>
                         {% endfor %}
                     </ul>
-                {% endfor %}
                 </td>
             </tr>
             {% for child_action in ChildActions %}
