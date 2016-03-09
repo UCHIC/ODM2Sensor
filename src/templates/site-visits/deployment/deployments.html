@@ -2,10 +2,8 @@
 {% load static %}
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
-        <h1>Deployments
-            {% if site_name %} for {{ site_name.samplingfeaturename }}
-            {% elif equipment_name %} for Equipment {{ equipment_name.equipmentname }}
-            {% endif %}</h1>
+        <h1>Deployment{% if site_name %}s for {{ site_name.samplingfeaturename }}{% elif equipment_name %} History{% else %}s{% endif %}
+        </h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         {% if site_name %}
