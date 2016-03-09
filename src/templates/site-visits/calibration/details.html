@@ -11,61 +11,63 @@
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'InstrumentCalibration' Calibration.actionid %}">Edit Calibration Description</a></div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
-            <h3>Calibration</h3>
-            <table class="table">
-                {#calibrationactions is one to one with actions #}
-                {% with variable=Calibration.calibrationaction.all.0 %}
-                    <tr>
-                        {% if Calibration.featureaction.get %}
-                            <th>Site Code:</th>
-                            <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturecode }}</td>
-                        {% endif %}
-                        <th>Action Begin DateTime:</th>
-                        <td>{{ Calibration.begindatetime }}</td>
-                        <th>UTC Offset:</th>
-                        <td>{{ Calibration.begindatetimeutcoffset }}</td>
-                        <th>Variable Code:</th>
-                        <td>{{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
-                        <th>Check Value:</th>
-                        <td>
-                            {{ variable.calibrationcheckvalue|default:" -- " }}
-                        </td>
-                    </tr>
-                    <tr>
-                        {% if Calibration.featureaction.get %}
-                            <th>Site Name:</th>
-                            <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
-                        {% endif %}
-                        <th>Action End DateTime:</th>
-                        <td>{{ Calibration.enddatetime|default:"present" }}</td>
-                        <th>Variable Name:</th>
-                        <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
-                        <th>Calibration Equation:</th>
-                        <td>
-                            {{ variable.calibrationequation|default:" -- " }}
-                        </td>
-                        <th>Calibration Link:</th>
-                        <td><a href="{{ MEDIA_URL }}{{ Calibration.actionfilelink }}">{{ Calibration.actionfilelink|get_media_file_name|default:" -- " }}</a></td>
-                    </tr>
-                    <tr>
-                        <th>Action Description:</th>
-                        <td colspan="4"> {{ Calibration.actiondescription }}</td>
-                    </tr>
-                {% endwith %}
-            </table>
-        </div>
-    <div class="row detail-mid">
-        <div class="row">
-            <div style="float: left;"><h3>Equipment Used</h3></div>
-            <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
-                {% for related in Calibration.relatedaction.all %}
-                    {% if related.relationshiptypecv.name == 'Is child of' %}
-                        <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid.actionid %}">Go to Site Visit</a>
+        <h3>Calibration</h3>
+        <table class="table">
+            {#calibrationactions is one to one with actions #}
+            {% with variable=Calibration.calibrationaction.all.0 %}
+                <tr>
+                    {% if Calibration.featureaction.get %}
+                        <th>Site Code:</th>
+                        <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturecode }}</td>
                     {% endif %}
-                {% endfor %}
+                    <th>Action Begin DateTime:</th>
+                    <td>{{ Calibration.begindatetime }}</td>
+                    <th>UTC Offset:</th>
+                    <td>{{ Calibration.begindatetimeutcoffset }}</td>
+                    <th>Variable Code:</th>
+                    <td>{{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
+                    <th>Check Value:</th>
+                    <td>
+                        {{ variable.calibrationcheckvalue|default:" -- " }}
+                    </td>
+                </tr>
+                <tr>
+                    {% if Calibration.featureaction.get %}
+                        <th>Site Name:</th>
+                        <td>{{ Calibration.featureaction.get.samplingfeatureid.samplingfeaturename }}</td>
+                    {% endif %}
+                    <th>Action End DateTime:</th>
+                    <td>{{ Calibration.enddatetime|default:"present" }}</td>
+                    <th>Variable Name:</th>
+                    <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
+                    <th>Calibration Equation:</th>
+                    <td>
+                        {{ variable.calibrationequation|default:" -- " }}
+                    </td>
+                    <th>Calibration Link:</th>
+                    <td><a href="{{ MEDIA_URL }}{{ Calibration.actionfilelink }}">{{ Calibration.actionfilelink|get_media_file_name|default:" -- " }}</a></td>
+                </tr>
+                <tr>
+                    <th>Action Description:</th>
+                    <td colspan="4"> {{ Calibration.actiondescription }}</td>
+                </tr>
+            {% endwith %}
+        </table>
+    </div>
 
-            </div>
+    <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
+        <div class="row">
+        {% for related in Calibration.relatedaction.all %}
+            {% if related.relationshiptypecv.name == 'Is child of' %}
+                <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid.actionid %}">Go to Site Visit</a>
+            {% endif %}
+        {% endfor %}
         </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-12 pull-left">
+            <h3>Equipment Used</h3>
+
 
         {% for equipment in Calibration.equipmentused.all %}
             <div class="row side-by-side-item small-box-item">
@@ -115,8 +117,7 @@
                 </div>
                 <div class="col-sm-12 col-xs-12 col-md-7 pull-left">
             <a class="btn btn-primary btn-block"
-               href="{% url 'calibrations_by_equipment' equipment.equipmentid.equipmentid %}">View Equipment's
-                Calibration History</a>
+               href="{% url 'calibrations_by_equipment' equipment.equipmentid.equipmentid %}">View Calibration History</a>
         </div>
             </div>
         {% endfor %}
@@ -244,13 +245,16 @@
                         </div>
 
                     {% empty %}
-                        <tr>
-                            <td>No Reference Equipment information for this calibration.</td>
-                        </tr>
+                        <table class="table">
+                            <tr>
+                                <td>No Reference Equipment information for this calibration.</td>
+                            </tr>
+                        </table>
                     {% endfor %}
                 {% endfor %}
 
         </div>
+
 
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">

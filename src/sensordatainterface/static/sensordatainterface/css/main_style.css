@@ -431,6 +431,7 @@ span.helptext {
     width: 48%;
     float: left;
     margin-right: 3%;
+    margin-left: initial;
 }
 
 .side-by-side-item table.dataTable thead .sorting:last-of-type {
