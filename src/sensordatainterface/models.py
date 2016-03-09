@@ -1121,9 +1121,9 @@ class SamplingFeature(models.Model):
     samplingfeaturedescription = models.TextField(db_column='SamplingFeatureDescription',
                                                   blank=True)  # Field name made lowercase.
     samplingfeaturegeotypecv = models.ForeignKey('CvSamplingfeaturegeotype', db_column='SamplingFeatureGeotypeCV',
-                                                blank=True)  # Field name made lowercase.
+                                                blank=True, null=True)  # Field name made lowercase.
     elevation_m = models.FloatField(db_column='Elevation_m', blank=True, null=True)  # Field name made lowercase.
-    elevationdatumcv = models.ForeignKey('CvElevationdatum', db_column='ElevationDatumCV', blank=True)  # Field name made lowercase.
+    elevationdatumcv = models.ForeignKey('CvElevationdatum', db_column='ElevationDatumCV', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
