@@ -26,7 +26,7 @@ function setOtherActions() {
         if (site !== 'None') {
             filterVisits(site, false, $('.EquipmentDeployment').find('[name="actionid"]'));
         }
-
+        $('.EquipmentDeployment').find('#id_equipment_by_site').prop('checked', true);
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
@@ -39,8 +39,10 @@ function setOtherActions() {
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
         $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($('.Retrieval'));
-
     }
+
+    $('form').find('[name="actionid"]').trigger('change');
+    //filterEquipmentUsed(filterEquipmentByAction, $('form').find('[name="actionid"]').val(), $('form'));
 }
 
 function initDTPicker() {
