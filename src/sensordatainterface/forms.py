@@ -253,7 +253,7 @@ class EquipmentForm(ModelForm):
                                                 empty_label='Choose an Organization')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
                                                  empty_label='Choose a Model')
-    equipmentpurchasedate = forms.DateTimeField(initial=datetime.now())
+    equipmentpurchasedate = forms.DateTimeField(initial=datetime.now(), label='Purchase Date')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
 
     class Meta:
@@ -272,7 +272,6 @@ class EquipmentForm(ModelForm):
             'equipmentcode': TextInput,
             'equipmentserialnumber': TextInput,
             'equipmentpurchaseordernumber': TextInput,
-            'equipmentpurchasedate': DateTimeInput,
         }
 
         labels = {
@@ -281,7 +280,7 @@ class EquipmentForm(ModelForm):
             'equipmenttypecv': _('Equipment Type'),
             'equipmentpurchaseordernumber': _('Purchase Order Number'),
             'equipmentdescription': _('Description'),
-            'equipmentpurchasedate': _('Purchase Date'),
+
         }
 
 
