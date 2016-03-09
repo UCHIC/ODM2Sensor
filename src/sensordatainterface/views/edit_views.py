@@ -544,7 +544,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
         outputvar_form.initial['instrumentrawoutputunitsid'] = outputvar.instrumentrawoutputunitsid
         outputvar_form.initial['instrumentmethodid'] = outputvar.instrumentmethodid
         if deployment is None:
-            outputvar_form.fields['deployments'] = DeploymentChoiceField(
+            outputvar_form.fields['deployments'] = DeploymentActionChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
                         Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
@@ -569,7 +569,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
     else:
         outputvar_form = SiteDeploymentMeasuredVariableForm()
         if deployment is None:
-            outputvar_form.fields['deployments'] = DeploymentChoiceField(
+            outputvar_form.fields['deployments'] = DeploymentActionChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
                         Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
