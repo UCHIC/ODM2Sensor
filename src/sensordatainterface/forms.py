@@ -477,7 +477,8 @@ class MethodForm(ModelForm):
     organizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
         label='Organization',
-        empty_label='Choose an Organization'
+        empty_label='Choose an Organization',
+        required=False
     )
 
     class Meta:
