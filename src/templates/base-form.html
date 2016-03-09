@@ -13,6 +13,9 @@
             {% csrf_token %}
             <input type="hidden" value="{{ action }}" name="action">
             <input type="hidden" value="{{ item_id }}" name="item_id">
+            {% block hidden_data %}
+
+            {% endblock %}
             <table class="table form-table form-group">
                 {% for render_form in render_forms %}
                     {{ render_form.as_table }}

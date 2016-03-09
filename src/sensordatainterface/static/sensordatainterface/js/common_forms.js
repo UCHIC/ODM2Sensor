@@ -22,6 +22,11 @@ function setOtherActions() {
         actionTypeElem.select2('val', 'Instrument calibration');
         actionTypeElem.parents('tr').hide();
     } else if (mainForm.hasClass('EquipmentDeployment')) {
+        var site = $('.EquipmentDeployment').find('[name="site_id"]').val();
+        if (site !== 'None') {
+            filterVisits(site, false, $('.EquipmentDeployment').find('[name="actionid"]'));
+        }
+
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
@@ -416,8 +421,8 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
     });
 }
 
-function filterVisits(deploymentId, visitsSelect) {
-    if(deploymentId == "") {
+function filterVisits(selectedId, isDeployment, visitsSelect) {
+    if(selectedId == "") {
         visitsSelect.children('option').removeAttr('disabled');
         visitsSelect.select2();
         return;
@@ -429,12 +434,13 @@ function filterVisits(deploymentId, visitsSelect) {
         url: url,
         type: "POST",
         data :{
-            id: deploymentId,
+            id: selectedId,
+            is_deployment: isDeployment,
             csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
         },
 
         success: function (json) {
-            var visits = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
+            var visits = JSON.parse(json).map(function(visit) {return visit.pk + ""});
 
             visitsSelect.children('option').each(function(index, element) {
                 if (visits.indexOf(element.value) === -1 && element.value !== '') {
@@ -664,7 +670,7 @@ function bindDeploymentField(form) {
         setDeploymentEquipment(deploymentId, form.find('[name="equipmentused"]'));
 
         if (siteVisitSelect.length > 0) {
-            filterVisits(deploymentId, siteVisitSelect);
+            filterVisits(deploymentId, true, siteVisitSelect);
         }
     });
 }

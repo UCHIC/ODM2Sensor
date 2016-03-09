@@ -94,8 +94,10 @@ def get_deployments_by_site(request):
 
 def get_visits_by_site(request):
     if request.method == 'POST':
-        deployment_id = request.POST.get('id')
-        site = FeatureAction.objects.get(actionid__actionid=deployment_id).samplingfeatureid
+        selected_id = request.POST.get('id')
+        is_deployment = request.POST.get('is_deployment')
+
+        site = FeatureAction.objects.get(actionid__actionid=selected_id).samplingfeatureid if is_deployment else FeatureAction.objects.get(pk=selected_id)
         visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid=site)
         response_data = serializers.serialize('json', visits, use_natural_keys=True)
     else:

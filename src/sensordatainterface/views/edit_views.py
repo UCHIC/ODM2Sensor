@@ -1042,7 +1042,7 @@ def edit_site_visit_summary(request, action_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_action(request, action_type, action_id=None, visit_id=None):
+def edit_action(request, action_type, action_id=None, visit_id=None, site_id=None):
     action = 'create'
     child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
 
@@ -1194,7 +1194,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
     return render(
         request,
         'site-visits/field-activities/other-action-form.html',
-        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id,
+        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'site_id': site_id,
          'action_type': action_type, 'mock_results_form': ResultsForm()}
     )
 
