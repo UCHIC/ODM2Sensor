@@ -247,10 +247,11 @@ def edit_equipment(request, equipment_id):
                 equipment_model.modelmanufacturerid = equipment_model_form.cleaned_data['modelmanufacturerid']
                 equipment_model.save()
                 equipment_form.errors.pop('equipmentmodelid', None)
-        else:
-            equipment_model = equipment_form.cleaned_data['equipmentmodelid']
 
         if equipment_form.is_valid():
+            if 'modelname' not in request.POST:
+                equipment_model = equipment_form.cleaned_data['equipmentmodelid']
+
             equipment = equipment_form.save(commit=False)
             equipment.equipmentmodelid = equipment_model
             equipment.equipmentvendorid = equipment_form.cleaned_data['equipmentvendorid']
