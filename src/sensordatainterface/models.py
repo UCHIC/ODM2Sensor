@@ -388,8 +388,7 @@ class Equipment(models.Model):
     equipmentpurchaseordernumber = models.TextField(db_column='EquipmentPurchaseOrderNumber',
                                                     blank=True)  # Field name made lowercase.
     equipmentdescription = models.TextField(db_column='EquipmentDescription', blank=True)  # Field name made lowercase.
-    equipmentdescription = models.TextField(db_column='EquipmentDescription', blank=True)  # Field name made lowercase.
-    equipmentdocumentationlink = models.TextField(db_column='EquipmentDocumentationLink',
+    equipmentdocumentationlink = models.FileField(db_column='EquipmentDocumentationLink', upload_to='equipmentdocumentation',
                                                   blank=True)  # Field name made lowercase.
 
     class Meta:

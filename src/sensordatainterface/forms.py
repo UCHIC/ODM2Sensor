@@ -259,25 +259,31 @@ class EquipmentForm(ModelForm):
         fields = [
             'equipmentcode',
             'equipmentserialnumber',
+            'equipmentname',
             'equipmenttypecv',
             'equipmentpurchaseordernumber',
             'equipmentpurchasedate',
             'equipmentdescription',
             'equipmentownerid',
+            'equipmentdocumentationlink',
         ]
 
         widgets = {
+            'equipmentname': TextInput,
             'equipmentcode': TextInput,
             'equipmentserialnumber': TextInput,
             'equipmentpurchaseordernumber': TextInput,
+            'equipmentdocumentationlink': FileInput,
         }
 
         labels = {
+            'equipmentname': _('Equipment Name'),
             'equipmentcode': _('Equipment Code'),
             'equipmentserialnumber': _('Serial Number'),
             'equipmenttypecv': _('Equipment Type'),
             'equipmentpurchaseordernumber': _('Purchase Order Number'),
             'equipmentdescription': _('Description'),
+            'equipmentdocumentationlink': _('Documentation Link')
 
         }
 

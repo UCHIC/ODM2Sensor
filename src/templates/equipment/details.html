@@ -86,9 +86,8 @@
                 </tr>
                 <tr>
                     <th>Documentation Link:</th>
-                    {# a file? #}
                     <td>{% if Equipment.equipmentdocumentationlink %}
-                        <a href="{{ Equipment.equipmentdocumentationlink }}">
+                        <a href="{{ Equipment.equipmentdocumentationlink.url }}">
                             {{ Equipment.equipmentdocumentationlink }}</a>
                     {% else %}
                         --

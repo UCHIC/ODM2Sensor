@@ -236,9 +236,9 @@ def edit_equipment(request, equipment_id):
 
         if request.POST['action'] == 'update':
             equipment = Equipment.objects.get(pk=equipment_id)
-            equipment_form = EquipmentForm(request.POST, instance=equipment)
+            equipment_form = EquipmentForm(request.POST, request.FILES, instance=equipment)
         else:
-            equipment_form = EquipmentForm(request.POST)
+            equipment_form = EquipmentForm(request.POST, request.FILES)
 
         if 'modelname' in request.POST:
             equipment_model_form = EquipmentModelForm(request.POST)
