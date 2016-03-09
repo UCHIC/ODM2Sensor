@@ -433,7 +433,7 @@ class EquipmentUsed(models.Model):
     actionid = models.ForeignKey(Action, related_name='equipmentused',
                                  db_column='ActionID')  # Field name made lowercase.
     equipmentid = models.ForeignKey(Equipment, related_name='equipmentused',
-                                    db_column='EquipmentID')  # Field name made lowercase.
+                                    db_column='EquipmentID', blank=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

@@ -113,6 +113,10 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
+    def clean(self, value):
+        cleaned_value = self._check_values(value)
+        return cleaned_value
+
 
 class SiteVisitChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
@@ -732,6 +736,7 @@ class ActionForm(ModelForm):
         self.fields['equipmentused'].help_text = None
         self.fields['calibrationstandard'].help_text = None
         self.fields['calibrationreferenceequipment'].help_text = None
+        self.fields['equipmentused'].required = False
 
     required_css_class = 'form-required'
 
@@ -833,67 +838,19 @@ class ActionForm(ModelForm):
             'actiondescription': _('Description')
         }
 
+    def clean(self):
+        return super(ActionForm, self).clean()
 
-class RetrievalForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(RetrievalForm, self).__init__(*args, **kwargs)
-        self.fields['equipmentused'].help_text = None
+    def clean_equipmentused(self):
+        equipment = self.data['equipmentused']
+        action_type = self.data['actiontypecv']
+        required_types = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
+                              'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval']
 
-    required_css_class = 'form-required'
+        if action_type in required_types and len(equipment) == 0:
+            raise ValidationError(_('This field is required'))
 
-    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
-                                 empty_label='Choose a Method', widget=SelectWithClassForOptions)
-
-    equipmentused = EquipmentChoiceField(
-        queryset=Equipment.objects.all(), label='Equipment Used', required=False
-    )
-
-    equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
-
-    # fields for retrieval
-    deploymentaction = DeploymentActionChoiceField(widget=forms.Select(), label='Deployment', to_field_name='actionid',
-        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'), actionid__enddatetime=None)
-    )
-    thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
-
-    class Meta:
-        model = Action
-        fields = [
-            'deploymentaction',
-            'actiontypecv',
-            'methodid',
-            'begindatetime',
-            'begindatetimeutcoffset',
-            'enddatetime',
-            'enddatetimeutcoffset',
-            'actiondescription',
-            'actionfilelink',
-        ]
-
-        widgets = {
-            # 'actiontypecv': Select(choices=[
-            #     ('Field activity', 'Generic'),
-            #     ('Equipment deployment', 'Deployment'),
-            #     ('Instrument calibration', 'Calibration'),
-            #     ('Equipment maintenance', 'Maintenance')
-            # ]),
-            # 'methodid': SelectWithClassForOptions, # taken care of above
-            'begindatetime': DateTimeInput,
-            'begindatetimeutcoffset': Select(choices=time_zone_choices),
-            'enddatetime': DateTimeInput,
-            'enddatetimeutcoffset': Select(choices=time_zone_choices),
-            'actionfilelink': FileInput,
-        }
-
-        labels = {
-            'actiontypecv': _('Action Type'),
-            'begindatetime': _('Begin Date Time'),
-            'begindatetimeutcoffset': _('Begin UTC Offset'),
-            'enddatetime': _('End Date Time'),
-            'enddatetimeutcoffset': _('End UTC Offset'),
-            'actionfilelink': _('Action File'),
-            'actiondescription': _('Description')
-        }
+        return self.cleaned_data['equipmentused']
 
 
 class ResultsForm(forms.Form):
