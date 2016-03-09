@@ -1127,11 +1127,16 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                                           resultdatetime=child_action.begindatetime, resultdatetimeutcoffset=child_action.begindatetimeutcoffset,
                                           statuscv=status, sampledmediumcv=medium, valuecount=0)
 
-            if action_type.term == 'instrumentCalibration':
+            elif action_type.term == 'instrumentCalibration':
                 if updating:
                     CalibrationAction.objects.get(actionid=child_action).delete()
                     CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
+
+            elif action_type.term == 'equipmentMaintenance':
+                if updating:
+                    MaintenanceAction.objects.get(actionid=child_action).delete()
+                add_maintenance_fields(child_action, action_form)
 
             url_map = {
                 'equipmentDeployment': 'deployment_detail',

@@ -56,17 +56,33 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Method Code:</th>
-                    <td>
-                        {{ Activity.actionid.methodid.methodcode }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Method Name:</th>
+                    <th>Method:</th>
                     <td>
                         {{ Activity.actionid.methodid.methodname }}
                     </td>
                 </tr>
+                {% if Activity.actionid.actiontypecv.term == 'equipmentMaintenance' %}
+                    {% with Activity.actionid.maintenanceaction.get as maintenance_action %}
+                        <tr>
+                            <th>Maintenance Code:</th>
+                            <td>
+                                {{ maintenance_action.maintenancecode }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Maintenance Reason:</th>
+                            <td>
+                                {{ maintenance_action.maintenancereason }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Is Factory Service:</th>
+                            <td>
+                                {% if maintenance_action.isfactoryservice %} Yes {% else %} No {% endif %}
+                            </td>
+                        </tr>
+                    {% endwith %}
+                {% endif %}
             </table>
             <h3>Site</h3>
             <table class="table">
@@ -130,19 +146,13 @@
     </div>
 
 
-
-
     <!-- Equipment Used Table -->
 
     <div class="row detail-mid">
         <div class="col-xs-12 pull-right">
             <h3>Equipment Used</h3>
-
-
-
             {% for equipment in Activity.actionid.equipmentused.all %}
                 <div class="row side-by-side-item">
-
                     <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
                         <table>
                             <tbody>
