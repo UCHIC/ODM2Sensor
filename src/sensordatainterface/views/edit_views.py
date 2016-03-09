@@ -1137,11 +1137,11 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                 'equipmentDeployment': 'deployment_detail',
                 'instrumentDeployment': 'deployment_detail',
                 'instrumentCalibration': 'calibration_detail',
-                'equipmentMaintenance': 'field_activity_detail',
                 'fieldActivity': 'field_activity_detail'
             }
+            redirection = url_map[action_type.term] if action_type.term in url_map else 'field_activity_detail'
             response = HttpResponseRedirect(
-                reverse(url_map[action_type.term], args=[child_action.actionid])
+                reverse(redirection, args=[child_action.actionid])
             )
 
             return response
