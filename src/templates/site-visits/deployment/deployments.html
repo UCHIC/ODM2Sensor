@@ -51,7 +51,7 @@
                         <td>{{ equipment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
 
                     <td>
-                        <a title="Edit" alt="Edit Deployment" class="icon-link" href="{% url 'create_action' deployment.actionid %}">
+                        <a title="Edit" alt="Edit Deployment" class="icon-link" href="{% url 'create_action' 'EquipmentDeployment' deployment.actionid %}">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
                         <a title="Delete" alt="Destroy Deployment" class="icon-link delete-icon" data-href="#">
