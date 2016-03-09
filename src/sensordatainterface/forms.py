@@ -249,10 +249,8 @@ class SiteForm(ModelForm):
 
 class EquipmentForm(ModelForm):
     required_css_class = 'form-required'
-    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Organization',
-                                                empty_label='Choose an Organization')
-    equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
-                                                 empty_label='Choose a Model')
+    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Vendor', empty_label='Choose an Organization')
+    equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model', empty_label='Choose a Model')
     equipmentpurchasedate = forms.DateTimeField(initial=datetime.now(), label='Purchase Date')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
 
