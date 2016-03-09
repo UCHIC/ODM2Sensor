@@ -35,7 +35,7 @@
                 <tr>
                     <th>People:</th>
                     <td>{% for related in Activity.actionid.relatedaction.all %}
-                        {% if related.relationshiptypecv == 'Is child of' %}
+                        {% if related.relationshiptypecv.name == 'Is child of' %}
                             {% for person in related.relatedactionid.actionby.all %}
                                 <a href="{% url 'person_detail' person.affiliationid_id %}">
                                     {{ person.affiliationid.personid.personfirstname }}
