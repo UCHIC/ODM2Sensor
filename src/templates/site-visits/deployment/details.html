@@ -98,6 +98,11 @@
                     <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid.actionid %}">Go to Site Visit</a>
                 {% endif %}
             {% endfor %}
+            {% for related in Deployment.parent_relatedaction.all %}
+                {% if related.relationshiptypecv.name == 'Is retrieval for' %}
+                    <a class="btn btn-primary btn-block" href="{% url 'field_activity_detail' related.actionid.actionid %}">Go to retrieval action</a>
+                {% endif %}
+            {% endfor %}
         </div>
 
         <!-- Equipment Used Table -->
