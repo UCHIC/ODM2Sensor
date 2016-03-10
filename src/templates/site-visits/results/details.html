@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% load template_tags %}
+{% block content %}
+    <div class="row title">
+        <div class="col-xs-12 col-sm-6 col-md-7"><h1>Results Details</h1></div>
+    </div>
+
+    <div class="row detail-mid">
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+            <table class="table">
+                <tr>
+                    <th>Begin DateTime:</th><td>{{ Result.resultdatetime }}</td>
+                </tr>
+                <tr>
+                    <th>UTC Offset:</th><td>{{ Result.resultdatetimeutcoffset }}</td>
+                </tr>
+                <tr>
+                    <th>Site Code:</th><td>{{ Result.featureactionid.samplingfeatureid.samplingfeaturecode }}</td>
+                </tr>
+                <tr>
+                    <th>Site Name:</th><td>{{ Result.featureactionid.samplingfeatureid.samplingfeaturename }}</td>
+                </tr>
+                <tr>
+                    <th>Variable Code:</th><td>{{ Result.variableid.variablecode }}</td>
+                </tr>
+                <tr>
+                    <th>Variable Name:</th><td>{{ Result.variableid.variablenamecv.name }}</td>
+                </tr>
+                <tr>
+                    <th>Units:</th><td>{{ Result.unitsid.unitsname }}</td>
+                </tr>
+                <tr>
+                    <th>Action Description:</th><td>{{ Result.featureactionid.actionid.actiondescription }}</td>
+                </tr>
+            </table>
+
+            <div class="row detail-mid">
+            <div class="row">
+                <div style="float: left;"><h3>Equipment Used</h3></div>
+                <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
+                </div>
+            </div>
+
+            {% for equipment in Result.featureactionid.actionid.equipmentused.all %}
+                <div class="row side-by-side-item">
+
+                    <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                        <table class="table">
+                            <tr>
+                                <th>Equipment Serial Number:</th>
+                                <td><a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">{{ equipment.equipmentid.equipmentserialnumber }}</a></td>
+
+                                <th>Equipment Type:</th>
+                                <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                            </tr>
+                            <tr>
+                                <th>Equipment Code:</th>
+                                <td>{{ equipment.equipmentid.equipmentcode }}</td>
+
+                                <th>Equipment Name:</th>
+                                <td>{{ equipment.equipmentid.equipmentname }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>Equipment Model Name:</th>
+                                <td><a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                    {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
+                                </td>
+
+                                <th>Manufacturer Name:</th>
+                                <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>Owner Name:</th>
+
+                                <td>
+                                    <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                        {{ equipment.equipmentid.equipmentownerid.personfirstname }}
+                                        {{ equipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

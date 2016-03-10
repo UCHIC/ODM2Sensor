@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import uuid
 
 from django.db import models
 
@@ -6,7 +7,7 @@ from django.db import models
 
 
 class ActionAnnotation(models.Model):
-    bridgeid = models.IntegerField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
+    bridgeid = models.AutoField(db_column='BridgeID', primary_key=True)  # Field name made lowercase.
     actionid = models.ForeignKey('Action', db_column='ActionID')  # Field name made lowercase.
     annotationid = models.ForeignKey('Annotation', db_column='AnnotationID')  # Field name made lowercase.
 
@@ -90,7 +91,7 @@ class Affiliation(models.Model):
 
 
 class Annotation(models.Model):
-    annotationid = models.IntegerField(db_column='AnnotationID', primary_key=True)  # Field name made lowercase.
+    annotationid = models.AutoField(db_column='AnnotationID', primary_key=True)  # Field name made lowercase.
     annotationtypecv = models.ForeignKey('CvAnnotationtype', db_column='AnnotationTypeCV')  # Field name made lowercase.
     annotationcode = models.TextField(db_column='AnnotationCode', blank=True)  # Field name made lowercase.
     annotationtext = models.TextField(db_column='AnnotationText')  # Field name made lowercase.
@@ -387,7 +388,7 @@ class Equipment(models.Model):
     equipmentpurchaseordernumber = models.TextField(db_column='EquipmentPurchaseOrderNumber',
                                                     blank=True)  # Field name made lowercase.
     equipmentdescription = models.TextField(db_column='EquipmentDescription', blank=True)  # Field name made lowercase.
-    equipmentdocumentationlink = models.TextField(db_column='EquipmentDocumentationLink',
+    equipmentdocumentationlink = models.FileField(db_column='EquipmentDocumentationLink', upload_to='equipmentdocumentation',
                                                   blank=True)  # Field name made lowercase.
 
     class Meta:
@@ -432,7 +433,7 @@ class EquipmentUsed(models.Model):
     actionid = models.ForeignKey(Action, related_name='equipmentused',
                                  db_column='ActionID')  # Field name made lowercase.
     equipmentid = models.ForeignKey(Equipment, related_name='equipmentused',
-                                    db_column='EquipmentID')  # Field name made lowercase.
+                                    db_column='EquipmentID', blank=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -1035,28 +1036,11 @@ class ResultNormalizationValue(models.Model):
         db_table = 'ODM2].[ResultNormalizationValues'
 
 
-class ResultTypeCV(models.Model):
-    resulttypecv = models.TextField(db_column='ResultTypeCV', primary_key=True)  # Field name made lowercase.
-    resulttypecategory = models.TextField(db_column='ResultTypeCategory')  # Field name made lowercase.
-    datatype = models.TextField(db_column='DataType')  # Field name made lowercase.
-    resulttypedefinition = models.TextField(db_column='ResultTypeDefinition')  # Field name made lowercase.
-    fixeddimensions = models.TextField(db_column='FixedDimensions')  # Field name made lowercase.
-    varyingdimensions = models.TextField(db_column='VaryingDimensions')  # Field name made lowercase.
-    spacemeasurementframework = models.TextField(db_column='SpaceMeasurementFramework')  # Field name made lowercase.
-    timemeasurementframework = models.TextField(db_column='TimeMeasurementFramework')  # Field name made lowercase.
-    variablemeasurementframework = models.TextField(
-        db_column='VariableMeasurementFramework')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'ODM2].[ResultTypeCV'
-
-
 class Result(models.Model):
-    resultid = models.BigIntegerField(db_column='ResultID', primary_key=True)  # Field name made lowercase.
-    resultuuid = models.TextField(db_column='ResultUUID')  # Field name made lowercase.
+    resultid = models.AutoField(db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultuuid = models.TextField(db_column='ResultUUID', default=uuid.uuid4)  # Field name made lowercase.
     featureactionid = models.ForeignKey(FeatureAction, db_column='FeatureActionID')  # Field name made lowercase.
-    resulttypecv = models.ForeignKey(ResultTypeCV, db_column='ResultTypeCV')  # Field name made lowercase.
+    resulttypecv = models.ForeignKey('CvResulttype', db_column='ResultTypeCV')  # Field name made lowercase.
     variableid = models.ForeignKey('Variable', db_column='VariableID')  # Field name made lowercase.
     unitsid = models.ForeignKey('Units', db_column='UnitsID')  # Field name made lowercase.
     taxonomicclassifierid = models.ForeignKey('TaxonomicClassifier', db_column='TaxonomicClassifierID', blank=True,
@@ -1136,9 +1120,9 @@ class SamplingFeature(models.Model):
     samplingfeaturedescription = models.TextField(db_column='SamplingFeatureDescription',
                                                   blank=True)  # Field name made lowercase.
     samplingfeaturegeotypecv = models.ForeignKey('CvSamplingfeaturegeotype', db_column='SamplingFeatureGeotypeCV',
-                                                blank=True)  # Field name made lowercase.
+                                                blank=True, null=True)  # Field name made lowercase.
     elevation_m = models.FloatField(db_column='Elevation_m', blank=True, null=True)  # Field name made lowercase.
-    elevationdatumcv = models.ForeignKey('CvElevationdatum', db_column='ElevationDatumCV', blank=True)  # Field name made lowercase.
+    elevationdatumcv = models.ForeignKey('CvElevationdatum', db_column='ElevationDatumCV', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -1648,6 +1632,9 @@ class Variable(models.Model):
     variabledefinition = models.TextField(db_column='VariableDefinition', blank=True)  # Field name made lowercase.
     speciationcv = models.ForeignKey('CvSpeciation', db_column='SpeciationCV', blank=True)  # Field name made lowercase.
     nodatavalue = models.FloatField(db_column='NoDataValue')  # Field name made lowercase.
+
+    def natural_key(self):
+        return self.variablecode + ' ' + self.variabletypecv.name
 
     class Meta:
         managed = False

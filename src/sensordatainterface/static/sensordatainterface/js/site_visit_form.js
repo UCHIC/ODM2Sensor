@@ -1,7 +1,11 @@
+//var actionNumber = 1;
+
 function addActionForm(that) {
     var button = $(that).parents('tbody');
     var form = $('#action-form').children();
     var thisForm = form.clone();
+    //thisForm.data('action-number', actionNumber++);
+
 
     //Move add button and insert delete button
     thisForm.insertBefore(button);
@@ -12,11 +16,19 @@ function addActionForm(that) {
     setChildActionDateTimePicker(thisForm);
 
     //add handler for when the actiontypecv is changed
-    $(thisForm).find('.select-two[name="actiontypecv"]').change(function () {
+    $(thisForm).find('.select-two[name="actiontypecv"]').change(function() {
         var selected = $(this).val();
         var currentActionForm = $(this).parents('tbody');
         handleActionTypeChange(selected, currentActionForm);
     });
+
+    bindEquipmentUsedFiltering($(thisForm).find('.select-two[name="equipmentused"]'));
+    $(thisForm).find('[name="equipment_by_site"]').change(function() {
+        filterEquipmentUsed(filterEquipmentBySite, $('form').find('[name="samplingfeatureid"]').val(), $(thisForm)); // what is this?
+    });
+
+    bindDeploymentField($(thisForm));
+    filterDeployments($('form').find('[name="samplingfeatureid"]').val(), false, $(thisForm).find('[name="deploymentaction"]'));
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();
@@ -28,11 +40,66 @@ function addActionForm(that) {
 
     handleActionTypeChange('Field activity', thisForm);
 
-   setFormFields($(thisForm));
+    setFormFields($(thisForm));
 
     //hide custom fields for all action form types
     $(thisForm).find(".calibration").not('option').parents('tr').hide();
     $(thisForm).find(".maintenance").not('option').parents('tr').hide();
+}
+
+
+function addAnnotationForm(that) {
+    var removeButton = $('<tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javascript:removeAnnotation(this)">- Remove Annotation</a></td></tr>');
+    var fields = $('#annotation-form').children().clone();
+    var btnForm = $(that).parents('tbody');
+
+    setAnnotationDateTimePicker(fields);
+
+    fields.prepend(removeButton);
+
+    var annotationSelect = fields.find('[name="annotationid"]');
+    fields.find('tr:not(.remove-button)').not(annotationSelect.parents('tr')).hide();
+    fields.find(".select-two").select2();
+
+    $('<option value="new">New Annotation</option>').insertAfter(annotationSelect.children().first());
+    annotationSelect.on('change', { form: fields }, onAnnotationChange);
+
+    fields.insertBefore(btnForm);
+}
+
+function removeAnnotation(that) {
+    $(that).parents('tbody').remove();
+}
+
+function onAnnotationChange(event) {
+    var annotationForm = event.data['form'];
+    var annotationSelect = annotationForm.find('[name="annotationid"]');
+    var newAnnotationFields = annotationForm.find('tr:not(.remove-button)').not(annotationSelect.parents('tr'));
+
+    if (annotationSelect.find(':selected').val() == 'new') {
+        newAnnotationFields.show();
+        annotationSelect.parents('tr').removeClass('form-required').hide();
+    } else {
+        newAnnotationFields.hide();
+        annotationSelect.parents('tr').addClass('form-required');
+    }
+}
+
+function setAnnotationDateTimePicker(annotationForm) {
+    var siteVisitForm = $('.form-table').children('tbody').first();
+    var beginDTInitialValue = moment(siteVisitForm.find("[name='begindatetime']").val());
+    var endDTInitialValue = moment(siteVisitForm.find("[name='enddatetime']").val());
+
+    //restart datetimepicker
+    $(annotationForm).find('.datetimepicker').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm',
+        sideBySide: true
+    });
+
+    //Initialize data and UTCOffset for children action forms
+    //set the value of the begin time in the action form to the site visit form begin time
+    annotationForm.find("[name='annotationdatetime']").parent('.datetimepicker').data('DateTimePicker').date(beginDTInitialValue);
+    annotationForm.find("[name='annotationutcoffset']").val(siteVisitForm.find("[name='begindatetimeutcoffset']").val());
 }
 
 function setChildActionDateTimePicker(childForm) {
@@ -43,7 +110,8 @@ function setChildActionDateTimePicker(childForm) {
     //restart datetimepicker
     $(childForm).find('.datetimepicker').datetimepicker(
         {
-            format: 'YYYY-MM-DD HH:mm'
+            format: 'YYYY-MM-DD HH:mm',
+            sideBySide: true
         }).on('changeDate', beginDateTimeChanged);
 
     //set initial bounds on dates depending on site visit dates
@@ -73,7 +141,13 @@ function setIsFactoryServiceFlag() {
 }
 
 function deleteActionForm(that) {
-    $(that).parents('tbody').remove();
+    var form = $(that).parents('tbody');
+    if (form.next('tbody').hasClass('results-set')) {
+        form.nextUntil('tbody.add-result-btn', '.results-set').remove();
+        form.next('tbody.add-result-btn').remove();
+    }
+
+    form.remove();
 }
 
 function addEquipmentField(that) {
@@ -100,9 +174,14 @@ function setMultipleFieldsNumber(event) {
 }
 
 function setEquipmentUsedFilter() {
-    //add handler for when the actiontypecv is changed
-    $('form').find('.select-two[name="samplingfeatureid"]').change(function () {
-        filterEquipmentBySite($(this).val(), $('form [name="equipmentused"]'));
+    $('form').find('.select-two[name="samplingfeatureid"]').change(function(event) {
+        var actionTypeSelects = $('form').find('[name="actiontypecv"]');
+        actionTypeSelects.each(function(index, select) {
+            var actionType = $(select).val();
+            var currentForm = $(select).parents('tbody');
+            filterEquipmentUsed(filterEquipmentBySite, $(event.target).val(), currentForm);
+            filterDeploymentsByType(actionType, currentForm.find('[name="deploymentaction"]'));
+        });
     });
 }
 
@@ -128,5 +207,27 @@ $(document).ready(function () {
     setEquipmentUsedFilter();
 
     $('tbody').has('[name="actiontypecv"]').find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
+
+    var annotationSelects = $('#annotation-form').find('.select-two');
+    if (annotationSelects.length !== 0) {
+        annotationSelects.select2('destroy');
+        $('#annotation-form').find(".select2-container").remove();
+    }
+
+    $('.annotation-fields').each(function(index, annotationForm) {
+        annotationForm = $(annotationForm);
+
+        if (annotationForm.parent().attr('id') === 'annotation-form') {
+            return;
+        }
+
+        setAnnotationDateTimePicker(annotationForm);
+        var annotationSelect = annotationForm.find('[name="annotationid"]');
+        annotationForm.find('tr:not(.remove-button)').not(annotationSelect.parents('tr')).hide();
+        annotationForm.find(".select-two").select2();
+
+        $('<option value="new">New Annotation</option>').insertAfter(annotationSelect.children().first());
+        annotationSelect.on('change', { form: annotationForm }, onAnnotationChange);
+    });
 
 });

@@ -329,7 +329,7 @@ label {
 /*left: 217;*/
 /*}*/
 
-#action-form {
+#action-form, #results-form, #annotation-form, #model-form, .all-equipment-wrapper, .all-variables-wrapper, .all-units-wrapper {
     display: none;
 }
 
@@ -349,10 +349,14 @@ label {
     background-image: linear-gradient(to bottom, #C26865 0, #CB3934 100%);
 }
 
-.btn-remove-action {
-    width: 25%;
+.btn-remove-action, .btn-remove-result, .btn-remove-model, .btn-remove-annotation {
+    width: 28%;
     min-width: 130px;
     float: left;
+}
+
+.btn-remove-result, .btn-remove-model {
+    float: right;
 }
 
 .btn-primary:focus, .btn-primary:hover {
@@ -384,8 +388,7 @@ label {
 }
 
 .select2-container {
-    width: 100%;
-!important;
+    width: 100% !important;
 }
 
 .row form.input-group  textarea.form-control {
@@ -429,6 +432,7 @@ span.helptext {
     width: 48%;
     float: left;
     margin-right: 3%;
+    margin-left: initial;
 }
 
 .side-by-side-item table.dataTable thead .sorting:last-of-type {
@@ -515,21 +519,21 @@ span.helptext {
     width: 20%;
 }
 
-div.home_page {
-    padding-left: 10%;
-    width: 65%;
-    float: left;
+div.home_title {
+    min-width: 1000px;
 }
 
-div.intro {
-    padding-left: 10%;
-    width: 65%;
-    float: left;
+div.home_page {
+    margin-left: 400px;
+    position: absolute;
+    width: 600px;
 }
 
 div.quick_links {
-    float: right;
-    margin-right: 10%;
+    float: left;
+    margin-left: 100px;
+    margin-top: 25px;
+    margin-bottom: 500px;
     border-style: solid;
     border-radius: 25px;
     border-color: forestgreen;
@@ -539,13 +543,13 @@ div.quick_links_table {
     margin: 25px;
 }
 
-div.banner {
-	background-image: url(../img/waterfallBanner.jpg);
-	height: 250px;
+div.sponsors {
+    min-width: 500px;
 }
 
 img.banner {
     width: 100%;
+    min-width: 1100px;
 }
 
 
@@ -558,3 +562,35 @@ label.checkbox-label input {
     margin-right: 5px;
     height: initial;
 }
+
+
+td.results-label {
+    padding-top: 20px !important;
+    padding-bottom: 5px !important;
+    border-bottom: 1px solid rgba(200, 200, 200, .8) !important;
+}
+
+td.results-label label {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+tbody.action-fields + tbody.results-set {
+    border: none !important;
+}
+
+tbody.results-set + tbody.results-set {
+    border-top: 1px solid rgba(200, 200, 200, .8) !important;
+}
+
+.add-result-btn + tbody {
+    border-top: 2px solid #ddd;
+}
+
+tbody + tbody.add-result-btn {
+    border-top: none;
+}
+
+a.add-result-btn {
+  float: right !important;
+}
+

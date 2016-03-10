@@ -13,8 +13,11 @@
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>
-        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Retrieve</a></div>
+        {% if not Deployment.enddatetime %}
+            <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+                <a class="btn btn-primary btn-block" href="{% url 'create_retrieval_from_deployment' Deployment.actionid%}">Retrieve</a>
+            </div>
+        {% endif %}
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment Description</a></div>
     </div>
@@ -55,20 +58,58 @@
                 </tr>
             </table>
         </div>
+
+        <!-- Results Table -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            {% if Deployment.featureaction.get.result_set.all|length > 0 %}
+                <h3>Results</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>UUID</th>
+                            <th>Result Type</th>
+                            <th>Variable</th>
+                            <th>Unit</th>
+                            <th>Sampled Medium</th>
+                            <th>Processing Level</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in Deployment.featureaction.get.result_set.all %}
+                            <tr>
+                                <td><a href="{% url 'results_detail' result.resultid %}">{{ result.resultuuid }}</a></td>
+                                <td>{{ result.resulttypecv.name }}</td>
+                                <td>{{ result.variableid.variablecode|add:": "|add:result.variableid.variablenamecv.name }}</td>
+                                <td>{{ result.unitsid.unitsname }}</td>
+                                <td>{{ result.sampledmediumcv.name }}</td>
+                                <td>{{ result.processinglevelid.processinglevelcode }}</td>
+                                <td>{{ result.statuscv.name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
+            {% for related in Deployment.relatedaction.all %}
+                {% if related.relationshiptypecv.name == 'Is child of' %}
+                    <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid.actionid %}">Go to Site Visit</a>
+                {% endif %}
+            {% endfor %}
+            {% for related in Deployment.parent_relatedaction.all %}
+                {% if related.relationshiptypecv.name == 'Is retrieval for' %}
+                    <a class="btn btn-primary btn-block" href="{% url 'field_activity_detail' related.actionid.actionid %}">Go to retrieval action</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
         <!-- Equipment Used Table -->
         <div class="row detail-mid">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="row">
                     <div style="float: left;"><h3>Equipment Used</h3></div>
-
-                    <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
-                        <a class="btn btn-primary btn-block"
-                        {% for related in Deployment.relatedaction.all %}
-                            {% if related.relationshiptypecv == 'Is child of' %}
-                                href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                            {% endif %}
-                        {% endfor %}>Go to Site Visit</a>
-                    </div>
                 </div>
 
 

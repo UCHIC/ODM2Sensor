@@ -1,0 +1,7 @@
+{% extends "base-form.html" %}
+{% block button_value %} {% block item_name %} Retrieval Action {% endblock %} {% endblock %}
+
+{% block form_class %}Retrieval{% endblock %}
+{% block submit_url %}{% url 'create_retrieval' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}

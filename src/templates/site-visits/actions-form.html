@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-form.html" %}
 {% load static %}
 
 {# Template form only for simple forms #}
@@ -13,16 +13,23 @@
             <input type="hidden" value="{{ action }}" name="action">
             <input type="hidden" value="{{ item_id }}" name="item_id">
             <table class="table form-table form-group">
-                <tbody>
+                <tbody class="">
                 {% for render_form in render_forms %}
                     {{ render_form.as_table }}
                 {% endfor %}
                 </tbody>
 
+            {% for curr_annotation in annotation_forms %}
+
+                <tbody class="annotation-fields">
+                    <tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javascript:removeAnnotation(this)">- Remove Annotation</a></td></tr>
+                    {{ curr_annotation.as_table }}
+            {% endfor %}
+
                 {% if render_actions %}
                     <tbody>
                     {% for action_form in actions_form %}
-                        <tbody>
+                        <tbody class="action-fields">
                         <tr>
                             <th></th>
                             <td><a class="btn btn-danger btn-remove-action col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">-
@@ -30,15 +37,33 @@
                         </tr>
                         {{ action_form.as_table }}
                         </tbody>
+                        {% if actions_form.results|length != 0 %}
+
+                            {% for curr_result in action_form.results %}
+                                <tbody class="results-set">
+                                    {% if forloop.first %}
+                                        <tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>
+                                    {% else %}
+                                        <tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>
+                                    {% endif %}
+                                    {{ curr_result.as_table }}
+                                </tbody>
+                            {% endfor %}
+
+                            <tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>
+                        {% endif %}
+
                     {% endfor %}
                     <tbody>
                 {% endif %}
                 <tr>
                     <th></th>
                     <td>
-                        <div class="row">
+                        <div class="row action_buttons">
                             <a class='btn btn-default col-xs-12 col-sm-12'
                                onclick='javascript:addActionForm(this)'>+ Add Action</a>
+                            <a class='btn btn-default col-xs-12 col-sm-12'
+                               onclick='javascript:addAnnotationForm(this)'>+ Add Annotation</a>
                         </div>
                     </td>
                 </tr>
@@ -63,12 +88,11 @@
             </table>
         </form>
     </div>
-    <table id="action-form">
-        {{ mock_action_form }}
-    </table>
+
+    {% block mock_forms %}{{ block.super }}{% endblock %}
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static  "sensordatainterface/js/common_forms.js" %}"></script>
+    {{ block.super }}
     <script src="{% static  "sensordatainterface/js/site_visit_form.js" %}"></script>
 {% endblock %}

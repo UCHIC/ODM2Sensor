@@ -86,9 +86,8 @@
                 </tr>
                 <tr>
                     <th>Documentation Link:</th>
-                    {# a file? #}
                     <td>{% if Equipment.equipmentdocumentationlink %}
-                        <a href="{{ Equipment.equipmentdocumentationlink }}">
+                        <a href="{{ Equipment.equipmentdocumentationlink.url }}">
                             {{ Equipment.equipmentdocumentationlink }}</a>
                     {% else %}
                         --
@@ -179,53 +178,6 @@
                            href="{% if "http" not in Equipment.equipmentmodelid.modelmanufacturerid.organizationlink %}
                         http://{% endif %}{{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink }}/">
                             {{ Equipment.equipmentmodelid.modelmanufacturerid.organizationlink|default:" -- " }}</a>
-                    </td>
-                </tr>
-            </table>
-                <h3>Organization</h3>
-            <table class="table">
-                <tr>
-                    <th>Name:</th>
-                    <td>
-                        <a href="{% url 'organization_detail' Equipment.equipmentvendorid.organizationid %}">
-                            {{ Equipment.equipmentvendorid.organizationname|default:" -- " }}
-                        </a>
-                    </td>
-                </tr>
-            {# start deleting from here in case this is not needed#}
-                {% for person in Equipment.equipmentvendorid.affiliation.all %}
-                    {% if person.isprimaryorganizationcontact %}
-                        <tr>
-                            <th>Contact Name:</th>
-                            <td>{{ person.personid.personfirstname }} {{ person.personid.personlastname }}</td>
-                        </tr>
-                        <tr>
-                            <th>Address:</th>
-                            <td>{{ person.primaryaddress }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email:</th>
-                            <td>{% if person.primaryemail != 'unknown' %}
-                                <a href="mailto:{{ person.primaryemail }}">
-                                    {{ person.primaryemail }}
-                                </a>
-                            {% else %}
-                                {{ person.primaryemail|default:" - " }}
-                            {% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>Phone:</th>
-                            <td>{{ person.primaryphone }} </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            {# end delete #}
-                <tr>
-                    <th>Website:</th>
-                    <td>
-                        <a target="_blank" href="{% if "http:" not in Equipment.equipmentvendorid.organizationlink %}
-                        http://{% endif %}{{ Equipment.equipmentvendorid.organizationlink }}/">
-                            {{ Equipment.equipmentvendorid.organizationlink|default:" -- " }}</a>
                     </td>
                 </tr>
             </table>

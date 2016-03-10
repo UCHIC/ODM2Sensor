@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% load template_tags %}
+{% block content %}
+    <div class="row title">
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>Results</h1>
+    </div>
+{#    <div class="col-xs-12 col-sm-6 col-md-3 pull-right">#}
+{#        <a class="btn btn-primary btn-block new-btn" href="{% url 'create_action' 'Generic' %}">New Action</a>#}
+{#    </div>#}
+    </div>
+    <div class="row">
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Result Date</th>
+            <th>Site Code</th>
+            <th>Site Name</th>
+            <th>Variable Code</th>
+            <th>Variable Name</th>
+            <th>Result Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for result in Results %}
+            <tr>
+
+                <td data-order="{{ result.resultdatetime|date:'U' }}"><a href="{% url 'results_detail' result.resultid %}">{{ result.resultdatetime }}</a></td>
+                <td>{{ result.featureactionid.samplingfeatureid.samplingfeaturecode }}</td>
+                <td>{{ result.featureactionid.samplingfeatureid.samplingfeaturename }}</td>
+                <td>{{ result.variableid.variablecode }}</td>
+                <td>{{ result.variableid.variablenamecv.name }}</td>
+                <td>{{ result.resulttypecv.name }}</td>
+
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

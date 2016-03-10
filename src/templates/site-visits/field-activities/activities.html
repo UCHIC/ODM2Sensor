@@ -47,7 +47,7 @@
                     {% endif %}</td>
 
                     <td>
-                        <a title="Edit" alt="Edit Action" class="icon-link" href="#">
+                        <a title="Edit" alt="Edit Action" class="icon-link" href="{% url 'create_action' 'Generic' activity.actionid %}">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         </a>
                         <a title="Delete" alt="Destroy Generality" class="icon-link delete-icon" data-href="#">

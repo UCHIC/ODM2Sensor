@@ -48,6 +48,7 @@
                         <li><a href="{% url 'calibration_methods' %}">Methods</a></li>
                         <li><a href="{% url 'calibration_standards' %}">Calibration Standards</a></li>
                         <li><a href="{% url 'field_activities' %}">Other Actions</a></li>
+                        <li><a href="{% url 'results' %}">Results</a></li>
                     </ul>
                 </li>
 
@@ -67,7 +68,7 @@
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <!-- @todo add url refs -->
-                        <li><a href="{% url 'humans' %}">Humans</a></li>
+                        <li><a href="{% url 'humans' %}">People</a></li>
                         <li><a href="{% url 'organizations' %}">Organizations</a></li>
                     </ul>
                 </li>
@@ -140,7 +141,13 @@
 {% block data %}
     <input id="equipment-by-site-api" type="hidden" value="{% url 'get_equipment_by_site' %}">
     <input id="equipment-by-action-api" type="hidden" value="{% url 'get_equipment_by_action' %}">
+    <input id="equipment-by-deployment-api" type="hidden" value="{% url 'get_equipment_by_deployment' %}">
     <input id="site-visit-dates" type="hidden" value="{% url 'get_site_visit_dates' %}">
+    <input id="output-variables-by-equipment" type="hidden" value="{% url 'get_equipment_output_variables' %}">
+    <input id="deployment-type-api" type="hidden" value="{% url 'get_deployment_type' %}">
+    <input id="deployments-by-type-api" type="hidden" value="{% url 'get_deployments_by_type' %}">
+    <input id="deployments-by-site-api" type="hidden" value="{% url 'get_deployments_by_site' %}">
+    <input id="visits-by-site-api" type="hidden" value="{% url 'get_visits_by_site' %}">
 {% endblock %}
 
 </body>

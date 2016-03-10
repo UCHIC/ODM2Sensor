@@ -8,7 +8,8 @@
             <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="#">Edit Actions Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'Generic' Activity.actionid.actionid %}">Edit Action Description</a>
+        </div>
     </div>
     <div class="row detail-mid">
         <div class="col-xs-12 col-sm-6 col-md-6 pull-right"></div>
@@ -35,7 +36,7 @@
                 <tr>
                     <th>People:</th>
                     <td>{% for related in Activity.actionid.relatedaction.all %}
-                        {% if related.relationshiptypecv == 'Is child of' %}
+                        {% if related.relationshiptypecv.name == 'Is child of' %}
                             {% for person in related.relatedactionid.actionby.all %}
                                 <a href="{% url 'person_detail' person.affiliationid_id %}">
                                     {{ person.affiliationid.personid.personfirstname }}
@@ -48,16 +49,6 @@
                     {% endfor %}
                     </td>
                 </tr>
-                {#            <tr>#}
-                {#                    <th>People:</th>#}
-                {#                    <td>#}
-                {#                        {% for person in Activity.actionid.actionby.all %}#}
-                {#                            {{ person.affiliationid.personid.personfirstname }}#}
-                {#                            {{ person.affiliationid.personid.personlastname }}#}
-                {#                            {% if not forloop.last %}, {% endif %}#}
-                {#                        {% endfor %}#}
-                {#                    </td>#}
-                {#                </tr>#}
                 <tr>
                     <th>Action Description:</th>
                     <td>
@@ -65,17 +56,33 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Method Code:</th>
-                    <td>
-                        {{ Activity.actionid.methodid.methodcode }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Method Name:</th>
+                    <th>Method:</th>
                     <td>
                         {{ Activity.actionid.methodid.methodname }}
                     </td>
                 </tr>
+                {% if Activity.actionid.actiontypecv.term == 'equipmentMaintenance' %}
+                    {% with Activity.actionid.maintenanceaction.get as maintenance_action %}
+                        <tr>
+                            <th>Maintenance Code:</th>
+                            <td>
+                                {{ maintenance_action.maintenancecode }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Maintenance Reason:</th>
+                            <td>
+                                {{ maintenance_action.maintenancereason }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Is Factory Service:</th>
+                            <td>
+                                {% if maintenance_action.isfactoryservice %} Yes {% else %} No {% endif %}
+                            </td>
+                        </tr>
+                    {% endwith %}
+                {% endif %}
             </table>
             <h3>Site</h3>
             <table class="table">
@@ -98,13 +105,140 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3 col-xs-12 col-md-2 pull-right"><a class="btn btn-primary btn-block"
-                {% for related in Activity.actionid.relatedaction.all %}
-                    {% if related.relationshiptypecv == 'Is child of' %}
-                       href="{% url 'site_visit_detail' related.relatedactionid.actionid %}"
-                    {% endif %}
-                {% endfor %}>Go to Site Visit</a></div>
+        {% if Activity.result_set.all|length > 0 %}
+            <h3>Results</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>UUID</th>
+                        <th>Result Type</th>
+                        <th>Variable</th>
+                        <th>Unit</th>
+                        <th>Sampled Medium</th>
+                        <th>Processing Level</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in Activity.result_set.all %}
+                        <tr>
+                            <td><a href="{% url 'results_detail' result.resultid %}">{{ result.resultuuid }}</a></td>
+                            <td>{{ result.resulttypecv.name }}</td>
+                            <td>{{ result.variableid.variablecode|add:": "|add:result.variableid.variablenamecv.name }}</td>
+                            <td>{{ result.unitsid.unitsname }}</td>
+                            <td>{{ result.sampledmediumcv.name }}</td>
+                            <td>{{ result.processinglevelid.processinglevelcode }}</td>
+                            <td>{{ result.statuscv.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
+    <div class="row">
+        <div class="col-sm-3 col-xs-12 col-md-2 pull-right">
+            {% for related in Activity.actionid.relatedaction.all %}
+                {% if related.relationshiptypecv.name == 'Is child of' %}
+                    <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid.actionid %}">Go to Site Visit</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <!-- Equipment Used Table -->
+
+    <div class="row detail-mid">
+        <div class="col-xs-12 pull-right">
+            <h3>Equipment Used</h3>
+            {% for equipment in Activity.actionid.equipmentused.all %}
+                <div class="row side-by-side-item">
+                    <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <th>Equipment Serial Number</th>
+                                <td>
+                                    <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">
+                                        {{ equipment.equipmentid.equipmentserialnumber }}</a>
+                                </td>
+                                <th>Equipment Name</th>
+                                <td>{{ equipment.equipmentid.equipmentname }}</td>
+                                <th>Equipment Model Name</th>
+                                <td>
+                                    <a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                        {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
+                                </td>
+                                <th>Equipment Owner</th>
+                                <td>
+                                    <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                        {{ equipment.equipmentid.equipmentownerid.personfirstname }} {{ equipment.equipmentid.equipmentownerid.personlastname }}</a>
+                                </td>
+                                <th>Purchase Date</th>
+                                <td>{{ equipment.equipmentid.equipmentpurchasedate }}</td>
+                            </tr>
+                            <tr>
+                                <th>Equipment Code</th>
+                                <td>{{ equipment.equipmentid.equipmentcode }}</td>
+                                <th>Equipment Type</th>
+                                <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                                <th>Equipment Manufacturer</th>
+                                <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                                <th>Equipment Description</th>
+                                <td>{{ equipment.equipmentid.equipmentdescription }}</td>
+                                <th>Link</th>
+                                <td>{{ equipment.equipmentid.equipmentdocumentationlink }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
+                            <a class="btn btn-primary btn-block"
+                               href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View
+                                Equipment's Deployment History</a>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 related-equipment-table"
+                         style="display: none">
+                        <h4>Related Equipment</h4>
+                            {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
+                                {% if parent.relationshiptypecv == 'Is child of' %}
+                                    {# this should be displayed. It's related equipment not children equipment #}
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-left">
+                                        <table class="table">
+                                        <tr>
+                                            <th>Equipment Serial Number:</th>
+                                            <td>
+                                                <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                                    {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Relationship Type:</th>
+                                            <td>{{ parent.relationshiptypecv }}</td>
+                                        </tr>
+                                        </table>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <p>No relationships found.</p>
+                            {% endfor %}
+
+
+                    </div>
+                </div>
+
+            {% empty %}
+                <p>No equipment was used in this action.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+
+
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
     </script>

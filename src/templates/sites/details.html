@@ -30,6 +30,10 @@
                     <td>{{ Site.samplingfeatureid.samplingfeaturename }}</td>
                 </tr>
                 <tr>
+                    <th>Site Description:</th>
+                    <td>{{ Site.samplingfeatureid.samplingfeaturedescription }}</td>
+                </tr>
+                <tr>
                     <th>Site Type:</th>
                     <td>{{ Site.sitetypecv }}</td>
                 </tr>
@@ -92,7 +96,7 @@
             {% for featureaction in Site.samplingfeatureid.featureaction.all %}
                 {# This is if the variables are supposed to be currently deployed #}
                 {% if not featureaction.actionid.enddatetime %}
-                    {% if featureaction.actionid.actiontypecv == 'Instrument deployment' or featureaction.actionid.actionttype == 'Equipment deployment' %}
+                    {% if featureaction.actionid.actiontypecv.name == 'Instrument deployment' or featureaction.actionid.actionttype.name == 'Equipment deployment' %}
                         {% for usedequipment in featureaction.actionid.equipmentused.all %}
                             {% for outputvar in usedequipment.equipmentid.equipmentmodelid.instrumentoutputvariable.all %}
 

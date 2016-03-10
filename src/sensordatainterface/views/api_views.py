@@ -1,7 +1,23 @@
 import json
+from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.core import serializers
-from sensordatainterface.models import Equipment, SamplingFeature, Action
+from sensordatainterface.models import Equipment, InstrumentOutputVariable, Action, EquipmentModel, EquipmentUsed, \
+    SamplingFeature, FeatureAction
+
+
+def get_deployment_type(request):
+    if request.method == 'POST':
+        deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
+        response_data = 'Instrument retrieval' \
+            if deployment_action.actiontypecv.term == 'instrumentDeployment' else 'Equipment retrieval'
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
 
 
 def get_equipment_by_site(request):
@@ -10,9 +26,80 @@ def get_equipment_by_site(request):
 
         equipment_deployed = Equipment.objects.filter(
             equipmentused__actionid__featureaction__samplingfeatureid=site_selected
-        )
+        ).distinct()
 
         response_data = serializers.serialize('json', equipment_deployed, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_deployments_by_type(request):
+    if request.method == 'POST':
+        action_type = request.POST.get('type')
+        site_id = request.POST.get('site')
+        deployment_type = 'equipmentDeployment' if action_type == 'Equipment retrieval' else 'instrumentDeployment'
+
+        if site_id == '':
+            deployments = Action.objects.filter(
+                actiontypecv__term=deployment_type,
+                enddatetime=None
+            )
+        else:
+            deployments = Action.objects.filter(
+                actiontypecv__term=deployment_type,
+                featureaction__samplingfeatureid=site_id, enddatetime=None
+            )
+
+
+        response_data = serializers.serialize('json', deployments, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_deployments_by_site(request):
+    if request.method == 'POST':
+        selected_id = request.POST.get('id')
+        is_visit = request.POST.get('is_visit')
+        if is_visit == 'true':
+            samplingfeature = SamplingFeature.objects.filter(samplingfeaturetypecv__term="site", featureaction__actionid_id=selected_id)
+            deployments = Action.objects.filter(
+                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='equipmentDeployment'),
+                featureaction__samplingfeatureid=samplingfeature, enddatetime=None
+            )
+        else:
+            deployments = Action.objects.filter(
+                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='equipmentDeployment'),
+                featureaction__samplingfeatureid=selected_id, enddatetime=None
+            )
+
+        response_data = serializers.serialize('json', deployments, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_visits_by_site(request):
+    if request.method == 'POST':
+        selected_id = request.POST.get('id')
+        is_deployment = request.POST.get('is_deployment')
+
+        site = FeatureAction.objects.get(actionid__actionid=selected_id).samplingfeatureid if is_deployment else FeatureAction.objects.get(pk=selected_id)
+        visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid=site)
+        response_data = serializers.serialize('json', visits, use_natural_keys=True)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -42,22 +129,18 @@ def get_sitevisit_dates(request):
 
 def get_equipment_by_action(request):
     if request.method == 'POST':
-        action_id = request.POST.get('action_id')
+        site_visit_id = request.POST.get('action_id')
 
-        if action_id == 'false':
+        if site_visit_id == 'false':
             equipment_deployed = Equipment.objects.all()
         else:
-            sampling_feature = SamplingFeature.objects.filter(
-                featureaction__actionid=action_id,
-                featureaction__samplingfeatureid__samplingfeaturetypecv='Site'
-            )[0].samplingfeatureid
-
-            # might need to extend query to use feature action, but this should suffice
-            # If the equipment that should be shown is the exquipment in deployments under the site visit selected,
-            # make the query filter by the parent action through relatedactions
-            equipment_deployed = Equipment.objects.filter(
-                equipmentused__actionid__featureaction__samplingfeatureid=sampling_feature
-            )
+            site_visit = Action.objects.get(pk=site_visit_id)
+            actions = Action.objects.filter(featureaction__samplingfeatureid__featureaction__actionid=site_visit,
+                                            begindatetime__lt=site_visit.begindatetime,
+                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+            actions = actions.exclude(relatedaction__relationshiptypecv__term='isRetrievalOf',
+                                      relatedaction__relatedactionid__begindatetime__lt=site_visit.begindatetime)
+            equipment_deployed = Equipment.objects.filter(equipmentused__actionid__in=actions)
 
         response_data = serializers.serialize('json', equipment_deployed, use_natural_keys=True)
     else:
@@ -67,5 +150,39 @@ def get_equipment_by_action(request):
 
     return HttpResponse(
         json_data,
+        content_type="application/json"
+    )
+
+
+def get_equipment_by_deployment(request):
+    if request.method == 'POST':
+        deployment_id = request.POST.get('action_id')
+        response_data = Action.objects.get(pk=deployment_id).equipmentused.get().equipmentid.equipmentid
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    json_data = json.dumps(response_data)
+
+    return HttpResponse(
+        json_data,
+        content_type="application/json"
+    )
+
+
+def get_equipment_output_variables(request):
+    if request.method == 'POST':
+        equipment = request.POST.get('equipment') or request.POST.getlist('equipment[]')
+        if type(equipment) == list:
+            models = EquipmentModel.objects.filter(equipment__equipmentid__in=equipment)
+            variables = InstrumentOutputVariable.objects.filter(modelid__in=models)
+        else:
+            model = EquipmentModel.objects.filter(equipment__equipmentid=equipment)
+            variables = InstrumentOutputVariable.objects.filter(modelid=model)
+        response_data = serializers.serialize('json', variables, use_natural_keys=True)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
         content_type="application/json"
     )

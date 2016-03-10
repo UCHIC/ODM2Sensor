@@ -57,7 +57,7 @@ urlpatterns = patterns('',
 
 
         url(r'^actions/create-site-visit/(?:(?P<site_id>\d+)/)?$', edit_views.create_site_visit, name='create_site_visit'),
-        url(r'^actions/create-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
+        url(r'^actions/edit-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.edit_site_visit,
         name='edit_site_visit'),
         url(r'^actions/delete-site-visit/(?:(?P<action_id>\d+)/)?$', edit_views.delete_site_visit,
         name='delete_site_visit'),
@@ -67,6 +67,10 @@ urlpatterns = patterns('',
 
         url(r'^actions/create-action/(?P<action_type>\w+)/(?:(?P<action_id>\d+)/)?$', edit_views.edit_action, name='create_action'),
         url(r'^actions/create-action/from_visit/(?P<action_type>\w+)/(?:(?P<visit_id>\d+)/)?$', edit_views.edit_action, name='create_action_from_visit'),
+        url(r'^actions/create-action/for_site/(?P<action_type>\w+)/(?:(?P<site_id>\d+)/)?$', edit_views.edit_action, name='create_action_for_site'),
+
+        url(r'^actions/create-retrieval/(?:(?P<retrieval_id>\d+)/)?$', edit_views.edit_retrieval, name='create_retrieval'),
+        url(r'^actions/create-retrieval/from_deployment/(?:(?P<deployment_id>\d+)/)?$', edit_views.edit_retrieval, name='create_retrieval_from_deployment'),
 
 
         #################################################################################################

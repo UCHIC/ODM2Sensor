@@ -224,15 +224,56 @@ def set_update_form(model_object, model_id, FormClass, modifications):
 
 @login_required(login_url=LOGIN_URL)
 def edit_equipment(request, equipment_id):
-    modifications = {
-        'equipmentvendorid': ['equipmentvendorid', 'organizationid'],
-        'equipmentmodelid': ['equipmentmodelid', 'equipmentmodelid'],
-        'equipmentownerid': ['equipmentownerid', 'personid']
-    }
-    arguments = [request, Equipment.objects, EquipmentForm, modifications, 'Equipment', 'equipment_detail',
-                 'equipmentid', equipment_id, 'equipment/equipment-form.html']
+    # modifications = {
+    #     'equipmentvendorid': ['equipmentvendorid', 'organizationid'],
+    #     'equipmentmodelid': ['equipmentmodelid', 'equipmentmodelid'],
+    #     'equipmentownerid': ['equipmentownerid', 'personid']
+    # }
 
-    return edit_models(*arguments)
+    action = 'create'
+    if request.method == 'POST':
+        equipment_model = None
+
+        if request.POST['action'] == 'update':
+            equipment = Equipment.objects.get(pk=equipment_id)
+            equipment_form = EquipmentForm(request.POST, request.FILES, instance=equipment)
+        else:
+            equipment_form = EquipmentForm(request.POST, request.FILES)
+
+        if 'modelname' in request.POST:
+            equipment_model_form = EquipmentModelForm(request.POST)
+            if equipment_model_form.is_valid():
+                equipment_model = equipment_model_form.save(commit=False)
+                equipment_model.modelmanufacturerid = equipment_model_form.cleaned_data['modelmanufacturerid']
+                equipment_model.save()
+                equipment_form.errors.pop('equipmentmodelid', None)
+
+        if equipment_form.is_valid():
+            if 'modelname' not in request.POST:
+                equipment_model = equipment_form.cleaned_data['equipmentmodelid']
+
+            equipment = equipment_form.save(commit=False)
+            equipment.equipmentmodelid = equipment_model
+            equipment.equipmentvendorid = equipment_form.cleaned_data['equipmentvendorid']
+            equipment.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 'Equipment ' + equipment.equipmentserialnumber + ' added successfully')
+            return HttpResponseRedirect(
+                reverse('equipment_detail', args=[equipment.equipmentid])
+            )
+    elif equipment_id:
+        equipment = Equipment.objects.get(pk=equipment_id)
+        equipment_form = EquipmentForm(instance=equipment)
+        action = 'update'
+    else:
+        equipment_form = EquipmentForm()
+
+    return render(
+        request, 'equipment/equipment-form.html',
+        {'render_forms': [equipment_form], 'action': action, 'equipment_id': equipment_id, 'mock_model_form': EquipmentModelForm()}
+
+    )
 
 
 @login_required(login_url=LOGIN_URL)
@@ -369,13 +410,16 @@ def edit_calibration_standard(request, reference_val_id):
 
         if reference_mat_form.is_valid() and reference_mat_value_form.is_valid():
             reference_mat = reference_mat_form.save(commit=False)
-            reference_mat.referencematerialid = ReferenceMaterial.objects.count() + 1
+            reference_mat_val = reference_mat_value_form.save(commit=False)
+
+            if request.POST['action'] != 'update':  # temporal fix on database pk increment
+                reference_mat.referencematerialid = ReferenceMaterial.objects.count() + 1
+                reference_mat_val.referencematerialvalueid = ReferenceMaterialValue.objects.count() + 1
+
             reference_mat.referencematerialorganizationid = reference_mat_form.cleaned_data[
                 'referencematerialorganizationid']
             reference_mat.save()
 
-            reference_mat_val = reference_mat_value_form.save(commit=False)
-            reference_mat_val.referencematerialvalueid = ReferenceMaterialValue.objects.count() + 1
             reference_mat_val.referencematerialid = reference_mat
             reference_mat_val.variableid = reference_mat_value_form.cleaned_data['variableid']
             reference_mat_val.unitsid = reference_mat_value_form.cleaned_data['unitsid']
@@ -411,10 +455,10 @@ def edit_calibration_standard(request, reference_val_id):
 @login_required(login_url=LOGIN_URL)
 def delete_calibration_standard(request, reference_val_id):
     reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
-    reference = reference_mat_val.variableid.variabletypecv + "(" + str(reference_mat_val.referencematerialvalue) + ")"
+    reference = reference_mat_val.variableid.variabletypecv.name + "(" + str(reference_mat_val.referencematerialvalue) + ")"
     reference_mat_val.referencematerialid.delete()  # deletereferencematerialquestion
     reference_mat_val.delete()
-    messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + "deleted successfully")
+    messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + " deleted successfully")
     return HttpResponseRedirect(reverse('calibration_standards'))
 
 
@@ -434,7 +478,7 @@ def delete_calibration_method(request, method_id):
     method = Method.objects.get(pk=method_id)
     method_name = method.methodname
     method.delete()
-    messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' succesfully deleted')
+    messages.add_message(request, messages.SUCCESS, 'Method ' + method_name + ' successfully deleted')
     return HttpResponseRedirect(reverse('calibration_methods'))
 
 
@@ -459,7 +503,7 @@ def delete_output_variable(request, outputvar_id):
     output_var_name = output_var.variableid.variablecode
     output_var.delete()
     messages.add_message(request, messages.SUCCESS,
-                         'Instrument Output Variable for variable ' + output_var_name + ' succesfully deleted')
+                         'Instrument Output Variable for variable ' + output_var_name + ' successfully deleted')
     return HttpResponseRedirect(reverse('sensor_output'))
 
 
@@ -501,7 +545,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
         outputvar_form.initial['instrumentrawoutputunitsid'] = outputvar.instrumentrawoutputunitsid
         outputvar_form.initial['instrumentmethodid'] = outputvar.instrumentmethodid
         if deployment is None:
-            outputvar_form.fields['deployments'] = DeploymentChoiceField(
+            outputvar_form.fields['deployments'] = DeploymentActionChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
                         Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
@@ -526,7 +570,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
     else:
         outputvar_form = SiteDeploymentMeasuredVariableForm()
         if deployment is None:
-            outputvar_form.fields['deployments'] = DeploymentChoiceField(
+            outputvar_form.fields['deployments'] = DeploymentActionChoiceField(
                 queryset=EquipmentUsed.objects.filter(
                     (
                         Q(actionid__actiontypecv=CvActiontype.objects.get(term='instrumentDeployment')) | Q(
@@ -558,10 +602,10 @@ def create_site_visit(request, site_id=None):
 
     if request.method == 'POST':
         render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form = get_forms_from_request(request)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form)
+        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
         if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form)
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
     else:
@@ -577,6 +621,8 @@ def create_site_visit(request, site_id=None):
         {
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
+            'mock_results_form': ResultsForm(),
+            'mock_annotation_form': AnnotationForm(),
             'actions_form': action_form,
             'render_actions': render_actions,
             'action': action,
@@ -585,8 +631,13 @@ def create_site_visit(request, site_id=None):
 
 
 def get_forms_from_request(request, action_id=False):
-    forms_returned = len(request.POST.getlist('actiontypecv'))
+    actions_returned = len(request.POST.getlist('actiontypecv'))
+    outputvariables = request.POST.getlist('instrumentoutputvariable')
+    annotations = request.POST.getlist('annotationid')
+
     action_form = []
+    annotation_forms = []
+    results_counter = 0
     maintenance_counter = 0
     equipment_used_position = 0
     calibration_standard_position = 0
@@ -600,11 +651,39 @@ def get_forms_from_request(request, action_id=False):
         'actiondescription': request.POST.getlist('actiondescription')[0],
     }
 
-    for i in range(1, forms_returned + 1):
+    for i in range(0, len(annotations)):
+        annotation_data = {
+            'annotationid': annotations[i],
+            'annotationcode': request.POST.getlist('annotationcode')[i],
+            'annotationtext': request.POST.getlist('annotationtext')[i],
+            'annotationdatetime': request.POST.getlist('annotationdatetime')[i],
+            'annotationutcoffset': request.POST.getlist('annotationutcoffset')[i]
+        }
+        annotation_form = AnnotationForm(annotation_data)
+        annotation_forms.append(annotation_form)
+
+    for i in range(1, actions_returned + 1):
+        results = []
         action_type = request.POST.getlist('actiontypecv')[i - 1]
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
         calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
         calibration_reference_equipment_count = request.POST.getlist('calibrationreferenceequipmentnumber')[i - 1]
+
+        if action_type == 'Instrument deployment':
+            output_variable = outputvariables[i + results_counter] # get instrument output variable corresponding to the result
+            while output_variable != u'':
+                result = {
+                    'instrument_output_variable': output_variable,
+                    'unit': request.POST.getlist('unitsid')[results_counter],
+                    'processing_level': request.POST.getlist('processing_level_id')[results_counter],
+                    'sampled_medium': request.POST.getlist('sampledmediumcv')[results_counter],
+                }
+                results.append(result)
+                results_counter += 1
+                try:
+                    output_variable = outputvariables[i + results_counter]
+                except IndexError:
+                    output_variable = u''
 
         form_data = {
             'actiontypecv': action_type,
@@ -623,6 +702,7 @@ def get_forms_from_request(request, action_id=False):
             'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable')[i - 1],
             'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
             'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
+            'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
             'equipmentused': request.POST.getlist('equipmentused')[
                              equipment_used_position:int(equipment_used_count) + equipment_used_position
                              ],
@@ -633,8 +713,9 @@ def get_forms_from_request(request, action_id=False):
             'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
                                               calibration_reference_equipment_position:int(
                                               calibration_reference_equipment_count) + calibration_reference_equipment_position
-                                              ]
+                                              ],
         }
+
         try:
             action_file = request.FILES.getlist('actionfilelink')[i - 1]
         except:
@@ -652,14 +733,14 @@ def get_forms_from_request(request, action_id=False):
             form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
             maintenance_counter += 1
 
-        if action_id:
-            action_form.append(ActionForm(form_data, form_files,
-                                          instance=Action.objects.get(pk=request.POST.getlist('thisactionid')[i - 1])))
-        else:
-            action_form.append(ActionForm(form_data, form_files))
+        child_action_id = request.POST.getlist('thisactionid')[i - 1]
+        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data, form_files)
+        action.results = results
+        action_form.append(action)
 
         if action_type != 'Generic':
             action_form[-1].fields['equipmentused'].required = True
+
     if action_id:
         sampling_feature_form = FeatureActionForm(request.POST, instance=FeatureAction.objects.get(actionid=action_id))
         site_visit_form = SiteVisitForm(site_visit_data, instance=Action.objects.get(actionid=action_id))
@@ -669,12 +750,13 @@ def get_forms_from_request(request, action_id=False):
 
     crew_form = CrewForm(request.POST)
 
-    return crew_form, site_visit_form, sampling_feature_form, action_form
+    return crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms
 
 
-def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form):
+def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms):
     # validate crew
     # validate extra data
+    # TODO: validate results forms, maybe.
     crew_form_valid = crew_form.is_valid()
     affiliation_list = request.POST.getlist('affiliationid')
     for i in range(0, len(affiliation_list)):
@@ -686,10 +768,18 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
 
+    for annotation in annotation_forms:
+        annotationid = annotation.data['annotationid']
+        if annotationid == u'new':
+            all_forms_valid = all_forms_valid and 'annotationtext' not in annotation.errors
+        else:
+            all_forms_valid = all_forms_valid and True if annotationid.isnumeric() else all_forms_valid and False
+        annotation.errors.pop('annotationid', None)
+
     return all_forms_valid
 
 
-def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, updating=False):
+def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, updating=False):
     # set up site visit
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.save(commit=False)
@@ -709,17 +799,37 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
         ActionBy.objects.create(affiliationid=affiliation, actionid=site_visit_action,
                                 isactionlead=0)  # isactionlead?
 
+    # set up annotations
+    # TODO: Change this to update actions without having to delete every time
+    existing_annotations = ActionAnnotation.objects.filter(actionid=site_visit_action)
+    for annotation in existing_annotations:
+        annotation.delete()
+
+    for annotation_form in annotation_forms:
+        annotation_id = annotation_form.data['annotationid']
+        if annotation_id == u'new':
+            annotation = annotation_form.save(commit=False)
+            annotation_type = CvAnnotationtype.objects.get(term='actionAnnotation')
+            annotation.annotationtypecv = annotation_type
+            annotation.save()
+        else:
+            annotation = Annotation.objects.get(pk=annotation_id)
+
+        # setup action annotation
+        ActionAnnotation.objects.create(actionid=site_visit_action, annotationid=annotation)
+
     # set up child actions
     for i in range(0, len(action_form)):
         current_action = action_form[i].save(commit=False)
         action_type = action_form[i].cleaned_data['actiontypecv']
-        current_action.actiontypecv = CvActiontype.objects.get(name = action_type)
+        current_action.actiontypecv = CvActiontype.objects.get(name=action_type)
         current_action.save()
 
         if not updating:
             RelatedAction.objects.create(actionid=current_action, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'),
                                          relatedactionid=site_visit_action)
             FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
+
         else:
             EquipmentUsed.objects.filter(actionid=current_action).delete()
             CalibrationStandard.objects.filter(actionid=current_action).delete()
@@ -731,17 +841,55 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 equipmentid=equ
             )
 
-        if action_type == 'Instrument calibration':
+        if action_type.term == 'instrumentDeployment':
+            feature_action = current_action.featureaction.get(samplingfeatureid=sampling_feature)
+            result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
+            status = CvStatus.objects.get(term='ongoing')
+
+            # TODO: Change this to update actions without having to delete every time
+            existing_results = Result.objects.filter(featureactionid=feature_action)
+            for result in existing_results:
+                result.delete()
+
+            for result in action_form[i].results:
+                output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
+                units = Units.objects.get(pk=result['unit'])
+                processing_level = ProcessingLevel.objects.get(pk=result['processing_level'])
+                medium = CvMedium.objects.get(name=result['sampled_medium'])
+
+                Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
+                                      variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
+                                      resultdatetime=current_action.begindatetime, resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                                      statuscv=status, sampledmediumcv=medium, valuecount=0)
+
+        elif action_type.term == 'instrumentCalibration':
             if updating:
                 CalibrationAction.objects.get(actionid=current_action).delete()
                 CalibrationReferenceEquipment.objects.filter(actionid=current_action).delete()
 
             add_calibration_fields(current_action, action_form[i])
 
-        elif action_type == 'Equipment maintenance':
+        elif action_type.term == 'equipmentMaintenance':
             if updating:
                 MaintenanceAction.objects.get(actionid=current_action).delete()
             add_maintenance_fields(current_action, action_form[i])
+
+        elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
+            retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
+            deployment_action = Action.objects.get(pk=action_form[0].data['deploymentaction'])
+            if updating:
+                retrieval_related_action = RelatedAction.objects.get(actionid=current_action, relationshiptypecv=retrieval_relationship)
+                retrieval_related_action.relatedactionid = deployment_action
+                retrieval_related_action.save()
+            else:
+                RelatedAction.objects.create(
+                    actionid=current_action,
+                    relationshiptypecv=retrieval_relationship,
+                    relatedactionid=deployment_action
+                )
+            deployment_action.enddatetime = current_action.begindatetime
+            deployment_action.enddatetimeutcoffset = current_action.begindatetimeutcoffset
+            deployment_action.save()
 
     return site_visit_action
 
@@ -775,6 +923,7 @@ def add_calibration_fields(current_action, action_form):
             equipmentid=equ
         )
 
+
 @login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
     action = 'create'
@@ -782,10 +931,10 @@ def edit_site_visit(request, action_id):
 
     if request.method == 'POST':
         render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form = get_forms_from_request(request, action_id)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form)
+        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request, action_id)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
         if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, True)
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, True)
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
@@ -800,10 +949,8 @@ def edit_site_visit(request, action_id):
         action = 'update'
 
         children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
-
         action_form = []
         for child in children_actions:
-
             initial_action_data = {
                 'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid),
                 'thisactionid': child.actionid.actionid
@@ -828,10 +975,26 @@ def edit_site_visit(request, action_id):
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
                 initial_action_data['maintenancereason'] = maintenance_action.maintenancereason
 
-            action_form.append(ActionForm(
+            child_action_form = ActionForm(
                 instance=child.actionid,
                 initial=initial_action_data
-            ))
+            )
+            child_action_form.results = []
+            for result in child.actionid.featureaction.get().result_set.all():
+                result_data = {
+                    'instrumentoutputvariable': result.variableid_id,
+                    'unitsid': result.unitsid_id,
+                    'processing_level_id': result.processinglevelid_id,
+                    'sampledmediumcv': result.sampledmediumcv_id
+                }
+                child_action_form.results.append(ResultsForm(result_data))
+            action_form.append(child_action_form)
+
+        annotations = site_visit.actionannotation_set.all()
+        annotation_forms = []
+        for curr_annotation in annotations:
+            annotation_forms.append(AnnotationForm(instance=curr_annotation))
+
 
     return render(
         request,
@@ -839,7 +1002,10 @@ def edit_site_visit(request, action_id):
         {
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
+            'mock_annotation_form': AnnotationForm(),
+            'mock_results_form': ResultsForm(),
             'actions_form': action_form,
+            'annotation_forms': annotation_forms,
             'render_actions': render_actions,
             'action': action, 'item_id': action_id
         }
@@ -858,7 +1024,7 @@ def delete_site_visit(request, action_id):
 
     site_visit.delete()
     messages.add_message(request, messages.SUCCESS,
-                         'Site Visit ' + str(site_visit_name) + ' succesfully deleted')
+                         'Site Visit ' + str(site_visit_name) + ' successfully deleted')
     return HttpResponseRedirect(reverse('site_visits'))
 
 
@@ -877,7 +1043,7 @@ def edit_site_visit_summary(request, action_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_action(request, action_type, action_id=None, visit_id=None):
+def edit_action(request, action_type, action_id=None, visit_id=None, site_id=None):
     action = 'create'
     child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
 
@@ -933,35 +1099,68 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
 
             action_type = action_form.cleaned_data['actiontypecv']
 
-            if action_type.term == 'instrumentCalibration':
+            if action_type.term == 'instrumentDeployment':
+                feature_action = child_action.featureaction.get(samplingfeatureid=sampling_feature)
+                result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
+                status = CvStatus.objects.get(term='ongoing')
+
+                results = []
+                output_variables = request.POST.getlist('instrumentoutputvariable')
+
+                for result_index in range(len(output_variables) - 1):
+                    result = {
+                        'instrument_output_variable': output_variables[result_index + 1],
+                        'unit': request.POST.getlist('unitsid')[result_index],
+                        'processing_level': request.POST.getlist('processing_level_id')[result_index],
+                        'sampled_medium': request.POST.getlist('sampledmediumcv')[result_index],
+                    }
+                    results.append(result)
+
+                for result in results:  # wat
+                    output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
+                    units = Units.objects.get(pk=result['unit'])
+                    processing_level = ProcessingLevel.objects.get(pk=result['processing_level'])
+                    medium = CvMedium.objects.get(name=result['sampled_medium'])
+
+                    Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
+                                          variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
+                                          resultdatetime=child_action.begindatetime, resultdatetimeutcoffset=child_action.begindatetimeutcoffset,
+                                          statuscv=status, sampledmediumcv=medium, valuecount=0)
+
+            elif action_type.term == 'instrumentCalibration':
                 if updating:
                     CalibrationAction.objects.get(actionid=child_action).delete()
                     CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
                 add_calibration_fields(child_action, action_form)
 
+            elif action_type.term == 'equipmentMaintenance':
+                if updating:
+                    MaintenanceAction.objects.get(actionid=child_action).delete()
+                add_maintenance_fields(child_action, action_form)
+
             url_map = {
                 'equipmentDeployment': 'deployment_detail',
+                'instrumentDeployment': 'deployment_detail',
                 'instrumentCalibration': 'calibration_detail',
-                'equipmentMaintenance': 'field_activity_detail',
                 'fieldActivity': 'field_activity_detail'
             }
+            redirection = url_map[action_type.term] if action_type.term in url_map else 'field_activity_detail'
             response = HttpResponseRedirect(
-                reverse(url_map[action_type.term], args=[child_action.actionid])
+                reverse(redirection, args=[child_action.actionid])
             )
 
             return response
 
     elif action_id:
+        action = 'update'
         child_action = Action.objects.get(pk=action_id)
         parent_action_id = RelatedAction.objects.get(
             relationshiptypecv=child_relationship,
             actionid=action_id
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
-
-        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
-
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionForm(
             instance=child_action,
             initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
@@ -974,8 +1173,18 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
             action_form.initial['calibrationcheckvalue'] = CalibrationAction.objects.get(pk=action_id).calibrationcheckvalue
             action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
 
+        elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
+            action_form = ActionForm(
+                initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+            )
+            action_form.initial['actionid'] = None
+            action_form.initial['methodid'] = None
+            action_form.initial['actiontypecv'] = CvActiontype.objects.get(term='equipmentRetrieval' if child_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
+            action_form.initial['begindatetime'] = datetime.today()
+            action_form.initial['actiondescription'] = ''
+            action = 'create'
+
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
-        action = 'update'
 
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
@@ -991,71 +1200,122 @@ def edit_action(request, action_type, action_id=None, visit_id=None):
     return render(
         request,
         'site-visits/field-activities/other-action-form.html',
-        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'action_type': action_type}
+        {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'site_id': site_id,
+         'action_type': action_type, 'mock_results_form': ResultsForm()}
     )
 
 
-#################################################################################################
-#                         Considering Deletion
-#################################################################################################
+@login_required(login_url=LOGIN_URL)
+def edit_retrieval(request, deployment_id=None, retrieval_id=None):
+    action = 'create'
+    child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
+    retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
 
-# WE DECIDED TO NOT EDIT OR CREATE VOCABULARIES. KEEPING THIS FUNCTIONALITY HERE IN CASE IT'S NEEDED
+    if request.method == 'POST':
+        updating = request.POST['action'] == 'update'
+        deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
 
-# @login_required(login_url=LOGIN_URL)
-# def edit_control_vocabularies(request, target_cv, name):
-#     action = 'create'
-#     sdi_app_config = apps.get_app_config('sensordatainterface')
-#     id_modified = False
-#     new_name_temp = None
-#
-#     if request.method == 'POST':
-#         if request.POST['action'] == 'update':
-#             cv_model = sdi_app_config.get_model(target_cv)
-#             cv_instance = cv_model.objects.get(pk=request.POST['item_id'])
-#
-#             if request.POST['name'] != request.POST['item_id']:
-#                 new_name_temp = request.POST['name']
-#                 request.POST['name'] = request.POST['item_id']
-#                 cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
-#                 id_modified = True
-#
-#             else:
-#                 cv_form = get_cv_model_form(cv_model, request.POST, instance=cv_instance)
-#
-#         else:
-#             cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv), request.POST)
-#
-#         if cv_form.is_valid():
-#             if id_modified:
-#                 cv = cv_form.save(commit=False)
-#                 cv.name = new_name_temp
-#                 cv.save()
-#                 cv_model.objects.get(pk=request.POST['name']).delete()
-#             else:
-#                 cv = cv_form.save()
-#
-#             messages.add_message(request, messages.SUCCESS,
-#                                  'Control Vocabulary ' + target_cv + request.POST['action'] + 'd successfully')
-#             return HttpResponseRedirect(reverse('vocabularies') + get_cv_tab(target_cv)) # change tab according to target_cv
-#
-#     elif name:
-#         cv_model = sdi_app_config.get_model(target_cv)
-#         cv_instance = cv_model.objects.get(pk=name)
-#         cv_form = get_cv_model_form(cv_model, instance=cv_instance)
-#         action = 'update'
-#
-#     else:
-#         cv_form = get_cv_model_form(sdi_app_config.get_model(target_cv))
-#         cv_form.initial ={'modelname': target_cv}
-#
-#     return render(
-#         request,
-#         'vocabulary/vocabulary-form.html',
-#         {
-#             'render_forms': [cv_form],
-#             'action': action,
-#             'item_id': name,
-#             'cv_name': target_cv,
-#             'tab_name': get_cv_tab(target_cv)
-#         }
-#     )
+        if updating:
+            site_visit = Action.objects.get(pk=request.POST['actionid'])
+            retrieval_action = Action.objects.get(pk=request.POST['item_id'])
+
+            site_visit_form = SiteVisitChoiceForm(request.POST, instance=site_visit)
+            retrieval_form = ActionForm(request.POST, request.FILES, instance=retrieval_action)
+        else:
+            site_visit_form = SiteVisitChoiceForm(request.POST)
+            retrieval_form = ActionForm(request.POST, request.FILES)
+
+        if site_visit_form.is_valid() and retrieval_form.is_valid():
+            retrieval_action = retrieval_form.save()
+            parent_site_visit = site_visit_form.cleaned_data['actionid']
+            if updating:
+                related_action = RelatedAction.objects.get(
+                    actionid=retrieval_action,
+                    relationshiptypecv=child_relationship
+                )
+                retrieval_related_action = RelatedAction.objects.get(
+                    actionid=retrieval_action,
+                    relationshiptypecv=retrieval_relationship
+                )
+                retrieval_related_action.relatedactionid = deployment_action
+                related_action.relatedactionid=parent_site_visit
+                retrieval_related_action.save()
+                related_action.save()
+            else:
+                RelatedAction.objects.create(
+                    actionid=retrieval_action,
+                    relationshiptypecv=child_relationship,
+                    relatedactionid=parent_site_visit
+                )
+                RelatedAction.objects.create(
+                    actionid=retrieval_action,
+                    relationshiptypecv=retrieval_relationship,
+                    relatedactionid=deployment_action
+                )
+
+            sampling_feature = FeatureAction.objects.filter(
+                actionid=parent_site_visit,
+                samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
+            )[0].samplingfeatureid
+
+            FeatureAction.objects.get_or_create(
+                actionid=retrieval_action,
+                samplingfeatureid=sampling_feature
+            )
+
+            equipment_used = deployment_action.equipmentused.get().equipmentid
+            current_equipment = EquipmentUsed.objects.filter(actionid=retrieval_action)
+            current_equipment.delete()
+            EquipmentUsed.objects.create(actionid=retrieval_action, equipmentid=equipment_used)
+
+            deployment_action.enddatetime = retrieval_action.begindatetime
+            deployment_action.enddatetimeutcoffset = retrieval_action.begindatetimeutcoffset
+            deployment_action.save()
+
+            response = HttpResponseRedirect(
+                reverse('deployment_detail', args=[deployment_action.actionid])
+            )
+
+            return response
+
+    elif retrieval_id:
+        action = 'update'
+        retrieval_action = Action.objects.get(pk=retrieval_id)
+        parent_action_id = RelatedAction.objects.get(
+            relationshiptypecv=child_relationship,
+            actionid=retrieval_id
+        )
+        site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
+        site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
+        retrieval_form = ActionForm(
+            instance=retrieval_action,
+            initial={
+                'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used],
+                'deploymentaction': RelatedAction.objects.get(relationshiptypecv=retrieval_relationship, actionid=retrieval_id).relatedactionid.actionid
+            }
+        )
+        retrieval_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
+
+    elif deployment_id:
+        deployment_action = Action.objects.get(pk=deployment_id)
+        site_visit_form = SiteVisitChoiceForm()
+        retrieval_form = ActionForm(
+            initial={
+                'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'deploymentaction': deployment_id,
+                'actiontypecv': CvActiontype.objects.get(term='equipmentRetrieval' if deployment_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
+            })
+
+    else:
+        site_visit_form = SiteVisitChoiceForm()
+        retrieval_form = ActionForm(
+            initial={
+                'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7
+            }
+        )
+
+    return render(
+        request,
+        'site-visits/deployment/retrieval_form.html',
+        {'render_forms': [site_visit_form, retrieval_form], 'action': action, 'item_id': retrieval_id }
+    )

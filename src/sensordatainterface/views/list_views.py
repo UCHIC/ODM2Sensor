@@ -10,7 +10,7 @@ class GenericListView(ListView):
 
 
 #################################################################################################
-#                         Site Visits Tab
+#                         Actions Tab
 #################################################################################################
 class SiteVisitsBySite(ListView):
     context_object_name = 'SiteVisits'

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.forms import ModelForm, TextInput, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
+from django.core.exceptions import ValidationError
+from django.db.models import Q
+from django.forms import ModelForm, TextInput, Textarea, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
     , ModelMultipleChoiceField, FileInput, HiddenInput
+from django.forms.models import modelformset_factory
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -49,6 +52,21 @@ class EquipmentModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.modelname
 
+    def validate(self, value):
+        pass
+
+    def to_python(self, value):
+        try:
+            value = super(EquipmentModelChoiceField, self).to_python(value)
+        except self.queryset.model.DoesNotExist:
+            key = self.to_field_name or 'pk'
+            value = EquipmentModel.objects.filter(**{key: value})
+            if not value.exists():
+                raise ValidationError(self.error_messages['invalid_choice'], code='invalid_choice')
+            else:
+                value = value.first()
+        return value
+
 
 class PeopleChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
@@ -58,6 +76,22 @@ class PeopleChoiceField(ModelChoiceField):
 class PeopleMultipleChoice(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.organizationid.organizationname + ": " + obj.personid.personfirstname + " " + obj.personid.personlastname
+
+
+class DeploymentActionChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        action = obj.actionid
+        equipment = obj.equipmentid
+        equipment_model = equipment.equipmentmodelid
+        feature_actions = action.featureaction.all()
+        feature_action = feature_actions[0] if feature_actions.count() > 0 else None
+        manufacturer = equipment_model.modelmanufacturerid if equipment_model is not None else None
+        info = str(action.begindatetime) + ' '
+        info += (str(feature_action.samplingfeatureid.samplingfeaturecode) + ' ') if feature_action is not None else ''
+        info += (str(equipment.equipmentserialnumber) + ' ' + str(equipment.equipmenttypecv.name) + ' ') if equipment is not None else ''
+        info += (str(manufacturer.organizationname) + ' ') if manufacturer is not None else ''
+        info += (str(equipment_model.modelpartnumber) + ' ') if equipment_model is not None else ''
+        return info
 
 
 class MethodChoiceField(ModelChoiceField):
@@ -70,9 +104,18 @@ class UnitChoiceField(ModelChoiceField):
         return obj.unitsname
 
 
-class EquipmentChoiceField(ModelChoiceField):
+class ProcessingLevelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.processinglevelcode
+
+
+class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
+
+    def clean(self, value):
+        cleaned_value = self._check_values(value)
+        return cleaned_value
 
 
 class SiteVisitChoiceField(ModelChoiceField):
@@ -83,14 +126,23 @@ class SiteVisitChoiceField(ModelChoiceField):
         return "(" + start_time + ")  " + sampling_feature_code
 
 
-class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
+class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
 
 class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.referencematerialmediumcv.name + ' : ' + obj.referencematerialcode + " " + obj.referencemateriallotcode
+        if obj.referencematerialvalue.count() > 0:
+            referencematerialvalue = obj.referencematerialvalue.get()
+            value_information = ": " + referencematerialvalue.variableid.variablenamecv.name + " " + \
+                                str(referencematerialvalue.referencematerialvalue) + " " + \
+                                referencematerialvalue.unitsid.unitsabbreviation
+        else:
+            value_information = ''
+
+        return obj.referencematerialmediumcv.name + ' : ' + obj.referencematerialcode + " " + \
+               obj.referencemateriallotcode + value_information
 
 
 class VariableChoiceField(ModelChoiceField):
@@ -100,12 +152,17 @@ class VariableChoiceField(ModelChoiceField):
 
 class DeploymentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return str(obj.actionid.begindatetime) + ": " + obj.equipmentid.equipmentname
+        return obj.methodname
 
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.modelid.modelname + ": " + obj.variableid.variablenamecv.name
+        return obj.modelid.modelname + ": " + obj.variableid.variablecode + ' ' + obj.variableid.variablenamecv.name
+
+
+class ActionAnnotationChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.annotationtext
 
 
 time_zone_choices = (
@@ -196,39 +253,42 @@ class SiteForm(ModelForm):
 
 class EquipmentForm(ModelForm):
     required_css_class = 'form-required'
-    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Organization',
-                                                empty_label='Choose an Organization')
-    equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model',
-                                                 empty_label='Choose a Model')
+    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Vendor', empty_label='Choose an Organization')
+    equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model', empty_label='Choose a Model')
+    equipmentpurchasedate = forms.DateTimeField(initial=datetime.now(), label='Purchase Date')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
-
-    equipmentpurchasedate = forms.DateTimeField(initial=datetime.now())
 
     class Meta:
         model = Equipment
         fields = [
             'equipmentcode',
             'equipmentserialnumber',
+            'equipmentname',
             'equipmenttypecv',
             'equipmentpurchaseordernumber',
             'equipmentpurchasedate',
             'equipmentdescription',
+            'equipmentownerid',
+            'equipmentdocumentationlink',
         ]
 
         widgets = {
+            'equipmentname': TextInput,
             'equipmentcode': TextInput,
             'equipmentserialnumber': TextInput,
             'equipmentpurchaseordernumber': TextInput,
-            'equipmentpurchasedate': DateTimeInput,
+            'equipmentdocumentationlink': FileInput,
         }
 
         labels = {
+            'equipmentname': _('Equipment Name'),
             'equipmentcode': _('Equipment Code'),
             'equipmentserialnumber': _('Serial Number'),
             'equipmenttypecv': _('Equipment Type'),
             'equipmentpurchaseordernumber': _('Purchase Order Number'),
             'equipmentdescription': _('Description'),
-            'equipmentpurchasedate': _('Purchase Date'),
+            'equipmentdocumentationlink': _('Documentation Link')
+
         }
 
 
@@ -424,7 +484,8 @@ class MethodForm(ModelForm):
     organizationid = OrganizationChoiceField(
         queryset=Organization.objects.all(),
         label='Organization',
-        empty_label='Choose an Organization'
+        empty_label='Choose an Organization',
+        required=False
     )
 
     class Meta:
@@ -439,7 +500,7 @@ class MethodForm(ModelForm):
         widgets = {
             'methodcode': TextInput,
             'methodlink': TextInput,
-            'methodname': TextInput,
+            'methodname': Textarea,
         }
         labels = {
             'methodcode': _('Method Code'),
@@ -657,21 +718,10 @@ class SelectWithClassForOptions(Select):
     def render_option(self, *args, **kwargs):
         option_html = super(SelectWithClassForOptions, self).render_option(*args, **kwargs)
 
-        # method types are currently not equal to actiontypes so this dictionary temporarily corrects that.
-        methodtypes = {
-            'Instrument calibration': 'calibration',
-            'Equipment deployment': 'deployment',
-            'Equipment maintenance': 'maintenance',
-            'Equipment retrieval': 'notypeclass',
-            'Field activity': 'notypeclass',
-            'Observation': 'notypeclass',
-            'Specimen collection': 'notypeclass',
-        }
-
         this_method = args[1]
         class_value = "class=\"\""
         if this_method != "":
-            class_value = methodtypes[Method.objects.get(pk=this_method).methodtypecv.name]
+            class_value = Method.objects.get(pk=this_method).methodtypecv.name.replace(' ', '')
 
         after_tag = 8
         before_tag_close = 7
@@ -686,6 +736,7 @@ class ActionForm(ModelForm):
         self.fields['equipmentused'].help_text = None
         self.fields['calibrationstandard'].help_text = None
         self.fields['calibrationreferenceequipment'].help_text = None
+        self.fields['equipmentused'].required = False
 
     required_css_class = 'form-required'
 
@@ -700,20 +751,20 @@ class ActionForm(ModelForm):
     )
 
     equipment_by_site = PrettyCheckboxField(widget=PrettyCheckboxWidget(
-        attrs={'class': 'calibration generic'}), label='Show All Equipment', required=False
+        attrs={'class': 'Instrumentcalibration Notype'}), label='Show All Equipment', required=False
     )
 
     equipmentusednumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     calibrationstandard = CalibrationStandardMultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+        widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False
     )
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     calibrationreferenceequipment = MultipleEquipmentChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'calibration'}),
+        widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
         queryset=Equipment.objects.all(), label='Reference Equipment',
         required=False
     )
@@ -721,26 +772,31 @@ class ActionForm(ModelForm):
     calibrationreferenceequipmentnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     isfactoryservice = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'class': 'maintenance'}), label='Is Factory Service', required=False)
+        widget=forms.CheckboxInput(attrs={'class': 'Equipmentmaintenance'}), label='Is Factory Service', required=False)
     isfactoryservicebool = forms.BooleanField(
         widget=HiddenInput(), initial='False', required=False
     )
     maintenancecode = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'maintenance'}), label='Maintenance Code', required=False)
+        widget=forms.TextInput(attrs={'class': 'Equipmentmaintenance'}), label='Maintenance Code', required=False)
     maintenancereason = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'maintenance'}), label='Maintenance Reason', required=False)
+        widget=forms.Textarea(attrs={'class': 'Equipmentmaintenance'}), label='Maintenance Reason', required=False)
 
     # fields for calibration
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
-        widget=forms.Select(attrs={'class': 'calibration'}),
+        widget=forms.Select(attrs={'class': 'Instrumentcalibration'}),
         queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
 
     calibrationcheckvalue = forms.DecimalField(
-        widget=forms.NumberInput(attrs={'class': 'calibration'}), label='Calibration Check Value', required=False)
+        widget=forms.NumberInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Check Value', required=False)
+
     calibrationequation = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'calibration generic'}), label='Calibration Equation', required=False)
+        widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation', required=False)
 
-
+    # fields for retrieval
+    deploymentaction = DeploymentActionChoiceField(widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment', to_field_name='actionid',
+        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment')),
+        required=False
+    )
 
     thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
@@ -748,22 +804,23 @@ class ActionForm(ModelForm):
         model = Action
         fields = [
             'actiontypecv',
+            'deploymentaction',
             'begindatetime',
             'begindatetimeutcoffset',
             'enddatetime',
             'enddatetimeutcoffset',
             'actiondescription',
             'actionfilelink',
-            'methodid'
+            'methodid',
         ]
 
         widgets = {
-            'actiontypecv': Select(choices=[
-                ('Field activity', 'Generic'),
-                ('Equipment deployment', 'Deployment'),
-                ('Instrument calibration', 'Calibration'),
-                ('Equipment maintenance', 'Maintenance')
-            ]),
+            # 'actiontypecv': Select(choices=[
+            #     ('Field activity', 'Generic'),
+            #     ('Equipment deployment', 'Deployment'),
+            #     ('Instrument calibration', 'Calibration'),
+            #     ('Equipment maintenance', 'Maintenance')
+            # ]),
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
@@ -780,6 +837,71 @@ class ActionForm(ModelForm):
             'enddatetimeutcoffset': _('End UTC Offset'),
             'actionfilelink': _('Action File'),
             'actiondescription': _('Description')
+        }
+
+    def clean(self):
+        return super(ActionForm, self).clean()
+
+    def clean_equipmentused(self):
+        equipment = self.data['equipmentused']
+        action_type = self.data['actiontypecv']
+        required_types = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
+                              'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval']
+
+        if action_type in required_types and len(equipment) == 0:
+            raise ValidationError(_('This field is required'))
+
+        return self.cleaned_data['equipmentused']
+
+
+class ResultsForm(forms.Form):
+    required_css_class = 'form-required'
+
+    instrumentoutputvariable = InstrumentOutputVariableChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=True)
+
+    unitsid = UnitChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=Units.objects.all(), label='Units', required=True)
+
+    processing_level_id = ProcessingLevelChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=True)
+
+    sampledmediumcv = forms.ModelChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=CvMedium.objects.all(), label='Sampled Medium', required=True)
+
+
+class AnnotationForm(forms.ModelForm):
+    required_css_class = 'form-required'
+    annotationid = ActionAnnotationChoiceField(queryset=Annotation.objects.all(),
+                                               label='Annotation', empty_label='Choose an Annotation')
+
+    class Meta:
+        model = Annotation
+        fields = [
+            'annotationid',
+            'annotationcode',
+            'annotationtext',
+            'annotationdatetime',
+            'annotationutcoffset'
+        ]
+
+        widgets = {
+            'annotationcode': forms.TextInput,
+            'annotationtext': forms.TextInput,
+            'annotationdatetime': DateTimeInput,
+            'annotationutcoffset': Select(choices=time_zone_choices),
+        }
+
+        labels = {
+            'annotationid': _('Annotation'),
+            'annotationcode': _('Annotation Code'),
+            'annotationtext': _('Annotation Text'),
+            'annotationdatetime': _('Annotation Date Time'),
+            'annotationutcoffset': _('Annotation UTC Offset')
         }
 
 
