@@ -110,7 +110,8 @@ function setChildActionDateTimePicker(childForm) {
     //restart datetimepicker
     $(childForm).find('.datetimepicker').datetimepicker(
         {
-            format: 'YYYY-MM-DD HH:mm'
+            format: 'YYYY-MM-DD HH:mm',
+            sideBySide: true
         }).on('changeDate', beginDateTimeChanged);
 
     //set initial bounds on dates depending on site visit dates
