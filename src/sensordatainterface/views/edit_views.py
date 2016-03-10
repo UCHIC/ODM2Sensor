@@ -1288,7 +1288,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
         equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
-        retrieval_form = RetrievalForm(
+        retrieval_form = ActionForm(
             instance=retrieval_action,
             initial={
                 'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used],
@@ -1300,7 +1300,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
     elif deployment_id:
         deployment_action = Action.objects.get(pk=deployment_id)
         site_visit_form = SiteVisitChoiceForm()
-        retrieval_form = RetrievalForm(
+        retrieval_form = ActionForm(
             initial={
                 'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'deploymentaction': deployment_id,
                 'actiontypecv': CvActiontype.objects.get(term='equipmentRetrieval' if deployment_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
@@ -1308,7 +1308,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     else:
         site_visit_form = SiteVisitChoiceForm()
-        retrieval_form = RetrievalForm(
+        retrieval_form = ActionForm(
             initial={
                 'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7
             }
