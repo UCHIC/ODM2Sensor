@@ -37,7 +37,7 @@ function setOtherActions() {
         $('.EquipmentDeployment [name="equipmentused"]').select2();
     } else if (mainForm.hasClass('Retrieval')) {
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
-        $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required');
+        $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required').show();
         filterNonRetrievalFields($('.Retrieval'));
     }
 

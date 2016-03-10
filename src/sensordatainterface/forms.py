@@ -804,6 +804,7 @@ class ActionForm(ModelForm):
         model = Action
         fields = [
             'actiontypecv',
+            'deploymentaction',
             'begindatetime',
             'begindatetimeutcoffset',
             'enddatetime',
