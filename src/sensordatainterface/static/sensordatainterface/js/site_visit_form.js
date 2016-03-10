@@ -78,7 +78,7 @@ function onAnnotationChange(event) {
 
     if (annotationSelect.find(':selected').val() == 'new') {
         newAnnotationFields.show();
-        annotationSelect.parents('tr').removeClass('form-required');
+        annotationSelect.parents('tr').removeClass('form-required').hide();
     } else {
         newAnnotationFields.hide();
         annotationSelect.parents('tr').addClass('form-required');
