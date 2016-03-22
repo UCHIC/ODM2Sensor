@@ -265,6 +265,8 @@ def edit_equipment(request, equipment_id):
     elif equipment_id:
         equipment = Equipment.objects.get(pk=equipment_id)
         equipment_form = EquipmentForm(instance=equipment)
+        equipment_form.initial['equipmentvendorid'] = equipment.equipmentvendorid_id # populates existing Vendor field
+        equipment_form.initial['equipmentmodelid'] = equipment.equipmentmodelid_id # populates existing Model field
         action = 'update'
     else:
         equipment_form = EquipmentForm()
