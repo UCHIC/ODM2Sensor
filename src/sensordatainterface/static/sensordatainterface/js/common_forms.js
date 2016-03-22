@@ -182,6 +182,12 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
         $(currentForm).next('tbody.add-result-btn').remove();
     }
+
+    if (formType == 'Instrument calibration') {
+        $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').addClass('form-required');
+    } else {
+        $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').removeClass('form-required');
+    }
 }
 
 function addResultForm(that, firstResult) {
@@ -342,8 +348,6 @@ function filterDeploymentsByType(formType, deploymentsSelect) {
         filterDeployments(selectedSite, false, deploymentsSelect);
         return;
     }
-
-
 
     var deploymentsUrl = $('#deployments-by-type-api').val();
 
