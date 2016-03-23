@@ -1165,15 +1165,12 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
 
         # @todo issues #171, #189 equipment_used list is not populating
-        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
-        current_equipment = [equ.equipmentid.equipmentid for equ in EquipmentUsed.objects.filter(actionid=child_action)]
+        equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
 
-        # place
-        for balls in equipment_used:
-            print balls.equipmentid.equipmentid
+        # create list of equipment id's for equipment_used
         action_form = ActionForm(
             instance=child_action,
-            initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+            initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
         )
 
         if action_type == 'InstrumentCalibration':
@@ -1202,11 +1199,6 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         action_form = ActionForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
         )
-
-    # 'equipmentDeployment': 'deployment_detail',
-    #             'instrumentCalibration': 'calibration_detail',
-    #             'equipmentMaintenance': 'field_activity_detail',
-    #             'fieldActivity': 'field_activity_detail'
 
     return render(
         request,

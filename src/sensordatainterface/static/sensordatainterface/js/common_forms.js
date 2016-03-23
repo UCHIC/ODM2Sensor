@@ -544,6 +544,21 @@ function filterActionDatesByVisit(siteVisitId) {
     });
 }
 
+            /*
+            var variables = JSON.parse(json).map(function(variable) {return variable.pk + ""});
+            outputVariablesSelects.children('option').each(function(index, element) {
+                if (variables.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+            outputVariablesSelects.each(function(index, element) {
+                if (variables.indexOf($(element).val()) === -1) {
+                    $(element).val('');
+                }
+            });
+             */
 
 
 function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
@@ -553,18 +568,28 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
         currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
         var currentEquipmentSelect = $(this);
         if (currentValue !== "Equipment deployment" && currentValue !== "Instrument deployment") {
-            var options = [];
-            currentEquipmentSelect.empty();
-            json.forEach(function(object) {
-                var equipment = object.fields;
-                var equipmentElement = ['<option value=', object.pk, '>',
-                    equipment.equipmentcode, ': ', equipment.equipmentserialnumber,
-                    ' (', equipment.equipmenttypecv, ', ', equipment.equipmentmodelid, ')',
-                    '</option>'
-                ];
-                options.push(equipmentElement.join(''));
+            var variables = JSON.parse(json).map(function(variable) {
+                return variable.pk + ""
+            })
+            currentValue.children('option').each(function(index, element) {
+                if (variables.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).val('');
+                }
             });
-            currentEquipmentSelect.append(options.join(''));
+            //var options = [];
+            //currentEquipmentSelect.empty();
+            //json.forEach(function(object) {
+            //    var equipment = object.fields;
+            //    var equipmentElement = ['<option value=', object.pk, '>',
+            //        equipment.equipmentcode, ': ', equipment.equipmentserialnumber,
+            //        ' (', equipment.equipmenttypecv, ', ', equipment.equipmentmodelid, ')',
+            //        '</option>'
+            //    ];
+            //    options.push(equipmentElement.join(''));
+            //});
+            //currentEquipmentSelect.append(options.join(''));
         } else {
             var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
             if (defaultElements.length > 0) {
