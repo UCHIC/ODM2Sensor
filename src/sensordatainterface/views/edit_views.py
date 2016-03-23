@@ -1190,7 +1190,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             action_form.initial['begindatetime'] = datetime.today()
             action_form.initial['actiondescription'] = ''
             action = 'create'
-
+        # Initialize the maintenance values
         elif child_action.actiontypecv_id == 'Equipment maintenance':
             action_form.initial['maintenancecode'] = MaintenanceAction.objects.get(pk=action_id).maintenancecode
             action_form.initial['maintenancereason'] = MaintenanceAction.objects.get(pk=action_id).maintenancereason
