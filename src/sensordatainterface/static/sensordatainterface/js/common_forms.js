@@ -428,7 +428,7 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
 }
 
 function filterVisits(selectedId, isDeployment, visitsSelect) {
-    if(selectedId == "") {
+    if (selectedId == "") {
         visitsSelect.children('option').removeAttr('disabled');
         visitsSelect.select2();
         return;
@@ -544,22 +544,6 @@ function filterActionDatesByVisit(siteVisitId) {
     });
 }
 
-            /*
-            var variables = JSON.parse(json).map(function(variable) {return variable.pk + ""});
-            outputVariablesSelects.children('option').each(function(index, element) {
-                if (variables.indexOf(element.value) === -1 && element.value !== '') {
-                    $(element).attr('disabled', 'disabled');
-                } else {
-                    $(element).removeAttr('disabled');
-                }
-            });
-            outputVariablesSelects.each(function(index, element) {
-                if (variables.indexOf($(element).val()) === -1) {
-                    $(element).val('');
-                }
-            });
-             */
-
 
 function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
     var currentValue;
@@ -578,18 +562,6 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
                     $(element).val('');
                 }
             });
-            //var options = [];
-            //currentEquipmentSelect.empty();
-            //json.forEach(function(object) {
-            //    var equipment = object.fields;
-            //    var equipmentElement = ['<option value=', object.pk, '>',
-            //        equipment.equipmentcode, ': ', equipment.equipmentserialnumber,
-            //        ' (', equipment.equipmenttypecv, ', ', equipment.equipmentmodelid, ')',
-            //        '</option>'
-            //    ];
-            //    options.push(equipmentElement.join(''));
-            //});
-            //currentEquipmentSelect.append(options.join(''));
         } else {
             var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
             if (defaultElements.length > 0) {
