@@ -1162,12 +1162,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
-
-
-        # @todo issues #171, #189 equipment_used list is not populating
         equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
-
-        # create list of equipment id's for equipment_used
         action_form = ActionForm(
             instance=child_action,
             initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
@@ -1187,10 +1182,12 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             action_form.initial['begindatetime'] = datetime.today()
             action_form.initial['actiondescription'] = ''
             action = 'create'
-        # Initialize the maintenance values
+
         elif child_action.actiontypecv_id == 'Equipment maintenance':
-            action_form.initial['maintenancecode'] = MaintenanceAction.objects.get(pk=action_id).maintenancecode
-            action_form.initial['maintenancereason'] = MaintenanceAction.objects.get(pk=action_id).maintenancereason
+            action_form.initial['actionid'] = child_action.maintenanceaction.get(pk=action_id).actionid
+            action_form.initial['isfactoryservice'] = child_action.maintenanceaction.get(pk=action_id).isfactoryservice
+            action_form.initial['maintenancecode'] = child_action.maintenanceaction.get(pk=action_id).maintenancecode
+            action_form.initial['maintenancereason'] = child_action.maintenanceaction.get(pk=action_id).maintenancereason
 
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
 
