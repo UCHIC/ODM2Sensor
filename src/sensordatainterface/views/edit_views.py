@@ -927,7 +927,7 @@ def create_site_visit(request, site_id=None):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_site_visit(request, action_id):
+def edit_site_visit(request, action_id=None):
     action = 'create'
     render_actions = False
 
@@ -940,7 +940,7 @@ def edit_site_visit(request, action_id):
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
-    else:
+    elif action_id:
         site_visit = Action.objects.get(pk=action_id)
         site_visit_form = SiteVisitForm(instance=site_visit)
         sampling_feature = FeatureAction.objects.get(actionid=site_visit)
@@ -997,6 +997,12 @@ def edit_site_visit(request, action_id):
         for curr_annotation in annotations:
             annotation_forms.append(AnnotationForm(instance=curr_annotation))
 
+    else:
+        sampling_feature_form = FeatureActionForm()
+        site_visit_form = SiteVisitForm(
+            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
+        crew_form = CrewForm()
+        action_form = ActionForm()
 
     return render(
         request,
@@ -1007,7 +1013,7 @@ def edit_site_visit(request, action_id):
             'mock_annotation_form': AnnotationForm(),
             'mock_results_form': ResultsForm(),
             'actions_form': action_form,
-            'annotation_forms': annotation_forms,
+            #'annotation_forms': annotation_forms,
             'render_actions': render_actions,
             'action': action, 'item_id': action_id
         }

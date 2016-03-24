@@ -7,7 +7,7 @@
         Site Visit</h1></div>
     <div class="row">
         <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12"
-              action="{% block submit_url %}{% endblock %}"
+              action=""
               method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ action }}" name="action">
@@ -70,19 +70,10 @@
                 <tr>
                     <th></th>
                     <td>
-                        <div class="row">
-                            <a class="btn btn-default col-xs-12 col-sm-12"
-                                {% if item_id %}
-                                    href="{% block detail_cancel_url %}{% endblock %}"
-                                {% else %}
-                                    href="{% block list_cancel_url %}{% endblock %}"
-                                {% endif %}>
-                                Cancel
-                            </a>
-                            <input class="btn btn-primary col-xs-12 col-sm-12" type="submit"
-                                   value="{{ action|capfirst }}{% block button_value %}{% endblock %}">
-                        </div>
-                    </td>
+{% block button_value %}{% block item_name %}Submit{% endblock %}{% endblock %}
+{% block submit_url %}{% url 'create_site_visit' item_id %}{% endblock %}
+{% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}
                 </tr>
                 </tbody>
             </table>
