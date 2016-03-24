@@ -72,15 +72,15 @@
                     <td>
                         <div class="row">
                             <a class="btn btn-default col-xs-12 col-sm-12"
-                                    {% if item_id %}
-                               href="{% block detail_cancel_url %}{% endblock %}"
-                                    {% else %}
-                               href="{% block list_cancel_url %}{% endblock %}"
-                                    {% endif %}>
+                                {% if item_id %}
+                                    href="{% block detail_cancel_url %}{% endblock %}"
+                                {% else %}
+                                    href="{% block list_cancel_url %}{% endblock %}"
+                                {% endif %}>
                                 Cancel
                             </a>
                             <input class="btn btn-primary col-xs-12 col-sm-12" type="submit"
-                                   value="{{ action|capfirst }} {% block button_value %}{% endblock %}">
+                                   value="{{ action|capfirst }}{% block button_value %}{% endblock %}">
                         </div>
                     </td>
                 </tr>
