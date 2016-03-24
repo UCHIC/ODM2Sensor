@@ -1144,7 +1144,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                 add_calibration_fields(child_action, action_form)
 
             elif action_type.term == 'equipmentMaintenance':
-                if updating:
+                if updating and child_action.maintenanceaction.exists():
                     MaintenanceAction.objects.get(actionid=child_action).delete()
                 add_maintenance_fields(child_action, action_form)
 
@@ -1191,7 +1191,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             action_form.initial['actiondescription'] = ''
             action = 'create'
 
-        elif child_action.actiontypecv_id == 'Equipment maintenance':
+        elif child_action.actiontypecv_id == 'Equipment maintenance' and child_action.maintenanceaction.exists():
             action_form.initial['actionid'] = child_action.maintenanceaction.get(pk=action_id).actionid
             action_form.initial['isfactoryservice'] = child_action.maintenanceaction.get(pk=action_id).isfactoryservice
             action_form.initial['maintenancecode'] = child_action.maintenanceaction.get(pk=action_id).maintenancecode
