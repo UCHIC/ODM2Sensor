@@ -97,7 +97,7 @@ def get_visits_by_site(request):
         selected_id = request.POST.get('id')
         is_deployment = request.POST.get('is_deployment')
 
-        site = FeatureAction.objects.get(actionid__actionid=selected_id).samplingfeatureid if is_deployment else FeatureAction.objects.get(pk=selected_id)
+        site = FeatureAction.objects.get(actionid__actionid=selected_id).samplingfeatureid if is_deployment != 'false' else SamplingFeature.objects.get(pk=selected_id)
         visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid=site)
         response_data = serializers.serialize('json', visits, use_natural_keys=True)
     else:
