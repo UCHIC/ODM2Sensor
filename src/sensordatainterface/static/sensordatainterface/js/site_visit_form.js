@@ -34,7 +34,7 @@ function addActionForm(that) {
     $(thisForm).find(".select2-container").remove();
     $(thisForm).find(".select-two").select2();
 
-    // This bit of code solves the problem of th checkbox not sending status when is unchecked.
+    // This bit of code solves the problem of the checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
     $(thisForm).find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
 
