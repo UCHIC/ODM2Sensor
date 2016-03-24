@@ -597,41 +597,6 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
     )
 
 
-@login_required(login_url=LOGIN_URL)
-def create_site_visit(request, site_id=None):
-    action = 'create'
-    render_actions = False
-
-    if request.method == 'POST':
-        render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
-        if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
-            return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
-
-    else:
-        sampling_feature_form = FeatureActionForm(initial={'samplingfeatureid': site_id})
-        site_visit_form = SiteVisitForm(
-            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
-        crew_form = CrewForm()
-        action_form = ActionForm()
-
-    return render(
-        request,
-        'site-visits/actions-form.html',
-        {
-            'render_forms': [sampling_feature_form, site_visit_form, crew_form],
-            'mock_action_form': ActionForm(),
-            'mock_results_form': ResultsForm(),
-            'mock_annotation_form': AnnotationForm(),
-            'actions_form': action_form,
-            'render_actions': render_actions,
-            'action': action,
-        }
-    )
-
-
 def get_forms_from_request(request, action_id=False):
     actions_returned = len(request.POST.getlist('actiontypecv'))
     outputvariables = request.POST.getlist('instrumentoutputvariable')
@@ -769,6 +734,7 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
+        print form_elem.errors
 
     for annotation in annotation_forms:
         annotationid = annotation.data['annotationid']
@@ -926,8 +892,43 @@ def add_calibration_fields(current_action, action_form):
         )
 
 
+# @login_required(login_url=LOGIN_URL)
+# def create_site_visit(request, site_id=None):
+#     action = 'create'
+#     render_actions = False
+#
+#     if request.method == 'POST':
+#         render_actions = True
+#         crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
+#         all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+#         if all_forms_valid:
+#             site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+#             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
+#
+#     else:
+#         sampling_feature_form = FeatureActionForm(initial={'samplingfeatureid': site_id})
+#         site_visit_form = SiteVisitForm(
+#             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
+#         crew_form = CrewForm()
+#         action_form = ActionForm()
+#
+#     return render(
+#         request,
+#         'site-visits/actions-form.html',
+#         {
+#             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
+#             'mock_action_form': ActionForm(),
+#             'mock_results_form': ResultsForm(),
+#             'mock_annotation_form': AnnotationForm(),
+#             'actions_form': action_form,
+#             'render_actions': render_actions,
+#             'action': action,
+#         }
+#     )
+
+
 @login_required(login_url=LOGIN_URL)
-def edit_site_visit(request, action_id):
+def edit_site_visit(request, action_id=None):
     action = 'create'
     render_actions = False
 
@@ -940,7 +941,7 @@ def edit_site_visit(request, action_id):
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
-    else:
+    elif action_id:
         site_visit = Action.objects.get(pk=action_id)
         site_visit_form = SiteVisitForm(instance=site_visit)
         sampling_feature = FeatureAction.objects.get(actionid=site_visit)
@@ -958,7 +959,7 @@ def edit_site_visit(request, action_id):
                 'thisactionid': child.actionid.actionid
             }
 
-            if child.actionid.actiontypecv == 'Instrument calibration':
+            if str(child.actionid.actiontypecv) == 'Instrument calibration':
                 calibration_action = CalibrationAction.objects.get(actionid=child.actionid)
                 initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
                 initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
@@ -971,7 +972,7 @@ def edit_site_visit(request, action_id):
                     calibrationreferenceequipment__isnull=False,
                     calibrationreferenceequipment__actionid=calibration_action.actionid
                 )
-            elif child.actionid.actiontypecv == 'Equipment maintenance':
+            elif str(child.actionid.actiontypecv) == 'Equipment maintenance':
                 maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
                 initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
@@ -997,6 +998,13 @@ def edit_site_visit(request, action_id):
         for curr_annotation in annotations:
             annotation_forms.append(AnnotationForm(instance=curr_annotation))
 
+    else:
+        sampling_feature_form = FeatureActionForm()
+        site_visit_form = SiteVisitForm(
+            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
+        crew_form = CrewForm()
+        action_form = ActionForm()
+        annotation_forms = AnnotationForm()
 
     return render(
         request,
