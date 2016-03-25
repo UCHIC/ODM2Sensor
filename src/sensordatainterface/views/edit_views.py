@@ -734,7 +734,7 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
-        print form_elem.errors
+        # print form_elem.errors
 
     for annotation in annotation_forms:
         annotationid = annotation.data['annotationid']
@@ -928,7 +928,7 @@ def create_site_visit(request, site_id=None):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_site_visit(request, action_id=None):
+def edit_site_visit(request, action_id):
     action = 'create'
     render_actions = False
 
@@ -941,7 +941,7 @@ def edit_site_visit(request, action_id=None):
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
-    elif action_id:
+    else:
         site_visit = Action.objects.get(pk=action_id)
         site_visit_form = SiteVisitForm(instance=site_visit)
         sampling_feature = FeatureAction.objects.get(actionid=site_visit)
@@ -997,14 +997,6 @@ def edit_site_visit(request, action_id=None):
         annotation_forms = []
         for curr_annotation in annotations:
             annotation_forms.append(AnnotationForm(instance=curr_annotation))
-
-    else:
-        sampling_feature_form = FeatureActionForm()
-        site_visit_form = SiteVisitForm(
-            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
-        crew_form = CrewForm()
-        action_form = ActionForm()
-        annotation_forms = AnnotationForm()
 
     return render(
         request,
