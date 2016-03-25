@@ -122,7 +122,7 @@
                     <td>
                         {% if fieldactivity.actionid.actiontypecv == 'Instrument calibration' %}
                             <a href="{% url 'calibration_detail' fieldactivity.actionid.actionid %}">
-                        {% elif fieldactivity.actionid.actiontypecv == 'Equipment deployment' or fieldactivity.actionid.actiontypecv == 'Instrument deployment' %}
+                        {% elif fieldactivity.actionid.actiontypecv.term == 'equipmentDeployment' or fieldactivity.actionid.actiontypecv.term == 'instrumentDeployment' %}
                             <a href="{% url 'deployment_detail' fieldactivity.actionid.actionid %}">
                         {% else %}
                             <a href="{% url 'field_activity_detail' fieldactivity.actionid.actionid %}">
