@@ -20,7 +20,6 @@
             <th>Equipment Code</th>
             <th>Equipment Type</th>
             <th>Equipment Serial Number</th>
-            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -30,15 +29,6 @@
                 <td>{{ event.equipmentid.equipmentcode }}</td>
                 <td>{{ event.equipmentid.equipmenttypecv }}</td>
                 <td>{{ event.equipmentid.equipmentserialnumber }}</td>
-
-                <td>
-                    <a title="Edit" alt="Edit Service" class="icon-link" href="{% url 'create_factory_service' event.bridgeid %}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                    <a title="Delete" alt="Destroy Service" class="icon-link delete-icon" data-href="{% url 'delete_factory_service' event.bridgeid %}">
-                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                    </a>
-                </td>
             </tr>
         {% endfor %}
         </tbody>

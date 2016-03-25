@@ -20,7 +20,6 @@
             <th>Site Group</th>
             <th>Action Type</th>
             <th>Action Description</th>
-            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -45,15 +44,6 @@
                     <td style="max-width: 500px">{% if activity.actiondescription %}
                         {{ activity.actiondescription }}
                     {% endif %}</td>
-
-                    <td>
-                        <a title="Edit" alt="Edit Action" class="icon-link" href="{% url 'create_action' 'Generic' activity.actionid %}">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        </a>
-                        <a title="Delete" alt="Destroy Generality" class="icon-link delete-icon" data-href="#">
-                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                        </a>
-                    </td>
                 </tr>
             {% endfor %}
         {% endfor %}

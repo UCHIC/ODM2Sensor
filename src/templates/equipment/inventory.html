@@ -18,7 +18,6 @@
             <th>Equipment Model</th>
             <th>Manufacturer Name</th>
             <th>Owner</th>
-            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -33,15 +32,6 @@
                     <a href="{% url 'person_detail' equipment.equipmentownerid.affiliation.get.affiliationid %}">
                         {{ equipment.equipmentownerid.personfirstname }}
                         {{ equipment.equipmentownerid.personlastname|default:" -- " }}
-                    </a>
-                </td>
-
-                <td>
-                    <a title="Edit" alt="Edit Equipment" class="icon-link" href="{% url 'create_equipment' equipment.equipmentid %}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                    <a title="Delete" alt="Destroy Equipment" class="icon-link delete-icon" data-href="{% url 'delete_equipment' equipment.equipmentid %}">
-                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
                     </a>
                 </td>
             </tr>

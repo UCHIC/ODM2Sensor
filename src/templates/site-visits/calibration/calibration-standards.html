@@ -20,7 +20,6 @@
             <th>Purchased</th>
             <th>Lot Code</th>
             <th>Expires</th>
-            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -34,14 +33,6 @@
                 <td>{{ reference.referencematerialid.referencematerialpurchasedate }}</td>
                 <td>{{ reference.referencematerialid.referencemateriallotcode }}</td>
                 <td>{{ reference.referencematerialid.referencematerialexpirationdate }}</td>
-                <td>
-                    <a title="Edit" alt="Edit Standard" class="icon-link" href="{% url 'create_calibration_standard' reference.referencematerialvalueid %}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                    <a title="Delete" alt="Destroy Standard" class="icon-link delete-icon" data-href="{% url 'delete_calibration_standard' reference.referencematerialvalueid %}">
-                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                    </a>
-                </td>
             {% endfor %}
             </tr>
         {% endfor %}

@@ -15,7 +15,6 @@
         <th>Model Name</th>
         <th>Method Code</th>
         <th>Method Name</th>
-        <th>Edit/Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -28,15 +27,6 @@
             <td>{{ variable.modelid.modelname }}</td>
             <td>{{ variable.instrumentmethodid.methodcode }}</td>
             <td>{{ variable.instrumentmethodid.methodname }}</td>
-
-            <td>
-                <a title="Edit" alt="Edit Variable" class="icon-link" href="{% url 'create_output_variable' variable.instrumentoutputvariableid %}">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                </a>
-                <a title="Delete" alt="Destroy Variable" class="icon-link delete-icon" data-href="{% url 'delete_output_variable' variable.instrumentoutputvariableid %}">
-                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                </a>
-            </td>
         </tr>
     {% endfor %}
     </tbody>
