@@ -281,12 +281,6 @@ class SiteType(ListView):
         return super(SiteType, self).dispatch(*args, **kwargs)
 
 
-
-#################################################################################################
-#                         Considering Deletion
-#################################################################################################
-
-# NOT BEING USED. WHY DO YOU EXIST?!
 # Deployed Equipment By Site detail view
 class EquipmentDeploymentsBySite(ListView):
     context_object_name = 'Deployments'
@@ -315,6 +309,9 @@ class EquipmentDeploymentsBySite(ListView):
     def dispatch(self, *args, **kwargs):
         return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
 
+#################################################################################################
+#                         Considering Deletion
+#################################################################################################
 
 # class Vocabularies(ListView):
 #     template_name = 'vocabulary/vocabularies.html'

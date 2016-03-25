@@ -265,6 +265,8 @@ def edit_equipment(request, equipment_id):
     elif equipment_id:
         equipment = Equipment.objects.get(pk=equipment_id)
         equipment_form = EquipmentForm(instance=equipment)
+        equipment_form.initial['equipmentvendorid'] = equipment.equipmentvendorid_id # populates existing Vendor field
+        equipment_form.initial['equipmentmodelid'] = equipment.equipmentmodelid_id # populates existing Model field
         action = 'update'
     else:
         equipment_form = EquipmentForm()
@@ -595,41 +597,6 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
     )
 
 
-@login_required(login_url=LOGIN_URL)
-def create_site_visit(request, site_id=None):
-    action = 'create'
-    render_actions = False
-
-    if request.method == 'POST':
-        render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
-        if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
-            return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
-
-    else:
-        sampling_feature_form = FeatureActionForm(initial={'samplingfeatureid': site_id})
-        site_visit_form = SiteVisitForm(
-            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
-        crew_form = CrewForm()
-        action_form = ActionForm()
-
-    return render(
-        request,
-        'site-visits/actions-form.html',
-        {
-            'render_forms': [sampling_feature_form, site_visit_form, crew_form],
-            'mock_action_form': ActionForm(),
-            'mock_results_form': ResultsForm(),
-            'mock_annotation_form': AnnotationForm(),
-            'actions_form': action_form,
-            'render_actions': render_actions,
-            'action': action,
-        }
-    )
-
-
 def get_forms_from_request(request, action_id=False):
     actions_returned = len(request.POST.getlist('actiontypecv'))
     outputvariables = request.POST.getlist('instrumentoutputvariable')
@@ -767,6 +734,7 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
+        # print form_elem.errors
 
     for annotation in annotation_forms:
         annotationid = annotation.data['annotationid']
@@ -925,6 +893,41 @@ def add_calibration_fields(current_action, action_form):
 
 
 @login_required(login_url=LOGIN_URL)
+def create_site_visit(request, site_id=None):
+    action = 'create'
+    render_actions = False
+
+    if request.method == 'POST':
+        render_actions = True
+        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+        if all_forms_valid:
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+            return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
+
+    else:
+        sampling_feature_form = FeatureActionForm(initial={'samplingfeatureid': site_id})
+        site_visit_form = SiteVisitForm(
+            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
+        crew_form = CrewForm()
+        action_form = ActionForm()
+
+    return render(
+        request,
+        'site-visits/actions-form.html',
+        {
+            'render_forms': [sampling_feature_form, site_visit_form, crew_form],
+            'mock_action_form': ActionForm(),
+            'mock_results_form': ResultsForm(),
+            'mock_annotation_form': AnnotationForm(),
+            'actions_form': action_form,
+            'render_actions': render_actions,
+            'action': action,
+        }
+    )
+
+
+@login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
     action = 'create'
     render_actions = False
@@ -956,7 +959,7 @@ def edit_site_visit(request, action_id):
                 'thisactionid': child.actionid.actionid
             }
 
-            if child.actionid.actiontypecv == 'Instrument calibration':
+            if str(child.actionid.actiontypecv) == 'Instrument calibration':
                 calibration_action = CalibrationAction.objects.get(actionid=child.actionid)
                 initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
                 initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
@@ -969,7 +972,7 @@ def edit_site_visit(request, action_id):
                     calibrationreferenceequipment__isnull=False,
                     calibrationreferenceequipment__actionid=calibration_action.actionid
                 )
-            elif child.actionid.actiontypecv == 'Equipment maintenance':
+            elif str(child.actionid.actiontypecv) == 'Equipment maintenance':
                 maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
                 initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
@@ -994,7 +997,6 @@ def edit_site_visit(request, action_id):
         annotation_forms = []
         for curr_annotation in annotations:
             annotation_forms.append(AnnotationForm(instance=curr_annotation))
-
 
     return render(
         request,
@@ -1134,7 +1136,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                 add_calibration_fields(child_action, action_form)
 
             elif action_type.term == 'equipmentMaintenance':
-                if updating:
+                if updating and child_action.maintenanceaction.exists():
                     MaintenanceAction.objects.get(actionid=child_action).delete()
                 add_maintenance_fields(child_action, action_form)
 
@@ -1160,10 +1162,10 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
-        equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
+        equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionForm(
             instance=child_action,
-            initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+            initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
         )
 
         if action_type == 'InstrumentCalibration':
@@ -1174,15 +1176,18 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
 
         elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
-            action_form = ActionForm(
-                initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
-            )
             action_form.initial['actionid'] = None
             action_form.initial['methodid'] = None
             action_form.initial['actiontypecv'] = CvActiontype.objects.get(term='equipmentRetrieval' if child_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
             action_form.initial['begindatetime'] = datetime.today()
             action_form.initial['actiondescription'] = ''
             action = 'create'
+
+        elif child_action.actiontypecv_id == 'Equipment maintenance' and child_action.maintenanceaction.exists():
+            action_form.initial['actionid'] = child_action.maintenanceaction.get(pk=action_id).actionid
+            action_form.initial['isfactoryservice'] = child_action.maintenanceaction.get(pk=action_id).isfactoryservice
+            action_form.initial['maintenancecode'] = child_action.maintenanceaction.get(pk=action_id).maintenancecode
+            action_form.initial['maintenancereason'] = child_action.maintenanceaction.get(pk=action_id).maintenancereason
 
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
 
@@ -1191,11 +1196,6 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         action_form = ActionForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
         )
-
-    # 'equipmentDeployment': 'deployment_detail',
-    #             'instrumentCalibration': 'calibration_detail',
-    #             'equipmentMaintenance': 'field_activity_detail',
-    #             'fieldActivity': 'field_activity_detail'
 
     return render(
         request,

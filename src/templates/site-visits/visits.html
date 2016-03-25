@@ -7,11 +7,11 @@
         <h1>Site Visits {% if site_name %} for {{ site_name.samplingfeaturename }} {% endif %}</h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-        {% if site_name %}
-            <a class="btn btn-primary btn-block new-btn" href="{% url 'create_site_visit' site_name.samplingfeatureid %}">New Site Visit</a>
-        {% else %}
-            <a class="btn btn-primary btn-block new-btn" href="{% url 'create_site_visit' %}">New Site Visit</a>
-        {% endif %}
+         {% if site_name %}
+             <a class="btn btn-primary btn-block new-btn" href="{% url 'create_site_visit' site_name.samplingfeatureid %}">New Site Visit</a>
+         {% else %}
+             <a class="btn btn-primary btn-block new-btn" href="{% url 'create_site_visit' %}">New Site Visit</a>
+         {% endif %}
     </div>
     </div>
     <table class="data-table">

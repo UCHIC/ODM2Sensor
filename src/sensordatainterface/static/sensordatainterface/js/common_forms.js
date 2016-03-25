@@ -182,6 +182,12 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
         $(currentForm).next('tbody.add-result-btn').remove();
     }
+
+    if (formType == 'Instrument calibration') {
+        $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').addClass('form-required');
+    } else {
+        $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').removeClass('form-required');
+    }
 }
 
 function addResultForm(that, firstResult) {
@@ -343,8 +349,6 @@ function filterDeploymentsByType(formType, deploymentsSelect) {
         return;
     }
 
-
-
     var deploymentsUrl = $('#deployments-by-type-api').val();
 
     $.ajax({
@@ -424,7 +428,7 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
 }
 
 function filterVisits(selectedId, isDeployment, visitsSelect) {
-    if(selectedId == "") {
+    if (selectedId == "") {
         visitsSelect.children('option').removeAttr('disabled');
         visitsSelect.select2();
         return;
@@ -541,7 +545,6 @@ function filterActionDatesByVisit(siteVisitId) {
 }
 
 
-
 function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
     var currentValue;
     json = JSON.parse(json);
@@ -549,18 +552,16 @@ function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
         currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
         var currentEquipmentSelect = $(this);
         if (currentValue !== "Equipment deployment" && currentValue !== "Instrument deployment") {
-            var options = [];
-            currentEquipmentSelect.empty();
-            json.forEach(function(object) {
-                var equipment = object.fields;
-                var equipmentElement = ['<option value=', object.pk, '>',
-                    equipment.equipmentcode, ': ', equipment.equipmentserialnumber,
-                    ' (', equipment.equipmenttypecv, ', ', equipment.equipmentmodelid, ')',
-                    '</option>'
-                ];
-                options.push(equipmentElement.join(''));
+            var variables = JSON.parse(json).map(function(variable) {
+                return variable.pk + ""
+            })
+            currentValue.children('option').each(function(index, element) {
+                if (variables.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).val('');
+                }
             });
-            currentEquipmentSelect.append(options.join(''));
         } else {
             var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
             if (defaultElements.length > 0) {

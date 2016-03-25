@@ -24,6 +24,7 @@
             <th>Equipment Type</th>
             <th>Manufacturer Name</th>
             <th>Model Part Number</th>
+            <th>Deployed</th>
             <th>Edit/Delete</th>
         </tr>
         </thead>
@@ -52,7 +53,7 @@
                         <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
                         <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                         <td>{{ equipment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
-
+                    <td>{% if deployment.enddatetime %} No {% else %} Yes {% endif %}</td>
                     <td>
                         <a title="Edit" alt="Edit Deployment" class="icon-link" href="{% url 'create_action' 'EquipmentDeployment' deployment.actionid %}">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
