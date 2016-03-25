@@ -22,7 +22,6 @@
             <th>Site Name</th>
             <th>Site Group</th>
             <th>People</th>
-            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -49,15 +48,6 @@
                         {{ person.affiliationid.personid.personlastname }}</a>
                         {% if not forloop.last %}, {% endif %}
                 {% endfor %}</td>
-
-                <td>
-                    <a title="Edit" alt="Edit Site Visit" class="icon-link" href="{% url 'edit_site_visit' visit.actionid.actionid %}">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </a>
-                    <a title="Delete" alt="Destroy Site Visit" class="icon-link delete-icon" data-href="{% url 'delete_site_visit' visit.actionid.actionid %}">
-                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                    </a>
-                </td>
             </tr>
         {% endfor %}
         </tbody>

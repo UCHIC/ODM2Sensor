@@ -20,7 +20,6 @@
             <th>Equipment Type</th>
             <th>Manufacturer Name</th>
             <th>Model Name</th>
-            <th>Edit/Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -38,15 +37,6 @@
                             <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
                             <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                             <td>{{ equipment.equipmentid.equipmentmodelid.modelname }}</td>
-
-                            <td>
-                                <a title="Edit" alt="Edit Calibration" class="icon-link" href="{% url 'create_action' 'InstrumentCalibration' calibration.actionid %}">
-                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                </a>
-                                <a title="Delete" alt="Destroy Calibration" class="icon-link delete-icon" data-href="#">
-                                    <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
-                                </a>
-                            </td>
                         </tr>
                     {% endif %}
                 {% endfor %}
