@@ -844,7 +844,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
             retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
-            deployment_action = Action.objects.get(pk=action_form[0].data['deploymentaction'])
+            deployment_action = action_form[i].cleaned_data['deploymentaction'].actionid
             if updating:
                 retrieval_related_action = RelatedAction.objects.get(actionid=current_action, relationshiptypecv=retrieval_relationship)
                 retrieval_related_action.relatedactionid = deployment_action
