@@ -126,9 +126,9 @@ function handleActionTypeChange(formType, currentForm) {
 
     $(currentForm).find('.' + formClass).not('option').parents('tr:hidden').show();
     $(currentForm).find('option.' + formClass).removeAttr('disabled');
-
-    $(currentForm).find('#id_methodid').siblings('.errorlist').remove();
+    
     if (formClass !== 'Notype' && $(currentForm).find('option.' + formClass).length === 0) {
+        $(currentForm).find('#id_methodid').siblings('.errorlist').remove();
         $('<ul class="errorlist"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
     }
 
