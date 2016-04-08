@@ -11,10 +11,9 @@
                 <th>Site Visit Details</th>
                 <td style="width: 70%">
                     <strong>Site:</strong> {{ Site.samplingfeatureid.samplingfeaturename }} <br/>
-                    <strong>Begin Date Time:</strong> {{ SiteVisit.begindatetime }} | <strong>End Date
-                    Time:</strong> {{ SiteVisit.enddatetime }} |
-                    <strong>UTCOffset:</strong> {{ SiteVisit.begindatetimeutcoffset }}
-                    <br/>
+                    <strong>Begin Date Time:</strong> {{ SiteVisit.begindatetime }} <br/>
+                    <strong>End Date Time:</strong> {{ SiteVisit.enddatetime }} <br/>
+                    <strong>UTCOffset:</strong> {{ SiteVisit.begindatetimeutcoffset }} <br/>
                     <strong>Crew:</strong>
                     {% for person in Crew %}
                         {{ person.affiliationid.personid.personfirstname }}
@@ -34,15 +33,17 @@
             {% for child_action in ChildActions %}
                 <tr>
                     <th>{{ child_action.actionid.actiontypecv|separatewordsbycaps }} Action Details</th>
-                    <td style="width: 70%"><strong>Begin Date Time:</strong> {{ child_action.actionid.begindatetime }} |
-                        <strong>End Date Time:</strong> {{ child_action.actionid.enddatetime }} |
-                        <strong>UTCOffset:</strong> {{ child_action.actionid.begindatetimeutcoffset }}
-                        <br/><strong>EquipmentUsed:</strong>
+                    <td style="width: 70%">
+                        <strong>Begin Date Time:</strong> {{ child_action.actionid.begindatetime }} <br/>
+                        <strong>End Date Time:</strong> {{ child_action.actionid.enddatetime }} <br/>
+                        <strong>UTCOffset:</strong> {{ child_action.actionid.begindatetimeutcoffset }} <br/>
+                        <strong>Equipment Used:</strong>
                         {% for equipment in child_action.actionid.equipmentused.all %}
                             {{ equipment.equipmentid.equipmentserialnumber }}:
                             {{ equipment.equipmentid.equipmentmodelid.modelname }}
                             {% if not forloop.last %} | {% endif %}
-                        {% endfor %}<br/>
+                        {% endfor %}
+                        <br/>
                         {% if child_action.actionid.actiontypecv.name == 'Instrument calibration' %}
                             {% with calibration_action=child_action.actionid.calibrationaction.all.0 %}
                                 <strong>Instrument Output Variable:</strong>
@@ -80,7 +81,6 @@
                             <br/>
                         {% endif %}
                         <strong>Description:</strong> {{ child_action.actionid.actiondescription }}
-
                     </td>
                 </tr>
             {% endfor %}
@@ -88,12 +88,9 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary"
-                                                              href="{% url 'site_visit_detail' SiteVisit.actionid %}">Site Visit Page</a></div>
-        <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary"
-                                                              href="{% url 'edit_site_visit' SiteVisit.actionid %}">Edit this Site Visit</a></div>
-        <div class="col-sm-3 col-xs-12 col-md-3 pull-left"><a class="btn btn-primary btn-block"
-                                                              href="{% url 'create_site_visit' %}">Create new Site Visit</a></div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary" href="{% url 'site_visit_detail' SiteVisit.actionid %}">Site Visit Page</a></div>
+        <div class="col-sm-4 col-xs-12 col-md-3 pull-left"><a class="btn btn-block btn-primary" href="{% url 'edit_site_visit' SiteVisit.actionid %}">Edit this Site Visit</a></div>
+        <div class="col-sm-3 col-xs-12 col-md-3 pull-left"><a class="btn btn-primary btn-block" href="{% url 'create_site_visit' %}">Create new Site Visit</a></div>
     </div>
 
 {% endblock %}
