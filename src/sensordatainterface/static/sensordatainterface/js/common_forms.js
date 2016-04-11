@@ -126,7 +126,7 @@ function handleActionTypeChange(formType, currentForm) {
 
     $(currentForm).find('.' + formClass).not('option').parents('tr:hidden').show();
     $(currentForm).find('option.' + formClass).removeAttr('disabled');
-    
+
     if (formClass !== 'Notype' && $(currentForm).find('option.' + formClass).length === 0) {
         $(currentForm).find('#id_methodid').siblings('.errorlist').remove();
         $('<ul class="errorlist"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
@@ -545,33 +545,27 @@ function filterActionDatesByVisit(siteVisitId) {
 }
 
 
-function handle_equ_used_filter_response(json, equipmentUsedSelectElems) {
-    var currentValue;
-    json = JSON.parse(json);
+function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
+    objects = JSON.parse(objects);
+    
     equipmentUsedSelectElems.each(function () {
-        currentValue = $(this).parents('tbody').find('[name="actiontypecv"]').val();
         var currentEquipmentSelect = $(this);
-        if (currentValue !== "Equipment deployment" && currentValue !== "Instrument deployment") {
-            var variables = JSON.parse(json).map(function(variable) {
-                return variable.pk + ""
-            })
-            currentValue.children('option').each(function(index, element) {
-                if (variables.indexOf(element.value) === -1 && element.value !== '') {
-                    $(element).attr('disabled', 'disabled');
-                } else {
-                    $(element).val('');
-                }
-            });
-        } else {
-            var defaultElements = $('#action-form').find('[name="equipmentused"]').children();
-            if (defaultElements.length > 0) {
-                currentEquipmentSelect.empty();
-                currentEquipmentSelect.append($(defaultElements).clone());
+        var equipments = objects.map(function(equipment) {
+            return equipment.pk + "";
+        });
+        currentEquipmentSelect.children('option').each(function(index, element) {
+            if (equipments.indexOf(element.value) === -1 && element.value !== '') {
+                $(element).attr('disabled', 'disabled');
+            } else {
+                $(element).removeAttr('disabled');
             }
+        });
+
+        if (equipments.indexOf(currentEquipmentSelect.val()) === -1) {
+            currentEquipmentSelect.val('');
         }
 
-        // Clear value of equipment selected. An equipment can't be deployed at two locations.
-        //$(currentEquipmentSelect).select2("val", "");
+        currentEquipmentSelect.select2();
     });
 }
 
