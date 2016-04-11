@@ -127,13 +127,14 @@ function handleActionTypeChange(formType, currentForm) {
     $(currentForm).find('.' + formClass).not('option').parents('tr:hidden').show();
     $(currentForm).find('option.' + formClass).removeAttr('disabled');
 
+    var methodSelect = $(currentForm).find('#id_methodid');
+    methodSelect.siblings('.errorlist.no-methods').remove();
+
     if (formClass !== 'Notype' && $(currentForm).find('option.' + formClass).length === 0) {
-        $(currentForm).find('#id_methodid').siblings('.errorlist').remove();
-        $('<ul class="errorlist"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
+        $('<ul class="errorlist no-methods"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
     }
 
     //reset select2 to hide disabled options
-    var methodSelect = $(currentForm).find('[name="methodid"]');
     methodSelect.select2();
     $('.select2-container').css('width', '100%');
 
@@ -547,7 +548,7 @@ function filterActionDatesByVisit(siteVisitId) {
 
 function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
     objects = JSON.parse(objects);
-    
+
     equipmentUsedSelectElems.each(function () {
         var currentEquipmentSelect = $(this);
         var equipments = objects.map(function(equipment) {
