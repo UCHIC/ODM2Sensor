@@ -67,11 +67,16 @@ function set_delete_icon() {
 
 function beginDateTimeChanged(thisTBody, trigger) {
     var endDTElem = $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker');
+    var actionType = $(thisTBody).find('[name="actiontypecv"]').val();
+    var isDeployment = $('form').hasClass('EquipmentDeployment') || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+
     var event = $(thisTBody).find('[name="begindatetime"]')
         .parent('.datetimepicker')
         .on('dp.change', function (ev) {
             var date = moment($(ev.currentTarget).data().date);
-            setEndMinDate(thisTBody, date);
+            if (!isDeployment) {
+                setEndMinDate(thisTBody, date);
+            }
         });
 
     if (trigger && endDTElem.length > 0) {
@@ -93,6 +98,9 @@ function setIndividualBounds(actionTBody) {
     var beginDateTimeObj = actionTBody.find('[name="begindatetime"]').parents('.datetimepicker').data('DateTimePicker');
     var endDateTimeObj = actionTBody.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
 
+    var actionType = actionTBody.find('[name="actiontypecv"]').val();
+    var isDeployment = $('form').hasClass('EquipmentDeployment') || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+
     // This fixes problem of beginDateTime being after maxDate. Boundaries are reset and set again.
     beginDateTimeObj.maxDate(false);
     beginDateTimeObj.minDate(false);
@@ -101,8 +109,11 @@ function setIndividualBounds(actionTBody) {
 
     beginDateTimeObj.maxDate(endSVDate);
     beginDateTimeObj.minDate(beginSVDate);
-    endDateTimeObj.maxDate(endSVDate);
-    endDateTimeObj.minDate(beginSVDate);
+
+    if (!isDeployment) {
+        endDateTimeObj.maxDate(endSVDate);
+        endDateTimeObj.minDate(beginSVDate);
+    }
 
     beginDateTimeObj.hide();
     endDateTimeObj.hide();

@@ -31,7 +31,7 @@ function setOtherActions() {
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
         actionTypeElem.children(':not([value="Instrument deployment"]):not([value="Equipment deployment"]):not([value=""])').remove();
-        $('.EquipmentDeployment').find('[name="enddatetime"]').parents('tr').val('').hide();
+        $('.EquipmentDeployment').find('[name="enddatetime"]').parents('tr').hide();
         $('.EquipmentDeployment').find('[name="enddatetimeutcoffset"]').parents('tr').hide();
         $('.EquipmentDeployment [name="equipmentused"]').removeAttr('multiple');
         $('.EquipmentDeployment [name="equipmentused"]').select2();
@@ -84,12 +84,19 @@ function setDateTimePicker() {
 function setDTPickerClose(beginDTElem) {
     //Function to set up begindatetime fields to close automatically when date is picked and open next enddatetime field.
     beginDTElem.parent('.datetimepicker').on('dp.hide', function () {
+        var currentForm = $(this).parents('tbody');
         var beginDTObj = $(this).data('DateTimePicker');
+        var actionType = currentForm.find('[name="actiontypecv"]').val();
+        var isDeployment = $('form').hasClass('EquipmentDeployment') || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+
+
         if (beginDTObj.collapse) {
             beginDTObj.hide();
-            var endDTObj = $(this).parents('tbody').find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
-            endDTObj.show();
-            endDTObj.date(beginDTObj.date())
+            var endDTObj = currentForm.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
+            if (!isDeployment) {
+                endDTObj.show();
+                endDTObj.date(beginDTObj.date())
+            }
         }
     });
 }
@@ -157,7 +164,7 @@ function handleActionTypeChange(formType, currentForm) {
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
 
     if (isDeployment) {
-        $(currentForm).find('[name="enddatetime"]').val('').parents('tr').hide();
+        $(currentForm).find('[name="enddatetime"]').parents('tr').hide();
         $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
         equipmentSelect.parents('tr').show();
         equipmentSelect.removeAttr('multiple');
@@ -507,7 +514,10 @@ function filterActionDatesByVisit(siteVisitId) {
 
     var apiUrl = $('#site-visit-dates').val();
     var form = $('form');
+    var actionType = form.find('[name="actiontypecv"]').val();
     var token = form.find('[name="csrfmiddlewaretoken"]').val();
+    var isDeployment = form.hasClass('EquipmentDeployment') || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+
     $.ajax({
         url: apiUrl,
         type: 'POST',
@@ -528,14 +538,13 @@ function filterActionDatesByVisit(siteVisitId) {
 
             beginDateTimeObj.maxDate(maxDatetime);
             beginDateTimeObj.minDate(minDatetime);
-            endDateTimeObj.maxDate(maxDatetime);
-            endDateTimeObj.minDate(minDatetime);
-
             beginDateTimeObj.date(minDatetime);
-            endDateTimeObj.date(maxDatetime);
 
-            beginDateTimeObj.date(minDatetime);
-            endDateTimeObj.date(maxDatetime);
+            if (!isDeployment) {
+                endDateTimeObj.maxDate(maxDatetime);
+                endDateTimeObj.minDate(minDatetime);
+                endDateTimeObj.date(maxDatetime);
+            }
         },
         error: function(xhr, errmsg) {
             console.log(errmsg);
