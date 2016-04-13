@@ -114,6 +114,7 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
         return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
 
     def clean(self, value):
+        value = value if value != [''] else []
         cleaned_value = self._check_values(value)
         return cleaned_value
 
@@ -734,9 +735,9 @@ class ActionForm(ModelForm):
         actiontype = kwargs.pop('actiontype', None)
         super(ActionForm, self).__init__(*args, **kwargs)
         self.fields['equipmentused'].help_text = None
+        self.fields['equipmentused'].required = False
         self.fields['calibrationstandard'].help_text = None
         self.fields['calibrationreferenceequipment'].help_text = None
-        self.fields['equipmentused'].required = False
 
     required_css_class = 'form-required'
 

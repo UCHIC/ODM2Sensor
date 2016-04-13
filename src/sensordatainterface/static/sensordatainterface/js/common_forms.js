@@ -42,7 +42,6 @@ function setOtherActions() {
     }
 
     $('form').find('[name="actionid"]').trigger('change');
-    //filterEquipmentUsed(filterEquipmentByAction, $('form').find('[name="actionid"]').val(), $('form'));
 }
 
 function initDTPicker() {
@@ -555,16 +554,16 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
             return equipment.pk + "";
         });
         currentEquipmentSelect.children('option').each(function(index, element) {
-            if (equipments.indexOf(element.value) === -1 && element.value !== '') {
+            if (equipments.indexOf(element.value) === -1) {
                 $(element).attr('disabled', 'disabled');
             } else {
                 $(element).removeAttr('disabled');
             }
         });
 
-        if (equipments.indexOf(currentEquipmentSelect.val()) === -1) {
-            currentEquipmentSelect.val('');
-        }
+        currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function(element) {
+            return $.inArray(element, equipments) !== -1;
+        }));
 
         currentEquipmentSelect.select2();
     });
