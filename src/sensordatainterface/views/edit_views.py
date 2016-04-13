@@ -653,6 +653,7 @@ def get_forms_from_request(request, action_id=False):
                     output_variable = u''
 
         form_data = {
+            'actionid': request.POST.getlist('thisactionid')[i - 1],
             'actiontypecv': action_type,
             'begindatetime': request.POST.getlist('begindatetime')[i],
             'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
@@ -750,7 +751,7 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, updating=False):
     # set up site visit
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
-    site_visit_action = site_visit_form.save(commit=False)
+    site_visit_action = site_visit_form.instance
     site_visit_action.methodid = Method.objects.get(pk=1000)
     site_visit_action.actiontypecv = CvActiontype.objects.get(name='Site Visit')
     site_visit_action.save()
@@ -787,18 +788,22 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
         ActionAnnotation.objects.create(actionid=site_visit_action, annotationid=annotation)
 
     # set up child actions
+    # temporary fix! TODO: do not leave this like it is right now.
+    site_visit_action.parent_relatedaction.all().delete()  # delete all site visit child relations
     for i in range(0, len(action_form)):
-        current_action = action_form[i].save(commit=False)
+        current_action = action_form[i].instance
         action_type = action_form[i].cleaned_data['actiontypecv']
         current_action.actiontypecv = CvActiontype.objects.get(name=action_type)
         current_action.save()
+        #already_child = site_visit_action.parent_relatedaction.filter(actionid_id=current_action.actionid).exists()
 
-        if not updating:
-            RelatedAction.objects.create(actionid=current_action, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'),
-                                         relatedactionid=site_visit_action)
-            FeatureAction.objects.create(samplingfeatureid=sampling_feature, actionid=current_action)
 
-        else:
+        FeatureAction.objects.get_or_create(samplingfeatureid=sampling_feature, actionid=current_action)
+        # bad! this assumes all relations with site visit are previously removed. they are, but shouldn't be.
+        RelatedAction.objects.create(actionid=current_action, relatedactionid=site_visit_action,
+                                     relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
+
+        if updating:
             EquipmentUsed.objects.filter(actionid=current_action).delete()
             CalibrationStandard.objects.filter(actionid=current_action).delete()
 
@@ -839,7 +844,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         elif action_type.term == 'equipmentMaintenance':
             if updating:
-                MaintenanceAction.objects.get(actionid=current_action).delete()
+                current_action.maintenanceaction.all().delete()
             add_maintenance_fields(current_action, action_form[i])
 
         elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
@@ -959,7 +964,7 @@ def edit_site_visit(request, action_id):
                 'thisactionid': child.actionid.actionid
             }
 
-            if str(child.actionid.actiontypecv) == 'Instrument calibration':
+            if child.actionid.actiontypecv.term == 'instrumentCalibration':
                 calibration_action = CalibrationAction.objects.get(actionid=child.actionid)
                 initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
                 initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
@@ -972,7 +977,7 @@ def edit_site_visit(request, action_id):
                     calibrationreferenceequipment__isnull=False,
                     calibrationreferenceequipment__actionid=calibration_action.actionid
                 )
-            elif str(child.actionid.actiontypecv) == 'Equipment maintenance':
+            elif child.actionid.actiontypecv.term == 'equipmentMaintenance':
                 maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
                 initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
@@ -1051,6 +1056,9 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
+        if 'equipmentused' not in request.POST:
+            request.POST['equipmentused'] = ''
+
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
             child_action = Action.objects.get(pk=request.POST['item_id'])
@@ -1089,15 +1097,13 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                 samplingfeatureid=sampling_feature
             )
 
-            equipment_used = request.POST.getlist('equipmentused')
-            current_equipment = [equ.equipmentid.equipmentid for equ in EquipmentUsed.objects.filter(actionid=child_action)]
+            equipment_used = action_form.cleaned_data['equipmentused']
+            current_equipment = child_action.equipmentused.all()
 
-            for equ in equipment_used:
-                EquipmentUsed.objects.get_or_create(actionid=child_action, equipmentid=Equipment.objects.get(pk=equ))
+            for equipment in equipment_used:
+                EquipmentUsed.objects.get_or_create(actionid=child_action, equipmentid=equipment)
 
-            for equ in current_equipment:
-                if str(equ) not in equipment_used:
-                    EquipmentUsed.objects.filter(actionid=child_action, equipmentid=equ).delete()
+            current_equipment.exclude(equipmentid__in=equipment_used).delete()
 
             action_type = action_form.cleaned_data['actiontypecv']
 
