@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load template_tags %}
+
 {% block content %}
     <div class="col-xs-12 col-sm-6 col-md-7">
         <h1>Deployment{% if site_name %}s for {{ site_name.samplingfeaturename }}{% elif equipment_name %} History{% else %}s{% endif %}
@@ -35,7 +37,14 @@
                     <td data-order="{{ deployment.begindatetime|date:'U' }}">
                         <a href="{% url 'deployment_detail' deployment.actionid %}">
                             {{ deployment.begindatetime }}<br/>to
-                            {{ deployment.enddatetime|default:"present" }}
+
+                            {% with retrieval=deployment|get_deployment_retrieval %}
+                                {% if retrieval.exists %}
+                                    {{ retrieval.get.actionid.begindatetime }}
+                                {% else %}
+                                    present
+                                {% endif %}
+                            {% endwith %}
                         </a></td>
                     <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td> {# list all equipment linking to single actions #}
                     <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
@@ -52,7 +61,15 @@
                         <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
                         <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                         <td>{{ equipment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
-                    <td>{% if deployment.enddatetime %} No {% else %} Yes {% endif %}</td>
+                    <td>
+                        {% with retrieval=deployment|get_deployment_retrieval %}
+                            {% if retrieval.exists %}
+                                No
+                            {% else %}
+                                Yes
+                            {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
                     {% endfor %}
             {% endfor %}

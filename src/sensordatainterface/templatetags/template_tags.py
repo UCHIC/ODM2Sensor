@@ -1,6 +1,8 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 
+from sensordatainterface.models import Action
+
 register = template.Library()
 
 @register.filter
@@ -29,3 +31,12 @@ def get_media_file_name(file_path):
 
     file_start = file_path.rfind('/')
     return file_path[file_start+1:]
+
+
+@register.filter
+def get_deployment_retrieval(deployment):
+    if not isinstance(deployment, Action):
+        return
+    if deployment.actiontypecv.term not in ['equipmentDeployment', 'instrumentDeployment']:
+        return
+    return deployment.parent_relatedaction.filter(relationshiptypecv__term='isRetrievalFor')

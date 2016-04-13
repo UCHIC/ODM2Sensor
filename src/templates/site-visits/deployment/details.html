@@ -44,10 +44,21 @@
                 <tr>
                     <th>Site Name:</th>
                     <td>{{ samplingfeature.samplingfeaturename }}</td>
-                    <th>End Date Time:</th>
-                    <td>{{ Deployment.enddatetime|default:"present" }}</td>
-                    <th>Currently Deployed:</th>
-                    <td>{% if Deployment.enddatetime %} No {% else %} Yes {% endif %}</td>
+
+                    {% with retrieval=Deployment|get_deployment_retrieval %}
+                            {% if retrieval.exists %}
+                                <th>End Date Time:</th>
+                                <td>{{ retrieval.get.actionid.begindatetime }}</td>
+                                <th>Currently Deployed:</th>
+                                <td>No</td>
+                            {% else %}
+                                <th>End Date Time:</th>
+                                <td>{{ "present" }}</td>
+                                <th>Currently Deployed:</th>
+                                <td>Yes</td>
+                            {% endif %}
+                        {% endwith %}
+
                     <th>Action Link:</th>
                     <td>
                         {% if Deployment.actionfilelink %}
