@@ -4,22 +4,30 @@ Django settings for ODM2Sensor project.
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-PROJECT_DIR = os.path.join(BASE_DIR, os.pardir)
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+data = {}
+try:
+    with open(os.path.join(BASE_DIR, 'settings', 'settings.json')) as data_file:
+        data = json.load(data_file)
+except IOError:
+    print("You need to setup the settings data file (see instructions in base.py file.)")
 
 
-from ODM2Sensor.settings.settings import *
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret_key
+try:
+    SECRET_KEY = data["secret_key"]
+except KeyError:
+    print("The secret key is required in the settings.json file.")
+    exit(1)
 
 ALLOWED_HOSTS = []
 
 APPEND_SLASH = True
+
+DEPLOYED = False
 
 # Application definition
 
@@ -58,27 +66,18 @@ WSGI_APPLICATION = 'ODM2Sensor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'odm2': {
-        'ENGINE': ODM2_configs['ENGINE'],
-        'NAME': ODM2_configs['NAME'],
-        'USER': ODM2_configs['USER'],
-        'PASSWORD': ODM2_configs['PASSWORD'],
-        'HOST': ODM2_configs['HOST'],
-        'PORT': ODM2_configs['PORT'],
+DATABASES = {}
+for database in data['databases']:
+    DATABASES[database['name']] = {
+        'ENGINE': database['engine'],
+        'NAME': database['schema'],
+        'USER': database['user'] if 'user' in database else '',
+        'PASSWORD': database['password'] if 'password' in database else '',
+        'HOST': database['host'] if 'host' in database else '',
+        'PORT': database['port'] if 'port' in database else '',
+        'OPTIONS': database['options'] if 'options' in database else ''
+    }
 
-        'OPTIONS': {
-            'driver': ODM2_configs['OPTIONS']['driver'],
-            'host_is_server': ODM2_configs['OPTIONS']['host_is_server'],
-        },
-        'TEST_DEPENDENCIES': []
-    },
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_DIR, 'ODM2Sensor/Internal.sqlite3'),
-        'TEST_DEPENDENCIES': ['odm2']
-    },
-}
 
 DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter', ]
 
@@ -92,7 +91,7 @@ TEMPLATES = [
 ]
 
 
-TEMPLATE_DIRS = [os.path.join(PROJECT_DIR, 'templates')]
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, os.pardir, 'templates')]
 
 LANGUAGE_CODE = 'en-us'
 
@@ -105,3 +104,7 @@ USE_L10N = True
 # Deactivated since UTC Offset is handled in the database.
 # See https://docs.djangoproject.com/en/dev/topics/i18n/timezones/ to use automatic time zones.
 USE_TZ = False
+
+MEDIA_ROOT = data["media_files_dir"] if 'media_files_dir' in data else ''
+
+MEDIA_URL = ''

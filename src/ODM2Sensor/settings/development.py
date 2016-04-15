@@ -2,12 +2,9 @@ from ODM2Sensor.settings.base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True
+STATIC_URL = '/static/'
+SITE_URL = ''
 
-SITE_URL = '/ODM2Sensor/'
+MEDIA_URL = '/media/'
 
-STATIC_ROOT = 'static/'
-STATIC_URL = SITE_URL + 'static/'
-
-LOGIN_REDIRECT_URL = SITE_URL + 'home/'
-
-MEDIA_URL = SITE_URL + 'media/'
+LOGIN_REDIRECT_URL = '/home/'

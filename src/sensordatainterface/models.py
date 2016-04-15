@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
+
+import inspect
 import uuid
 
+import sys
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -13,7 +17,7 @@ class ActionAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ActionAnnotations'
+        db_table = 'ActionAnnotations'
 
 
 class ActionBy(models.Model):
@@ -26,7 +30,7 @@ class ActionBy(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ActionBy'
+        db_table = 'ActionBy'
 
 
 class ActionDirective(models.Model):
@@ -36,7 +40,7 @@ class ActionDirective(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ActionDirectives'
+        db_table = 'ActionDirectives'
 
 
 class ActionExtensionPropertyValue(models.Model):
@@ -47,7 +51,7 @@ class ActionExtensionPropertyValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ActionExtensionPropertyValues'
+        db_table = 'ActionExtensionPropertyValues'
 
 
 class Action(models.Model):
@@ -65,7 +69,7 @@ class Action(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Actions'
+        db_table = 'odm2].[actions'
 
 
 class Affiliation(models.Model):
@@ -87,7 +91,7 @@ class Affiliation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Affiliations'
+        db_table = 'Affiliations'
 
 
 class Annotation(models.Model):
@@ -107,7 +111,7 @@ class Annotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Annotations'
+        db_table = 'Annotations'
 
 
 class AuthorList(models.Model):
@@ -118,7 +122,7 @@ class AuthorList(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[AuthorLists'
+        db_table = 'AuthorLists'
 
 
 class CvTerm(models.Model):
@@ -130,7 +134,7 @@ class CvTerm(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CVTerms'
+        db_table = 'CVTerms'
 
 
 class CalibrationAction(models.Model):
@@ -144,7 +148,7 @@ class CalibrationAction(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CalibrationActions'
+        db_table = 'CalibrationActions'
 
 
 class CalibrationReferenceEquipment(models.Model):
@@ -155,7 +159,7 @@ class CalibrationReferenceEquipment(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CalibrationReferenceEquipment'
+        db_table = 'CalibrationReferenceEquipment'
 
 
 class CalibrationStandard(models.Model):
@@ -167,7 +171,7 @@ class CalibrationStandard(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CalibrationStandards'
+        db_table = 'CalibrationStandards'
 
 
 class CategoricalResultValueAnnotation(models.Model):
@@ -177,7 +181,7 @@ class CategoricalResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CategoricalResultValueAnnotations'
+        db_table = 'CategoricalResultValueAnnotations'
 
 
 class CategoricalResultValue(models.Model):
@@ -189,7 +193,7 @@ class CategoricalResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CategoricalResultValues'
+        db_table = 'CategoricalResultValues'
 
 
 class CategoricalResult(models.Model):
@@ -209,7 +213,7 @@ class CategoricalResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CategoricalResults'
+        db_table = 'CategoricalResults'
 
 
 class CitationExtensionPropertyValue(models.Model):
@@ -220,7 +224,7 @@ class CitationExtensionPropertyValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CitationExtensionPropertyValues'
+        db_table = 'CitationExtensionPropertyValues'
 
 
 class CitationExternalIdentifier(models.Model):
@@ -234,7 +238,7 @@ class CitationExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CitationExternalIdentifiers'
+        db_table = 'CitationExternalIdentifiers'
 
 
 class Citation(models.Model):
@@ -246,7 +250,7 @@ class Citation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Citations'
+        db_table = 'Citations'
 
 
 class DataloggerFile(models.Model):
@@ -259,7 +263,7 @@ class DataloggerFile(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataLoggerFiles'
+        db_table = 'DataLoggerFiles'
 
 
 class DataQuality(models.Model):
@@ -276,7 +280,7 @@ class DataQuality(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataQuality'
+        db_table = 'DataQuality'
 
 
 class DatasetCitation(models.Model):
@@ -287,7 +291,7 @@ class DatasetCitation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataSetCitations'
+        db_table = 'DataSetCitations'
 
 
 class Dataset(models.Model):
@@ -300,7 +304,7 @@ class Dataset(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataSets'
+        db_table = 'DataSets'
 
 
 class DatasetsResult(models.Model):
@@ -310,7 +314,7 @@ class DatasetsResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataSetsResults'
+        db_table = 'DataSetsResults'
 
 
 class DataloggerFileColumn(models.Model):
@@ -337,7 +341,7 @@ class DataloggerFileColumn(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataloggerFileColumns'
+        db_table = 'DataloggerFileColumns'
 
 
 class DataloggerProgramFile(models.Model):
@@ -350,7 +354,7 @@ class DataloggerProgramFile(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DataloggerProgramFiles'
+        db_table = 'DataloggerProgramFiles'
 
 
 class DerivationEquation(models.Model):
@@ -360,7 +364,7 @@ class DerivationEquation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[DerivationEquations'
+        db_table = 'DerivationEquations'
 
 
 class Directive(models.Model):
@@ -370,7 +374,7 @@ class Directive(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Directives'
+        db_table = 'Directives'
 
 
 class Equipment(models.Model):
@@ -393,7 +397,7 @@ class Equipment(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Equipment'
+        db_table = 'Equipment'
 
 
 class EquipmentAnnotation(models.Model):
@@ -403,7 +407,7 @@ class EquipmentAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[EquipmentAnnotations'
+        db_table = 'EquipmentAnnotations'
 
 
 class EquipmentModel(models.Model):
@@ -425,7 +429,7 @@ class EquipmentModel(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[EquipmentModels'
+        db_table = 'EquipmentModels'
 
 
 class EquipmentUsed(models.Model):
@@ -437,7 +441,7 @@ class EquipmentUsed(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[EquipmentUsed'
+        db_table = 'EquipmentUsed'
 
 
 class ExtensionProperties(models.Model):
@@ -450,7 +454,7 @@ class ExtensionProperties(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ExtensionProperties'
+        db_table = 'ExtensionProperties'
 
 
 class ExternalIdentifierSystem(models.Model):
@@ -467,7 +471,7 @@ class ExternalIdentifierSystem(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ExternalIdentifierSystems'
+        db_table = 'ExternalIdentifierSystems'
 
 
 class FeatureAction(models.Model):
@@ -479,7 +483,7 @@ class FeatureAction(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[FeatureActions'
+        db_table = 'FeatureActions'
 
 
 class InstrumentOutputVariable(models.Model):
@@ -497,7 +501,7 @@ class InstrumentOutputVariable(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[InstrumentOutputVariables'
+        db_table = 'InstrumentOutputVariables'
 
 
 class MaintenanceAction(models.Model):
@@ -509,7 +513,7 @@ class MaintenanceAction(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MaintenanceActions'
+        db_table = 'MaintenanceActions'
 
 
 class MeasurementResultValueAnnotation(models.Model):
@@ -519,7 +523,7 @@ class MeasurementResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MeasurementResultValueAnnotations'
+        db_table = 'MeasurementResultValueAnnotations'
 
 
 class MeasurementResultValue(models.Model):
@@ -531,7 +535,7 @@ class MeasurementResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MeasurementResultValues'
+        db_table = 'MeasurementResultValues'
 
 
 class MeasurementResult(models.Model):
@@ -559,7 +563,7 @@ class MeasurementResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MeasurementResults'
+        db_table = 'MeasurementResults'
 
 
 class MethodAnnotation(models.Model):
@@ -569,7 +573,7 @@ class MethodAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MethodAnnotations'
+        db_table = 'MethodAnnotations'
 
 
 class MethodCitation(models.Model):
@@ -580,7 +584,7 @@ class MethodCitation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MethodCitations'
+        db_table = 'MethodCitations'
 
 
 class MethodExtensionPropertyValue(models.Model):
@@ -591,7 +595,7 @@ class MethodExtensionPropertyValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MethodExtensionPropertyValues'
+        db_table = 'MethodExtensionPropertyValues'
 
 
 class MethodExternalIdentifier(models.Model):
@@ -605,7 +609,7 @@ class MethodExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[MethodExternalIdentifiers'
+        db_table = 'MethodExternalIdentifiers'
 
 
 class Method(models.Model):
@@ -620,7 +624,7 @@ class Method(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Methods'
+        db_table = 'Methods'
 
 
 class ModelAffiliation(models.Model):
@@ -632,7 +636,7 @@ class ModelAffiliation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ModelAffiliations'
+        db_table = 'ModelAffiliations'
 
 
 class Models(models.Model):
@@ -646,7 +650,7 @@ class Models(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Models'
+        db_table = 'Models'
 
 
 class Organization(models.Model):
@@ -662,7 +666,7 @@ class Organization(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Organizations'
+        db_table = 'Organizations'
 
 
 class People(models.Model):
@@ -673,7 +677,7 @@ class People(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[People'
+        db_table = 'People'
 
 
 class PersonExternalIdentifier(models.Model):
@@ -687,7 +691,7 @@ class PersonExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[PersonExternalIdentifiers'
+        db_table = 'PersonExternalIdentifiers'
 
 
 class PointCoverageResultValueAnnotation(models.Model):
@@ -697,7 +701,7 @@ class PointCoverageResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[PointCoverageResultValueAnnotations'
+        db_table = 'PointCoverageResultValueAnnotations'
 
 
 class PointCoverageResultValue(models.Model):
@@ -717,7 +721,7 @@ class PointCoverageResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[PointCoverageResultValues'
+        db_table = 'PointCoverageResultValues'
 
 
 class PointCoverageResult(models.Model):
@@ -744,7 +748,7 @@ class PointCoverageResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[PointCoverageResults'
+        db_table = 'PointCoverageResults'
 
 
 class ProcessingLevel(models.Model):
@@ -756,7 +760,7 @@ class ProcessingLevel(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ProcessingLevels'
+        db_table = 'ProcessingLevels'
 
 
 class ProfileResultValueAnnotation(models.Model):
@@ -766,7 +770,7 @@ class ProfileResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ProfileResultValueAnnotations'
+        db_table = 'ProfileResultValueAnnotations'
 
 
 class ProfileResultValue(models.Model):
@@ -787,7 +791,7 @@ class ProfileResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ProfileResultValues'
+        db_table = 'ProfileResultValues'
 
 
 class ProfileResult(models.Model):
@@ -815,7 +819,7 @@ class ProfileResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ProfileResults'
+        db_table = 'ProfileResults'
 
 
 class ReferenceMaterialExternalIdentifier(models.Model):
@@ -831,7 +835,7 @@ class ReferenceMaterialExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ReferenceMaterialExternalIdentifiers'
+        db_table = 'ReferenceMaterialExternalIdentifiers'
 
 
 class ReferenceMaterialValue(models.Model):
@@ -850,7 +854,7 @@ class ReferenceMaterialValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ReferenceMaterialValues'
+        db_table = 'ReferenceMaterialValues'
 
 
 class ReferenceMaterial(models.Model):
@@ -874,7 +878,7 @@ class ReferenceMaterial(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ReferenceMaterials'
+        db_table = 'ReferenceMaterials'
 
 
 class RelatedAction(models.Model):
@@ -887,7 +891,7 @@ class RelatedAction(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedActions'
+        db_table = 'RelatedActions'
 
 
 class RelatedAnnotation(models.Model):
@@ -900,7 +904,7 @@ class RelatedAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedAnnotations'
+        db_table = 'RelatedAnnotations'
 
 
 class RelatedCitation(models.Model):
@@ -913,7 +917,7 @@ class RelatedCitation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedCitations'
+        db_table = 'RelatedCitations'
 
 
 class RelatedDataset(models.Model):
@@ -927,7 +931,7 @@ class RelatedDataset(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedDatasets'
+        db_table = 'RelatedDatasets'
 
 
 class RelatedEquipment(models.Model):
@@ -948,7 +952,7 @@ class RelatedEquipment(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedEquipment'
+        db_table = 'RelatedEquipment'
 
 
 class RelatedFeatures(models.Model):
@@ -964,7 +968,7 @@ class RelatedFeatures(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedFeatures'
+        db_table = 'RelatedFeatures'
 
 
 class RelatedModel(models.Model):
@@ -975,7 +979,7 @@ class RelatedModel(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedModels'
+        db_table = 'RelatedModels'
 
 
 class RelatedResult(models.Model):
@@ -990,7 +994,7 @@ class RelatedResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[RelatedResults'
+        db_table = 'RelatedResults'
 
 
 class ResultAnnotation(models.Model):
@@ -1002,7 +1006,7 @@ class ResultAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ResultAnnotations'
+        db_table = 'ResultAnnotations'
 
 
 class ResultDerivationEquation(models.Model):
@@ -1012,7 +1016,7 @@ class ResultDerivationEquation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ResultDerivationEquations'
+        db_table = 'ResultDerivationEquations'
 
 
 class ResultExtensionPropertyValue(models.Model):
@@ -1023,7 +1027,7 @@ class ResultExtensionPropertyValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ResultExtensionPropertyValues'
+        db_table = 'ResultExtensionPropertyValues'
 
 
 class ResultNormalizationValue(models.Model):
@@ -1033,7 +1037,7 @@ class ResultNormalizationValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ResultNormalizationValues'
+        db_table = 'ResultNormalizationValues'
 
 
 class Result(models.Model):
@@ -1059,7 +1063,7 @@ class Result(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Results'
+        db_table = 'Results'
 
 
 class ResultsDataQuality(models.Model):
@@ -1069,7 +1073,7 @@ class ResultsDataQuality(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[ResultsDataQuality'
+        db_table = 'ResultsDataQuality'
 
 
 class SamplingFeatureAnnotation(models.Model):
@@ -1080,7 +1084,7 @@ class SamplingFeatureAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SamplingFeatureAnnotations'
+        db_table = 'SamplingFeatureAnnotations'
 
 
 class SamplingFeatureExtPropertyVal(models.Model):
@@ -1092,7 +1096,7 @@ class SamplingFeatureExtPropertyVal(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SamplingFeatureExtensionPropertyValues'
+        db_table = 'SamplingFeatureExtensionPropertyValues'
 
 
 class SamplingFeatureExternalIdentifier(models.Model):
@@ -1108,7 +1112,7 @@ class SamplingFeatureExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SamplingFeatureExternalIdentifiers'
+        db_table = 'SamplingFeatureExternalIdentifiers'
 
 
 class SamplingFeature(models.Model):
@@ -1126,7 +1130,7 @@ class SamplingFeature(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SamplingFeatures'
+        db_table = 'SamplingFeatures'
 
 
 class SectionResultValueAnnotation(models.Model):
@@ -1136,7 +1140,7 @@ class SectionResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SectionResultValueAnnotations'
+        db_table = 'SectionResultValueAnnotations'
 
 
 class SectionResultValue(models.Model):
@@ -1163,7 +1167,7 @@ class SectionResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SectionResultValues'
+        db_table = 'SectionResultValues'
 
 
 class SectionResult(models.Model):
@@ -1193,7 +1197,7 @@ class SectionResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SectionResults'
+        db_table = 'SectionResults'
 
 
 class Simulation(models.Model):
@@ -1216,7 +1220,7 @@ class Simulation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Simulations'
+        db_table = 'Simulations'
 
 
 class Sites(models.Model):
@@ -1231,7 +1235,7 @@ class Sites(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Sites'
+        db_table = 'Sites'
 
 
 class SpatialOffsets(models.Model):
@@ -1246,7 +1250,7 @@ class SpatialOffsets(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpatialOffsets'
+        db_table = 'SpatialOffsets'
 
 
 class SpatialReferenceExternalIdentifier(models.Model):
@@ -1262,7 +1266,7 @@ class SpatialReferenceExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpatialReferenceExternalIdentifiers'
+        db_table = 'SpatialReferenceExternalIdentifiers'
 
 
 class SpatialReference(models.Model):
@@ -1280,7 +1284,7 @@ class SpatialReference(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpatialReferences'
+        db_table = 'SpatialReferences'
 
 
 class SpecimenBatchPostion(models.Model):
@@ -1291,7 +1295,7 @@ class SpecimenBatchPostion(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpecimenBatchPostions'
+        db_table = 'SpecimenBatchPostions'
 
 
 class SpecimenTaxonomicClassifier(models.Model):
@@ -1303,7 +1307,7 @@ class SpecimenTaxonomicClassifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpecimenTaxonomicClassifiers'
+        db_table = 'SpecimenTaxonomicClassifiers'
 
 
 class Specimens(models.Model):
@@ -1315,7 +1319,7 @@ class Specimens(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Specimens'
+        db_table = 'Specimens'
 
 
 class SpectraResultValueAnnotation(models.Model):
@@ -1325,7 +1329,7 @@ class SpectraResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpectraResultValueAnnotations'
+        db_table = 'SpectraResultValueAnnotations'
 
 
 class SpectraResultValue(models.Model):
@@ -1346,7 +1350,7 @@ class SpectraResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpectraResultValues'
+        db_table = 'SpectraResultValues'
 
 
 class SpectraResult(models.Model):
@@ -1374,7 +1378,7 @@ class SpectraResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[SpectraResults'
+        db_table = 'SpectraResults'
 
 
 class TaxonomicClassifierExtId(models.Model):
@@ -1390,7 +1394,7 @@ class TaxonomicClassifierExtId(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TaxonomicClassifierExternalIdentifiers'
+        db_table = 'TaxonomicClassifierExternalIdentifiers'
 
 
 class TaxonomicClassifier(models.Model):
@@ -1407,7 +1411,7 @@ class TaxonomicClassifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TaxonomicClassifiers'
+        db_table = 'TaxonomicClassifiers'
 
 
 class TimeSeriesResultValueAnnotation(models.Model):
@@ -1417,7 +1421,7 @@ class TimeSeriesResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TimeSeriesResultValueAnnotations'
+        db_table = 'TimeSeriesResultValueAnnotations'
 
 
 class TimeSeriesResultValue(models.Model):
@@ -1434,7 +1438,7 @@ class TimeSeriesResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TimeSeriesResultValues'
+        db_table = 'TimeSeriesResultValues'
 
 
 class TimeSeriesResult(models.Model):
@@ -1462,7 +1466,7 @@ class TimeSeriesResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TimeSeriesResults'
+        db_table = 'TimeSeriesResults'
 
 
 class TrajectoryResultValueAnnotation(models.Model):
@@ -1472,7 +1476,7 @@ class TrajectoryResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TrajectoryResultValueAnnotations'
+        db_table = 'TrajectoryResultValueAnnotations'
 
 
 class TrajectoryResultValue(models.Model):
@@ -1503,7 +1507,7 @@ class TrajectoryResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TrajectoryResultValues'
+        db_table = 'TrajectoryResultValues'
 
 
 class TrajectoryResult(models.Model):
@@ -1525,7 +1529,7 @@ class TrajectoryResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TrajectoryResults'
+        db_table = 'TrajectoryResults'
 
 
 class TransectResultValueAnnotation(models.Model):
@@ -1535,7 +1539,7 @@ class TransectResultValueAnnotation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TransectResultValueAnnotations'
+        db_table = 'TransectResultValueAnnotations'
 
 
 class TransectResultValue(models.Model):
@@ -1561,7 +1565,7 @@ class TransectResultValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TransectResultValues'
+        db_table = 'TransectResultValues'
 
 
 class TransectResult(models.Model):
@@ -1585,7 +1589,7 @@ class TransectResult(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[TransectResults'
+        db_table = 'TransectResults'
 
 
 class Units(models.Model):
@@ -1596,7 +1600,7 @@ class Units(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Units'
+        db_table = 'Units'
 
 
 class VariableExtensionPropertyValue(models.Model):
@@ -1607,7 +1611,7 @@ class VariableExtensionPropertyValue(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[VariableExtensionPropertyValues'
+        db_table = 'VariableExtensionPropertyValues'
 
 
 class VariableExternalIdentifier(models.Model):
@@ -1621,7 +1625,7 @@ class VariableExternalIdentifier(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[VariableExternalIdentifiers'
+        db_table = 'VariableExternalIdentifiers'
 
 
 class Variable(models.Model):
@@ -1638,7 +1642,7 @@ class Variable(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[Variables'
+        db_table = 'Variables'
 
 
 class CvActiontype(models.Model):
@@ -1656,7 +1660,7 @@ class CvActiontype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_ActionType'
+        db_table = 'CV_ActionType'
 
 
 class CvAggregationstatistic(models.Model):
@@ -1674,7 +1678,7 @@ class CvAggregationstatistic(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_AggregationStatistic'
+        db_table = 'CV_AggregationStatistic'
 
 
 class CvAnnotationtype(models.Model):
@@ -1692,7 +1696,7 @@ class CvAnnotationtype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_AnnotationType'
+        db_table = 'CV_AnnotationType'
 
 
 class CvCensorcode(models.Model):
@@ -1710,7 +1714,7 @@ class CvCensorcode(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_CensorCode'
+        db_table = 'CV_CensorCode'
 
 
 class CvDataqualitytype(models.Model):
@@ -1728,7 +1732,7 @@ class CvDataqualitytype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_DataQualityType'
+        db_table = 'CV_DataQualityType'
 
 
 class CvDatasettype(models.Model):
@@ -1746,7 +1750,7 @@ class CvDatasettype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_DatasetType'
+        db_table = 'CV_DatasetType'
 
 
 class CvDirectivetype(models.Model):
@@ -1764,7 +1768,7 @@ class CvDirectivetype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_DirectiveType'
+        db_table = 'CV_DirectiveType'
 
 
 class CvElevationdatum(models.Model):
@@ -1782,7 +1786,7 @@ class CvElevationdatum(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_ElevationDatum'
+        db_table = 'CV_ElevationDatum'
 
 
 class CvEquipmenttype(models.Model):
@@ -1800,7 +1804,7 @@ class CvEquipmenttype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_EquipmentType'
+        db_table = 'CV_EquipmentType'
 
 
 class CvMedium(models.Model):
@@ -1818,7 +1822,7 @@ class CvMedium(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_Medium'
+        db_table = 'CV_Medium'
 
 
 class CvMethodtype(models.Model):
@@ -1836,7 +1840,7 @@ class CvMethodtype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_MethodType'
+        db_table = 'CV_MethodType'
 
 
 class CvOrganizationtype(models.Model):
@@ -1854,7 +1858,7 @@ class CvOrganizationtype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_OrganizationType'
+        db_table = 'CV_OrganizationType'
 
 
 class CvPropertydatatype(models.Model):
@@ -1872,7 +1876,7 @@ class CvPropertydatatype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_PropertyDataType'
+        db_table = 'CV_PropertyDataType'
 
 
 class CvQualitycode(models.Model):
@@ -1884,7 +1888,7 @@ class CvQualitycode(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_QualityCode'
+        db_table = 'CV_QualityCode'
 
 
 class CvRelationshiptype(models.Model):
@@ -1902,7 +1906,7 @@ class CvRelationshiptype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_RelationshipType'
+        db_table = 'CV_RelationshipType'
 
 
 class CvResulttype(models.Model):
@@ -1920,7 +1924,7 @@ class CvResulttype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_ResultType'
+        db_table = 'CV_ResultType'
 
 
 class CvSitetype(models.Model):
@@ -1938,7 +1942,7 @@ class CvSitetype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_SiteType'
+        db_table = 'CV_SiteType'
 
 
 class CvSpatialoffsettype(models.Model):
@@ -1956,7 +1960,7 @@ class CvSpatialoffsettype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_SpatialOffsetType'
+        db_table = 'CV_SpatialOffsetType'
 
 
 class CvSpeciation(models.Model):
@@ -1974,7 +1978,7 @@ class CvSpeciation(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_Speciation'
+        db_table = 'CV_Speciation'
 
 
 class CvSpecimentype(models.Model):
@@ -1992,7 +1996,7 @@ class CvSpecimentype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_SpecimenType'
+        db_table = 'CV_SpecimenType'
 
 
 class CvStatus(models.Model):
@@ -2010,7 +2014,7 @@ class CvStatus(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_Status'
+        db_table = 'CV_Status'
 
 
 class CvTaxonomicclassifiertype(models.Model):
@@ -2028,7 +2032,7 @@ class CvTaxonomicclassifiertype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_TaxonomicClassifierType'
+        db_table = 'CV_TaxonomicClassifierType'
 
 
 class CvUnitstype(models.Model):
@@ -2046,7 +2050,7 @@ class CvUnitstype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_UnitsType'
+        db_table = 'CV_UnitsType'
 
 
 class CvVariablename(models.Model):
@@ -2064,7 +2068,7 @@ class CvVariablename(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_VariableName'
+        db_table = 'CV_VariableName'
 
 
 class CvVariabletype(models.Model):
@@ -2082,7 +2086,7 @@ class CvVariabletype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_VariableType'
+        db_table = 'CV_VariableType'
 
 
 class CvSamplingfeaturetype(models.Model):
@@ -2100,7 +2104,7 @@ class CvSamplingfeaturetype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_SamplingFeatureType'
+        db_table = 'CV_SamplingFeatureType'
 
 
 class CvSamplingfeaturegeotype(models.Model):
@@ -2118,7 +2122,7 @@ class CvSamplingfeaturegeotype(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ODM2].[CV_SamplingFeatureGeoType'
+        db_table = 'CV_SamplingFeatureGeoType'
 
 
 class Sysdiagrams(models.Model):
@@ -2131,3 +2135,15 @@ class Sysdiagrams(models.Model):
     class Meta:
         managed = False
         db_table = 'sysdiagrams'
+
+
+# TODO: make something more sophisticated than this later on
+database_schema_fix = 'ODM2].['
+clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
+classes = [model for name, model in clsmembers if issubclass(model, models.Model)]
+database_manager = settings.DATABASES['odm2']['ENGINE']
+
+for model in classes:
+    if database_manager == u'sql_server.pyodbc':
+        model._meta.db_table = database_schema_fix + model._meta.db_table
+    # can add more fixes there depending on the database engine

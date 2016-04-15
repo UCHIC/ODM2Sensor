@@ -2,6 +2,7 @@ import django
 from ODM2Sensor.settings.base import *
 
 DEBUG = True
+DEPLOYED = True
 TEMPLATE_DEBUG = True
 
 SITE_ROOT = os.environ['APPL_PHYSICAL_PATH']
