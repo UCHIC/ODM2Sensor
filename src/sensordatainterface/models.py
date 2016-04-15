@@ -138,7 +138,7 @@ class CvTerm(models.Model):
 
 
 class CalibrationAction(models.Model):
-    actionid = models.ForeignKey(Action, related_name='calibrationaction', db_column='ActionID',
+    actionid = models.OneToOneField(Action, related_name='calibrationaction', db_column='ActionID',
                                  primary_key=True)  # Field name made lowercase.
     calibrationcheckvalue = models.FloatField(db_column='CalibrationCheckValue', blank=True,
                                               null=True)  # Field name made lowercase.
@@ -197,7 +197,7 @@ class CategoricalResultValue(models.Model):
 
 
 class CategoricalResult(models.Model):
-    resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
     xlocationunitsid = models.IntegerField(db_column='XLocationUnitsID', blank=True,
                                            null=True)  # Field name made lowercase.
@@ -505,7 +505,7 @@ class InstrumentOutputVariable(models.Model):
 
 
 class MaintenanceAction(models.Model):
-    actionid = models.ForeignKey(Action, db_column='ActionID', related_name='maintenanceaction',
+    actionid = models.OneToOneField(Action, db_column='ActionID', related_name='maintenanceaction',
                                  primary_key=True)  # Field name made lowercase.
     isfactoryservice = models.BooleanField(db_column='IsFactoryService', default=None)  # Field name made lowercase.
     maintenancecode = models.TextField(db_column='MaintenanceCode', blank=True)  # Field name made lowercase.
@@ -539,7 +539,7 @@ class MeasurementResultValue(models.Model):
 
 
 class MeasurementResult(models.Model):
-    resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
     xlocationunitsid = models.ForeignKey('Units', related_name='measurement_xlocationunitsid',
                                          db_column='XLocationUnitsID', blank=True,
@@ -725,7 +725,7 @@ class PointCoverageResultValue(models.Model):
 
 
 class PointCoverageResult(models.Model):
-    resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation', blank=True, null=True)  # Field name made lowercase.
     zlocationunitsid = models.ForeignKey('Units', db_column='ZLocationUnitsID', blank=True,
                                          null=True)  # Field name made lowercase.
@@ -795,7 +795,7 @@ class ProfileResultValue(models.Model):
 
 
 class ProfileResult(models.Model):
-    resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
     xlocationunitsid = models.ForeignKey('Units', related_name='profile_xlocationunitsid', db_column='XLocationUnitsID',
                                          blank=True,
@@ -1010,7 +1010,7 @@ class ResultAnnotation(models.Model):
 
 
 class ResultDerivationEquation(models.Model):
-    resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     derivationequationid = models.ForeignKey(DerivationEquation,
                                              db_column='DerivationEquationID')  # Field name made lowercase.
 
@@ -1031,7 +1031,7 @@ class ResultExtensionPropertyValue(models.Model):
 
 
 class ResultNormalizationValue(models.Model):
-    resultid = models.ForeignKey('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField('Result', db_column='ResultID', primary_key=True)  # Field name made lowercase.
     normalizedbyreferencematerialvalueid = models.ForeignKey(ReferenceMaterialValue,
                                                              db_column='NormalizedByReferenceMaterialValueID')  # Field name made lowercase.
 
@@ -1171,7 +1171,7 @@ class SectionResultValue(models.Model):
 
 
 class SectionResult(models.Model):
-    resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     ylocation = models.FloatField(db_column='YLocation', blank=True, null=True)  # Field name made lowercase.
     ylocationunitsid = models.ForeignKey('Units', related_name='sectionresults_ylocationunitsid',
                                          db_column='YLocationUnitsID', blank=True,
@@ -1224,7 +1224,7 @@ class Simulation(models.Model):
 
 
 class Sites(models.Model):
-    samplingfeatureid = models.ForeignKey(SamplingFeature, related_name='sites',
+    samplingfeatureid = models.OneToOneField(SamplingFeature, related_name='sites',
                                           db_column='SamplingFeatureID',
                                           primary_key=True)  # Field name made lowercase.
     sitetypecv = models.ForeignKey('CvSitetype', db_column='SiteTypeCV')  # Field name made lowercase.
@@ -1288,7 +1288,7 @@ class SpatialReference(models.Model):
 
 
 class SpecimenBatchPostion(models.Model):
-    featureactionid = models.ForeignKey(FeatureAction, db_column='FeatureActionID',
+    featureactionid = models.OneToOneField(FeatureAction, db_column='FeatureActionID',
                                         primary_key=True)  # Field name made lowercase.
     batchpositionnumber = models.IntegerField(db_column='BatchPositionNumber')  # Field name made lowercase.
     batchpositionlabel = models.TextField(db_column='BatchPositionLabel', blank=True)  # Field name made lowercase.
@@ -1311,7 +1311,7 @@ class SpecimenTaxonomicClassifier(models.Model):
 
 
 class Specimens(models.Model):
-    samplingfeatureid = models.ForeignKey(SamplingFeature, db_column='SamplingFeatureID',
+    samplingfeatureid = models.OneToOneField(SamplingFeature, db_column='SamplingFeatureID',
                                           primary_key=True)  # Field name made lowercase.
     specimentypecv = models.ForeignKey('CvSpecimentype', db_column='SpecimenTypeCV')  # Field name made lowercase.
     specimenmediumcv = models.ForeignKey('CvMedium', db_column='SpecimenMediumCV')  # Field name made lowercase.
@@ -1354,7 +1354,7 @@ class SpectraResultValue(models.Model):
 
 
 class SpectraResult(models.Model):
-    resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
     xlocationunitsid = models.ForeignKey('Units', related_name='spectralresults_xlocationunitsid',
                                          db_column='XLocationUnitsID', blank=True,
@@ -1442,7 +1442,7 @@ class TimeSeriesResultValue(models.Model):
 
 
 class TimeSeriesResult(models.Model):
-    resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     xlocation = models.FloatField(db_column='XLocation', blank=True, null=True)  # Field name made lowercase.
     xlocationunitsid = models.ForeignKey('Units', related_name='timeseriesresults_xlocationunits',
                                          db_column='XLocationUnitsID', blank=True,
@@ -1511,7 +1511,7 @@ class TrajectoryResultValue(models.Model):
 
 
 class TrajectoryResult(models.Model):
-    resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     spatialreferenceid = models.ForeignKey(SpatialReference, db_column='SpatialReferenceID', blank=True,
                                            null=True)  # Field name made lowercase.
     intendedtrajectoryspacing = models.FloatField(db_column='IntendedTrajectorySpacing', blank=True,
@@ -1569,7 +1569,7 @@ class TransectResultValue(models.Model):
 
 
 class TransectResult(models.Model):
-    resultid = models.ForeignKey(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
+    resultid = models.OneToOneField(Result, db_column='ResultID', primary_key=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='ZLocation', blank=True, null=True)  # Field name made lowercase.
     zlocationunitsid = models.ForeignKey('Units', related_name='transectresults_zlocationunitsid',
                                          db_column='ZLocationUnitsID', blank=True,

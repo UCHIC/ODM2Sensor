@@ -10,7 +10,7 @@ from django import forms
 from datetime import datetime
 from django.utils.encoding import force_text
 from django.utils.html import format_html
-from django.forms.util import flatatt
+from django.forms.utils import flatatt
 from django.forms.fields import BooleanField
 
 

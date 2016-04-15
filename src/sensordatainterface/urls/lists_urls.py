@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import RedirectView
 from django.db.models import Q
 
-urlpatterns = patterns('',
+urlpatterns = [
     #################################################################################################
     #                         Home Tab
     #################################################################################################
@@ -210,4 +210,4 @@ urlpatterns = patterns('',
     # url(r'^control-vocabularies/$',
     #     Vocabularies.as_view(),
     #     name='vocabularies')
-)
+]

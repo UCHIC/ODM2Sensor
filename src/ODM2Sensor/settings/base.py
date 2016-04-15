@@ -31,25 +31,21 @@ DEPLOYED = False
 
 # Application definition
 
-PREREQ_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-)
-
-PROJECT_APPS = (
-    'django.contrib.formtools',
     'sensordatainterface',
-)
+]
+
 
 TEST_RUNNER = 'sensordatainterface.tests.custom_runner.init_schemas.SQLServerDiscoverRunner'
 
-INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
-
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,11 +53,28 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'ODM2Sensor.urls'
 
 WSGI_APPLICATION = 'ODM2Sensor.wsgi.application'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -78,20 +91,22 @@ for database in data['databases']:
         'OPTIONS': database['options'] if 'options' in database else ''
     }
 
-
 DATABASE_ROUTERS = ['sensordatainterface.routers.SensorDataInterfaceRouter', ]
 
-TEMPLATES = [
+AUTH_PASSWORD_VALIDATORS = [
     {
-        # 'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'OPTIONS': {
-            'context_processors': 'django.template.context_processors.media'
-        },
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, os.pardir, 'templates')]
 
 LANGUAGE_CODE = 'en-us'
 

@@ -19,13 +19,3 @@ class SensorDataInterfaceRouter(object):
         if model._meta.app_label == 'sensordatainterface':
             return 'odm2'
         return None
-
-    def allow_migrate(self, db, model, **hints):
-        """
-        Make sure the auth app only appears in the 'auth_db'
-        database.
-        """
-        if model._meta.app_label == 'sensordatainterface':
-            return 'odm2'
-        return None
-    #More functions may be needed.
