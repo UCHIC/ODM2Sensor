@@ -13,6 +13,21 @@ from django.utils.html import format_html
 from django.forms.utils import flatatt
 from django.forms.fields import BooleanField
 
+units_queryset = Units.objects.all()
+cv_medium_queryset = CvMedium.objects.all()
+annotations_queryset = Annotation.objects.all()
+organizations_queryset = Organization.objects.all()
+processing_level_queryset = ProcessingLevel.objects.all()
+methods_queryset = Method.objects.all().prefetch_related('methodtypecv')
+equipment_queryset = Equipment.objects.all().prefetch_related('equipmentmodelid', 'equipmenttypecv')
+instrument_output_variable_queryset = InstrumentOutputVariable.objects.all().prefetch_related('modelid', 'variableid', 'variableid__variablenamecv')
+reference_materials_queryset = ReferenceMaterial.objects.all()\
+    .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid', 'referencematerialvalue__variableid__variablenamecv',
+                      'referencematerialvalue__unitsid', 'referencematerialmediumcv')
+deployments_queryset = EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))\
+    .prefetch_related('actionid', 'equipmentid', 'equipmentid__equipmenttypecv', 'equipmentid__equipmentmodelid', 'actionid__featureaction',
+                      'equipmentid__equipmentmodelid__modelmanufacturerid', 'actionid__featureaction__samplingfeatureid')
+
 
 class PrettyCheckboxWidget(forms.widgets.CheckboxInput):
     def render(self, name, value, attrs=None):
@@ -42,10 +57,10 @@ class SamplingFeatureChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.samplingfeaturename
 
-
-class OrganizationChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.organizationname
+#
+# class OrganizationChoiceField(ModelChoiceField):
+#     def label_from_instance(self, obj):
+#         return obj.organizationname
 
 
 class EquipmentModelChoiceField(ModelChoiceField):
@@ -254,7 +269,7 @@ class SiteForm(ModelForm):
 
 class EquipmentForm(ModelForm):
     required_css_class = 'form-required'
-    equipmentvendorid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Vendor', empty_label='Choose an Organization')
+    equipmentvendorid = ModelChoiceField(queryset=organizations_queryset, label='Equipment Vendor', empty_label='Choose an Organization')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model', empty_label='Choose a Model')
     equipmentpurchasedate = forms.DateTimeField(initial=datetime.now(), label='Purchase Date')
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
@@ -295,7 +310,7 @@ class EquipmentForm(ModelForm):
 
 class EquipmentModelForm(ModelForm):
     required_css_class = 'form-required'
-    modelmanufacturerid = OrganizationChoiceField(queryset=Organization.objects.all(), label='Equipment Manufacturer',
+    modelmanufacturerid = ModelChoiceField(queryset=organizations_queryset, label='Equipment Manufacturer',
                                                   empty_label='Choose a Manufacturer')
 
     class Meta:
@@ -328,7 +343,7 @@ class EquipmentModelForm(ModelForm):
 class EquipmentUsedForm(ModelForm):
     required_css_class = 'form-required'
     equipmentid = EquipmentChoiceField(
-        queryset=Equipment.objects.all(),
+        queryset=equipment_queryset,
         label='Equipment',
         empty_label='Choose an Equipment'
     )
@@ -361,8 +376,8 @@ class PersonForm(ModelForm):
 
 class AffiliationForm(ModelForm):
     required_css_class = 'form-required'
-    organizationid = OrganizationChoiceField(
-        queryset=Organization.objects.all(),
+    organizationid = ModelChoiceField(
+        queryset=organizations_queryset,
         # this select will show all organizations and an option to create a new one.
         label='Organization',
         empty_label='Choose an Organization'
@@ -421,8 +436,8 @@ class VendorForm(ModelForm):
 
 class ReferenceMaterialForm(ModelForm):
     required_css_class = 'form-required'
-    referencematerialorganizationid = OrganizationChoiceField(
-        queryset=Organization.objects.all(),
+    referencematerialorganizationid = ModelChoiceField(
+        queryset=organizations_queryset,
         label='Organization',
         empty_label='Choose an Organization'
     )
@@ -460,7 +475,7 @@ class ReferenceMaterialValueForm(ModelForm):
         empty_label='Choose a Variable'
     )
     unitsid = UnitChoiceField(
-        queryset=Units.objects.all(),
+        queryset=units_queryset,
         label='Units',
         empty_label='Choose a Unit'
     )
@@ -482,8 +497,8 @@ class ReferenceMaterialValueForm(ModelForm):
 
 class MethodForm(ModelForm):
     required_css_class = 'form-required'
-    organizationid = OrganizationChoiceField(
-        queryset=Organization.objects.all(),
+    organizationid = ModelChoiceField(
+        queryset=organizations_queryset,
         label='Organization',
         empty_label='Choose an Organization',
         required=False
@@ -515,7 +530,7 @@ class MethodForm(ModelForm):
 class OutputVariableForm(ModelForm):
     required_css_class = 'form-required'
     instrumentmethodid = MethodChoiceField(
-        queryset=Method.objects.all(),
+        queryset=methods_queryset,
         label='Method',
         empty_label='Choose a Method'
     )
@@ -530,7 +545,7 @@ class OutputVariableForm(ModelForm):
         empty_label='Choose a Model'
     )
     instrumentrawoutputunitsid = UnitChoiceField(
-        queryset=Units.objects.all(),
+        queryset=units_queryset,
         label='Unit',
         empty_label='Choose a Unit'
     )
@@ -558,7 +573,7 @@ class SiteDeploymentMeasuredVariableForm(ModelForm):
     required_css_class = 'form-required'
 
     instrumentmethodid = MethodChoiceField(
-        queryset=Method.objects.all(),
+        queryset=methods_queryset,
         label='Method',
         empty_label='Choose a Method'
     )
@@ -568,7 +583,7 @@ class SiteDeploymentMeasuredVariableForm(ModelForm):
         empty_label='Choose a Variable'
     )
     instrumentrawoutputunitsid = UnitChoiceField(
-        queryset=Units.objects.all(),
+        queryset=units_queryset,
         label='Unit',
         empty_label='Choose a Unit'
     )
@@ -594,7 +609,7 @@ class SiteDeploymentMeasuredVariableForm(ModelForm):
 class FactoryServiceActionForm(ModelForm):
     required_css_class = 'form-required'
 
-    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
+    methodid = MethodChoiceField(queryset=methods_queryset, label='Method',
                                  empty_label='Choose a Method')
 
     class Meta:
@@ -722,7 +737,7 @@ class SelectWithClassForOptions(Select):
         this_method = args[1]
         class_value = "class=\"\""
         if this_method != "":
-            class_value = Method.objects.get(pk=this_method).methodtypecv.name.replace(' ', '')
+            class_value = methods_queryset.get(pk=this_method).methodtypecv.name.replace(' ', '')
 
         after_tag = 8
         before_tag_close = 7
@@ -741,14 +756,14 @@ class ActionForm(ModelForm):
 
     required_css_class = 'form-required'
 
-    methodid = MethodChoiceField(queryset=Method.objects.all(), label='Method',
+    methodid = MethodChoiceField(queryset=methods_queryset, label='Method',
                                  empty_label='Choose a Method', widget=SelectWithClassForOptions)
 
     # add additional fields and put classes to make visible depending on action type.
     # fields for equipment maintenance:
 
     equipmentused = MultipleEquipmentChoiceField(
-        queryset=Equipment.objects.all(), label='Equipment Used', required=False
+        queryset=equipment_queryset, label='Equipment Used', required=False
     )
 
     equipment_by_site = PrettyCheckboxField(widget=PrettyCheckboxWidget(
@@ -759,14 +774,14 @@ class ActionForm(ModelForm):
 
     calibrationstandard = CalibrationStandardMultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
-        queryset=ReferenceMaterial.objects.all(), label='Calibration Standards', required=False
+        queryset=reference_materials_queryset, label='Calibration Standards', required=False
     )
 
     calibrationstandardnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     calibrationreferenceequipment = MultipleEquipmentChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'Instrumentcalibration'}),
-        queryset=Equipment.objects.all(), label='Reference Equipment',
+        queryset=equipment_queryset, label='Reference Equipment',
         required=False
     )
 
@@ -785,7 +800,7 @@ class ActionForm(ModelForm):
     # fields for calibration
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
         widget=forms.Select(attrs={'class': 'Instrumentcalibration'}),
-        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=False)
+        queryset=instrument_output_variable_queryset, label='Instrument Output Variable', required=False)
 
     calibrationcheckvalue = forms.DecimalField(
         widget=forms.NumberInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Check Value', required=False)
@@ -795,7 +810,7 @@ class ActionForm(ModelForm):
 
     # fields for retrieval
     deploymentaction = DeploymentActionChoiceField(widget=forms.Select(attrs={'class': 'Instrumentretrieval Equipmentretrieval'}), label='Deployment', to_field_name='actionid',
-        queryset=EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment')),
+        queryset=deployments_queryset,
         required=False
     )
 
@@ -860,24 +875,24 @@ class ResultsForm(forms.Form):
 
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=InstrumentOutputVariable.objects.all(), label='Instrument Output Variable', required=True)
+        queryset=instrument_output_variable_queryset, label='Instrument Output Variable', required=True)
 
     unitsid = UnitChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=Units.objects.all(), label='Units', required=True)
+        queryset=units_queryset, label='Units', required=True)
 
     processing_level_id = ProcessingLevelChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=ProcessingLevel.objects.all(), label='Processing Level', required=True)
+        queryset=processing_level_queryset, label='Processing Level', required=True)
 
     sampledmediumcv = forms.ModelChoiceField(
         widget=forms.Select(attrs={'class': ''}),
-        queryset=CvMedium.objects.all(), label='Sampled Medium', required=True)
+        queryset=cv_medium_queryset, label='Sampled Medium', required=True)
 
 
 class AnnotationForm(forms.ModelForm):
     required_css_class = 'form-required'
-    annotationid = ActionAnnotationChoiceField(queryset=Annotation.objects.all(),
+    annotationid = ActionAnnotationChoiceField(queryset=annotations_queryset,
                                                label='Annotation', empty_label='Choose an Annotation')
 
     class Meta:
