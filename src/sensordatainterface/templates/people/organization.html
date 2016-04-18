@@ -19,7 +19,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for vendor in OrganizationsView %}
+            {% for vendor in Organizations %}
                 <tr>
                     <td>
                         <a href="{% url 'organization_detail' vendor.organizationid %}">
@@ -27,7 +27,7 @@
                         </a>
                     </td>
                     <td>{{ vendor.organizationname }}</td>
-                    <td>{{ vendor.organizationtypecv }}</td>
+                    <td>{{ vendor.organizationtypecv_id }}</td>
                     <td>{{ vendor.organizationlink }}</td>
                     <td>
                         {% for aff in vendor.affiliation.all %}

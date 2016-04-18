@@ -70,10 +70,7 @@ urlpatterns = [
     url(r'^people/humans/$',
         Humans.as_view(),
         name='humans'),
-
-    url(r'^people/organizations/$',
-        OrganizationsView.as_view(),
-        name='organizations'),
+    url(r'^people/organizations/$', GenericListView.as_view(queryset=organizations_queryset, context_object_name='Organizations', template_name='people/organization.html'), name='organizations'),
 
 
     #################################################################################################

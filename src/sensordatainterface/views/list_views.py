@@ -6,6 +6,8 @@ equipment_models_queryset = EquipmentModel.objects.all().prefetch_related('model
 
 sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
 
+organizations_queryset = Organization.objects.all().prefetch_related('affiliation')
+
 output_variables_queryset = InstrumentOutputVariable.objects.all().prefetch_related('variableid', 'modelid', 'instrumentmethodid')
 
 results_queryset = Result.objects.all().prefetch_related('featureactionid', 'featureactionid__samplingfeatureid', 'variableid')
@@ -200,22 +202,6 @@ class Humans(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(Humans, self).dispatch(*args, **kwargs)
-
-
-class OrganizationsView(ListView):
-    template_name = 'people/organization.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganizationsView, self).get_context_data(**kwargs)
-        context['OrganizationsView'] = Organization.objects.all()
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(OrganizationsView, self).dispatch(*args, **kwargs)
 
 
 #################################################################################################
