@@ -37,6 +37,12 @@ def get_media_file_name(file_path):
 def get_deployment_retrieval(deployment):
     if not isinstance(deployment, Action):
         return
-    if deployment.actiontypecv.term not in ['equipmentDeployment', 'instrumentDeployment']:
+    if deployment.actiontypecv_id not in ['Equipment deployment', 'Instrument deployment']:
         return
-    return deployment.parent_relatedaction.filter(relationshiptypecv__term='isRetrievalFor')
+
+    retrieval = None
+    for related_action in deployment.parent_relatedaction.all():
+        if related_action.relationshiptypecv_id == 'Is retrieval for':
+            retrieval = related_action
+
+    return retrieval

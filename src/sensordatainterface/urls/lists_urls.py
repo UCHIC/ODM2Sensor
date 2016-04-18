@@ -27,36 +27,13 @@ urlpatterns = [
     #                         Actions Tab
     #################################################################################################
     # Site Visits Generic View
-    url(r'^actions/site-visits/$',
-       GenericListView.as_view(
-           queryset=site_visits_queryset,
-           context_object_name='SiteVisits',
-           template_name='site-visits/visits.html'
-       ),
-       name='site_visits'),
-
-    url(r'^actions/site-visits/site/(?P<site_id>[-_\w]+)/$',
-       SiteVisitsBySite.as_view(),
-       name='site_visits_by_site'),
+    url(r'^actions/site-visits/$', GenericListView.as_view(queryset=site_visits_queryset, context_object_name='SiteVisits', template_name='site-visits/visits.html'), name='site_visits'),
+    url(r'^actions/site-visits/site/(?P<site_id>[-_\w]+)/$', SiteVisitsBySite.as_view(), name='site_visits_by_site'),
 
     # Deployments Generic View
-    url(r'^actions/deployments/$',
-       GenericListView.as_view(
-           queryset=Action.objects.filter(
-               Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment')
-           ),
-           context_object_name='Deployments',
-           template_name='site-visits/deployment/deployments.html'
-       ),
-       name='deployments'),
-
-    url(r'^actions/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$',
-           EquipmentDeploymentsBySite.as_view(),
-           name='deployments_by_site'),
-
-    url(r'^actions/deployments/equipment/(?P<equipment_id>[-_\w]+)/$',
-       EquipmentDeployments.as_view(),
-       name='deployments_by_equipment'),
+    url(r'^actions/deployments/$', GenericListView.as_view(queryset=deployments_queryset, context_object_name='Deployments', template_name='site-visits/deployment/deployments.html'), name='deployments'),
+    url(r'^actions/deployments/site/(?P<current>[-_\w]+)/(?P<site_id>[-_\w]+)/$', EquipmentDeploymentsBySite.as_view(), name='deployments_by_site'),
+    url(r'^actions/deployments/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentDeployments.as_view(), name='deployments_by_equipment'),
 
     # Calibrations Generic Views
     url(r'^actions/calibrations/$',

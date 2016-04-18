@@ -31,48 +31,46 @@
         </thead>
         <tbody>
         {% for deployment in Deployments %}
-            {% for site in deployment.featureaction.all %}
-                {% for equipment in deployment.equipmentused.all %}
-                <tr>
-                    <td data-order="{{ deployment.begindatetime|date:'U' }}">
-                        <a href="{% url 'deployment_detail' deployment.actionid %}">
-                            {{ deployment.begindatetime }}<br/>to
+            {% with retrieval=deployment|get_deployment_retrieval %}
+                {% for site in deployment.featureaction.all %}
+                    {% for equipment in deployment.equipmentused.all %}
+                    <tr>
+                        <td data-order="{{ deployment.begindatetime|date:'U' }}">
+                            <a href="{% url 'deployment_detail' deployment.actionid %}">
+                                {{ deployment.begindatetime }}<br/>to
 
-                            {% with retrieval=deployment|get_deployment_retrieval %}
-                                {% if retrieval.exists %}
-                                    {{ retrieval.get.actionid.begindatetime }}
+                                {% if retrieval != None %}
+                                    {{ retrieval.actionid.begindatetime }}
                                 {% else %}
                                     present
                                 {% endif %}
-                            {% endwith %}
-                        </a></td>
-                    <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td> {# list all equipment linking to single actions #}
-                    <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
-                    <td>
-                    {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
-                        Logan River
-                    {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
-                        Red Butte Creek
-                    {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
-                        Provo River
-                    {% endif %}
-                    </td>
-                        <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
-                        <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
-                        <td>{{ equipment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
-                    <td>
-                        {% with retrieval=deployment|get_deployment_retrieval %}
-                            {% if retrieval.exists %}
+                            </a></td>
+                        <td>{{ site.samplingfeatureid.samplingfeaturecode }}</td> {# list all equipment linking to single actions #}
+                        <td>{{ site.samplingfeatureid.samplingfeaturename }}</td>
+                        <td>
+                        {% if site.samplingfeatureid.samplingfeaturecode|slice:"2" == "LR" %}
+                            Logan River
+                        {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "RB" %}
+                            Red Butte Creek
+                        {% elif site.samplingfeatureid.samplingfeaturecode|slice:"2" == "PR" %}
+                            Provo River
+                        {% endif %}
+                        </td>
+                            <td>{{ equipment.equipmentid.equipmentserialnumber }}</td>
+                            <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                            <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
+                            <td>{{ equipment.equipmentid.equipmentmodelid.modelpartnumber|default:" -- " }}</td>
+                        <td>
+                            {% if retrieval != None %}
                                 No
                             {% else %}
                                 Yes
                             {% endif %}
-                        {% endwith %}
-                    </td>
-                </tr>
-                    {% endfor %}
-            {% endfor %}
+                        </td>
+                    </tr>
+                        {% endfor %}
+                {% endfor %}
+            {% endwith %}
         {% endfor %}
         </tbody>
     </table>

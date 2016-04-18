@@ -6,6 +6,13 @@ sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_relat
 site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site visit')\
     .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
                       'actionid__actionby__affiliationid__personid')
+deployments_queryset = Action.objects.filter(Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment'))\
+    .select_related('actiontypecv')\
+    .prefetch_related('featureaction', 'featureaction__samplingfeatureid', 'parent_relatedaction',
+                      'parent_relatedaction__relationshiptypecv', 'parent_relatedaction__actionid', 'equipmentused',
+                      'equipmentused__equipmentid', 'equipmentused__equipmentid__equipmenttypecv',
+                      'equipmentused__equipmentid__equipmentmodelid', 'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
+
 
 # Lists View Generic
 class GenericListView(ListView):
@@ -39,12 +46,9 @@ class EquipmentDeployments(ListView):
     template_name = 'site-visits/deployment/deployments.html'
 
     def get_queryset(self):
-        self.deployments = Action.objects.filter(
-            (Q(actiontypecv='Equipment deployment') |
-             Q(actiontypecv='Instrument deployment')),
+        return deployments_queryset.filter(
             equipmentused__equipmentid=self.kwargs['equipment_id']
         )
-        return self.deployments
 
     def get_context_data(self, **kwargs):
         context = super(EquipmentDeployments, self).get_context_data(**kwargs)
@@ -54,6 +58,33 @@ class EquipmentDeployments(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(EquipmentDeployments, self).dispatch(*args, **kwargs)
+
+
+# Deployed Equipment By Site detail view
+class EquipmentDeploymentsBySite(ListView):
+    context_object_name = 'Deployments'
+    template_name = 'site-visits/deployment/deployments.html'
+
+    def get_queryset(self):
+        if self.kwargs['current'] == 'current':
+            self.equipment = deployments_queryset.filter(
+                featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id'],
+                enddatetime__isnull=True
+            )
+        else:
+            self.equipment = deployments_queryset.filter(
+                featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
+            )
+        return self.equipment
+
+    def get_context_data(self, **kwargs):
+        context = super(EquipmentDeploymentsBySite, self).get_context_data(**kwargs)
+        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
+        return context
+
+    @method_decorator(login_required(login_url=LOGIN_URL))
+    def dispatch(self, *args, **kwargs):
+        return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
 
 
 class EquipmentCalibrations(ListView):
@@ -281,34 +312,6 @@ class SiteType(ListView):
     def dispatch(self, *args, **kwargs):
         return super(SiteType, self).dispatch(*args, **kwargs)
 
-
-# Deployed Equipment By Site detail view
-class EquipmentDeploymentsBySite(ListView):
-    context_object_name = 'Deployments'
-    template_name = 'site-visits/deployment/deployments.html'
-
-    def get_queryset(self):
-        if self.kwargs['current'] == 'current':
-            self.equipment = Action.objects.filter(
-                (Q(actiontypecv__name='Equipment deployment') | Q(actiontypecv__name='Instrument deployment')),
-                featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id'],
-                enddatetime__isnull=True
-            )
-        else:
-            Action.objects.filter(
-                (Q(actiontypecv__name='Equipment deployment') | Q(actiontypecv__name='Instrument deployment')),
-                featureaction__samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-            )
-        return self.equipment
-
-    def get_context_data(self, **kwargs):
-        context = super(EquipmentDeploymentsBySite, self).get_context_data(**kwargs)
-        context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
 
 #################################################################################################
 #                         Considering Deletion
