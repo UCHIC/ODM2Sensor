@@ -28,7 +28,7 @@ def get_equipment_by_site(request):
             equipmentused__actionid__featureaction__samplingfeatureid=site_selected
         ).distinct()
 
-        response_data = serializers.serialize('json', equipment_deployed, use_natural_keys=True)
+        response_data = serializers.serialize('json', equipment_deployed)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -55,8 +55,7 @@ def get_deployments_by_type(request):
                 featureaction__samplingfeatureid=site_id, enddatetime=None
             )
 
-
-        response_data = serializers.serialize('json', deployments, use_natural_keys=True)
+        response_data = serializers.serialize('json', deployments)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -82,7 +81,7 @@ def get_deployments_by_site(request):
                 featureaction__samplingfeatureid=selected_id, enddatetime=None
             )
 
-        response_data = serializers.serialize('json', deployments, use_natural_keys=True)
+        response_data = serializers.serialize('json', deployments)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -99,7 +98,7 @@ def get_visits_by_site(request):
 
         site = FeatureAction.objects.get(actionid__actionid=selected_id).samplingfeatureid if is_deployment != 'false' else SamplingFeature.objects.get(pk=selected_id)
         visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid=site)
-        response_data = serializers.serialize('json', visits, use_natural_keys=True)
+        response_data = serializers.serialize('json', visits)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -142,7 +141,7 @@ def get_equipment_by_action(request):
                                       relatedaction__relatedactionid__begindatetime__lt=site_visit.begindatetime)
             equipment_deployed = Equipment.objects.filter(equipmentused__actionid__in=actions)
 
-        response_data = serializers.serialize('json', equipment_deployed, use_natural_keys=True)
+        response_data = serializers.serialize('json', equipment_deployed)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -178,7 +177,7 @@ def get_equipment_output_variables(request):
         else:
             model = EquipmentModel.objects.filter(equipment__equipmentid=equipment)
             variables = InstrumentOutputVariable.objects.filter(modelid=model)
-        response_data = serializers.serialize('json', variables, use_natural_keys=True)
+        response_data = serializers.serialize('json', variables)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 

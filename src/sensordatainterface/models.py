@@ -668,6 +668,12 @@ class Organization(models.Model):
         managed = False
         db_table = 'Organizations'
 
+    def __str__(self):
+        return self.organizationname
+
+    def __unicode__(self):
+        return self.organizationname
+
 
 class People(models.Model):
     personid = models.AutoField(db_column='PersonID', primary_key=True)  # Field name made lowercase.

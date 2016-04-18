@@ -351,9 +351,6 @@ def delete_person(request, affiliation_id):
     return HttpResponseRedirect(reverse('humans') + '?tab=activity')
 
 
-
-
-
 def get_cv_tab(model_name):
     tab_mapping = {
         'CvActiontype': '?tab=activity',
@@ -457,7 +454,7 @@ def edit_calibration_standard(request, reference_val_id):
 @login_required(login_url=LOGIN_URL)
 def delete_calibration_standard(request, reference_val_id):
     reference_mat_val = ReferenceMaterialValue.objects.get(pk=reference_val_id)
-    reference = reference_mat_val.variableid.variabletypecv.name + "(" + str(reference_mat_val.referencematerialvalue) + ")"
+    reference = reference_mat_val.variableid.variabletypecv_id + "(" + str(reference_mat_val.referencematerialvalue) + ")"
     reference_mat_val.referencematerialid.delete()  # deletereferencematerialquestion
     reference_mat_val.delete()
     messages.add_message(request, messages.SUCCESS, 'Reference material ' + reference + " deleted successfully")

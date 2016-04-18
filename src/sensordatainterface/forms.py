@@ -18,14 +18,17 @@ cv_medium_queryset = CvMedium.objects.all()
 annotations_queryset = Annotation.objects.all()
 organizations_queryset = Organization.objects.all()
 processing_level_queryset = ProcessingLevel.objects.all()
-methods_queryset = Method.objects.all().prefetch_related('methodtypecv')
-equipment_queryset = Equipment.objects.all().prefetch_related('equipmentmodelid', 'equipmenttypecv')
+methods_queryset = Method.objects.all().select_related('methodtypecv')
+crew_queryset = Affiliation.objects.all().prefetch_related('personid', 'organizationid')
+site_visits_queryset = Action.objects.filter(actiontypecv='Site Visit').order_by('-begindatetime').prefetch_related('featureaction__samplingfeatureid', 'featureaction')
+equipment_queryset = Equipment.objects.all().select_related('equipmenttypecv').prefetch_related('equipmentmodelid')
 instrument_output_variable_queryset = InstrumentOutputVariable.objects.all().prefetch_related('modelid', 'variableid', 'variableid__variablenamecv')
 reference_materials_queryset = ReferenceMaterial.objects.all()\
-    .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid', 'referencematerialvalue__variableid__variablenamecv',
-                      'referencematerialvalue__unitsid', 'referencematerialmediumcv')
+    .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid', 'referencematerialvalue__unitsid', 'referencematerialvalue__variableid__variablenamecv')\
+    .select_related('referencematerialmediumcv')
 deployments_queryset = EquipmentUsed.objects.filter(Q(actionid__actiontypecv__term='equipmentDeployment') | Q(actionid__actiontypecv__term='instrumentDeployment'))\
-    .prefetch_related('actionid', 'equipmentid', 'equipmentid__equipmenttypecv', 'equipmentid__equipmentmodelid', 'actionid__featureaction',
+    .select_related('equipmentid__equipmenttypecv')\
+    .prefetch_related('actionid', 'equipmentid', 'equipmentid__equipmentmodelid', 'actionid__featureaction',
                       'equipmentid__equipmentmodelid__modelmanufacturerid', 'actionid__featureaction__samplingfeatureid')
 
 
@@ -56,11 +59,6 @@ class PrettyCheckboxField(BooleanField):
 class SamplingFeatureChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.samplingfeaturename
-
-#
-# class OrganizationChoiceField(ModelChoiceField):
-#     def label_from_instance(self, obj):
-#         return obj.organizationname
 
 
 class EquipmentModelChoiceField(ModelChoiceField):
@@ -126,7 +124,7 @@ class ProcessingLevelChoiceField(ModelChoiceField):
 
 class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv_id + ", " + obj.equipmentmodelid.modelname + ")"
 
     def clean(self, value):
         value = value if value != [''] else []
@@ -137,33 +135,33 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
 class SiteVisitChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         start_time = str(obj.begindatetime)
-        sampling_feature_code = obj.featureaction.filter(actionid=obj).get().samplingfeatureid.samplingfeaturecode
+        sampling_feature_code = obj.featureaction.all()[0].samplingfeatureid.samplingfeaturecode
 
         return "(" + start_time + ")  " + sampling_feature_code
 
 
 class EquipmentChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv.name + ", " + obj.equipmentmodelid.modelname + ")"
+        return obj.equipmentcode + ": " + obj.equipmentserialnumber + " (" + obj.equipmenttypecv_id + ", " + obj.equipmentmodelid.modelname + ")"
 
 
 class CalibrationStandardMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        if obj.referencematerialvalue.count() > 0:
-            referencematerialvalue = obj.referencematerialvalue.get()
-            value_information = ": " + referencematerialvalue.variableid.variablenamecv.name + " " + \
+        if obj.referencematerialvalue.exists():
+            referencematerialvalue = obj.referencematerialvalue.all()[0]
+            value_information = ": " + referencematerialvalue.variableid.variablenamecv_id + " " + \
                                 str(referencematerialvalue.referencematerialvalue) + " " + \
                                 referencematerialvalue.unitsid.unitsabbreviation
         else:
             value_information = ''
 
-        return obj.referencematerialmediumcv.name + ' : ' + obj.referencematerialcode + " " + \
+        return obj.referencematerialmediumcv_id + ' : ' + obj.referencematerialcode + " " + \
                obj.referencemateriallotcode + value_information
 
 
 class VariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.variablecode + ": " + obj.variablenamecv.name
+        return obj.variablecode + ": " + obj.variablenamecv_id
 
 
 class DeploymentChoiceField(ModelChoiceField):
@@ -173,7 +171,7 @@ class DeploymentChoiceField(ModelChoiceField):
 
 class InstrumentOutputVariableChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.modelid.modelname + ": " + obj.variableid.variablecode + ' ' + obj.variableid.variablenamecv.name
+        return obj.modelid.modelname + ": " + obj.variableid.variablecode + ' ' + obj.variableid.variablenamecv_id
 
 
 class ActionAnnotationChoiceField(ModelChoiceField):
@@ -691,7 +689,7 @@ class SiteVisitForm(ModelForm):
 
 class CrewForm(forms.Form):
     required_css_class = 'form-required'
-    affiliationid = PeopleMultipleChoice(queryset=Affiliation.objects.all(), label="Crew")
+    affiliationid = PeopleMultipleChoice(queryset=crew_queryset, label="Crew")
 
     def __init__(self, *args, **kwargs):
         super(CrewForm, self).__init__(*args, **kwargs)
@@ -718,7 +716,7 @@ class SiteVisitChoiceForm(ModelForm):
     required_css_class = 'form-required'
 
     actionid = SiteVisitChoiceField(
-        queryset=Action.objects.filter(actiontypecv='Site Visit').order_by('-begindatetime'),
+        queryset=site_visits_queryset,
         label='Site Visit',
         empty_label='Choose a Site Visit'
     )
@@ -731,13 +729,22 @@ class SiteVisitChoiceForm(ModelForm):
 
 
 class SelectWithClassForOptions(Select):
-    def render_option(self, *args, **kwargs):
-        option_html = super(SelectWithClassForOptions, self).render_option(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SelectWithClassForOptions, self).__init__(*args, **kwargs)
+        self.classes = {}
 
-        this_method = args[1]
+    def render_options(self, choices, selected_choices):
+        for method in self.choices.queryset.iterator():
+            self.classes[method.pk] = method.methodtypecv_id
+        super(SelectWithClassForOptions, self).render_options(choices, selected_choices)
+
+    def render_option(self, selected_choices, option_value, option_label):
+        option_html = super(SelectWithClassForOptions, self).render_option(selected_choices, option_value, option_label)
+
+        this_method = option_value
         class_value = "class=\"\""
         if this_method != "":
-            class_value = methods_queryset.get(pk=this_method).methodtypecv.name.replace(' ', '')
+            class_value = self.classes[this_method].replace(' ', '')
 
         after_tag = 8
         before_tag_close = 7
@@ -831,18 +838,11 @@ class ActionForm(ModelForm):
         ]
 
         widgets = {
-            # 'actiontypecv': Select(choices=[
-            #     ('Field activity', 'Generic'),
-            #     ('Equipment deployment', 'Deployment'),
-            #     ('Instrument calibration', 'Calibration'),
-            #     ('Equipment maintenance', 'Maintenance')
-            # ]),
             'begindatetime': DateTimeInput,
             'begindatetimeutcoffset': Select(choices=time_zone_choices),
             'enddatetime': DateTimeInput,
             'enddatetimeutcoffset': Select(choices=time_zone_choices),
             'actionfilelink': FileInput,
-            # 'methodid': SelectWithClassForOptions,
         }
 
         labels = {
