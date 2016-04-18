@@ -6,6 +6,9 @@ sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_relat
 
 results_queryset = Result.objects.all().prefetch_related('featureactionid', 'featureactionid__samplingfeatureid', 'variableid')
 
+factory_service_queryset = EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True)\
+    .prefetch_related('actionid', 'equipmentid')
+
 calibration_standards_queryset = ReferenceMaterial.objects.all()\
     .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid',
                       'referencematerialvalue__unitsid', 'referencematerialorganizationid')
@@ -161,8 +164,7 @@ class EquipmentFactoryServiceHistory(ListView):
 
     def get_queryset(self):
         EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True)
-        self.service_events = EquipmentUsed.objects.filter(
-            (Q(actionid__maintenanceaction__isfactoryservice=True)),
+        self.service_events = factory_service_queryset.filter(
             equipmentid=self.kwargs['equipment_id']
         )
         return self.service_events

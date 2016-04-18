@@ -55,26 +55,10 @@ urlpatterns = [
     url(r'^inventory/equipment/$', GenericListView.as_view(queryset=equipments_queryset, context_object_name='Inventory', template_name='equipment/inventory.html'), name='equipment'),
 
     #Factory Service Generic View
-    url(r'^inventory/factory-service/$',
-       GenericListView.as_view(
-           queryset=EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True),
-           context_object_name='FactoryService',
-           template_name='equipment/factory-service/service-events.html'
-       ),
-       name='factory_service'),
+    url(r'^inventory/factory-service/$', GenericListView.as_view(queryset=factory_service_queryset, context_object_name='FactoryService', template_name='equipment/factory-service/service-events.html'), name='factory_service'),
 
     #Factory Service list for an equipment
-    url(r'^inventory/factory-service/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentFactoryServiceHistory.as_view(),
-       name='service_events_by_equipment'),
-
-    #Sensor Output Variables Generic View
-    url(r'^inventory/sensor-output-variables/$',
-       GenericListView.as_view(
-           model=InstrumentOutputVariable,
-           context_object_name='OutputVariables',
-           template_name='equipment/sensor-output-variables/variables.html'
-       ),
-       name='sensor_output'),
+    url(r'^inventory/factory-service/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentFactoryServiceHistory.as_view(), name='service_events_by_equipment'),
 
     #Equipment Models Generic View
     url(r'^inventory/equipment-models/$',
@@ -85,7 +69,14 @@ urlpatterns = [
        ),
        name='models'),
 
-
+    # Sensor Output Variables Generic View
+    url(r'^inventory/sensor-output-variables/$',
+        GenericListView.as_view(
+            model=InstrumentOutputVariable,
+            context_object_name='OutputVariables',
+            template_name='equipment/sensor-output-variables/variables.html'
+        ),
+        name='sensor_output'),
 
     #################################################################################################
     #                         People Tab

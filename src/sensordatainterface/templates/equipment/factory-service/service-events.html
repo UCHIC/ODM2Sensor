@@ -27,7 +27,7 @@
             <tr>
                 <td><a href="{% url 'factory_service_detail' event.bridgeid %}">{{ event.actionid.begindatetime }}</a></td>
                 <td>{{ event.equipmentid.equipmentcode }}</td>
-                <td>{{ event.equipmentid.equipmenttypecv }}</td>
+                <td>{{ event.equipmentid.equipmenttypecv_id }}</td>
                 <td>{{ event.equipmentid.equipmentserialnumber }}</td>
             </tr>
         {% endfor %}
