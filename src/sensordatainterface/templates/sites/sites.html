@@ -21,7 +21,7 @@
         {% for site in Sites %}
             <tr>
                 <td>
-                    <a href="{% url 'site_detail' site.samplingfeatureid.samplingfeatureid %}">
+                    <a href="{% url 'site_detail' site.samplingfeatureid_id %}">
                         {{ site.samplingfeatureid.samplingfeaturecode }}
                     </a>
                 </td>

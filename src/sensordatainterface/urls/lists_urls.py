@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, url
+from django.views.generic.base import TemplateView
+
 from sensordatainterface.views.list_views import *
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
     MaintenanceAction, InstrumentOutputVariable, Action
@@ -11,14 +13,7 @@ urlpatterns = [
     #                         Home Tab
     #################################################################################################
     # Home Page Generic View
-    url(r'^home/$',
-       GenericListView.as_view(
-           model=Sites,
-           context_object_name='Home',
-           template_name='home/home.html'
-       ),
-       name='home'),
-
+    url(r'^home/$', TemplateView.as_view(template_name='home/home.html'), name='home'),
     url(r'^home/$', RedirectView.as_view(url=reverse_lazy('home')), name='home_login'),
     url(r'^$', RedirectView.as_view(url=reverse_lazy('home'))),
 
@@ -26,12 +21,7 @@ urlpatterns = [
     #                         Site Tab
     #################################################################################################
     # Site Generic View
-    url(r'^sites/$',
-       GenericListView.as_view(
-           model=Sites,
-           context_object_name='Sites',
-           template_name='sites/sites.html'),
-       name='sites'),
+    url(r'^sites/$', GenericListView.as_view(model=Sites, queryset=sites_queryset, context_object_name='Sites', template_name='sites/sites.html'), name='sites'),
 
     #################################################################################################
     #                         Actions Tab
@@ -39,7 +29,7 @@ urlpatterns = [
     # Site Visits Generic View
     url(r'^actions/site-visits/$',
        GenericListView.as_view(
-           queryset=FeatureAction.objects.filter(actionid__actiontypecv='Site visit'),
+           queryset=site_visits_queryset,
            context_object_name='SiteVisits',
            template_name='site-visits/visits.html'
        ),

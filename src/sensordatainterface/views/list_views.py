@@ -2,6 +2,11 @@ from sensordatainterface.base_views import *
 from django.views.generic import ListView
 
 
+sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
+site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site visit')\
+    .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
+                      'actionid__actionby__affiliationid__personid')
+
 # Lists View Generic
 class GenericListView(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
@@ -17,11 +22,7 @@ class SiteVisitsBySite(ListView):
     template_name = 'site-visits/visits.html'
 
     def get_queryset(self):
-        self.site_visits = FeatureAction.objects.filter(
-            actionid__actiontypecv='Site Visit',
-            samplingfeatureid__samplingfeatureid=self.kwargs['site_id']
-        )
-        return self.site_visits
+        return site_visits_queryset.filter(samplingfeatureid__samplingfeatureid=self.kwargs['site_id'])
 
     def get_context_data(self, **kwargs):
         context = super(SiteVisitsBySite, self).get_context_data(**kwargs)

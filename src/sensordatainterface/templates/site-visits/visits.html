@@ -28,7 +28,7 @@
         {% for visit in SiteVisits %}
             <tr>
                 <td data-order="{{ visit.actionid.begindatetime|date:'U' }}">
-                    <a href="{% url 'site_visit_detail' visit.actionid.actionid %}">
+                    <a href="{% url 'site_visit_detail' visit.actionid_id %}">
                         {{ visit.actionid.begindatetime }}
                     </a>
                 </td>
