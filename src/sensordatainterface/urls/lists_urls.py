@@ -62,13 +62,7 @@ urlpatterns = [
     url(r'^inventory/equipment-models/$', GenericListView.as_view(queryset=equipment_models_queryset, context_object_name='Models', template_name='equipment/models/models.html'), name='models'),
 
     # Sensor Output Variables Generic View
-    url(r'^inventory/sensor-output-variables/$',
-        GenericListView.as_view(
-            model=InstrumentOutputVariable,
-            context_object_name='OutputVariables',
-            template_name='equipment/sensor-output-variables/variables.html'
-        ),
-        name='sensor_output'),
+    url(r'^inventory/sensor-output-variables/$', GenericListView.as_view(queryset=output_variables_queryset, context_object_name='OutputVariables', template_name='equipment/sensor-output-variables/variables.html'), name='sensor_output'),
 
     #################################################################################################
     #                         People Tab

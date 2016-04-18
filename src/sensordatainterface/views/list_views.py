@@ -6,6 +6,8 @@ equipment_models_queryset = EquipmentModel.objects.all().prefetch_related('model
 
 sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
 
+output_variables_queryset = InstrumentOutputVariable.objects.all().prefetch_related('variableid', 'modelid', 'instrumentmethodid')
+
 results_queryset = Result.objects.all().prefetch_related('featureactionid', 'featureactionid__samplingfeatureid', 'variableid')
 
 factory_service_queryset = EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True)\
