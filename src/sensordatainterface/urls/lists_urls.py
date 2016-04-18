@@ -56,18 +56,10 @@ urlpatterns = [
 
     #Factory Service Generic View
     url(r'^inventory/factory-service/$', GenericListView.as_view(queryset=factory_service_queryset, context_object_name='FactoryService', template_name='equipment/factory-service/service-events.html'), name='factory_service'),
-
-    #Factory Service list for an equipment
     url(r'^inventory/factory-service/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentFactoryServiceHistory.as_view(), name='service_events_by_equipment'),
 
     #Equipment Models Generic View
-    url(r'^inventory/equipment-models/$',
-       GenericListView.as_view(
-           model=EquipmentModel,
-           context_object_name='Models',
-           template_name='equipment/models/models.html'
-       ),
-       name='models'),
+    url(r'^inventory/equipment-models/$', GenericListView.as_view(queryset=equipment_models_queryset, context_object_name='Models', template_name='equipment/models/models.html'), name='models'),
 
     # Sensor Output Variables Generic View
     url(r'^inventory/sensor-output-variables/$',

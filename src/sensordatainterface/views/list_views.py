@@ -2,6 +2,8 @@ from sensordatainterface.base_views import *
 from django.views.generic import ListView
 
 
+equipment_models_queryset = EquipmentModel.objects.all().prefetch_related('modelmanufacturerid')
+
 sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
 
 results_queryset = Result.objects.all().prefetch_related('featureactionid', 'featureactionid__samplingfeatureid', 'variableid')
