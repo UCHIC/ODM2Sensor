@@ -45,30 +45,17 @@ urlpatterns = [
     # Calibration Standards
     url(r'^actions/calibration-standards/', CalibrationStandards.as_view(), name='calibration_standards'),
 
-    url(r'^actions/results/$',
-       GenericListView.as_view(
-           model=Result,
-           context_object_name='Results',
-           template_name='site-visits/results/results.html'
-       ),
-       name='results'),
+    # Field Activities Generic View
+    url(r'^actions/other-actions/$', GenericListView.as_view(queryset=other_actions_queryset, context_object_name='FieldActivities', template_name='site-visits/field-activities/activities.html'), name='field_activities'),
 
-    #Field Activities Generic View
-    url(r'^actions/other-actions/$', #!!!
-       GenericListView.as_view(
-           queryset=Action.objects.filter(
-               (
-                   ~Q(actiontypecv='Equipment deployment') &
-                   ~Q(actiontypecv='Instrument deployment') &
-                   ~Q(actiontypecv='Instrument calibration')
-               ),
-               relatedaction__relationshiptypecv='Is child of',
-               relatedaction__relatedactionid__actiontypecv='Site Visit'
-           ),
-           context_object_name='FieldActivities',
-           template_name='site-visits/field-activities/activities.html'
-       ),
-       name='field_activities'),
+    # Results
+    url(r'^actions/results/$',
+        GenericListView.as_view(
+            model=Result,
+            context_object_name='Results',
+            template_name='site-visits/results/results.html'
+        ),
+        name='results'),
 
     #Inventory Generic View
     url(r'^inventory/equipment/$',

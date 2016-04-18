@@ -12,6 +12,11 @@ site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site
     .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
                       'actionid__actionby__affiliationid__personid')
 
+other_actions_queryset = Action.objects.filter(
+    (~Q(actiontypecv='Equipment deployment') & ~Q(actiontypecv='Instrument deployment') & ~Q(actiontypecv='Instrument calibration')),
+    relatedaction__relationshiptypecv='Is child of', relatedaction__relatedactionid__actiontypecv='Site Visit')\
+    .prefetch_related('featureaction', 'featureaction__samplingfeatureid')
+
 calibrations_queryset = Action.objects.filter(Q(actiontypecv='Instrument calibration') & Q(calibrationaction__isnull=False))\
     .select_related('actiontypecv')\
     .prefetch_related('featureaction', 'equipmentused', 'equipmentused__equipmentid',
