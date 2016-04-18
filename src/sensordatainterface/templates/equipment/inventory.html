@@ -24,12 +24,13 @@
         {% for equipment in Inventory %}
             <tr>
                 <td><a href="{% url 'equipment_detail' equipment.equipmentid %}">{{ equipment.equipmentserialnumber }}</a></td>
-                <td>{{ equipment.equipmenttypecv }}</td>
+                <td>{{ equipment.equipmenttypecv_id }}</td>
                 <td>{{ equipment.equipmentcode }}</td>
                 <td>{{ equipment.equipmentmodelid.modelname }}</td>
                 <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 <td>
-                    <a href="{% url 'person_detail' equipment.equipmentownerid.affiliation.get.affiliationid %}">
+                    {#  TODO: link to person detail as a person, not an affilliation  #}
+                    <a href="">
                         {{ equipment.equipmentownerid.personfirstname }}
                         {{ equipment.equipmentownerid.personlastname|default:" -- " }}
                     </a>

@@ -10,6 +10,10 @@ calibration_standards_queryset = ReferenceMaterial.objects.all()\
     .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid',
                       'referencematerialvalue__unitsid', 'referencematerialorganizationid')
 
+equipments_queryset = Equipment.objects.all()\
+    .prefetch_related('equipmentmodelid', 'equipmentmodelid__modelmanufacturerid',
+                      'equipmentownerid', 'equipmentownerid__affiliation')
+
 site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site visit')\
     .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
                       'actionid__actionby__affiliationid__personid')

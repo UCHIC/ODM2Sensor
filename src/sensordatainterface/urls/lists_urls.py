@@ -51,14 +51,8 @@ urlpatterns = [
     # Results
     url(r'^actions/results/$', GenericListView.as_view(queryset=results_queryset, context_object_name='Results', template_name='site-visits/results/results.html'), name='results'),
 
-    #Inventory Generic View
-    url(r'^inventory/equipment/$',
-       GenericListView.as_view(
-           model=Equipment,
-           context_object_name='Inventory',
-           template_name='equipment/inventory.html'
-       ),
-       name='equipment'),
+    # Equipment Generic View
+    url(r'^inventory/equipment/$', GenericListView.as_view(queryset=equipments_queryset, context_object_name='Inventory', template_name='equipment/inventory.html'), name='equipment'),
 
     #Factory Service Generic View
     url(r'^inventory/factory-service/$',
