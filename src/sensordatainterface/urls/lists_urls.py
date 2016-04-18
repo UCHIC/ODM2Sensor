@@ -49,13 +49,7 @@ urlpatterns = [
     url(r'^actions/other-actions/$', GenericListView.as_view(queryset=other_actions_queryset, context_object_name='FieldActivities', template_name='site-visits/field-activities/activities.html'), name='field_activities'),
 
     # Results
-    url(r'^actions/results/$',
-        GenericListView.as_view(
-            model=Result,
-            context_object_name='Results',
-            template_name='site-visits/results/results.html'
-        ),
-        name='results'),
+    url(r'^actions/results/$', GenericListView.as_view(queryset=results_queryset, context_object_name='Results', template_name='site-visits/results/results.html'), name='results'),
 
     #Inventory Generic View
     url(r'^inventory/equipment/$',

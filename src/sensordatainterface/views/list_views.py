@@ -4,6 +4,8 @@ from django.views.generic import ListView
 
 sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
 
+results_queryset = Result.objects.all().prefetch_related('featureactionid', 'featureactionid__samplingfeatureid', 'variableid')
+
 calibration_standards_queryset = ReferenceMaterial.objects.all()\
     .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid',
                       'referencematerialvalue__unitsid', 'referencematerialorganizationid')
