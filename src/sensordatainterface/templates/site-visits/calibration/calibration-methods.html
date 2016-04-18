@@ -4,7 +4,7 @@
 
     <div class="row title">
         <div class="col-xs-12 col-sm-6 col-md-7">
-        <h2>Calibration Methods</h2>
+        <h2>Methods</h2>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
         <a class="btn btn-primary btn-block new-btn" href="{% url 'create_calibration_method' %}">New Method</a>
@@ -13,8 +13,8 @@
     <table class="data-table">
         <thead>
         <tr>
-            <th>MethodID</th>
-            <th>MethodTypeCV</th>
+            <th>Method ID</th>
+            <th>Method Type</th>
             <th>Name</th>
             <th>Description</th>
             <th>Edit/Delete</th>
@@ -24,7 +24,7 @@
         {% for method in CalibrationMethods %}
             <tr>
                 <td>{{ method.methodid }}</td>
-                <td>{{ method.methodtypecv }}</td>
+                <td>{{ method.methodtypecv_id }}</td>
                 <td>{{ method.methodname }}</td>
                 <td>{{ method.methoddescription }}</td>
                 <td>

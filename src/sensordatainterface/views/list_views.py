@@ -100,10 +100,9 @@ class EquipmentCalibrations(ListView):
     template_name = 'site-visits/calibration/calibrations.html'
 
     def get_queryset(self):
-        self.calibrations = calibrations_queryset.filter(
+        return calibrations_queryset.filter(
             equipmentused__equipmentid=self.kwargs['equipment_id']
         )
-        return self.calibrations
 
     def get_context_data(self, **kwargs):
         context = super(EquipmentCalibrations, self).get_context_data(**kwargs)
@@ -115,20 +114,14 @@ class EquipmentCalibrations(ListView):
         return super(EquipmentCalibrations, self).dispatch(*args, **kwargs)
 
 
-class CalibrationMethods(ListView):
+class CalibrationMethodsView(ListView):
+    model = Method
+    context_object_name = 'CalibrationMethods'
     template_name = 'site-visits/calibration/calibration-methods.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(CalibrationMethods, self).get_context_data(**kwargs)
-        context['CalibrationMethods'] = Method.objects.all()
-        return context
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        return super(CalibrationMethods, self).dispatch(*args, **kwargs)
+        return super(CalibrationMethodsView, self).dispatch(*args, **kwargs)
 
 
 class CalibrationStandards(ListView):

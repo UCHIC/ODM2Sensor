@@ -40,9 +40,7 @@ urlpatterns = [
     url(r'^actions/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentCalibrations.as_view(), name='calibrations_by_equipment'),
 
     # Calibration Methods
-    url(r'^actions/calibration-methods/',
-       CalibrationMethods.as_view(),
-       name='calibration_methods'),
+    url(r'^actions/calibration-methods/', CalibrationMethodsView.as_view(), name='calibration_methods'),
 
     url(r'^actions/calibration-standards/',
        CalibrationStandards.as_view(),
