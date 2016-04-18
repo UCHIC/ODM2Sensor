@@ -36,21 +36,10 @@ urlpatterns = [
     url(r'^actions/deployments/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentDeployments.as_view(), name='deployments_by_equipment'),
 
     # Calibrations Generic Views
-    url(r'^actions/calibrations/$',
-       GenericListView.as_view(
-           queryset=Action.objects.filter(
-               Q(actiontypecv='Instrument calibration')
-               & Q(calibrationaction__isnull=False)
-           ),
-           context_object_name='Calibrations',
-           template_name='site-visits/calibration/calibrations.html'
-       ),
-       name='calibrations'),
+    url(r'^actions/calibrations/$', GenericListView.as_view(queryset=calibrations_queryset, context_object_name='Calibrations', template_name='site-visits/calibration/calibrations.html'), name='calibrations'),
+    url(r'^actions/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentCalibrations.as_view(), name='calibrations_by_equipment'),
 
-    url(r'^actions/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$',
-       EquipmentCalibrations.as_view(),
-       name='calibrations_by_equipment'),
-
+    # Calibration Methods
     url(r'^actions/calibration-methods/',
        CalibrationMethods.as_view(),
        name='calibration_methods'),

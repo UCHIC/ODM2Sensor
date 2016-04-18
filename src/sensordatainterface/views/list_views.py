@@ -3,9 +3,17 @@ from django.views.generic import ListView
 
 
 sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
+
 site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site visit')\
     .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
                       'actionid__actionby__affiliationid__personid')
+
+calibrations_queryset = Action.objects.filter(Q(actiontypecv='Instrument calibration') & Q(calibrationaction__isnull=False))\
+    .select_related('actiontypecv')\
+    .prefetch_related('featureaction', 'equipmentused', 'equipmentused__equipmentid',
+                      'equipmentused__equipmentid__equipmenttypecv', 'equipmentused__equipmentid__equipmentmodelid',
+                      'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
+
 deployments_queryset = Action.objects.filter(Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment'))\
     .select_related('actiontypecv')\
     .prefetch_related('featureaction', 'featureaction__samplingfeatureid', 'parent_relatedaction',
@@ -92,9 +100,7 @@ class EquipmentCalibrations(ListView):
     template_name = 'site-visits/calibration/calibrations.html'
 
     def get_queryset(self):
-        self.calibrations = Action.objects.filter(
-            (Q(actiontypecv='Instrument calibration') &
-             Q(calibrationaction__isnull=False)),
+        self.calibrations = calibrations_queryset.filter(
             equipmentused__equipmentid=self.kwargs['equipment_id']
         )
         return self.calibrations
