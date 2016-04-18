@@ -736,7 +736,7 @@ class SelectWithClassForOptions(Select):
     def render_options(self, choices, selected_choices):
         for method in self.choices.queryset.iterator():
             self.classes[method.pk] = method.methodtypecv_id
-        super(SelectWithClassForOptions, self).render_options(choices, selected_choices)
+        return super(SelectWithClassForOptions, self).render_options(choices, selected_choices)
 
     def render_option(self, selected_choices, option_value, option_label):
         option_html = super(SelectWithClassForOptions, self).render_option(selected_choices, option_value, option_label)
