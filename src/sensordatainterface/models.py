@@ -2144,12 +2144,14 @@ class Sysdiagrams(models.Model):
 
 
 # TODO: make something more sophisticated than this later on
-database_schema_fix = 'ODM2].['
+sqlserver_schema_fix = 'ODM2].['
 clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 classes = [model for name, model in clsmembers if issubclass(model, models.Model)]
 database_manager = settings.DATABASES['odm2']['ENGINE']
 
 for model in classes:
     if database_manager == u'sql_server.pyodbc':
-        model._meta.db_table = database_schema_fix + model._meta.db_table
+        model._meta.db_table = sqlserver_schema_fix + model._meta.db_table
+    if database_manager == u'django.db.backends.postgresql':
+        model._meta.db_table = model._meta.db_table.lower()
     # can add more fixes there depending on the database engine
