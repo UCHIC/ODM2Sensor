@@ -39,12 +39,11 @@ urlpatterns = [
     url(r'^actions/calibrations/$', GenericListView.as_view(queryset=calibrations_queryset, context_object_name='Calibrations', template_name='site-visits/calibration/calibrations.html'), name='calibrations'),
     url(r'^actions/calibrations/equipment/(?P<equipment_id>[-_\w]+)/$', EquipmentCalibrations.as_view(), name='calibrations_by_equipment'),
 
-    # Calibration Methods
+    # Methods
     url(r'^actions/calibration-methods/', CalibrationMethodsView.as_view(), name='calibration_methods'),
 
-    url(r'^actions/calibration-standards/',
-       CalibrationStandards.as_view(),
-       name='calibration_standards'),
+    # Calibration Standards
+    url(r'^actions/calibration-standards/', CalibrationStandards.as_view(), name='calibration_standards'),
 
     url(r'^actions/results/$',
        GenericListView.as_view(

@@ -4,6 +4,10 @@ from django.views.generic import ListView
 
 sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
 
+calibration_standards_queryset = ReferenceMaterial.objects.all()\
+    .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid',
+                      'referencematerialvalue__unitsid', 'referencematerialorganizationid')
+
 site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site visit')\
     .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
                       'actionid__actionby__affiliationid__personid')
@@ -125,15 +129,11 @@ class CalibrationMethodsView(ListView):
 
 
 class CalibrationStandards(ListView):
+    context_object_name = 'CalibrationStandards'
     template_name = 'site-visits/calibration/calibration-standards.html'
 
     def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(CalibrationStandards, self).get_context_data(**kwargs)
-        context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
-        return context
+        return calibration_standards_queryset
 
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
