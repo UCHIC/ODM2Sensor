@@ -1,0 +1,7 @@
+name: odm2sensor
+channels:
+  - ioos
+dependencies:
+  - Django=1.9.5
+  - pyodbc=3.0.10
+  - django-pyodbc-azure=1.9.3.0
