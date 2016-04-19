@@ -46,17 +46,30 @@ deployments_queryset = Action.objects.filter(Q(actiontypecv='Equipment deploymen
                       'equipmentused__equipmentid__equipmentmodelid', 'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
 
 
-# Lists View Generic
 class GenericListView(ListView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
         return super(GenericListView, self).dispatch(*args, **kwargs)
 
 
-#################################################################################################
-#                         Actions Tab
-#################################################################################################
-class SiteVisitsBySite(ListView):
+class VocabulariesListView(GenericListView):
+    vocabulary = ''
+
+    def __init__(self, **kwargs):
+        self.vocabulary = kwargs['vocabulary']
+        super(VocabulariesListView, self).__init__(**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(VocabulariesListView, self).get_context_data(**kwargs)
+        context['vocabulary'] = self.vocabulary
+        return context
+
+
+###################
+#  Actions Tab
+###################
+
+class SiteVisitsBySite(GenericListView):
     context_object_name = 'SiteVisits'
     template_name = 'site-visits/visits.html'
 
@@ -68,12 +81,8 @@ class SiteVisitsBySite(ListView):
         context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
         return context
 
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SiteVisitsBySite, self).dispatch(*args, **kwargs)
 
-
-class EquipmentDeployments(ListView):
+class EquipmentDeployments(GenericListView):
     context_object_name = 'Deployments'
     template_name = 'site-visits/deployment/deployments.html'
 
@@ -87,13 +96,8 @@ class EquipmentDeployments(ListView):
         context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
         return context
 
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentDeployments, self).dispatch(*args, **kwargs)
 
-
-# Deployed Equipment By Site detail view
-class EquipmentDeploymentsBySite(ListView):
+class EquipmentDeploymentsBySite(GenericListView):
     context_object_name = 'Deployments'
     template_name = 'site-visits/deployment/deployments.html'
 
@@ -114,12 +118,8 @@ class EquipmentDeploymentsBySite(ListView):
         context['site_name'] = SamplingFeature.objects.get(samplingfeatureid=self.kwargs['site_id'])
         return context
 
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentDeploymentsBySite, self).dispatch(*args, **kwargs)
 
-
-class EquipmentCalibrations(ListView):
+class EquipmentCalibrations(GenericListView):
     context_object_name = 'Calibrations'
     template_name = 'site-visits/calibration/calibrations.html'
 
@@ -133,37 +133,11 @@ class EquipmentCalibrations(ListView):
         context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
         return context
 
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentCalibrations, self).dispatch(*args, **kwargs)
 
-
-class CalibrationMethodsView(ListView):
-    model = Method
-    context_object_name = 'CalibrationMethods'
-    template_name = 'site-visits/calibration/calibration-methods.html'
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(CalibrationMethodsView, self).dispatch(*args, **kwargs)
-
-
-class CalibrationStandards(ListView):
-    context_object_name = 'CalibrationStandards'
-    template_name = 'site-visits/calibration/calibration-standards.html'
-
-    def get_queryset(self):
-        return calibration_standards_queryset
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(CalibrationStandards, self).dispatch(*args, **kwargs)
-
-
-#################################################################################################
-#                         Inventory Tab
-#################################################################################################
-class EquipmentFactoryServiceHistory(ListView):
+###################
+#  Inventory Tab
+###################
+class EquipmentFactoryServiceHistory(GenericListView):
     service_events = []
     context_object_name = 'FactoryService'
     template_name = 'equipment/factory-service/service-events.html'
@@ -180,15 +154,13 @@ class EquipmentFactoryServiceHistory(ListView):
         context['equipment_name'] = Equipment.objects.get(equipmentid=self.kwargs['equipment_id'])
         return context
 
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentFactoryServiceHistory, self).dispatch(*args, **kwargs)
 
+###################
+#  People Tab
+###################
 
-#################################################################################################
-#                         People Tab
-#################################################################################################
-class Humans(ListView):
+# TODO: change model and delete this.
+class Humans(GenericListView):
     template_name = 'people/person.html'
 
     def get_queryset(self):
@@ -199,149 +171,28 @@ class Humans(ListView):
         context['Humans'] = Affiliation.objects.filter(personid__isnull=False)
         return context
 
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(Humans, self).dispatch(*args, **kwargs)
+
+# Function views
+sites_list_view = GenericListView.as_view(model=Sites, queryset=sites_queryset, context_object_name='Sites', template_name='sites/sites.html')
+site_visits_list_view = GenericListView.as_view(model=FeatureAction, queryset=site_visits_queryset, context_object_name='SiteVisits', template_name='site-visits/visits.html')
+deployments_list_view = GenericListView.as_view(model=Action, queryset=deployments_queryset, context_object_name='Deployments', template_name='site-visits/deployment/deployments.html')
+calibrations_list_view = GenericListView.as_view(model=Action, queryset=calibrations_queryset, context_object_name='Calibrations', template_name='site-visits/calibration/calibrations.html')
+methods_list_view = GenericListView.as_view(model=Method, context_object_name='CalibrationMethods', template_name='site-visits/calibration/calibration-methods.html')
+calibration_standards_list_view = GenericListView.as_view(model=ReferenceMaterial, queryset=calibration_standards_queryset, context_object_name='CalibrationStandards', template_name='site-visits/calibration/calibration-standards.html')
+other_actions_list_view = GenericListView.as_view(model=Action, queryset=other_actions_queryset, context_object_name='FieldActivities', template_name='site-visits/field-activities/activities.html')
+results_list_view = GenericListView.as_view(model=Result, queryset=results_queryset, context_object_name='Results', template_name='site-visits/results/results.html')
+equipments_list_view = GenericListView.as_view(model=Equipment, queryset=equipments_queryset, context_object_name='Inventory', template_name='equipment/inventory.html')
+factory_service_list_view = GenericListView.as_view(model=EquipmentUsed, queryset=factory_service_queryset, context_object_name='FactoryService', template_name='equipment/factory-service/service-events.html')
+equipment_models_list_view = GenericListView.as_view(model=EquipmentModel, queryset=equipment_models_queryset, context_object_name='Models', template_name='equipment/models/models.html')
+output_variables_list_view = GenericListView.as_view(model=InstrumentOutputVariable, queryset=output_variables_queryset, context_object_name='OutputVariables', template_name='equipment/sensor-output-variables/variables.html')
+organizations_list_view = GenericListView.as_view(model=Organization, queryset=organizations_queryset, context_object_name='Organizations', template_name='people/organization.html')
 
 
-#################################################################################################
-#                         Controlled Vocabularies Tab
-#################################################################################################
-class ActionType(ListView):
-    template_name = 'vocabulary/action-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(ActionType, self).get_context_data(**kwargs)
-        context['ActionType'] = CvActiontype.objects.all();
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(ActionType, self).dispatch(*args, **kwargs)
-
-class EquipmentType(ListView):
-    template_name = 'vocabulary/equipment-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(EquipmentType, self).get_context_data(**kwargs)
-        context['EquipmentType'] = CvEquipmenttype.objects.all();
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(EquipmentType, self).dispatch(*args, **kwargs)
-
-class MethodType(ListView):
-    template_name = 'vocabulary/method-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(MethodType, self).get_context_data(**kwargs)
-        context['MethodType'] = CvMethodtype.objects.all();
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(MethodType, self).dispatch(*args, **kwargs)
-
-class OrganizationType(ListView):
-    template_name = 'vocabulary/organization-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganizationType, self).get_context_data(**kwargs)
-        context['OrganizationType'] = CvOrganizationtype.objects.all();
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(OrganizationType, self).dispatch(*args, **kwargs)
-
-class SamplingFeatureType(ListView):
-    template_name = 'vocabulary/sampling-feature-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(SamplingFeatureType, self).get_context_data(**kwargs)
-        context['SamplingFeatureType'] = CvSamplingfeaturetype.objects.all()
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SamplingFeatureType, self).dispatch(*args, **kwargs)
-
-
-class SpatialOffsetType(ListView):
-    template_name = 'vocabulary/spatial-offset-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(SpatialOffsetType, self).get_context_data(**kwargs)
-        context['SpatialOffsetType'] = CvSpatialoffsettype.objects.all()
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SpatialOffsetType, self).dispatch(*args, **kwargs)
-
-
-class SiteType(ListView):
-    template_name = 'vocabulary/site-type.html'
-
-    def get_queryset(self):
-        return []
-
-    def get_context_data(self, **kwargs):
-        context = super(SiteType, self).get_context_data(**kwargs)
-        context['SiteType'] = CvSitetype.objects.all()
-        return context
-
-    @method_decorator(login_required(login_url=LOGIN_URL))
-    def dispatch(self, *args, **kwargs):
-        return super(SiteType, self).dispatch(*args, **kwargs)
-
-
-#################################################################################################
-#                         Considering Deletion
-#################################################################################################
-
-# class Vocabularies(ListView):
-#     template_name = 'vocabulary/vocabularies.html'
-#
-#     def get_queryset(self):
-#         return []
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(Vocabularies, self).get_context_data(**kwargs)
-#         context['Vendors'] = Organization.objects.all()
-#         context['Models'] = EquipmentModel.objects.all()
-#         context['OutputVariables'] = InstrumentOutputVariable.objects.all()
-#         context['People'] = Affiliation.objects.filter(personid__isnull=False)
-#         context['CalibrationStandards'] = ReferenceMaterial.objects.filter()
-#         context['CalibrationMethods'] = Method.objects.all()#.filter(action__actiontypecv='Instrument calibration') # calibrationmethodquestion
-#         context['SamplingFeatureType'] = CvSamplingfeaturetype.objects.all()
-#         context['SiteType'] = CvSitetype.objects.all()
-#         context['SpatialOffsetType'] = CvSpatialoffsettype.objects.all()
-#         context['EquipmentTypes'] = CvEquipmenttype.objects.all()
-#         context['ActionTypes'] = CvActiontype.objects.all()
-#         context['MethodTypes'] = CvMethodtype.objects.all()
-#         context['OrganizationTypes'] = CvOrganizationtype.objects.all()
-#         return context
-#
-#     @method_decorator(login_required(login_url=LOGIN_URL))
-#     def dispatch(self, *args, **kwargs):
-#         return super(Vocabularies, self).dispatch(*args, **kwargs)
+# Function views - Vocabularies
+action_type_list_view = VocabulariesListView.as_view(model=CvActiontype, template_name='vocabulary/vocabulary_list.html', vocabulary='Action Type')
+equipment_type_list_view = VocabulariesListView.as_view(model=CvEquipmenttype, template_name='vocabulary/vocabulary_list.html', vocabulary='Equipment Type')
+method_type_list_view = VocabulariesListView.as_view(model=CvMethodtype, template_name='vocabulary/vocabulary_list.html', vocabulary='Method Type')
+organization_type_list_view = VocabulariesListView.as_view(model=CvOrganizationtype, template_name='vocabulary/vocabulary_list.html', vocabulary='Organization Type')
+sampling_feature_type_list_view = VocabulariesListView.as_view(model=CvSamplingfeaturetype, template_name='vocabulary/vocabulary_list.html', vocabulary='Sampling Feature Type')
+spatial_offset_type_list_view = VocabulariesListView.as_view(model=CvSpatialoffsettype, template_name='vocabulary/vocabulary_list.html', vocabulary='Spatial Offset Type')
+site_type_list_view = VocabulariesListView.as_view(model=CvSitetype, template_name='vocabulary/vocabulary_list.html', vocabulary='Site Type')

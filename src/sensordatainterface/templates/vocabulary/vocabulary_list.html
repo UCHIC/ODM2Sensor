@@ -3,9 +3,9 @@
 {% block content %}
 
     <div class="row title">
-        <div class="col-xs-12 col-sm-6 col-md-7">
-            <h1>Sampling Feature Type</h1>
-        </div>
+    <div class="col-xs-12 col-sm-6 col-md-7">
+        <h1>{{ vocabulary }} Vocabulary</h1>
+    </div>
 
     </div>
     <table class="data-table">
@@ -15,18 +15,16 @@
             <th>Name</th>
             <th>Category</th>
             <th>Field activity</th>
-
         </tr>
         </thead>
         <tbody>
-        {% for cv in SamplingFeatureType %}
+        {% for term in object_list %}
             <tr>
-                <td><a href="{{ cv.sourcevocabularyuri }}">{{ cv.term }}</a>
+                <td><a href="{{ term.sourcevocabularyuri }}">{{ term.term }}</a>
                 </td>
-                <td>{{ cv.name }}</td>
-                <td>{{ cv.category }}</td>
-                <td>{{ cv.definition }}</td>
-
+                <td>{{ term.name }}</td>
+                <td>{{ term.category }}</td>
+                <td>{{ term.definition }}</td>
             </tr>
         {% endfor %}
         </tbody>
