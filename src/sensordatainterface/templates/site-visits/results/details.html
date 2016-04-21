@@ -26,7 +26,7 @@
                     <th>Variable Code:</th><td>{{ Result.variableid.variablecode }}</td>
                 </tr>
                 <tr>
-                    <th>Variable Name:</th><td>{{ Result.variableid.variablenamecv.name }}</td>
+                    <th>Variable Name:</th><td>{{ Result.variableid.variablenamecv_id }}</td>
                 </tr>
                 <tr>
                     <th>Units:</th><td>{{ Result.unitsid.unitsname }}</td>
@@ -50,10 +50,10 @@
                         <table class="table">
                             <tr>
                                 <th>Equipment Serial Number:</th>
-                                <td><a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">{{ equipment.equipmentid.equipmentserialnumber }}</a></td>
+                                <td><a href="{% url 'equipment_detail' equipment.equipmentid_id %}">{{ equipment.equipmentid.equipmentserialnumber }}</a></td>
 
                                 <th>Equipment Type:</th>
-                                <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                                <td>{{ equipment.equipmentid.equipmenttypecv_id }}</td>
                             </tr>
                             <tr>
                                 <th>Equipment Code:</th>
@@ -65,7 +65,7 @@
 
                             <tr>
                                 <th>Equipment Model Name:</th>
-                                <td><a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid.equipmentmodelid %}">
+                                <td><a href="{% url 'models_detail' equipment.equipmentid.equipmentmodelid_id %}">
                                     {{ equipment.equipmentid.equipmentmodelid.modelname }}</a>
                                 </td>
 
@@ -77,7 +77,7 @@
                                 <th>Owner Name:</th>
 
                                 <td>
-                                    <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.get.affiliationid %}">
+                                    <a href="{% url 'person_detail' equipment.equipmentid.equipmentownerid.affiliation.all.0.affiliationid %}">
                                         {{ equipment.equipmentid.equipmentownerid.personfirstname }}
                                         {{ equipment.equipmentid.equipmentownerid.personlastname|default:" -- " }}
                                     </a>

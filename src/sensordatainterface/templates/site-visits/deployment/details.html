@@ -73,7 +73,7 @@
 
         <!-- Results Table -->
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            {% if Deployment.featureaction.get.result_set.all|length > 0 %}
+            {% if Deployment.featureaction.all.0.result_set.all|length > 0 %}
                 <h3>Results</h3>
                 <table class="table">
                     <thead>
@@ -88,15 +88,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for result in Deployment.featureaction.get.result_set.all %}
+                        {% for result in Deployment.featureaction.all.0.result_set.all %}
                             <tr>
                                 <td><a href="{% url 'results_detail' result.resultid %}">{{ result.resultuuid }}</a></td>
-                                <td>{{ result.resulttypecv.name }}</td>
-                                <td>{{ result.variableid.variablecode|add:": "|add:result.variableid.variablenamecv.name }}</td>
+                                <td>{{ result.resulttypecv_id }}</td>
+                                <td>{{ result.variableid.variablecode|add:": "|add:result.variableid.variablenamecv_id }}</td>
                                 <td>{{ result.unitsid.unitsname }}</td>
-                                <td>{{ result.sampledmediumcv.name }}</td>
+                                <td>{{ result.sampledmediumcv__id }}</td>
                                 <td>{{ result.processinglevelid.processinglevelcode }}</td>
-                                <td>{{ result.statuscv.name }}</td>
+                                <td>{{ result.statuscv__id }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -106,13 +106,13 @@
 
         <div class="col-sm-3 col-xs-12 col-md-2 pull-right" style="margin-top: 10px">
             {% for related in Deployment.relatedaction.all %}
-                {% if related.relationshiptypecv.name == 'Is child of' %}
-                    <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid.actionid %}">Go to Site Visit</a>
+                {% if related.relationshiptypecv_id == 'Is child of' %}
+                    <a class="btn btn-primary btn-block" href="{% url 'site_visit_detail' related.relatedactionid_id %}">Go to Site Visit</a>
                 {% endif %}
             {% endfor %}
             {% for related in Deployment.parent_relatedaction.all %}
-                {% if related.relationshiptypecv.name == 'Is retrieval for' %}
-                    <a class="btn btn-primary btn-block" href="{% url 'field_activity_detail' related.actionid.actionid %}">Go to retrieval action</a>
+                {% if related.relationshiptypecv_id == 'Is retrieval for' %}
+                    <a class="btn btn-primary btn-block" href="{% url 'field_activity_detail' related.actionid_id %}">Go to retrieval action</a>
                 {% endif %}
             {% endfor %}
         </div>
@@ -129,7 +129,7 @@
                     <div class="row side-by-side-item">
                         <div class="col-sm-6 col-xs-12 col-md-4 pull-left">
                             <a class="btn btn-primary btn-block"
-                               href="{% url 'deployments_by_equipment' equipment.equipmentid.equipmentid %}">View
+                               href="{% url 'deployments_by_equipment' equipment.equipmentid_id %}">View
                                 Equipment's Deployment History</a>
                         </div>
                         <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-table-details">
@@ -138,7 +138,7 @@
                                 <tr>
                                     <th>Equipment Serial Number</th>
                                     <td>
-                                        <a href="{% url 'equipment_detail' equipment.equipmentid.equipmentid %}">
+                                        <a href="{% url 'equipment_detail' equipment.equipmentid_id %}">
                                             {{ equipment.equipmentid.equipmentserialnumber }}</a>
                                     </td>
                                     <th>Equipment Name</th>
@@ -160,7 +160,7 @@
                                     <th>Equipment Code</th>
                                     <td>{{ equipment.equipmentid.equipmentcode }}</td>
                                     <th>Equipment Type</th>
-                                    <td>{{ equipment.equipmentid.equipmenttypecv }}</td>
+                                    <td>{{ equipment.equipmentid.equipmenttypecv_id }}</td>
                                     <th>Equipment Manufacturer</th>
                                     <td>{{ equipment.equipmentid.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                                     <th>Equipment Description</th>
@@ -203,7 +203,7 @@
                                                     {{ variable.variableid.variablecode }}
                                                     {#                                                                    </a>#}
                                                 </td>
-                                                <td>{{ variable.variableid.variablenamecv }}</td>
+                                                <td>{{ variable.variableid.variablenamecv_id }}</td>
                                                 <td>{{ variable.modelid.modelname }}</td>
                                                 <td>{{ variable.instrumentmethodid.methodcode }}</td>
                                                 <td>{{ variable.instrumentmethodid.methodname }}</td>
@@ -222,20 +222,20 @@
                              style="display: none">
                             <h4>Related Equipment</h4>
                                 {% for parent in equipment.equipmentid.relatedequipment_equipmentid.all %}
-                                    {% if parent.relationshiptypecv == 'Is child of' %}
+                                    {% if parent.relationshiptypecv_id == 'Is child of' %}
                                         {# this should be displayed. It's related equipment not children equipment #}
                                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-left">
                                             <table class="table">
                                             <tr>
                                                 <th>Equipment Serial Number:</th>
                                                 <td>
-                                                    <a href="{% url 'equipment_detail' parent.relatedequipmentid.equipmentid %}">
+                                                    <a href="{% url 'equipment_detail' parent.relatedequipmentid_id %}">
                                                         {{ parent.relatedequipmentid.equipmentserialnumber }}</a>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>Relationship Type:</th>
-                                                <td>{{ parent.relationshiptypecv }}</td>
+                                                <td>{{ parent.relationshiptypecv_id }}</td>
                                             </tr>
                                             </table>
                                         </div>

@@ -42,7 +42,7 @@
                 </tr>
                 <tr>
                     <th>Equipment Type:</th>
-                    <td>{{ Equipment.equipmenttypecv }}</td>
+                    <td>{{ Equipment.equipmenttypecv_id }}</td>
                 </tr>
                 <tr>
                     <th>Equipment Code:</th>
@@ -101,7 +101,7 @@
                 <tr>
                     <th>Name:</th>
                     <td>
-                        <a href="{% url 'person_detail' Equipment.equipmentownerid.affiliation.get.affiliationid %}">
+                        <a href="{% url 'person_detail' Equipment.equipmentownerid.affiliation.all.0.affiliationid %}">
                             {{ Equipment.equipmentownerid.personfirstname }}
                             {{ Equipment.equipmentownerid.personlastname|default:" -- " }}
                         </a>

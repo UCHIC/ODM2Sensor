@@ -4,46 +4,37 @@ from django.views.generic import ListView
 
 equipment_models_queryset = EquipmentModel.objects.all().prefetch_related('modelmanufacturerid')
 
-sites_queryset = Sites.objects.all().select_related('sitetypecv').prefetch_related('samplingfeatureid')
+sites_queryset = Sites.objects.all().prefetch_related('samplingfeatureid')
 
 organizations_queryset = Organization.objects.all().prefetch_related('affiliation')
 
 output_variables_queryset = InstrumentOutputVariable.objects.all().prefetch_related('variableid', 'modelid', 'instrumentmethodid')
 
-results_queryset = Result.objects.all().prefetch_related('featureactionid', 'featureactionid__samplingfeatureid', 'variableid')
+results_queryset = Result.objects.all().prefetch_related('featureactionid__samplingfeatureid', 'variableid')
 
 factory_service_queryset = EquipmentUsed.objects.filter(actionid__maintenanceaction__isfactoryservice=True)\
     .prefetch_related('actionid', 'equipmentid')
 
 calibration_standards_queryset = ReferenceMaterial.objects.all()\
-    .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid',
-                      'referencematerialvalue__unitsid', 'referencematerialorganizationid')
+    .prefetch_related('referencematerialvalue__variableid', 'referencematerialvalue__unitsid', 'referencematerialorganizationid')
 
 equipments_queryset = Equipment.objects.all()\
-    .prefetch_related('equipmentmodelid', 'equipmentmodelid__modelmanufacturerid',
-                      'equipmentownerid', 'equipmentownerid__affiliation')
+    .prefetch_related('equipmentmodelid__modelmanufacturerid', 'equipmentownerid__affiliation')
 
 site_visits_queryset = FeatureAction.objects.filter(actionid__actiontypecv='Site visit')\
-    .prefetch_related('actionid', 'samplingfeatureid', 'actionid__actionby', 'actionid__actionby__affiliationid',
-                      'actionid__actionby__affiliationid__personid')
+    .prefetch_related('samplingfeatureid', 'actionid__actionby__affiliationid__personid')
 
 other_actions_queryset = Action.objects.filter(
     (~Q(actiontypecv='Equipment deployment') & ~Q(actiontypecv='Instrument deployment') & ~Q(actiontypecv='Instrument calibration')),
     relatedaction__relationshiptypecv='Is child of', relatedaction__relatedactionid__actiontypecv='Site Visit')\
-    .prefetch_related('featureaction', 'featureaction__samplingfeatureid')
+    .prefetch_related('featureaction__samplingfeatureid')
 
 calibrations_queryset = Action.objects.filter(Q(actiontypecv='Instrument calibration') & Q(calibrationaction__isnull=False))\
     .select_related('actiontypecv')\
-    .prefetch_related('featureaction', 'equipmentused', 'equipmentused__equipmentid',
-                      'equipmentused__equipmentid__equipmenttypecv', 'equipmentused__equipmentid__equipmentmodelid',
-                      'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
+    .prefetch_related('featureaction', 'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
 
 deployments_queryset = Action.objects.filter(Q(actiontypecv='Equipment deployment') | Q(actiontypecv='Instrument deployment'))\
-    .select_related('actiontypecv')\
-    .prefetch_related('featureaction', 'featureaction__samplingfeatureid', 'parent_relatedaction',
-                      'parent_relatedaction__relationshiptypecv', 'parent_relatedaction__actionid', 'equipmentused',
-                      'equipmentused__equipmentid', 'equipmentused__equipmentid__equipmenttypecv',
-                      'equipmentused__equipmentid__equipmentmodelid', 'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
+    .prefetch_related('featureaction__samplingfeatureid', 'parent_relatedaction__actionid', 'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid')
 
 
 class GenericListView(ListView):
@@ -186,7 +177,6 @@ factory_service_list_view = GenericListView.as_view(model=EquipmentUsed, queryse
 equipment_models_list_view = GenericListView.as_view(model=EquipmentModel, queryset=equipment_models_queryset, context_object_name='Models', template_name='equipment/models/models.html')
 output_variables_list_view = GenericListView.as_view(model=InstrumentOutputVariable, queryset=output_variables_queryset, context_object_name='OutputVariables', template_name='equipment/sensor-output-variables/variables.html')
 organizations_list_view = GenericListView.as_view(model=Organization, queryset=organizations_queryset, context_object_name='Organizations', template_name='people/organization.html')
-
 
 # Function views - Vocabularies
 action_type_list_view = VocabulariesListView.as_view(model=CvActiontype, template_name='vocabulary/vocabulary_list.html', vocabulary='Action Type')

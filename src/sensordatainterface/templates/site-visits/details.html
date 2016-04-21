@@ -6,14 +6,14 @@
         <div class="col-xs-12 col-sm-4 col-md-4"><h2>Site Visit Details</h2></div>
 
         <div class="col-xs-12 col-sm-8 col-md-2 pull-right">
-            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_site_visit' SiteVisit.actionid.actionid %}">Delete</a>
+            <a class="btn btn-danger btn-block" id="danger-button" data-href="{% url 'delete_site_visit' SiteVisit.actionid_id %}">Delete</a>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
             <a class="btn btn-primary btn-block"
-               href="{% url 'site_visits_by_site' SiteVisit.samplingfeatureid.samplingfeatureid %}">View Full Visit
+               href="{% url 'site_visits_by_site' SiteVisit.samplingfeatureid_id %}">View Full Visit
                 History for Site</a></div>
         <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'edit_site_visit' SiteVisit.actionid.actionid %}">Edit Site Visit Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'edit_site_visit' SiteVisit.actionid_id %}">Edit Site Visit Description</a></div>
 
     </div>
     <div class="row detail-mid">
@@ -24,7 +24,7 @@
                 <tr>
                     <th>Site Code:</th>
                     <td>
-                        <a href="{% url 'site_detail' SiteVisit.samplingfeatureid.samplingfeatureid %}">
+                        <a href="{% url 'site_detail' SiteVisit.samplingfeatureid_id %}">
                             {{ SiteVisit.samplingfeatureid.samplingfeaturecode }}
                         </a>
                     </td>
@@ -33,22 +33,6 @@
                     <th>Site Name:</th>
                     <td>{{ SiteVisit.samplingfeatureid.samplingfeaturename }}</td>
                 </tr>
-{#                <tr>#}
-{#                    {% for site in SiteVisit.samplingfeatureid.sites.all %}#}
-{#                        {% if forloop.first %}#}
-{#                            <th>Latitude:</th>#}
-{#                            <td>{{ site.latitude }}</td>#}
-{#                            <tr/>#}
-{#                            <tr>#}
-{#                            <th>Longitude:</th>#}
-{#                            <td>{{ site.longitude }}</td>#}
-{#                        {% endif %}#}
-{#                    {% endfor %}#}
-{#                    </tr>#}
-{#                <tr>#}
-{#                    <th>Elevation:</th>#}
-{#                    <td>{{ SiteVisit.samplingfeatureid.elevation_m }}</td>#}
-{#                </tr>#}
             </table>
             <h3>Description</h3>
             <table class="table">
@@ -98,11 +82,11 @@
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
                                                                href="{% url 'create_site_visit' %}">Add New Site Visit</a></div>
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-block btn-primary"
-                                                               href="{% url 'create_action_from_visit' 'Generic' SiteVisit.actionid.actionid %}">Add Another Action</a></div> <!-- Add reference to Site Visit later-->
+                                                               href="{% url 'create_action_from_visit' 'Generic' SiteVisit.actionid_id %}">Add Another Action</a></div> <!-- Add reference to Site Visit later-->
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'create_action_from_visit' 'EquipmentDeployment' SiteVisit.actionid.actionid %}">Add New Deployment</a></div> <!-- Add reference to Site Visit later-->
+                                                               href="{% url 'create_action_from_visit' 'EquipmentDeployment' SiteVisit.actionid_id %}">Add New Deployment</a></div> <!-- Add reference to Site Visit later-->
         <div class="col-sm-3 col-xs-12 col-md-3 pull-right"><a class="btn btn-primary btn-block"
-                                                               href="{% url 'create_action_from_visit' 'InstrumentCalibration' SiteVisit.actionid.actionid %}">Add New Calibration</a></div> <!-- Add reference to Site Visit later-->
+                                                               href="{% url 'create_action_from_visit' 'InstrumentCalibration' SiteVisit.actionid_id %}">Add New Calibration</a></div> <!-- Add reference to Site Visit later-->
     </div>
 
     <div class="row">
@@ -120,14 +104,14 @@
             {% for fieldactivity in SiteVisit.actionid.parent_relatedaction.all %}
                 <tr>
                     <td>
-                        {% if fieldactivity.actionid.actiontypecv == 'Instrument calibration' %}
-                            <a href="{% url 'calibration_detail' fieldactivity.actionid.actionid %}">
-                        {% elif fieldactivity.actionid.actiontypecv.term == 'equipmentDeployment' or fieldactivity.actionid.actiontypecv.term == 'instrumentDeployment' %}
-                            <a href="{% url 'deployment_detail' fieldactivity.actionid.actionid %}">
+                        {% if fieldactivity.actionid.actiontypecv_id == 'Instrument calibration' %}
+                            <a href="{% url 'calibration_detail' fieldactivity.actionid_id %}">
+                        {% elif fieldactivity.actionid.actiontypecv_id == 'Equipment deployment' or fieldactivity.actionid.actiontypecv_id == 'Instrument deployment' %}
+                            <a href="{% url 'deployment_detail' fieldactivity.actionid_id %}">
                         {% else %}
-                            <a href="{% url 'field_activity_detail' fieldactivity.actionid.actionid %}">
+                            <a href="{% url 'field_activity_detail' fieldactivity.actionid_id %}">
                         {% endif %}
-                                {{ fieldactivity.actionid.actiontypecv|separatewordsbycaps }}
+                                {{ fieldactivity.actionid.actiontypecv_id|separatewordsbycaps }}
                             </a>
                     </td>
                     <td>{{ fieldactivity.actionid.begindatetime }}</td>

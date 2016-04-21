@@ -8,18 +8,23 @@ urlpatterns = [
     url(r'^sites/site-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Site',
         model=Sites,
+        queryset=Sites.objects.all().prefetch_related('samplingfeatureid__featureaction__actionid__equipmentused__equipmentid__equipmentmodelid__instrumentoutputvariable__variableid', 'samplingfeatureid__featureaction__actionid__equipmentused__equipmentid__equipmentmodelid__instrumentoutputvariable__instrumentmethodid'),
         slug_field='samplingfeatureid',
         template_name='sites/details.html'),
         name='site_detail'),
 
     # Site Visit detail
     url(r'^actions/visit-detail/(?P<slug>[-_\w]+)/$', SiteVisitDetailView.as_view(),
-        name='site_visit_detail'
-        ),
+        name='site_visit_detail'),
 
     # Deployment detail
-    url(r'^actions/deployment-detail/(?P<slug>[-_\w]+)/$',
-        DeploymentDetail.as_view(), name='deployment_detail'),
+    url(r'^actions/deployment-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+        context_object_name='Deployment',
+        model=Action,
+        queryset=Action.objects.filter(Q(actiontypecv='Instrument deployment') | Q(actiontypecv='Equipment deployment')).prefetch_related('parent_relatedaction', 'featureaction__result_set__variableid__variablenamecv', 'equipmentused__equipmentid__equipmentmodelid__instrumentoutputvariable__variableid__variablenamecv', 'equipmentused__equipmentid__equipmentmodelid__instrumentoutputvariable__instrumentmethodid'),
+        slug_field='actionid',
+        template_name='site-visits/deployment/details.html'),
+        name='deployment_detail'),
 
     # Results detail
     url(r'^actions/result-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
@@ -33,6 +38,7 @@ urlpatterns = [
     url(r'^actions/calibration-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Calibration',
         model=Action,
+        queryset=Action.objects.all().prefetch_related('featureaction', 'calibrationaction', 'relatedaction', 'equipmentused__equipmentid__equipmentmodelid__modelmanufacturerid', 'equipmentused__equipmentid__equipmentownerid__affiliation'),
         slug_field='actionid',
         template_name='site-visits/calibration/details.html'),
         name='calibration_detail'),
@@ -41,6 +47,7 @@ urlpatterns = [
     url(r'^actions/action-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Activity',
         model=FeatureAction,
+        queryset=FeatureAction.objects.all().prefetch_related('actionid', 'actionid__relatedaction__relatedactionid__actionby__affiliationid__personid'),
         slug_field='actionid',
         template_name='site-visits/field-activities/details.html'),
         name='field_activity_detail'),
@@ -49,6 +56,7 @@ urlpatterns = [
     url(r'^inventory/equipment-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Equipment',
         model=Equipment,
+        queryset=Equipment.objects.all().prefetch_related('equipmentownerid__affiliation__organizationid'),
         slug_field='equipmentid',
         template_name='equipment/details.html'),
         name='equipment_detail'),
