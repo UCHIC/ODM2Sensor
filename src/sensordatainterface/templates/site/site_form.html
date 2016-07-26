@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="row title">
+        <h1 class="col-xs-12 col-sm-12 col-md-12">Site</h1>
+    </div>
+
+    <div class="row">
+        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12 {% block form_class %}{% endblock %}" action="{% block submit_url %}{% endblock %}" method="post">
+            {% csrf_token %}
+
+            {% block hidden_data %}
+                <input type="hidden" value="{{ form_type }}" id="form-type">
+            {% endblock %}
+
+            <table class="table form-table form-group">
+                <tbody class="{{ form_type }}-form">
+                    {{ sampling_feature_form.as_table }}
+                    {{ site_form.as_table }}
+                </tbody>
+
+                <tbody>
+                    <tr>
+                        <th></th>
+                        <td>
+                            <div class="row">
+                                <a class="btn btn-default col-xs-12 col-sm-12" href="{% url 'sites' %}">Cancel</a>
+                                <input class="btn btn-primary col-xs-12 col-sm-12" type="submit" value="Create Site">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+{#    <script src="{% static  "sensordatainterface/js/common_forms.js" %}"></script>#}
+{% endblock %}

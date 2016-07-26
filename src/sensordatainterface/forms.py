@@ -20,9 +20,9 @@ organizations_queryset = Organization.objects.all()
 processing_level_queryset = ProcessingLevel.objects.all()
 methods_queryset = Method.objects.all().select_related('methodtypecv')
 crew_queryset = Affiliation.objects.all().prefetch_related('personid', 'organizationid')
-site_visits_queryset = Action.objects.filter(actiontypecv='Site Visit').order_by('-begindatetime').prefetch_related('featureaction__samplingfeatureid', 'featureaction')
+site_visits_queryset = Action.objects.filter(actiontypecv='Site Visit').order_by('-begindatetime').prefetch_related('featureaction__samplingfeatureid')
 equipment_queryset = Equipment.objects.all().select_related('equipmenttypecv').prefetch_related('equipmentmodelid')
-instrument_output_variable_queryset = InstrumentOutputVariable.objects.all().prefetch_related('modelid', 'variableid', 'variableid__variablenamecv')
+instrument_output_variable_queryset = InstrumentOutputVariable.objects.all().prefetch_related('modelid', 'variableid__variablenamecv')
 reference_materials_queryset = ReferenceMaterial.objects.all()\
     .prefetch_related('referencematerialvalue', 'referencematerialvalue__variableid', 'referencematerialvalue__unitsid', 'referencematerialvalue__variableid__variablenamecv')\
     .select_related('referencematerialmediumcv')
@@ -101,7 +101,7 @@ class DeploymentActionChoiceField(ModelChoiceField):
         manufacturer = equipment_model.modelmanufacturerid if equipment_model is not None else None
         info = str(action.begindatetime) + ' '
         info += (str(feature_action.samplingfeatureid.samplingfeaturecode) + ' ') if feature_action is not None else ''
-        info += (str(equipment.equipmentserialnumber) + ' ' + str(equipment.equipmenttypecv.name) + ' ') if equipment is not None else ''
+        info += (str(equipment.equipmentserialnumber) + ' ' + str(equipment.equipmenttypecv_id) + ' ') if equipment is not None else ''
         info += (str(manufacturer.organizationname) + ' ') if manufacturer is not None else ''
         info += (str(equipment_model.modelpartnumber) + ' ') if equipment_model is not None else ''
         return info
@@ -269,7 +269,9 @@ class EquipmentForm(ModelForm):
     required_css_class = 'form-required'
     equipmentvendorid = ModelChoiceField(queryset=organizations_queryset, label='Equipment Vendor', empty_label='Choose an Organization')
     equipmentmodelid = EquipmentModelChoiceField(queryset=EquipmentModel.objects.all(), label='Equipment Model', empty_label='Choose a Model')
+
     equipmentpurchasedate = forms.DateTimeField(initial=datetime.now(), label='Purchase Date')
+
     equipmentownerid = PeopleChoiceField(queryset=People.objects.all(), label='Owner', empty_label='Choose an Owner')
 
     class Meta:
@@ -941,3 +943,56 @@ def get_cv_model_form(form_model, *args, **kwargs):
             super(CVForm, self).__init__(*args, **kwargs)
 
     return CVForm()
+
+
+###
+# RE-WRITE STARTS HERE
+###
+#
+# class SiteForm(ModelForm):
+#     required_css_class = 'form-required'
+#
+#     class Meta:
+#         model = Sites
+#         fields = [
+#             'latitude',
+#             'longitude',
+#             'sitetypecv',
+#             'spatialreferenceid'
+#         ]
+#
+#         labels = {
+#             'latlondatumid': _('Spatial Reference'),
+#             'latitude': _('Latitude (dec deg)'),
+#             'longitude': _('Longitude (dec deg)'),
+#             'sitetypecv': _('Site Type'),
+#             'spatialreferenceid': _('Spatial Reference'),
+#         }
+#
+#
+# class SamplingFeatureForm(ModelForm):
+#     required_css_class = 'form-required'
+#
+#     class Meta:
+#         model = SamplingFeature
+#         fields = [
+#             'samplingfeaturecode',
+#             'samplingfeaturename',
+#             'samplingfeaturedescription',
+#             'elevation_m',
+#             'elevationdatumcv',
+#             'samplingfeaturegeotypecv',
+#         ]
+#         widgets = {
+#             'samplingfeaturecode': TextInput,
+#             'samplingfeaturename': TextInput,
+#             # 'elevation_m': NumberInput,
+#         }
+#         labels = {
+#             'samplingfeaturecode': _('Site Code'),
+#             'samplingfeaturename': _('Site Name'),
+#             'samplingfeaturedescription': _('Site Description'),
+#             'elevation_m': _('Elevation (m)'),
+#             'elevationdatumcv': _('Elevation Datum'),
+#             'samplingfeaturegeotypecv': _('Geo-Type'),
+#         }

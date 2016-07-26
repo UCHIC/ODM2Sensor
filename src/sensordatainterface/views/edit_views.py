@@ -54,7 +54,7 @@ def edit_site(request, site_id):
     return render(
         request,
         'sites/site-form.html',
-        {'render_forms': [samp_feat_form, sites_form], 'action': action, 'item_id': site_id}
+        {'render_forms': [samp_feat_form, sites_form], 'action': action, 'item_id': site_id, 'form_type': 'site'}
     )
 
 
@@ -115,7 +115,7 @@ def edit_factory_service_event(request, bridge_id):
     return render(
         request,
         'equipment/factory-service/factory-service-form.html',
-        {'render_forms': [action_form, maintenance_form, equipment_form], 'action': action, 'item_id': bridge_id}
+        {'render_forms': [action_form, maintenance_form, equipment_form], 'action': action, 'item_id': bridge_id, 'form_type': 'factory_service'}
     )
 
 
@@ -273,7 +273,7 @@ def edit_equipment(request, equipment_id):
 
     return render(
         request, 'equipment/equipment-form.html',
-        {'render_forms': [equipment_form], 'action': action, 'equipment_id': equipment_id, 'mock_model_form': EquipmentModelForm()}
+        {'render_forms': [equipment_form], 'action': action, 'equipment_id': equipment_id, 'mock_model_form': EquipmentModelForm(), 'form_type': 'equipment'}
 
     )
 
@@ -925,6 +925,7 @@ def create_site_visit(request, site_id=None):
             'actions_form': action_form,
             'render_actions': render_actions,
             'action': action,
+            'form_type': 'visit'
         }
     )
 
@@ -1204,7 +1205,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         request,
         'site-visits/field-activities/other-action-form.html',
         {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'site_id': site_id,
-         'action_type': action_type, 'mock_results_form': ResultsForm()}
+         'action_type': action_type, 'mock_results_form': ResultsForm(), 'form_type': 'equipment'}
     )
 
 

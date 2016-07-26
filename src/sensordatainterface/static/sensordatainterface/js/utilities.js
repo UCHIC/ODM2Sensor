@@ -90,7 +90,7 @@ function setEndMinDate(thisTBody, newDate) {
     $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker').data('DateTimePicker').minDate(newDate);
 }
 
-function setIndividualBounds(actionTBody) {
+function setIndividualBounds(actionTBody) { //TODO: MORE BLUE COMMENTS!!!!!! This is a site visit exclusive function.
     var siteVisit = $('.form-table').children('tbody').first();
     var beginSVDate = moment($(siteVisit).find('[name="begindatetime"]').val());
     var endSVDate = moment($(siteVisit).find('[name="enddatetime"]').val());

@@ -1,154 +1,160 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Equipment Management{% block title %}{% endblock %}</title>
-    <link rel="icon" href="{% static "sensordatainterface/img/favicon.ico" %}" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="{%  static "sensordatainterface/css/vendor/bootstrap-datetimepicker.min.css" %}">
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static "sensordatainterface/css/main_style.css" %}" TYPE="text/css">
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Equipment Management{% block title %}{% endblock %}</title>
+        <link rel="icon" href="{% static "sensordatainterface/img/favicon.ico" %}" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-2.2.3/dt-1.10.12/datatables.min.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-<body>
-<div class="content">
-<nav class="navbar navbar-default">
-    <div class="container-fluid container">
-        <div class="navbar-header" id="logo">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a><img id="image_logo" src="{% static "sensordatainterface/img/iutah_logo.png" %}"
-                                            width="128" height="45"/></a>
-        </div>
+        <link rel="stylesheet" href="{% static "sensordatainterface/css/vendor/bootstrap-datetimepicker.min.css" %}">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="{% static "sensordatainterface/css/main_style.css" %}" TYPE="text/css">
+    </head>
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <body>
+    <div class="content">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid container">
+                <div class="navbar-header" id="logo">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a><img id="image_logo" src="{% static "sensordatainterface/img/iutah_logo.png" %}"
+                            width="128" height="45"/></a>
+                </div>
 
-            <ul class="nav navbar-nav">
-                <li class="" id="sites-nav"><a href="{% url 'home' %}">Home</a></li>
-                <li class="" id="sites-nav"><a href="{% url 'sites' %}">Sites<span class="sr-only">(current)</span></a>
-                </li>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-                <li class="dropdown" id="visits-nav">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Actions
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="{% url 'site_visits' %}">Site Visits</a></li>
-                        <li><a href="{% url 'deployments' %}">Deployments</a></li>
-                        <li><a href="{% url 'calibrations' %}">Calibrations</a></li>
-                        <li><a href="{% url 'calibration_methods' %}">Methods</a></li>
-                        <li><a href="{% url 'calibration_standards' %}">Calibration Standards</a></li>
-                        <li><a href="{% url 'field_activities' %}">Other Actions</a></li>
-                        <li><a href="{% url 'results' %}">Results</a></li>
+                    <ul class="nav navbar-nav">
+                        <li class="" id="sites-nav"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="" id="sites-nav"><a href="{% url 'sites' %}">Sites<span class="sr-only">(current)</span></a>
+                        </li>
+
+                        <li class="dropdown" id="visits-nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Actions
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{% url 'site_visits' %}">Site Visits</a></li>
+                                <li><a href="{% url 'deployments' %}">Deployments</a></li>
+                                <li><a href="{% url 'calibrations' %}">Calibrations</a></li>
+                                <li><a href="{% url 'calibration_methods' %}">Methods</a></li>
+                                <li><a href="{% url 'calibration_standards' %}">Calibration Standards</a></li>
+                                <li><a href="{% url 'field_activities' %}">Other Actions</a></li>
+                                <li><a href="{% url 'results' %}">Results</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="inventory-nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Inventory
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{% url 'equipment' %}">Equipment</a></li>
+                                <li><a href="{% url 'models' %}">Equipment Models</a></li>
+                                <li><a href="{% url 'factory_service' %}">Factory Service History</a></li>
+                                <li><a href="{% url 'sensor_output' %}">Instrument Output Variables</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="people-nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">People
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <!-- @todo add url refs -->
+                                <li><a href="{% url 'humans' %}">People</a></li>
+                                <li><a href="{% url 'organizations' %}">Organizations</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" id="inventory-nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Vocabularies
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <!-- @todo add url refs -->
+                                <li><a href="{% url 'action_type' %}">Action Type</a></li>
+                                <li><a href="{% url 'equipment_type' %}">Equipment Type</a></li>
+                                <li><a href="{% url 'method_type' %}">Method Type</a></li>
+                                <li><a href="{% url 'organization_type' %}">Organization Type</a></li>
+                                <li><a href="{% url 'sampling_feature_type' %}">Sampling Feature Type</a></li>
+                                <li><a href="{% url 'site_type' %}">Site Type</a></li>
+                                <li><a href="{% url 'spatial_offset_type' %}">Spatial Offset Type</a></li>
+                                <li><a href="http://vocabulary.odm2.org">Complete list at: vocabulary.odm2.org</a></li>
+                            </ul>
+                        </li>
                     </ul>
-                </li>
 
-                <li class="dropdown" id="inventory-nav">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Inventory
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="{% url 'equipment' %}">Equipment</a></li>
-                        <li><a href="{% url 'models' %}">Equipment Models</a></li>
-                        <li><a href="{% url 'factory_service' %}">Factory Service History</a></li>
-                        <li><a href="{% url 'sensor_output' %}">Instrument Output Variables</a></li>
-                    </ul>
-                </li>
+                    {% if user.is_authenticated %}
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                {% if user.get_full_name %}
+                                    <a id="username">{{ user.get_full_name }}</a>
+                                {% else %}
+                                    <a id="username">{{ user }}</a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <a href="{% url 'logout_user' %}">Logout</a>
+                            </li>
+                        </ul>
+                    {% endif %}
 
-                <li class="dropdown" id="people-nav">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">People
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <!-- @todo add url refs -->
-                        <li><a href="{% url 'humans' %}">People</a></li>
-                        <li><a href="{% url 'organizations' %}">Organizations</a></li>
-                    </ul>
-                </li>
-
-                <li class="dropdown" id="inventory-nav">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Vocabularies
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <!-- @todo add url refs -->
-                        <li><a href="{% url 'action_type' %}">Action Type</a></li>
-                        <li><a href="{% url 'equipment_type' %}">Equipment Type</a></li>
-                        <li><a href="{% url 'method_type' %}">Method Type</a></li>
-                        <li><a href="{% url 'organization_type' %}">Organization Type</a></li>
-                        <li><a href="{% url 'sampling_feature_type' %}">Sampling Feature Type</a></li>
-                        <li><a href="{% url 'site_type' %}">Site Type</a></li>
-                        <li><a href="{% url 'spatial_offset_type' %}">Spatial Offset Type</a></li>
-                        <li><a href="http://vocabulary.odm2.org">Complete list at: vocabulary.odm2.org</a></li>
-                    </ul>
-                </li>
-            </ul>
-
-            {% if user.is_authenticated %}
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        {% if user.get_full_name %}
-                        <a id="username">{{ user.get_full_name }}</a>
-                            {% else %}
-                            <a id="username">{{ user }}</a>
-                            {% endif %}
-                    </li>
-                    <li>
-                        <a href="{% url 'logout_user' %}">Logout</a>
-                    </li>
-                </ul>
-            {% endif %}
-
-        </div>
-    </div>
-</nav>
-{% if messages %}
+                </div>
+            </div>
+        </nav>
+        {% if messages %}
             {% for message in messages %}
                 <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
-<div id="site_content" class="container">
-    {% block content %}{% endblock %}
-</div>
-<div class="row footer">
-    <footer class="container" align="center">
-        <span>Copyright © 2013 iUTAH</span>
-        <span>This material is based upon work supported by the National Science Foundation (NSF) under Grant EPS 1208732.</span>
-        <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
-    </footer>
-</div>
-</div>
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-<script src="{% static "sensordatainterface/js/vendor/bootstrap/bootstrap-tooltip.js" %}"></script>
-<script src="{% static "sensordatainterface/js/vendor/bootstrap/bootstrap-confirmation.js" %}"></script>
-<script src="{% static "sensordatainterface/js/vendor/bootstrap3datepicker/momentjs/moment.js" %}"></script>
-<script src="{% static "sensordatainterface/js/vendor/bootstrap3datepicker/bootstrap-datetimepicker.min.js" %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
-<script src="{% static "sensordatainterface/js/datatable.js" %}"></script>
-<script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>
-{% block scripts %}{% endblock %}
+        <div id="site_content" class="container">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="row footer">
+            <footer class="container" align="center">
+                <span>Copyright © 2013 iUTAH</span>
+                <span>This material is based upon work supported by the National Science Foundation (NSF) under Grant EPS 1208732.</span>
+                <span>Any opinions, findings, conclusions, or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the NSF.</span>
+            </footer>
+        </div>
+    </div>
 
-{% block data %}
-    <input id="equipment-by-site-api" type="hidden" value="{% url 'get_equipment_by_site' %}">
-    <input id="equipment-by-action-api" type="hidden" value="{% url 'get_equipment_by_action' %}">
-    <input id="equipment-by-deployment-api" type="hidden" value="{% url 'get_equipment_by_deployment' %}">
-    <input id="site-visit-dates" type="hidden" value="{% url 'get_site_visit_dates' %}">
-    <input id="output-variables-by-equipment" type="hidden" value="{% url 'get_equipment_output_variables' %}">
-    <input id="deployment-type-api" type="hidden" value="{% url 'get_deployment_type' %}">
-    <input id="deployments-by-type-api" type="hidden" value="{% url 'get_deployments_by_type' %}">
-    <input id="deployments-by-site-api" type="hidden" value="{% url 'get_deployments_by_site' %}">
-    <input id="visits-by-site-api" type="hidden" value="{% url 'get_visits_by_site' %}">
-{% endblock %}
+    {% block scripts %}
+        <script src="{% static 'sensordatainterface/js/vendor/requirejs/require.js' %}" data-main="{% static 'sensordatainterface/js/loader.js' %}"></script>
+    {% endblock %}
 
-</body>
+{#    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>#} --
+{#    <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>#} --
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>#} --
+{#    <script src="{% static "sensordatainterface/js/vendor/bootstrap/bootstrap-tooltip.js" %}"></script>#} --
+{#    <script src="{% static "sensordatainterface/js/vendor/bootstrap/bootstrap-confirmation.js" %}"></script>#} --
+{#    <script src="{% static "sensordatainterface/js/vendor/bootstrap3datepicker/../static/sensordatainterface/js/vendor/momentjs/moment.js" %}"></script>#} --
+{#    <script src="{% static "sensordatainterface/js/vendor/bootstrap3datepicker/bootstrap-datetimepicker.min.js" %}"></script>#} --
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>#} --
+{#    <script src="{% static "sensordatainterface/js/datatable.js" %}"></script>#} --
+{#    <script src="{% static  "sensordatainterface/js/utilities.js" %}"></script>#}
+
+    {% block data %}
+        <input id="equipment-by-site-api" type="hidden" value="{% url 'get_equipment_by_site' %}">
+        <input id="equipment-by-action-api" type="hidden" value="{% url 'get_equipment_by_action' %}">
+        <input id="equipment-by-deployment-api" type="hidden" value="{% url 'get_equipment_by_deployment' %}">
+        <input id="site-visit-dates" type="hidden" value="{% url 'get_site_visit_dates' %}">
+        <input id="output-variables-by-equipment" type="hidden" value="{% url 'get_equipment_output_variables' %}">
+        <input id="deployment-type-api" type="hidden" value="{% url 'get_deployment_type' %}">
+        <input id="deployments-by-type-api" type="hidden" value="{% url 'get_deployments_by_type' %}">
+        <input id="deployments-by-site-api" type="hidden" value="{% url 'get_deployments_by_site' %}">
+        <input id="visits-by-site-api" type="hidden" value="{% url 'get_visits_by_site' %}">
+    {% endblock %}
+
+    </body>
 </html>

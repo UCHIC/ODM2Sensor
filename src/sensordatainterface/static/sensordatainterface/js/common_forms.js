@@ -44,7 +44,7 @@ function setOtherActions() {
     $('form').find('[name="actionid"]').trigger('change');
 }
 
-function initDTPicker() {
+function initDTPicker() { // TODO: NOTHING. JUST WANTED THIS COMMENT TO BE BLUE. METHOD COVERED.
     /* http://tarruda.github.io/bootstrap-datetimepicker/ */
     var dateElements = [];
     // Push elements to get calendar widget
@@ -56,7 +56,7 @@ function initDTPicker() {
     dateElements.push($("[name='annotationdatetime']"));
 
     dateElements.forEach(function (element) {
-        element.wrap("<div class='datetimepicker input-group date'></div");
+        element.wrap("<div class='datetimepicker input-group date'></div>");
         element.after(
             $("<span class='input-group-addon'><span class='glyphicon glyphicon-calendar'></span></span>")
         );
@@ -106,7 +106,6 @@ function setFormFields(currentForm) {
     currentForm.find("[type='checkbox']").removeClass('form-control');
     currentForm.find('textarea').addClass('form-control');
     currentForm.find('select').addClass('select-two');
-
     currentForm.find(".select-two").select2();
     currentForm.find('.select2-container').css('width', '100%');
 }
