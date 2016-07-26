@@ -56,7 +56,7 @@ function initDTPicker() {
     dateElements.push($("[name='annotationdatetime']"));
 
     dateElements.forEach(function (element) {
-        element.wrap("<div class='datetimepicker input-group date'></div");
+        element.wrap("<div class='datetimepicker input-group date'></div>");
         element.after(
             $("<span class='input-group-addon'><span class='glyphicon glyphicon-calendar'></span></span>")
         );

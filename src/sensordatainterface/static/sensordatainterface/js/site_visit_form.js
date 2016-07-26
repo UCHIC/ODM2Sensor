@@ -167,8 +167,11 @@ function setMultipleFieldsNumber(event) {
     for (var i = 0; i < multipleObjElems.length; i++) {
         var multipleObjElem = $(multipleObjElems[i]);
         var selectedValue = multipleObjElem.val();
-        var multipleObjCount = !selectedValue? 0 : selectedValue.length;
-        multipleObjElem.parents('tbody').find('[name="' + object + 'number"]').val(multipleObjCount);
+        var count = 0;
+        if (typeof selectedValue == 'string') {
+            count = (selectedValue.length != 0)? 1: 0; // cause why not. who cares?
+        } else count = !selectedValue? 0 : selectedValue.length;
+        multipleObjElem.parents('tbody').find('[name="' + object + 'number"]').val(count);
     }
 
 }
