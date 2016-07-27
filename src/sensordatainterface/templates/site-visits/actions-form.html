@@ -37,8 +37,7 @@
                         </tr>
                         {{ action_form.as_table }}
                         </tbody>
-                        {% if actions_form.results|length != 0 %}
-
+                        {% if action_form.results|length != 0 %}
                             {% for curr_result in action_form.results %}
                                 <tbody class="results-set">
                                     {% if forloop.first %}

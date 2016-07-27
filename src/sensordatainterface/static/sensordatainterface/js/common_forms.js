@@ -611,7 +611,7 @@ function cacheUnfilteredSelects() {
 $(document).ready(function () {
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
-    setFormFields($('tbody'));
+    setFormFields($('form table tbody'));
     cacheUnfilteredSelects();
     bindEquipmentUsedFiltering($('#id_equipmentused'));
 

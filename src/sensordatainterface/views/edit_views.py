@@ -767,6 +767,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
     # set up annotations
     # TODO: Change this to update actions without having to delete every time
+    # lol why? it works.
     existing_annotations = ActionAnnotation.objects.filter(actionid=site_visit_action)
     for annotation in existing_annotations:
         annotation.delete()
@@ -801,8 +802,8 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                                      relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
 
         if updating:
-            EquipmentUsed.objects.filter(actionid=current_action).delete()
-            CalibrationStandard.objects.filter(actionid=current_action).delete()
+            EquipmentUsed.objects.filter(actionid=current_action.actionid).delete()
+            CalibrationStandard.objects.filter(actionid=current_action.actionid).delete()
 
         equipments = action_form[i].cleaned_data['equipmentused']
         for equ in equipments:
@@ -834,8 +835,8 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         elif action_type.term == 'instrumentCalibration':
             if updating:
-                CalibrationAction.objects.get(actionid=current_action).delete()
-                CalibrationReferenceEquipment.objects.filter(actionid=current_action).delete()
+                CalibrationAction.objects.get(actionid_id=current_action.actionid).delete()
+                CalibrationReferenceEquipment.objects.filter(actionid_id=current_action.actionid).delete()
 
             add_calibration_fields(current_action, action_form[i])
 
@@ -875,7 +876,7 @@ def add_maintenance_fields(current_action, action_form):
 
 def add_calibration_fields(current_action, action_form):
     calibration_action = CalibrationAction.objects.create(
-        actionid=current_action,
+        actionid_id=current_action.actionid,
         calibrationcheckvalue=action_form.cleaned_data['calibrationcheckvalue'],
         instrumentoutputvariableid=action_form.cleaned_data['instrumentoutputvariable'],
         calibrationequation=action_form.cleaned_data['calibrationequation']
@@ -962,17 +963,17 @@ def edit_site_visit(request, action_id):
             }
 
             if child.actionid.actiontypecv.term == 'instrumentCalibration':
-                calibration_action = CalibrationAction.objects.get(actionid=child.actionid)
+                calibration_action = CalibrationAction.objects.get(actionid=child.actionid_id)
                 initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
                 initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
                 initial_action_data['calibrationequation'] = calibration_action.calibrationequation
                 initial_action_data['calibrationstandard'] = ReferenceMaterial.objects.filter(
                     calibrationstandard__isnull=False,
-                    calibrationstandard__actionid=calibration_action.actionid
+                    calibrationstandard__actionid=calibration_action.actionid_id
                 )
                 initial_action_data['calibrationreferenceequipment'] = Equipment.objects.filter(
                     calibrationreferenceequipment__isnull=False,
-                    calibrationreferenceequipment__actionid=calibration_action.actionid
+                    calibrationreferenceequipment__actionid=calibration_action.actionid_id
                 )
             elif child.actionid.actiontypecv.term == 'equipmentMaintenance':
                 maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
