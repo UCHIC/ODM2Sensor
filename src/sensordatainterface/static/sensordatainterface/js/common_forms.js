@@ -570,9 +570,11 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
             }
         });
 
-        currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function(element) {
-            return $.inArray(element, equipments) !== -1;
-        }));
+        if (currentEquipmentSelect.val()) {
+            currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function(element) {
+                return $.inArray(element, equipments) !== -1;
+            }));
+        }
 
         currentEquipmentSelect.select2();
     });
@@ -611,7 +613,7 @@ function cacheUnfilteredSelects() {
 $(document).ready(function () {
     setDateTimePicker();
     setDTPickerClose($('[name="begindatetime"]'));
-    setFormFields($('form table tbody'));
+    setFormFields($('tbody'));
     cacheUnfilteredSelects();
     bindEquipmentUsedFiltering($('#id_equipmentused'));
 
