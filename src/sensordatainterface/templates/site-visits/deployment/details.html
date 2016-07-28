@@ -46,9 +46,9 @@
                     <td>{{ samplingfeature.samplingfeaturename }}</td>
 
                     {% with retrieval=Deployment|get_deployment_retrieval %}
-                            {% if retrieval.exists %}
+                            {% if retrieval %}
                                 <th>End Date Time:</th>
-                                <td>{{ retrieval.get.actionid.begindatetime }}</td>
+                                <td>{{ retrieval.actionid.begindatetime }}</td>
                                 <th>Currently Deployed:</th>
                                 <td>No</td>
                             {% else %}
