@@ -68,13 +68,16 @@ function set_delete_icon() {
 function beginDateTimeChanged(thisTBody, trigger) {
     var endDTElem = $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker');
     var actionType = $(thisTBody).find('[name="actiontypecv"]').val();
-    var isDeployment = $('form').hasClass('EquipmentDeployment') || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+    var isStandaloneDeployment = $('form').hasClass('EquipmentDeployment');
+    var isDeployment = isStandaloneDeployment || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
 
     var event = $(thisTBody).find('[name="begindatetime"]')
         .parent('.datetimepicker')
         .on('dp.change', function (ev) {
             var date = moment($(ev.currentTarget).data().date);
-            if (!isDeployment) {
+            if (isDeployment && !isStandaloneDeployment) {
+                filterEquipmentUsed(filterEquipmentByDate, date.toISOString(), $(thisTBody));
+            } else {
                 setEndMinDate(thisTBody, date);
             }
         });

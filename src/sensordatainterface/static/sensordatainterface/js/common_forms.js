@@ -26,7 +26,7 @@ function setOtherActions() {
         if (site !== 'None') {
             filterVisits(site, false, $('.EquipmentDeployment').find('[name="actionid"]'));
         }
-        $('.EquipmentDeployment').find('#id_equipment_by_site').prop('checked', true);
+        $('.EquipmentDeployment').find('#id_equipment_by_site').prop('checked', false).parents('tr').hide();
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
         $('.EquipmentDeployment .maintenance').not('option').parents('tr').hide();
         actionTypeElem = $('.EquipmentDeployment [name="actiontypecv"]');
@@ -154,16 +154,16 @@ function handleActionTypeChange(formType, currentForm) {
     }
 
     var siteSelect = $('form').find('[name="samplingfeatureid"]');
-    if (siteSelect.length !== 0) {
-        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm)); //Filter equipmentUsed
-        filterDeploymentsByType(formType, $(currentForm).find('[name="deploymentaction"]')); //Filter deployments by action type
-    }
-
     var isDeployment = formType == 'Instrument deployment' || formType == 'Equipment deployment';
     var isRetrieval = formType === 'Instrument retrieval' || formType === 'Equipment retrieval';
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
 
+    if (siteSelect.length !== 0) {
+        filterDeploymentsByType(formType, $(currentForm).find('[name="deploymentaction"]')); //Filter deployments by action type
+    }
+
     if (isDeployment) {
+        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name="begindatetime"]').val(), $(currentForm));
         $(currentForm).find('[name="enddatetime"]').parents('tr').hide();
         $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
         equipmentSelect.parents('tr').show();
@@ -173,6 +173,7 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($(currentForm));
     } else if (!isDeployment && !isRetrieval) {
+        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm));
         $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
         equipmentSelect.attr('multiple', 'multiple');
         showNonRetrievalFields($(currentForm));
@@ -339,6 +340,34 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
         }
     });
 }
+
+
+function filterEquipmentByDate(date, equipmentUsedSelectElems) {
+    if(date == "") {
+        return;
+    }
+
+    var equipmentByDateUrl = $('#equipment-available-by-date-api').val();
+
+    $.ajax({
+        url: equipmentByDateUrl,
+        type: "POST",
+        data :{
+            date: date,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            handle_equ_used_filter_response(json, equipmentUsedSelectElems)
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
 
 function filterDeploymentsByType(formType, deploymentsSelect) {
     if (formType !== 'Instrument retrieval' && formType !== 'Equipment retrieval') {
@@ -562,6 +591,13 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
         var equipments = objects.map(function(equipment) {
             return equipment.pk + "";
         });
+
+        if (currentEquipmentSelect.val()) {
+            currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function (element) {
+                return $.inArray(element, equipments) !== -1;
+            }));
+        }
+
         currentEquipmentSelect.children('option').each(function(index, element) {
             if (equipments.indexOf(element.value) === -1) {
                 $(element).attr('disabled', 'disabled');
@@ -569,12 +605,6 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
                 $(element).removeAttr('disabled');
             }
         });
-
-        if (currentEquipmentSelect.val()) {
-            currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function(element) {
-                return $.inArray(element, equipments) !== -1;
-            }));
-        }
 
         currentEquipmentSelect.select2();
     });
@@ -648,12 +678,16 @@ $(document).ready(function () {
         var actionType = currentForm.find('[name="actiontypecv"]').val();
         siteVisitSelect.change(function (eventData, handler) {
             var selectedVisit = siteVisitSelect.val();
-            if (actionType !== 'Instrument retrieval' && actionType !== 'Equipment retrieval') {
+            var isRetrieval = actionType == 'Instrument retrieval' || actionType == 'Equipment retrieval';
+            var isDeployment = $('form').hasClass('EquipmentDeployment');
+            if (!isRetrieval && !isDeployment) {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
+            } else if (isDeployment) {
+                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm);
             }
 
             filterActionDatesByVisit(selectedVisit);
-            filterDeployments(selectedVisit, true, $(currentForm).find('[name="deploymentaction"]'));
+            filterDeployments(selectedVisit, true, currentForm.find('[name="deploymentaction"]'));
         });
 
         filterEquipmentCheck.change(function(eventData) {
@@ -736,7 +770,8 @@ function filterEquipmentUsed(filter, filteringValue, currentForm) {
 
     if (formActionType == 'Equipment retrieval' || formActionType == 'Instrument retrieval') {
         equipmentUsedSelect.children('option').removeAttr('disabled');
-    } else if (formActionType != "Equipment deployment" && formActionType != "Instrument deployment" && !filterEquipmentCheck.prop('checked')) {
+    } else if (!filterEquipmentCheck.prop('checked')) { // formActionType != "Equipment deployment" && formActionType != "Instrument deployment" &&
+        // why was this excluding equipment and instrument deployments? left rest of condition as comment just in case.
         filter(filteringValue, equipmentUsedSelect);
     } else {
         equipmentUsedSelect.children('option').removeAttr('disabled');

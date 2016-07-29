@@ -153,6 +153,31 @@ def get_equipment_by_action(request):
     )
 
 
+def get_available_equipment(request):
+    if request.method == 'POST':
+        action_date = request.POST.get('date')
+
+        if action_date == 'false':
+            undeployed_equipment = Equipment.objects.all()
+        else:
+            actions = Action.objects.filter(begindatetime__lt=action_date,
+                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+            actions = actions.exclude(relatedaction__relationshiptypecv__term='isRetrievalOf',
+                                      relatedaction__relatedactionid__begindatetime__lt=action_date)
+            undeployed_equipment = Equipment.objects.exclude(equipmentused__actionid__in=actions)
+
+        response_data = serializers.serialize('json', undeployed_equipment)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    json_data = json.dumps(response_data)
+
+    return HttpResponse(
+        json_data,
+        content_type="application/json"
+    )
+
+
 def get_equipment_by_deployment(request):
     if request.method == 'POST':
         deployment_id = request.POST.get('action_id')

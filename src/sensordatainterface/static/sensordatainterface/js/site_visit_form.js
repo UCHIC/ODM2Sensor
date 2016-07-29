@@ -182,8 +182,12 @@ function setEquipmentUsedFilter() {
         actionTypeSelects.each(function(index, select) {
             var actionType = $(select).val();
             var currentForm = $(select).parents('tbody');
-            filterEquipmentUsed(filterEquipmentBySite, $(event.target).val(), currentForm);
-            filterDeploymentsByType(actionType, currentForm.find('[name="deploymentaction"]'));
+            var isDeployment = actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+            
+            if (!isDeployment) {
+                filterEquipmentUsed(filterEquipmentBySite, $(event.target).val(), currentForm);
+                filterDeploymentsByType(actionType, currentForm.find('[name="deploymentaction"]'));
+            }
         });
     });
 }
