@@ -28,7 +28,7 @@ function addActionForm(that) {
     });
 
     bindDeploymentField($(thisForm));
-    filterDeployments($('form').find('[name="samplingfeatureid"]').val(), false, $(thisForm).find('[name="deploymentaction"]'));
+    filterDeployments($('form').find('[name="samplingfeatureid"]').val(), $(thisForm).find('[name="deploymentaction"]'));
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();

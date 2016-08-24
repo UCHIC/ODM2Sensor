@@ -26,6 +26,19 @@ urlpatterns = [
         template_name='site-visits/deployment/details.html'),
         name='deployment_detail'),
 
+    # Retrieval detail
+    url(r'^actions/retrieval-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+        context_object_name='Retrieval',
+        model=Action,
+        queryset=Action.objects.filter(
+            Q(actiontypecv='Instrument retrieval') | Q(actiontypecv='Equipment retrieval')).prefetch_related(
+            'parent_relatedaction', 'featureaction__result_set__variableid__variablenamecv',
+            'equipmentused__equipmentid__equipmentmodelid__instrumentoutputvariable__variableid__variablenamecv',
+            'equipmentused__equipmentid__equipmentmodelid__instrumentoutputvariable__instrumentmethodid'),
+        slug_field='actionid',
+        template_name='site-visits/deployment/retrieval_details.html'),
+        name='retrieval_detail'),
+
     # Results detail
     url(r'^actions/result-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Result',

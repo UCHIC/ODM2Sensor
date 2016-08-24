@@ -46,3 +46,18 @@ def get_deployment_retrieval(deployment):
             retrieval = related_action
 
     return retrieval
+
+
+@register.filter
+def get_retrieval_deployment(retrieval):
+    if not isinstance(retrieval, Action):
+        return
+    if retrieval.actiontypecv_id not in ['Equipment retrieval', 'Instrument retrieval']:
+        return
+
+    deployment = None
+    for related_action in retrieval.relatedaction.all():
+        if related_action.relationshiptypecv_id == 'Is retrieval for':
+            deployment = related_action.relatedactionid
+
+    return deployment

@@ -6,14 +6,14 @@
     <div class="row title"><h1 class="col-xs-12 col-sm-12 col-md-12">{{ action|capfirst }}
         Site Visit</h1></div>
     <div class="row">
-        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12"
+        <form enctype="multipart/form-data" class="input-group col-xs-12 col-md-12 col-lg-12 col-sm-12 SiteVisit"
               action="{% block submit_url %}{% endblock %}"
               method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ action }}" name="action">
             <input type="hidden" value="{{ item_id }}" name="item_id">
             <table class="table form-table form-group">
-                <tbody class="">
+                <tbody class="visit-fields">
                 {% for render_form in render_forms %}
                     {{ render_form.as_table }}
                 {% endfor %}

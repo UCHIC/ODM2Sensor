@@ -980,6 +980,9 @@ def edit_site_visit(request, action_id):
                 initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
                 initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
                 initial_action_data['maintenancereason'] = maintenance_action.maintenancereason
+            elif child.actionid.actiontypecv_id in ['Equipment retrieval', 'Instrument retrieval']:
+                deployment = child.actionid.relatedaction.filter(relationshiptypecv_id='Is retrieval for').get().relatedactionid
+                initial_action_data['deploymentaction'] = deployment
 
             child_action_form = ActionForm(
                 instance=child.actionid,
@@ -1277,7 +1280,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
             deployment_action.save()
 
             response = HttpResponseRedirect(
-                reverse('deployment_detail', args=[deployment_action.actionid])
+                reverse('retrieval_detail', args=[retrieval_action.actionid])
             )
 
             return response
@@ -1291,6 +1294,10 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+        site_form = FeatureActionForm(
+            initial={
+                'samplingfeatureid': retrieval_action.featureaction.get().samplingfeatureid
+            })
         equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
         retrieval_form = ActionForm(
             instance=retrieval_action,
@@ -1304,6 +1311,11 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
     elif deployment_id:
         deployment_action = Action.objects.get(pk=deployment_id)
         site_visit_form = SiteVisitChoiceForm()
+        site_form = FeatureActionForm(
+            initial={
+                'samplingfeatureid': deployment_action.featureaction.get().samplingfeatureid
+            })
+
         retrieval_form = ActionForm(
             initial={
                 'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'deploymentaction': deployment_id,
@@ -1311,6 +1323,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
             })
 
     else:
+        site_form = FeatureActionForm()
         site_visit_form = SiteVisitChoiceForm()
         retrieval_form = ActionForm(
             initial={
@@ -1321,5 +1334,5 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
     return render(
         request,
         'site-visits/deployment/retrieval_form.html',
-        {'render_forms': [site_visit_form, retrieval_form], 'action': action, 'item_id': retrieval_id }
+        {'render_forms': [site_form, site_visit_form, retrieval_form], 'action': action, 'item_id': retrieval_id, 'deployment_id': deployment_id }
     )

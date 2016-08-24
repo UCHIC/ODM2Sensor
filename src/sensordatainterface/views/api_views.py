@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.core import serializers
@@ -40,65 +42,30 @@ def get_equipment_by_site(request):
 
 def get_deployments_by_type(request):
     if request.method == 'POST':
-        action_type = request.POST.get('type')
+        date_format = '%Y-%m-%d %H:%M'
         site_id = request.POST.get('site')
+        action_type = request.POST.get('type')
+        is_update = request.POST.get('is_update')
+
+        begindate = datetime.strptime(request.POST.get('begindate'), date_format)
+        enddate = datetime.strptime(request.POST.get('enddate'), date_format)
+
         deployment_type = 'equipmentDeployment' if action_type == 'Equipment retrieval' else 'instrumentDeployment'
 
         if site_id == '':
-            deployments = Action.objects.filter(
-                actiontypecv__term=deployment_type,
-                enddatetime=None
-            )
+            deployments = Action.objects.filter(begindatetime__lt=begindate, actiontypecv__term=deployment_type)
         else:
-            deployments = Action.objects.filter(
-                actiontypecv__term=deployment_type,
-                featureaction__samplingfeatureid=site_id, enddatetime=None
-            )
+            deployments = Action.objects.filter(featureaction__samplingfeatureid_id=site_id,
+                                                begindatetime__lt=begindate, actiontypecv__term=deployment_type)
+
+        if is_update == 'true':
+            deployments = deployments.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                              parent_relatedaction__actionid__begindatetime__lt=begindate)
+        else:
+            deployments = deployments.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                              parent_relatedaction__actionid__begindatetime__lte=enddate)
 
         response_data = serializers.serialize('json', deployments)
-    else:
-        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
-
-    return HttpResponse(
-        json.dumps(response_data),
-        content_type="application/json"
-    )
-
-
-def get_deployments_by_site(request):
-    if request.method == 'POST':
-        selected_id = request.POST.get('id')
-        is_visit = request.POST.get('is_visit')
-        if is_visit == 'true':
-            samplingfeature = SamplingFeature.objects.filter(samplingfeaturetypecv__term="site", featureaction__actionid_id=selected_id)
-            deployments = Action.objects.filter(
-                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='equipmentDeployment'),
-                featureaction__samplingfeatureid=samplingfeature, enddatetime=None
-            )
-        else:
-            deployments = Action.objects.filter(
-                Q(actiontypecv__term='instrumentDeployment') | Q(actiontypecv__term='equipmentDeployment'),
-                featureaction__samplingfeatureid=selected_id, enddatetime=None
-            )
-
-        response_data = serializers.serialize('json', deployments)
-    else:
-        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
-
-    return HttpResponse(
-        json.dumps(response_data),
-        content_type="application/json"
-    )
-
-
-def get_visits_by_site(request):
-    if request.method == 'POST':
-        selected_id = request.POST.get('id')
-        is_deployment = request.POST.get('is_deployment')
-
-        site = FeatureAction.objects.get(actionid__actionid=selected_id).samplingfeatureid if is_deployment != 'false' else SamplingFeature.objects.get(pk=selected_id)
-        visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid=site)
-        response_data = serializers.serialize('json', visits)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 
@@ -137,8 +104,8 @@ def get_equipment_by_action(request):
             actions = Action.objects.filter(featureaction__samplingfeatureid__featureaction__actionid=site_visit,
                                             begindatetime__lt=site_visit.begindatetime,
                                             actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
-            actions = actions.exclude(relatedaction__relationshiptypecv__term='isRetrievalOf',
-                                      relatedaction__relatedactionid__begindatetime__lt=site_visit.begindatetime)
+            actions = actions.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                      parent_relatedaction__actionid__begindatetime__lt=site_visit.begindatetime)
             equipment_deployed = Equipment.objects.filter(equipmentused__actionid__in=actions)
 
         response_data = serializers.serialize('json', equipment_deployed)
@@ -162,8 +129,8 @@ def get_available_equipment(request):
         else:
             actions = Action.objects.filter(begindatetime__lt=action_date,
                                             actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
-            actions = actions.exclude(relatedaction__relationshiptypecv__term='isRetrievalOf',
-                                      relatedaction__relatedactionid__begindatetime__lt=action_date)
+            actions = actions.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                      parent_relatedaction__actionid__begindatetime__lt=action_date)
             undeployed_equipment = Equipment.objects.exclude(equipmentused__actionid__in=actions)
 
         response_data = serializers.serialize('json', undeployed_equipment)
@@ -203,6 +170,111 @@ def get_equipment_output_variables(request):
             model = EquipmentModel.objects.filter(equipment__equipmentid=equipment)
             variables = InstrumentOutputVariable.objects.filter(modelid=model)
         response_data = serializers.serialize('json', variables)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+
+
+
+
+
+
+
+
+
+def get_action_site(request):
+    if request.method == 'POST':
+        action_id = request.POST.get('action_id')
+        response_data = Action.objects.get(pk=action_id).featureaction.get().samplingfeatureid_id
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    json_data = json.dumps(response_data)
+
+    return HttpResponse(
+        json_data,
+        content_type="application/json"
+    )
+
+
+def get_visits_by_site(request):
+    if request.method == 'POST':
+        selected_id = request.POST.get('id')
+
+        visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid_id=selected_id)
+        response_data = serializers.serialize('json', visits)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_deployments_by_visit_site(request):
+    if request.method == 'POST':
+        selected_id = request.POST.get('id')
+        is_update = request.POST.get('is_update')
+        site_visit = Action.objects.get(pk=selected_id)
+        deployments = Action.objects.filter(featureaction__samplingfeatureid__featureaction__actionid=site_visit,
+                                            begindatetime__lt=site_visit.begindatetime,
+                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+        if is_update == 'true':
+            deployments = deployments.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                              parent_relatedaction__actionid__begindatetime__lt=site_visit.begindatetime)
+        else:
+            deployments = deployments.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                              parent_relatedaction__actionid__begindatetime__lte=site_visit.enddatetime)
+
+        response_data = serializers.serialize('json', deployments)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_deployments_by_site(request):
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        selected_id = request.POST.get('id')
+        is_update = request.POST.get('is_update')
+
+        deployments = Action.objects.filter(featureaction__samplingfeatureid_id=selected_id,
+                                            begindatetime__lt=date,
+                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+        if is_update == 'true':
+            deployments = deployments.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                              parent_relatedaction__actionid__begindatetime__lt=date)
+        else:
+            deployments = deployments.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                              parent_relatedaction__actionid__begindatetime__lte=date)
+
+        response_data = serializers.serialize('json', deployments)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    return HttpResponse(
+        json.dumps(response_data),
+        content_type="application/json"
+    )
+
+
+def get_visits_by_deployment_site(request):
+    if request.method == 'POST':
+        selected_id = request.POST.get('id')
+
+        visits = Action.objects.filter(actiontypecv__term='siteVisit', featureaction__samplingfeatureid__featureaction__actionid=selected_id)
+        response_data = serializers.serialize('json', visits)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 

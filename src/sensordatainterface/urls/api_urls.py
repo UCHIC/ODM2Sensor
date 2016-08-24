@@ -11,5 +11,7 @@ urlpatterns = [
     url(r'^api/get-deployment-type/$', api_views.get_deployment_type, name='get_deployment_type'),
     url(r'^api/get-deployments-by-type/$', api_views.get_deployments_by_type, name='get_deployments_by_type'),
     url(r'^api/get-deployments-by-site/$', api_views.get_deployments_by_site, name='get_deployments_by_site'),
+    url(r'^api/get-deployments-by-visit-site/$', api_views.get_deployments_by_visit_site, name='get_deployments_by_visit_site'),
     url(r'^api/get-visits-by-site/$', api_views.get_visits_by_site, name='get_visits_by_site'),
+    url(r'^api/get-visits-by-deployment-site/$', api_views.get_visits_by_deployment_site, name='get_visits_by_deployment_site'),
 ]

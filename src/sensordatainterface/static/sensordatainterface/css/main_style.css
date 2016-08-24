@@ -328,6 +328,7 @@ label {
 /*left: 217;*/
 /*}*/
 
+
 #action-form, #results-form, #annotation-form, #model-form, .all-equipment-wrapper, .all-variables-wrapper, .all-units-wrapper {
     display: none;
 }

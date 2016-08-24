@@ -14,11 +14,13 @@
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>
-        {% if not Deployment.enddatetime %}
-            <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
-                <a class="btn btn-primary btn-block" href="{% url 'create_retrieval_from_deployment' Deployment.actionid%}">Retrieve</a>
-            </div>
-        {% endif %}
+        {% with retrieval=Deployment|get_deployment_retrieval %}
+            {% if not retrieval %}
+                <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+                    <a class="btn btn-primary btn-block" href="{% url 'create_retrieval_from_deployment' Deployment.actionid%}">Retrieve</a>
+                </div>
+            {% endif %}
+        {% endwith %}
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment Description</a></div>
     </div>
@@ -112,7 +114,7 @@
             {% endfor %}
             {% for related in Deployment.parent_relatedaction.all %}
                 {% if related.relationshiptypecv_id == 'Is retrieval for' %}
-                    <a class="btn btn-primary btn-block" href="{% url 'field_activity_detail' related.actionid_id %}">Go to retrieval action</a>
+                    <a class="btn btn-primary btn-block" href="{% url 'retrieval_detail' related.actionid_id %}">Go to retrieval action</a>
                 {% endif %}
             {% endfor %}
         </div>

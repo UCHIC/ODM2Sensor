@@ -2,6 +2,7 @@
 {% block button_value %} {% block item_name %} Retrieval Action {% endblock %} {% endblock %}
 
 {% block form_class %}Retrieval{% endblock %}
+{% block hidden_data %} <input type="hidden" value="{{ deployment_id }}" name="deployment_id"> {% endblock %}
 {% block submit_url %}{% url 'create_retrieval' %}{% endblock %}
-{% block detail_cancel_url %}{% url 'field_activity_detail' item_id %}{% endblock %}
-{% block list_cancel_url %}{% url 'field_activities' %}{% endblock %}
+{% block detail_cancel_url %}{% url 'retrieval_detail' item_id %}{% endblock %}
+{% block list_cancel_url %}{% url 'deployments' %}{% endblock %}

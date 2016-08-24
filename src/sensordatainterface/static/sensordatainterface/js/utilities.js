@@ -67,18 +67,26 @@ function set_delete_icon() {
 
 function beginDateTimeChanged(thisTBody, trigger) {
     var endDTElem = $(thisTBody).find('[name="enddatetime"]').parent('.datetimepicker');
-    var actionType = $(thisTBody).find('[name="actiontypecv"]').val();
-    var isStandaloneDeployment = $('form').hasClass('EquipmentDeployment');
-    var isDeployment = isStandaloneDeployment || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
-
     var event = $(thisTBody).find('[name="begindatetime"]')
         .parent('.datetimepicker')
         .on('dp.change', function (ev) {
+            var actionType = $(thisTBody).find('[name="actiontypecv"]').val();
+
+            var isStandaloneRetrieval = $('form').hasClass('Retrieval');
+            var isStandaloneDeployment = $('form').hasClass('EquipmentDeployment');
+            var isRetrieval = isStandaloneRetrieval || actionType == 'Equipment retrieval' || actionType == 'Instrument retrieval';
+            var isDeployment = isStandaloneDeployment || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
+
             var date = moment($(ev.currentTarget).data().date);
-            if (isDeployment && !isStandaloneDeployment) {
-                filterEquipmentUsed(filterEquipmentByDate, date.toISOString(), $(thisTBody));
-            } else {
+            var dateString = date.toISOString();
+            if (!isDeployment) {
                 setEndMinDate(thisTBody, date);
+            }
+
+            if (isDeployment && !isStandaloneDeployment) {
+                filterEquipmentUsed(filterEquipmentByDate, dateString, $(thisTBody));
+            } else if (isRetrieval && !isStandaloneRetrieval) {
+                filterDeploymentsByType(actionType, $(thisTBody).find('[name="deploymentaction"]'));
             }
         });
 

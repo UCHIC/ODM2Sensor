@@ -24,7 +24,7 @@ function setOtherActions() {
     } else if (mainForm.hasClass('EquipmentDeployment')) {
         var site = $('.EquipmentDeployment').find('[name="site_id"]').val();
         if (site !== 'None') {
-            filterVisits(site, false, $('.EquipmentDeployment').find('[name="actionid"]'));
+            filterVisitsBySite(site, $('.EquipmentDeployment').find('[name="actionid"]'));
         }
         $('.EquipmentDeployment').find('#id_equipment_by_site').prop('checked', false).parents('tr').hide();
         $('.EquipmentDeployment .calibration').not('option').parents('tr').hide();
@@ -36,6 +36,12 @@ function setOtherActions() {
         $('.EquipmentDeployment [name="equipmentused"]').removeAttr('multiple');
         $('.EquipmentDeployment [name="equipmentused"]').select2();
     } else if (mainForm.hasClass('Retrieval')) {
+        var deployment = $('.Retrieval').find('[name="deployment_id"]').val();
+        if (deployment !== 'None') {
+            $('.Retrieval').find('[name="deploymentaction"]').prop('disabled', true);
+            $('.Retrieval').find('[name="samplingfeatureid"]').prop('disabled', true);
+        }
+
         $('.Retrieval').find('[name="actiontypecv"]').parents('tr').hide();
         $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required').show();
         filterNonRetrievalFields($('.Retrieval'));
@@ -95,7 +101,8 @@ function setDTPickerClose(beginDTElem) {
             var endDTObj = currentForm.find('[name="enddatetime"]').parents('.datetimepicker').data('DateTimePicker');
             if (!isDeployment) {
                 endDTObj.show();
-                endDTObj.date(beginDTObj.date())
+                endDTObj.date(beginDTObj.date());
+                endDTObj.date(beginDTObj.date());
             }
         }
     });
@@ -133,8 +140,17 @@ function handleActionTypeChange(formType, currentForm) {
     $(currentForm).find('.' + formClass).not('option').parents('tr:hidden').show();
     $(currentForm).find('option.' + formClass).removeAttr('disabled');
 
-    var methodSelect = $(currentForm).find('#id_methodid');
+    var methodSelect = $(currentForm).find('[name="methodid"]');
     methodSelect.siblings('.errorlist.no-methods').remove();
+
+    // don't leave this here. or maybe do...
+    var methodOptions = methodSelect.find('option:not([disabled])');
+    var methods = $.map(methodOptions, function(option) { return option.value });
+
+    if (methods.indexOf(methodSelect.val()) === -1) {
+        methodSelect.val('');
+    }
+
 
     if (formClass !== 'Notype' && $(currentForm).find('option.' + formClass).length === 0) {
         $('<ul class="errorlist no-methods"><li>No Methods exist for the selected Action Type.</li></ul>').insertBefore($(currentForm).find('#id_methodid'));
@@ -153,12 +169,13 @@ function handleActionTypeChange(formType, currentForm) {
         equipmentUsedElem.parents('tr').removeClass('form-required');
     }
 
+    var isSiteVisit = $('form').hasClass('SiteVisit');
     var siteSelect = $('form').find('[name="samplingfeatureid"]');
     var isDeployment = formType == 'Instrument deployment' || formType == 'Equipment deployment';
     var isRetrieval = formType === 'Instrument retrieval' || formType === 'Equipment retrieval';
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
 
-    if (siteSelect.length !== 0) {
+    if (isSiteVisit) {
         filterDeploymentsByType(formType, $(currentForm).find('[name="deploymentaction"]')); //Filter deployments by action type
     }
 
@@ -341,7 +358,6 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     });
 }
 
-
 function filterEquipmentByDate(date, equipmentUsedSelectElems) {
     if(date == "") {
         return;
@@ -368,20 +384,22 @@ function filterEquipmentByDate(date, equipmentUsedSelectElems) {
     });
 }
 
-
 function filterDeploymentsByType(formType, deploymentsSelect) {
     if (formType !== 'Instrument retrieval' && formType !== 'Equipment retrieval') {
         return;
     }
 
     var selectedSite = $('form').find('[name="samplingfeatureid"]').val();
+    var visitForm = deploymentsSelect.parents('tbody.action-fields').siblings('tbody.visit-fields');
+    var beginDate =  visitForm.find('[name="begindatetime"]').val();
+    var endDate =  visitForm.find('[name="enddatetime"]').val();
 
     if(formType == "" && selectedSite == "") {
         deploymentsSelect.children('option').removeAttr('disabled');
         deploymentsSelect.select2();
         return;
     } else if (formType == "" && selectedSite !== "") {
-        filterDeployments(selectedSite, false, deploymentsSelect);
+        filterDeployments(selectedSite, deploymentsSelect);
         return;
     }
 
@@ -393,6 +411,9 @@ function filterDeploymentsByType(formType, deploymentsSelect) {
         data :{
             type: formType,
             site: selectedSite,
+            is_update: $('form [name="action"]').val() === "update",
+            begindate: beginDate,
+            enddate: endDate,
             csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
         },
 
@@ -420,8 +441,7 @@ function filterDeploymentsByType(formType, deploymentsSelect) {
     });
 }
 
-function filterDeployments(selectedId, is_visit, deploymentsSelect) {
-
+function filterDeployments(selectedId, deploymentsSelect) {
     if(selectedId == "") {
         deploymentsSelect.children('option').removeAttr('disabled');
         deploymentsSelect.select2();
@@ -435,12 +455,17 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
         type: "POST",
         data :{
             id: selectedId,
-            is_visit: is_visit,
+            date: deploymentsSelect.parents('tbody').find('[name="begindatetime"]').val(),
+            is_update: $('form [name="action"]').val() === "update",
             csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
         },
 
         success: function (json) {
             var deployments = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
+
+            if (deployments.indexOf(deploymentsSelect.val()) === -1) {
+                deploymentsSelect.val('');
+            }
 
             deploymentsSelect.children('option').each(function(index, element) {
                 if (deployments.indexOf(element.value) === -1 && element.value !== '') {
@@ -450,9 +475,6 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
                 }
             });
 
-            if (deployments.indexOf(deploymentsSelect.val()) === -1) {
-                deploymentsSelect.val('');
-            }
             deploymentsSelect.select2();
         },
 
@@ -463,7 +485,50 @@ function filterDeployments(selectedId, is_visit, deploymentsSelect) {
     });
 }
 
-function filterVisits(selectedId, isDeployment, visitsSelect) {
+function filterDeploymentsByVisitSite(selectedId, deploymentsSelect) {
+    if(selectedId == "") {
+        deploymentsSelect.children('option').removeAttr('disabled');
+        deploymentsSelect.select2();
+        return;
+    }
+
+    var deploymentsUrl = $('#deployments-by-visit-site-api').val();
+
+    $.ajax({
+        url: deploymentsUrl,
+        type: "POST",
+        data :{
+            id: selectedId,
+            is_update: $('form [name="action"]').val() === "update",
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var deployments = JSON.parse(json).map(function(deployment) {return deployment.pk + ""});
+
+            if (deployments.indexOf(deploymentsSelect.val()) === -1) {
+                deploymentsSelect.val('');
+            }
+
+            deploymentsSelect.children('option').each(function(index, element) {
+                if (deployments.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+
+            deploymentsSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
+function filterVisitsBySite(selectedId, visitsSelect) {
     if (selectedId == "") {
         visitsSelect.children('option').removeAttr('disabled');
         visitsSelect.select2();
@@ -477,7 +542,6 @@ function filterVisits(selectedId, isDeployment, visitsSelect) {
         type: "POST",
         data :{
             id: selectedId,
-            is_deployment: isDeployment,
             csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
         },
 
@@ -506,7 +570,47 @@ function filterVisits(selectedId, isDeployment, visitsSelect) {
     });
 }
 
+function filterVisitsByDeploymentSite(selectedId, visitsSelect) {
+    if (selectedId == "") {
+        visitsSelect.children('option').removeAttr('disabled');
+        visitsSelect.select2();
+        return;
+    }
 
+    var url = $('#visits-by-deployment-site-api').val();
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data :{
+            id: selectedId,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var visits = JSON.parse(json).map(function(visit) {return visit.pk + ""});
+
+            visitsSelect.children('option').each(function(index, element) {
+                if (visits.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+
+            if (visits.indexOf(visitsSelect.val()) === -1) {
+                visitsSelect.val('');
+            }
+
+            visitsSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
 
 function setDeploymentEquipment(deploymentId, equipmentUsedSelect) {
     if(deploymentId == "") {
@@ -686,8 +790,11 @@ $(document).ready(function () {
                 filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm);
             }
 
+            var deploymentField = currentForm.find('[name="deploymentaction"]');
             filterActionDatesByVisit(selectedVisit);
-            filterDeployments(selectedVisit, true, currentForm.find('[name="deploymentaction"]'));
+            if (!deploymentField.prop('disabled')) {
+                filterDeploymentsByVisitSite(selectedVisit, deploymentField);
+            }
         });
 
         filterEquipmentCheck.change(function(eventData) {
@@ -712,7 +819,7 @@ function bindDeploymentField(form) {
         setDeploymentEquipment(deploymentId, form.find('[name="equipmentused"]'));
 
         if (siteVisitSelect.length > 0) {
-            filterVisits(deploymentId, true, siteVisitSelect);
+            filterVisitsByDeploymentSite(deploymentId, siteVisitSelect);
         }
     });
 }
@@ -734,8 +841,15 @@ function getDeploymentType(deploymentId, form) {
         },
 
         success: function (deploymentType) {
+            var methodSelect = form.find('[name="methodid"]');
             var actiontypeSelect = form.find('[name="actiontypecv"]');
-            form.find('[name="methodid"]').val('');
+            var methodOptions = methodSelect.find('option:not([disabled])');
+            var methods = $.map(methodOptions, function(option) { return option.value });
+
+            if (methods.indexOf(methodSelect.val()) === -1) {
+                methodSelect.val('');
+            }
+
             actiontypeSelect.val(deploymentType);
             actiontypeSelect.trigger('change');
         },
