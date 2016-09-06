@@ -528,47 +528,6 @@ function filterDeploymentsByVisitSite(selectedId, deploymentsSelect) {
     });
 }
 
-function filterVisitsBySite(selectedId, visitsSelect) {
-    if (selectedId == "") {
-        visitsSelect.children('option').removeAttr('disabled');
-        visitsSelect.select2();
-        return;
-    }
-
-    var url = $('#visits-by-site-api').val();
-
-    $.ajax({
-        url: url,
-        type: "POST",
-        data :{
-            id: selectedId,
-            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
-        },
-
-        success: function (json) {
-            var visits = JSON.parse(json).map(function(visit) {return visit.pk + ""});
-
-            visitsSelect.children('option').each(function(index, element) {
-                if (visits.indexOf(element.value) === -1 && element.value !== '') {
-                    $(element).attr('disabled', 'disabled');
-                } else {
-                    $(element).removeAttr('disabled');
-                }
-            });
-
-            if (visits.indexOf(visitsSelect.val()) === -1) {
-                visitsSelect.val('');
-            }
-
-            visitsSelect.select2();
-        },
-
-        error: function (xhr, errmsg, err) {
-            console.log(errmsg);
-            console.log(xhr.status+": "+xhr.responseText)
-        }
-    });
-}
 
 function filterVisitsByDeploymentSite(selectedId, visitsSelect) {
     if (selectedId == "") {
@@ -611,6 +570,50 @@ function filterVisitsByDeploymentSite(selectedId, visitsSelect) {
         }
     });
 }
+
+
+function filterVisitsBySite(selectedId, visitsSelect) {
+    if (selectedId == "") {
+        visitsSelect.children('option').removeAttr('disabled');
+        visitsSelect.select2();
+        return;
+    }
+
+    var url = $('#visits-by-site-api').val();
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data :{
+            id: selectedId,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+
+        success: function (json) {
+            var visits = JSON.parse(json).map(function(visit) {return visit.pk + ""});
+
+            visitsSelect.children('option').each(function(index, element) {
+                if (visits.indexOf(element.value) === -1 && element.value !== '') {
+                    $(element).attr('disabled', 'disabled');
+                } else {
+                    $(element).removeAttr('disabled');
+                }
+            });
+
+            if (visits.indexOf(visitsSelect.val()) === -1) {
+                visitsSelect.val('');
+            }
+
+            visitsSelect.select2();
+        },
+
+        error: function (xhr, errmsg, err) {
+            console.log(errmsg);
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+}
+
 
 function setDeploymentEquipment(deploymentId, equipmentUsedSelect) {
     if(deploymentId == "") {
@@ -792,7 +795,7 @@ $(document).ready(function () {
 
             var deploymentField = currentForm.find('[name="deploymentaction"]');
             filterActionDatesByVisit(selectedVisit);
-            if (!deploymentField.prop('disabled')) {
+            if (!deploymentField.prop('disabled') && siteVisitSelect.children('option[disabled]').length === 0) {
                 filterDeploymentsByVisitSite(selectedVisit, deploymentField);
             }
         });
@@ -818,7 +821,7 @@ function bindDeploymentField(form) {
         getDeploymentType(deploymentId, form);
         setDeploymentEquipment(deploymentId, form.find('[name="equipmentused"]'));
 
-        if (siteVisitSelect.length > 0) {
+        if (siteVisitSelect.length > 0 && deploymentSelect.children('option[disabled]').length === 0) {
             filterVisitsByDeploymentSite(deploymentId, siteVisitSelect);
         }
     });
