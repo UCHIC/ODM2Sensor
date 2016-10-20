@@ -1169,32 +1169,26 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         )
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
-        equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
+        equipment_used = child_action.equipmentused.all()
         action_form = ActionForm(
             instance=child_action,
-            initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
+            initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
         )
 
+        # TODO: maybe add other conditions where there's data needed from a OneToOne field in the Action.
         if action_type == 'InstrumentCalibration':
+            # TODO: Update this with a more efficient and less buggy implementation.
             action_form.initial['calibrationstandard'] = [cal_std for cal_std in ReferenceMaterial.objects.filter(calibrationstandard__actionid=action_id)]
             action_form.initial['calibrationreferenceequipment'] = Equipment.objects.filter(calibrationreferenceequipment__actionid=action_id)
             action_form.initial['instrumentoutputvariable'] = CalibrationAction.objects.get(pk=action_id).instrumentoutputvariableid
             action_form.initial['calibrationcheckvalue'] = CalibrationAction.objects.get(pk=action_id).calibrationcheckvalue
             action_form.initial['calibrationequation'] = CalibrationAction.objects.get(pk=action_id).calibrationequation
 
-        elif action_type == 'EquipmentRetrieval' or action_type == 'InstrumentRetrieval':
-            action_form.initial['actionid'] = None
-            action_form.initial['methodid'] = None
-            action_form.initial['actiontypecv'] = CvActiontype.objects.get(term='equipmentRetrieval' if child_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
-            action_form.initial['begindatetime'] = datetime.today()
-            action_form.initial['actiondescription'] = ''
-            action = 'create'
-
-        elif child_action.actiontypecv_id == 'Equipment maintenance' and child_action.maintenanceaction.exists():
-            action_form.initial['actionid'] = child_action.maintenanceaction.get(pk=action_id).actionid
-            action_form.initial['isfactoryservice'] = child_action.maintenanceaction.get(pk=action_id).isfactoryservice
-            action_form.initial['maintenancecode'] = child_action.maintenanceaction.get(pk=action_id).maintenancecode
-            action_form.initial['maintenancereason'] = child_action.maintenanceaction.get(pk=action_id).maintenancereason
+        elif child_action.actiontypecv_id == 'Equipment maintenance':
+            action_form.initial['actionid'] = child_action.maintenanceaction.actionid
+            action_form.initial['isfactoryservice'] = child_action.maintenanceaction.isfactoryservice
+            action_form.initial['maintenancecode'] = child_action.maintenanceaction.maintenancecode
+            action_form.initial['maintenancereason'] = child_action.maintenanceaction.maintenancereason
 
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
 
