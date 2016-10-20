@@ -695,12 +695,14 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
 
     equipmentUsedSelectElems.each(function () {
         var currentEquipmentSelect = $(this);
+        var selectedEquipment = $.makeArray(currentEquipmentSelect.val());
+
         var equipments = objects.map(function(equipment) {
             return equipment.pk + "";
         });
 
-        if (currentEquipmentSelect.val()) {
-            currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function (element) {
+        if (selectedEquipment.length) {
+            currentEquipmentSelect.val($.grep(selectedEquipment, function (element) {
                 return $.inArray(element, equipments) !== -1;
             }));
         }
