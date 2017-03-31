@@ -698,13 +698,17 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
         var equipments = objects.map(function(equipment) {
             return equipment.pk + "";
         });
+        /* grep was altering the elements of currentEquipmentSelect.val() such that the form displayed the wrong
+        equipment. I think that equipments object map usually contains multiple valid elements. It would turn
+        currentEquipmentSelect into an array, then it would alter the array contents such that select2(); would
+        later select the element with lowest index. I think.
 
         if (currentEquipmentSelect.val()) {
             currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function (element) {
                 return $.inArray(element, equipments) !== -1;
             }));
         }
-
+*/
         currentEquipmentSelect.children('option').each(function(index, element) {
             if (equipments.indexOf(element.value) === -1) {
                 $(element).attr('disabled', 'disabled');

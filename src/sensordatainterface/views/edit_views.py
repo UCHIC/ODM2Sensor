@@ -1137,10 +1137,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                                           statuscv=status, sampledmediumcv=medium, valuecount=0)
 
             elif action_type.term == 'instrumentCalibration':
-                if updating:
-                    CalibrationAction.objects.get(actionid=child_action).delete()
-                    CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
-                add_calibration_fields(child_action, action_form)
+                if request.POST['action'] != 'update':
+                    add_calibration_fields(child_action, action_form)
 
             elif action_type.term == 'equipmentMaintenance':
                 if updating and child_action.maintenanceaction.exists():
@@ -1172,7 +1170,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionForm(
             instance=child_action,
-            initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
+            initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
         )
 
         if action_type == 'InstrumentCalibration':
