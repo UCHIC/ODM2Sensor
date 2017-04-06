@@ -38,3 +38,6 @@ nosetests.xml
 
 #PyCharm
 .idea
+
+# Secretive things
+*settings.json
