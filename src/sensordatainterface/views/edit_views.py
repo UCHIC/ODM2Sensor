@@ -991,7 +991,7 @@ def edit_site_visit(request, action_id):
             child_action_form.results = []
             for result in child.actionid.featureaction.get().result_set.all():
                 result_data = {
-                    'instrumentoutputvariable': result.variableid_id,
+                    'instrumentoutputvariable': InstrumentOutputVariable.objects.filter(variableid=result.variableid_id, instrumentrawoutputunitsid=result.unitsid_id).first().pk,
                     'unitsid': result.unitsid_id,
                     'processing_level_id': result.processinglevelid_id,
                     'sampledmediumcv': result.sampledmediumcv_id
@@ -1223,9 +1223,9 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
     child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
     retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
 
-    if request.method == 'POST' and 'deploymentaction' in request.POST:
+    if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
+        deployment_action = Action.objects.get(pk=(request.POST['deploymentaction'] if 'deploymentaction' in request.POST else deployment_id))
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
