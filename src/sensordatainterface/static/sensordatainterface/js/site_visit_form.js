@@ -37,7 +37,6 @@ function addActionForm(that) {
     // This bit of code solves the problem of the checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
     $(thisForm).find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
-
     handleActionTypeChange('Field activity', thisForm);
 
     setFormFields($(thisForm));

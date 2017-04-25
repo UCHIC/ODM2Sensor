@@ -932,6 +932,7 @@ def create_site_visit(request, site_id=None):
 
 @login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
+
     action = 'create'
     render_actions = False
 
@@ -1225,7 +1226,8 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        deployment_action = Action.objects.get(pk=(request.POST['deploymentaction'] if 'deploymentaction' in request.POST else deployment_id))
+        deployment_action = Action.objects.filter(pk=(request.POST['deploymentaction'] if 'deploymentaction' in request.POST else deployment_id)).first()
+
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
