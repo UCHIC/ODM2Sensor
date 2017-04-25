@@ -119,6 +119,8 @@ function setFormFields(currentForm) {
 }
 
 function handleActionTypeChange(formType, currentForm) {
+    console.log(formType, currentForm)
+    console.log(arguments.callee.caller.name)
     var requiredEquipmentClasses = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
         'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval'];
     var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function(option) {
@@ -765,7 +767,7 @@ $(document).ready(function () {
     }
 
     var currentForm = $('form');
-    var allForms = $('tbody').has('[name="actiontypecv"]');
+    var allForms = currentForm.find('tbody').has('[name="actiontypecv"]');
     var filterEquipmentCheck = $('#id_equipment_by_site');
     var siteVisitSelect = currentForm.find('[name="actionid"]');
 
@@ -775,12 +777,17 @@ $(document).ready(function () {
         modelSelect.on('change', onEquipmentModelChange);
     }
 
-    allForms.each(function (index) {
-        var actionType = $(this).find('.select-two[name="actiontypecv"]');
-        handleActionTypeChange(actionType.val(), this);
-        actionType.change(function () {
-            var selected = $(this).val();
-            var currentActionForm = $(this).parents('tbody');
+    allForms.each(function(index, actionForm) {
+        var actionType = $(actionForm).find('.select-two[name="actiontypecv"]');
+
+        handleActionTypeChange(actionType.val(), actionForm);
+        bindDeploymentField($(actionForm));
+
+        actionType.change(function(event) {
+            var field = $(event.target);
+            var selected = field.val();
+
+            var currentActionForm = field.parents('tbody');
             handleActionTypeChange(selected, currentActionForm);
         });
     });
@@ -809,7 +816,7 @@ $(document).ready(function () {
         });
     }
 
-    bindDeploymentField(currentForm);
+
     if (currentForm.find('[name="deploymentaction"]').val() !== '') {
         currentForm.find('[name="deploymentaction"]').trigger('change');
     }
