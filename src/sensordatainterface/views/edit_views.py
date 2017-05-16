@@ -749,7 +749,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     # set up site visit
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.instance
-    site_visit_action.methodid = Method.objects.get(pk=1000)
+    site_visit_action.methodid = Method.objects.get(pk=1000)  # jesus christ...
     site_visit_action.actiontypecv = CvActiontype.objects.get(name='Site Visit')
     site_visit_action.save()
 
@@ -818,6 +818,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             status = CvStatus.objects.get(term='ongoing')
 
             # TODO: Change this to update actions without having to delete every time
+            # lol. or not.
             existing_results = Result.objects.filter(featureactionid=feature_action)
             for result in existing_results:
                 result.delete()
