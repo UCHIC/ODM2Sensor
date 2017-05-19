@@ -120,20 +120,62 @@ def get_equipment_by_action(request):
     )
 
 
+def get_equipment_by_instrument(request):
+    if request.method == 'POST':
+        site_visit_id = request.POST.get('action_id')
+
+        if site_visit_id == 'false':
+            equipment_deployed = Equipment.objects.all()
+        else:
+            site_visit = Action.objects.get(pk=site_visit_id)
+            actions = Action.objects.filter(featureaction__samplingfeatureid__featureaction__actionid=site_visit,
+                                            begindatetime__lt=site_visit.begindatetime,
+                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+            actions = actions.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
+                                      parent_relatedaction__actionid__begindatetime__lt=site_visit.begindatetime)
+            equipment_deployed = Equipment.objects.filter(equipmenttypecv="Sensor")
+
+        response_data = serializers.serialize('json', equipment_deployed)
+    else:
+        response_data = {'error_message': "There was an error with the request. Incorrect method?"}
+
+    json_data = json.dumps(response_data)
+
+    return HttpResponse(
+        json_data,
+        content_type="application/json"
+    )
+
+
 def get_available_equipment(request):
     if request.method == 'POST':
         action_date = request.POST.get('date')
 
+        action_type = request.POST.get('action_type')
+
+        if action_type.find("Instrument") > -1:
+
+            is_instrument = True
+        else:
+            is_instrument = False
+
         if action_date == 'false':
             undeployed_equipment = Equipment.objects.all()
+
         else:
+            # get all deployments that happened before action_date
             actions = Action.objects.filter(begindatetime__lt=action_date,
-                                            actiontypecv__term__in=('instrumentDeployment', 'equipmentDeployment'))
+                                            actiontypecv_id__in=('Instrument deployment', 'Equipment deployment'))
+            # remove those that were retrieved before action_date,
+            # meaning that the equipment used in those deployments were retrieved and are available.
             actions = actions.exclude(parent_relatedaction__relationshiptypecv_id='Is retrieval for',
                                       parent_relatedaction__actionid__begindatetime__lt=action_date)
-            undeployed_equipment = Equipment.objects.exclude(equipmentused__actionid__in=actions)
+            # so, with the action queryset we know of all the active deployments at that date.
+            # now we make a query to the equipment table and get ALL the equipment except the ones that are deployed at that date.
+            undeployed_equipment = Equipment.objects.filter(equipmentmodelid__isinstrument=is_instrument).exclude(equipmentused__actionid__in=actions)
 
         response_data = serializers.serialize('json', undeployed_equipment)
+
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
 

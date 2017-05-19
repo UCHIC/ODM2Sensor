@@ -932,7 +932,6 @@ def create_site_visit(request, site_id=None):
 
 @login_required(login_url=LOGIN_URL)
 def edit_site_visit(request, action_id):
-
     action = 'create'
     render_actions = False
 
@@ -992,7 +991,7 @@ def edit_site_visit(request, action_id):
             child_action_form.results = []
             for result in child.actionid.featureaction.get().result_set.all():
                 result_data = {
-                    'instrumentoutputvariable': InstrumentOutputVariable.objects.filter(variableid=result.variableid_id, instrumentrawoutputunitsid=result.unitsid_id).first().pk,
+                    'instrumentoutputvariable': result.variableid_id,
                     'unitsid': result.unitsid_id,
                     'processing_level_id': result.processinglevelid_id,
                     'sampledmediumcv': result.sampledmediumcv_id
@@ -1035,7 +1034,6 @@ def delete_site_visit(request, action_id):
     messages.add_message(request, messages.SUCCESS,
                          'Site Visit ' + str(site_visit_name) + ' successfully deleted')
     return HttpResponseRedirect(reverse('site_visits'))
-
 
 
 @login_required(login_url=LOGIN_URL)
@@ -1139,12 +1137,14 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                                           statuscv=status, sampledmediumcv=medium, valuecount=0)
 
             elif action_type.term == 'instrumentCalibration':
-                if request.POST['action'] != 'update':
-                    add_calibration_fields(child_action, action_form)
+                if updating:
+                    CalibrationAction.objects.get(actionid=child_action).delete()
+                    CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
+                add_calibration_fields(child_action, action_form)
 
             elif action_type.term == 'equipmentMaintenance':
-                if updating and child_action.maintenanceaction:
-                    MaintenanceAction.objects.filter(pk=child_action).delete()
+                if updating and child_action.maintenanceaction.exists():
+                    MaintenanceAction.objects.get(actionid=child_action).delete()
                 add_maintenance_fields(child_action, action_form)
 
             url_map = {
@@ -1172,7 +1172,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionForm(
             instance=child_action,
-            initial={'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used]}
+            initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
         )
 
         if action_type == 'InstrumentCalibration':
@@ -1190,11 +1190,11 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             action_form.initial['actiondescription'] = ''
             action = 'create'
 
-        elif child_action.actiontypecv_id == 'Equipment maintenance' and child_action.maintenanceaction:
-            action_form.initial['actionid'] = child_action.maintenanceaction.actionid
-            action_form.initial['isfactoryservice'] = child_action.maintenanceaction.isfactoryservice
-            action_form.initial['maintenancecode'] = child_action.maintenanceaction.maintenancecode
-            action_form.initial['maintenancereason'] = child_action.maintenanceaction.maintenancereason
+        elif child_action.actiontypecv_id == 'Equipment maintenance' and child_action.maintenanceaction.exists():
+            action_form.initial['actionid'] = child_action.maintenanceaction.get(pk=action_id).actionid
+            action_form.initial['isfactoryservice'] = child_action.maintenanceaction.get(pk=action_id).isfactoryservice
+            action_form.initial['maintenancecode'] = child_action.maintenanceaction.get(pk=action_id).maintenancecode
+            action_form.initial['maintenancereason'] = child_action.maintenanceaction.get(pk=action_id).maintenancereason
 
         action_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
 
@@ -1211,12 +1211,6 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
          'action_type': action_type, 'mock_results_form': ResultsForm()}
     )
 
-@login_required(login_url=LOGIN_URL)
-def delete_action(request, action_id):
-    Action.objects.get(pk=action_id).delete()
-
-    return render()
-
 
 @login_required(login_url=LOGIN_URL)
 def edit_retrieval(request, deployment_id=None, retrieval_id=None):
@@ -1226,8 +1220,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        deployment_action = Action.objects.filter(pk=(request.POST['deploymentaction'] if 'deploymentaction' in request.POST else deployment_id)).first()
-
+        deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])

@@ -119,8 +119,6 @@ function setFormFields(currentForm) {
 }
 
 function handleActionTypeChange(formType, currentForm) {
-    console.log(formType, currentForm)
-    console.log(arguments.callee.caller.name)
     var requiredEquipmentClasses = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
         'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval'];
     var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function(option) {
@@ -148,6 +146,8 @@ function handleActionTypeChange(formType, currentForm) {
     // don't leave this here. or maybe do...
     var methodOptions = methodSelect.find('option:not([disabled])');
     var methods = $.map(methodOptions, function(option) { return option.value });
+
+
 
     if (methods.indexOf(methodSelect.val()) === -1) {
         methodSelect.val('');
@@ -177,12 +177,13 @@ function handleActionTypeChange(formType, currentForm) {
     var isRetrieval = formType === 'Instrument retrieval' || formType === 'Equipment retrieval';
     var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
 
+
     if (isSiteVisit) {
         filterDeploymentsByType(formType, $(currentForm).find('[name="deploymentaction"]')); //Filter deployments by action type
     }
 
     if (isDeployment) {
-        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name="begindatetime"]').val(), $(currentForm));
+        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name="begindatetime"]').val(), $(currentForm), formType);
         $(currentForm).find('[name="enddatetime"]').parents('tr').hide();
         $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
         equipmentSelect.parents('tr').show();
@@ -192,7 +193,7 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
         filterNonRetrievalFields($(currentForm));
     } else if (!isDeployment && !isRetrieval) {
-        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm));
+        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm), formType);
         $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
         equipmentSelect.attr('multiple', 'multiple');
         showNonRetrievalFields($(currentForm));
@@ -334,6 +335,33 @@ function filterEquipmentBySite(selected, equipmentUsedSelectElems) {
     });
 }
 
+function filterEquipmentByInstrument(selected, equipmentUsedSelectElems){
+    if(selected == ""){
+        return;
+    }
+
+    var equipmentByInstrumentUrl = $('#equipment-by-instrument-api').val();
+
+    $.ajax({
+        url: equipmentByInstrumentUrl,
+        type: "POST",
+        data:{
+            action: selected,
+            csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
+        },
+        success: function(json) {
+            handle_equ_used_filter_response(json, equipmentUsedSelectElems)
+
+        },
+
+        error: function(xhr, errmsg, err){
+            console.log(errmsg)
+            console.log(xhr.status+": "+xhr.responseText)
+        }
+    });
+
+}
+
 function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     if(selected == "") {
         return;
@@ -360,7 +388,7 @@ function filterEquipmentByAction(selected, equipmentUsedSelectElems) {
     });
 }
 
-function filterEquipmentByDate(date, equipmentUsedSelectElems) {
+function filterEquipmentByDate(date, equipmentUsedSelectElems, formType) {
     if(date == "") {
         return;
     }
@@ -371,6 +399,7 @@ function filterEquipmentByDate(date, equipmentUsedSelectElems) {
         url: equipmentByDateUrl,
         type: "POST",
         data :{
+            action_type: formType,
             date: date,
             csrfmiddlewaretoken: $('form').find('[name="csrfmiddlewaretoken"]').val()
         },
@@ -697,20 +726,18 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
 
     equipmentUsedSelectElems.each(function () {
         var currentEquipmentSelect = $(this);
+        var selectedEquipment = $.makeArray(currentEquipmentSelect.val());
+
         var equipments = objects.map(function(equipment) {
             return equipment.pk + "";
         });
-        /* grep was altering the elements of currentEquipmentSelect.val() such that the form displayed the wrong
-        equipment. I think that equipments object map usually contains multiple valid elements. It would turn
-        currentEquipmentSelect into an array, then it would alter the array contents such that select2(); would
-        later select the element with lowest index. I think.
 
-        if (currentEquipmentSelect.val()) {
-            currentEquipmentSelect.val($.grep(currentEquipmentSelect.val(), function (element) {
+        if (selectedEquipment.length) {
+            currentEquipmentSelect.val($.grep(selectedEquipment, function (element) {
                 return $.inArray(element, equipments) !== -1;
             }));
         }
-*/
+
         currentEquipmentSelect.children('option').each(function(index, element) {
             if (equipments.indexOf(element.value) === -1) {
                 $(element).attr('disabled', 'disabled');
@@ -770,7 +797,7 @@ $(document).ready(function () {
     var allForms = currentForm.find('tbody').has('[name="actiontypecv"]');
     var filterEquipmentCheck = $('#id_equipment_by_site');
     var siteVisitSelect = currentForm.find('[name="actionid"]');
-
+    console.log(allForms.length)
     if (currentForm.attr('action').indexOf('create-equipment') > -1) { // if current form is the create new equipment form
         var modelSelect = $('#id_equipmentmodelid');
         $('<option value="new">New Equipment Model</option>').insertAfter(modelSelect.children().first());
@@ -798,11 +825,12 @@ $(document).ready(function () {
             var selectedVisit = siteVisitSelect.val();
             var isRetrieval = actionType == 'Instrument retrieval' || actionType == 'Equipment retrieval';
             var isDeployment = $('form').hasClass('EquipmentDeployment');
-            if (!isRetrieval && !isDeployment) {
-                filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
+            if (!isRetrieval && !isDeployment) {actionType
+                filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm, );
             } else if (isDeployment) {
                 filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm);
             }
+
 
             var deploymentField = currentForm.find('[name="deploymentaction"]');
             filterActionDatesByVisit(selectedVisit);
@@ -891,7 +919,7 @@ function showNonRetrievalFields(form) {
 }
 
 
-function filterEquipmentUsed(filter, filteringValue, currentForm) {
+function filterEquipmentUsed(filter, filteringValue, currentForm, formType) {
     var filterEquipmentCheck = currentForm.find('#id_equipment_by_site');
     var formActionType = currentForm.find('[name="actiontypecv"]').val();
     var equipmentUsedSelect = currentForm.find('[name="equipmentused"]');
@@ -900,7 +928,7 @@ function filterEquipmentUsed(filter, filteringValue, currentForm) {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     } else if (!filterEquipmentCheck.prop('checked')) { // formActionType != "Equipment deployment" && formActionType != "Instrument deployment" &&
         // why was this excluding equipment and instrument deployments? left rest of condition as comment just in case.
-        filter(filteringValue, equipmentUsedSelect);
+        filter(filteringValue, equipmentUsedSelect, formType);
     } else {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     }
