@@ -4,6 +4,7 @@ from sensordatainterface.views import api_views
 urlpatterns = [
     url(r'^api/get-equipment-by-site/$', api_views.get_equipment_by_site, name='get_equipment_by_site'),
     url(r'^api/get-equipment-by-action/$', api_views.get_equipment_by_action, name='get_equipment_by_action'),
+    url(r'^api/get-equipment-by-instrument/$', api_views.get_equipment_by_instrument, name='get_equipment_by_instrument'),
     url(r'^api/get-available_equipment-by-date/$', api_views.get_available_equipment, name='get_available_equipment_by_date'),
     url(r'^api/get-equipment-by-deployment/$', api_views.get_equipment_by_deployment, name='get_equipment_by_deployment'),
     url(r'^api/get-site-visit-dates/$', api_views.get_sitevisit_dates, name='get_site_visit_dates'),
