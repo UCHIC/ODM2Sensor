@@ -933,3 +933,4 @@ function filterEquipmentUsed(filter, filteringValue, currentForm, formType) {
     } else {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     }
+}
