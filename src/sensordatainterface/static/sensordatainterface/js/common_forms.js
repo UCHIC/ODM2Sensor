@@ -826,8 +826,8 @@ $(document).ready(function () {
             var selectedVisit = siteVisitSelect.val();
             var isRetrieval = actionType == 'Instrument retrieval' || actionType == 'Equipment retrieval';
             var isDeployment = $('form').hasClass('EquipmentDeployment');
-            if (!isRetrieval && !isDeployment) {actionType
-                filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm, );
+            if (!isRetrieval && !isDeployment) {
+                filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm );
             } else if (isDeployment) {
                 filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm);
             }
