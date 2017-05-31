@@ -1,4 +1,3 @@
-
 //This file is intended to be used only on forms pages with forms
 
 // this action works for the create forms in Action, Deployment and Calibration pages.
@@ -934,3 +933,4 @@ function filterEquipmentUsed(filter, filteringValue, currentForm, formType) {
     } else {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     }
+}
