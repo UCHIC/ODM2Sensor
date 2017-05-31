@@ -26,10 +26,13 @@ function setNavActive() {
 function setDeleteConfirmation() {
     /*http://ethaizone.github.io/Bootstrap-Confirmation/*/
     $('#danger-button').confirmation({
+        href: 'delete_action',
         placement: 'bottom',
-        title: 'Are you sure you want to delete?',
+        title: 'Are you sure you want to delete? All related actions will be deleted as well.',
         popout: true,
         btnCancelClass: 'btn-default',
+        onConfirm: function(){
+        },
         onCancel: function () {
             $('#danger-button').confirmation('hide');
         }

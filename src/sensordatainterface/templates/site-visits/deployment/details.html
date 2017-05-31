@@ -2,15 +2,16 @@
 {% load static %}
 {% load template_tags %}
 {% block content %}
+    </ul>
     <div class="row title">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h2>Deployment Details</h2></div>
     </div>
     <!--buttons -->
     <div class="row">
-{#    @todo DELETE ACTION#}
-{#        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">#}
-{#            <a class="btn btn-danger btn-block" id="danger-button" href="#">Delete</a>#}
-{#        </div>#}
+
+        <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" >Delete Action</a>
+        </div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
                 Deployment</a></div>

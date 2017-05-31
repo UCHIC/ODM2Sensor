@@ -78,4 +78,9 @@ urlpatterns = [
     url(r'^actions/create-retrieval/(?:(?P<retrieval_id>\d+)/)?$', edit_views.edit_retrieval, name='create_retrieval'),
     url(r'^actions/create-retrieval/from_deployment/(?:(?P<deployment_id>\d+)/)?$', edit_views.edit_retrieval,
         name='create_retrieval_from_deployment'),
-]
+    url(r'^actions/deployment-detail/(?:(?P<action_id>\d+))/delete_action?$', edit_views.delete_action, name='delete_action'),
+    url(r'^actions/calibration-detail/(?:(?P<action_id>\d+))/delete_action?$', edit_views.delete_action, name='delete_action'),
+    url(r'^actions/visit-detail/(?:(?P<action_id>\d+))/delete_action?$', edit_views.delete_action, name='delete_action'),
+    url(r'^actions/result-detail/(?:(?P<action_id>\d+))/delete_action?$', edit_views.delete_action, name='delete_action'),
+    url(r'^actions/action-detail/(?:(?P<action_id>\d+))/delete_action?$', edit_views.delete_action, name='delete_action'),
+    ]

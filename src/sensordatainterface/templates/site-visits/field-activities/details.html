@@ -3,6 +3,9 @@
 {% load template_tags %}
 {% block content %}
     <div class="row title">
+    <div class="col-xs-12 col-sm-6 col-md-2 pull-right">
+            <a class="btn btn-danger btn-block" id="danger-button" >Delete Action</a>
+        </div>
         <div class="col-xs-12 col-sm-6 col-md-7"><h1>Action Details</h1></div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block" href="{% url 'create_action' 'Generic' Activity.actionid_id %}">Edit Action Description</a>

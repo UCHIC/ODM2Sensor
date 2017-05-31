@@ -1327,4 +1327,59 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
         'site-visits/deployment/retrieval_form.html',
         {'render_forms': [site_visit_form, retrieval_form], 'action': action, 'item_id': retrieval_id, 'deployment_id': deployment_id }
     )
-#I have done messed up. There are bees in the computer.
+
+
+@login_required(login_url=LOGIN_URL)
+def delete_action(request, action_id):
+
+    action = Action.objects.filter(pk=action_id).first()
+
+    if not action:
+        return
+
+    if "calibration" in action.actiontypecv_id:
+        action_type = "calibrations"
+    elif "deployment" in action.actiontypecv_id:
+        action_type = "deployments"
+    elif "retrieval" in action.actiontypecv_id:
+        action_type = "deployments"
+    elif "Site visit" in action.actiontypecv_id:
+        action_type = "site-visits"
+    elif "result" in action.actiontypecv_id:
+        action_type = "results"
+    else:
+        action_type = "other-actions"
+
+    if hasattr(action, 'calibrationaction'):
+        # delete calibration action
+        action.calibrationaction.calibrationreferenceequipment.all().delete()
+        action.calibrationaction.calibrationstandard.all().delete()
+        action.calibrationaction.delete()
+    if hasattr(action, 'maintenanceaction'):
+        # delete maintenance action
+        action.maintenanceaction.delete()
+
+    # delete feature action
+    Result.objects.filter(featureactionid_id__in=action.featureaction.all().values_list('pk')).delete()
+    action.featureaction.all().delete()
+
+    # delete annotations
+    action.actionannotation_set.all().delete()
+
+    # delete action by
+    action.actionby.all().delete()
+
+    # delete related actions
+    # TODO: maybe delete those actions too?
+    action.relatedaction.all().delete()
+    action.parent_relatedaction.all().delete()
+
+    # delete equipment used
+    action.equipmentused.all().delete()
+
+
+
+    # delete action
+    messages.info(request, 'Action successfully deleted!')
+
+    return HttpResponseRedirect('/actions/%s' % action_type)

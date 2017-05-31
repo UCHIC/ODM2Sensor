@@ -26,10 +26,23 @@ def get_equipment_by_site(request):
     if request.method == 'POST':
         site_selected = request.POST.get('site_selected')
 
-        equipment_deployed = Equipment.objects.filter(
-            equipmentused__actionid__featureaction__samplingfeatureid=site_selected
-        ).distinct()
+        action_type = request.POST.get('formType')
 
+        if action_type.find("Instrument") > -1:
+
+            is_instrument = True
+        else:
+            is_instrument = False
+
+        if is_instrument:
+            equipment_deployed = Equipment.objects.filter(
+                equipmentused__actionid__featureaction__samplingfeatureid=site_selected)\
+                .distinct().exclude(equipmentmodelid__isinstrument=0)
+
+        else:
+            equipment_deployed = Equipment.objects.filter(
+                equipmentused__actionid__featureaction__samplingfeatureid=site_selected) \
+                .distinct().exclude(equipmentmodelid__isinstrument=1)
         response_data = serializers.serialize('json', equipment_deployed)
     else:
         response_data = {'error_message': "There was an error with the request. Incorrect method?"}
