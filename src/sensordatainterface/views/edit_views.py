@@ -1,3 +1,4 @@
+
 from django.views.generic import CreateView
 from sensordatainterface.base_views import *
 from sensordatainterface.forms import *
@@ -1327,7 +1328,6 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
         'site-visits/deployment/retrieval_form.html',
         {'render_forms': [site_visit_form, retrieval_form], 'action': action, 'item_id': retrieval_id, 'deployment_id': deployment_id }
     )
-
 
 @login_required(login_url=LOGIN_URL)
 def delete_action(request, action_id):
