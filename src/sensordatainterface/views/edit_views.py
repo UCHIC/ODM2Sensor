@@ -1345,6 +1345,11 @@ def delete_action(request, action_id):
         action_type = "deployments"
     elif "Site visit" in action.actiontypecv_id:
         action_type = "site-visits"
+        related = RelatedAction.objects.filter(relatedactionid=action_id, relationshiptypecv_id="Is child of")
+
+        for related_action in related:
+            if related_action.relatedactionid == action_id:
+                related_action.delete()
     elif "result" in action.actiontypecv_id:
         action_type = "results"
     else:
