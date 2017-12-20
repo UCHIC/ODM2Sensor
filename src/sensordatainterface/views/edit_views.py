@@ -1208,7 +1208,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         request,
         'site-visits/field-activities/other-action-form.html',
         {'render_forms': [site_visit_form, action_form], 'action': action, 'item_id': action_id, 'site_id': site_id,
-         'action_type': action_type, 'mock_results_form': ResultsForm()}
+         'action_type': action_type}
     )
 
 

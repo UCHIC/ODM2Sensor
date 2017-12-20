@@ -9,7 +9,7 @@ class SensorDataInterfaceRouter(object):
         Points all operations on sensordatainterface to 'odm2'
         """
         if model._meta.app_label == 'sensordatainterface':
-            return 'odm2'
+            return 'ODM2'
         return None
 
     def db_for_write(self, model, **hints):
@@ -17,5 +17,5 @@ class SensorDataInterfaceRouter(object):
         Points all operations on sensordatainterface to 'odm2'
         """
         if model._meta.app_label == 'sensordatainterface':
-            return 'odm2'
+            return 'ODM2'
         return None

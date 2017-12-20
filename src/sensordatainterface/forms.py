@@ -135,7 +135,11 @@ class MultipleEquipmentChoiceField(ModelMultipleChoiceField):
 class SiteVisitChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         start_time = str(obj.begindatetime)
-        sampling_feature_code = obj.featureaction.all()[0].samplingfeatureid.samplingfeaturecode
+        sampling_feature_code = None
+        if obj.featureaction.first():
+            sampling_feature_code = obj.featureaction.first().samplingfeatureid.samplingfeaturecode
+        if sampling_feature_code is None:
+            sampling_feature_code = ("Site Visit ID: " + str(obj.pk) + "Lacks Site Code")
 
         return "(" + start_time + ")  " + sampling_feature_code
 

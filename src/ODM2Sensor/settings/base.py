@@ -23,7 +23,7 @@ except KeyError:
     print("The secret key is required in the settings.json file.")
     exit(1)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 APPEND_SLASH = True
 
