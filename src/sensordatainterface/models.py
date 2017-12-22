@@ -549,21 +549,7 @@ class MeasurementResult(models.Model):
                                          db_column='ylocationunitsid', blank=True,
                                          null=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='zlocation', blank=True, null=True)  # Field name made lowercase.
-    zlocationunitsid = models.ForeignKey('Units', db_column='zlocationunitsid', blank=True,
-                                         null=True)  # Field name made lowercase.
-    spatialreferenceid = models.ForeignKey('SpatialReference', db_column='spatialreferenceid', blank=True,
-                                           null=True)  # Field name made lowercase.
-    censorcodecv = models.ForeignKey('CvCensorcode', db_column='censorcodecv')  # Field name made lowercase.
-    qualitycodecv = models.ForeignKey('CvQualitycode', db_column='qualitycodecv')  # Field name made lowercase.
-    aggregationstatisticcv = models.ForeignKey('CvAggregationstatistic', db_column='aggregationstatisticcv')  # Field name made lowercase.
-    timeaggregationinterval = models.FloatField(db_column='timeaggregationinterval')  # Field name made lowercase.
-    timeaggregationintervalunitsid = models.ForeignKey('Units',
-                                                       related_name='measurement_timeaggregationintervalunitsid',
-                                                       db_column='timeaggregationintervalunitsid')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'measurementresults'
+    db_table = 'measurementresults'
 
 
 class MethodAnnotation(models.Model):
@@ -2147,7 +2133,7 @@ class Sysdiagrams(models.Model):
 sqlserver_schema_fix = 'ODM2].['
 clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 classes = [model for name, model in clsmembers if issubclass(model, models.Model)]
-database_manager = settings.DATABASES['odm2']['ENGINE']
+database_manager = settings.DATABASES['ODM2']['ENGINE']
 
 for model in classes:
     if database_manager == u'sql_server.pyodbc':
