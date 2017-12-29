@@ -25,7 +25,7 @@
     {% for person in Humans %}
         <tr>
             <td>
-                <a href="{% url 'person_detail' person.affiliationid %}">
+                <a href="{% url 'person_detail' person.personid.personid %}">
                     {{ person.personid.personfirstname }} {{ person.personid.personlastname }}
                 </a>
             </td>
