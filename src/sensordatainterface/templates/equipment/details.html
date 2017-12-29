@@ -101,7 +101,7 @@
                 <tr>
                     <th>Name:</th>
                     <td>
-                        <a href="{% url 'person_detail' Equipment.equipmentownerid.affiliation.all.0.affiliationid %}">
+                        <a href="{% url 'person_detail' Equipment.equipmentownerid.personid %}">
                             {{ Equipment.equipmentownerid.personfirstname }}
                             {{ Equipment.equipmentownerid.personlastname|default:" -- " }}
                         </a>
