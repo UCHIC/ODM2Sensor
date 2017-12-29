@@ -1221,7 +1221,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
+        deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
