@@ -40,7 +40,7 @@
                 <tr>
                     <th>People:</th>
                     <td>{% for person in SiteVisit.actionid.actionby.all %}
-                        <a href="{% url 'person_detail' person.affiliationid_id %}">{{ person.affiliationid.personid.personfirstname }}
+                        <a href="{% url 'person_detail' person.affiliationid.personid.personid %}">{{ person.affiliationid.personid.personfirstname }}
                         {{ person.affiliationid.personid.personlastname }}</a>
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}</td>

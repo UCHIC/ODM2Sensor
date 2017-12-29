@@ -68,7 +68,12 @@
 
                 <tr>
                     <th>Owner Name:</th>
-                    <td>{{ FactoryService.equipmentid.equipmentownerid.personfirstname }} {{ FactoryService.equipmentid.equipmentownerid.personlastname }}</td>
+                    <td>
+                        <a href="{% url 'person_detail' FactoryService.equipmentid.equipmentownerid.personid %}">
+                            {{ FactoryService.equipmentid.equipmentownerid.personfirstname }}
+                            {{ FactoryService.equipmentid.equipmentownerid.personlastname|default:" -- " }}
+                        </a>
+                    </td>
                 </tr>
             </table>
             </div>

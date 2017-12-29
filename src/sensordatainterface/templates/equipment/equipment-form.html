@@ -8,9 +8,11 @@
     {% endif %}
 
 {% endblock %}
-{% block detail_cancel_url %}{% url 'equipment_detail' equipment_id %}{% endblock %}
-{% block list_cancel_url %}{% url 'equipment' %}{% endblock %}
-
+{% if equipment_id %}
+    {% block detail_cancel_url %}{% url 'equipment_detail' equipment_id %}{% endblock %}
+{% else %}
+    {% block list_cancel_url %}{% url 'equipment' %}{% endblock %}
+{%  endif %}
 {% block content %}
     {{ block.super }}
 
