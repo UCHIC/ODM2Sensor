@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from sensordatainterface.views.detail_views import *
 from sensordatainterface.models import Sites, FeatureAction, EquipmentUsed, Equipment, EquipmentModel, \
-    InstrumentOutputVariable, Organization
+    InstrumentOutputVariable, Organization, People
 
 urlpatterns = [
     # Site detail
@@ -112,10 +112,12 @@ urlpatterns = [
         DeploymentMeasVariableDetailView.as_view(),
         name='measured_variable_detail'),
 
+
     url(r'^vocabularies/person-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Person',
-        model=Affiliation,
-        slug_field='affiliationid',
+        model=People,
+        queryset=Affiliation.objects.prefetch_related('personid'),
+        slug_field='personid',
         template_name='people/person-detail.html'),
         name='person_detail'),
 

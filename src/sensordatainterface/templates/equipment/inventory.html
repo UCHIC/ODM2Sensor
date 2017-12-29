@@ -29,8 +29,7 @@
                 <td>{{ equipment.equipmentmodelid.modelname }}</td>
                 <td>{{ equipment.equipmentmodelid.modelmanufacturerid.organizationname }}</td>
                 <td>
-                    {#  TODO: link to person detail as a person, not an affilliation  #}
-                    <a href="">
+                    <a href="{%  url 'person_detail' equipment.equipmentownerid.personid %}">
                         {{ equipment.equipmentownerid.personfirstname }}
                         {{ equipment.equipmentownerid.personlastname|default:" -- " }}
                     </a>
