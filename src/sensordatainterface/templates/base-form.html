@@ -27,7 +27,7 @@
                         <td>
                             <div class="row">
                                 <a class="btn btn-default col-xs-12 col-sm-12"
-                                        {% if item_id %}
+                                        {% if item_id or equipment_id%}
                                    href="{% block detail_cancel_url %}{% endblock %}"
                                         {% else %}
                                    href="{% block list_cancel_url %}{% endblock %}"
