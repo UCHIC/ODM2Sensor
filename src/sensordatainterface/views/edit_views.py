@@ -926,6 +926,7 @@ def create_site_visit(request, site_id=None):
             'actions_form': action_form,
             'render_actions': render_actions,
             'action': action,
+            'site_id': site_id,
         }
     )
 

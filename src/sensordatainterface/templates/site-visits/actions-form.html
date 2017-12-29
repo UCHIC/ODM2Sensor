@@ -73,6 +73,8 @@
                             <a class="btn btn-default col-xs-12 col-sm-12"
                                     {% if item_id %}
                                href="{% block detail_cancel_url %}{%  url 'site_visit_detail' item_id %}{% endblock %}"
+                                    {%  elif site_id %}
+                               href="{% block site_cancel_url %}{%  url 'site_visits_by_site' site_id %}{% endblock %}"
                                     {% else %}
                                href="{% block list_cancel_url %}{% url 'site_visits' %}{% endblock %}"
                                     {% endif %}>
