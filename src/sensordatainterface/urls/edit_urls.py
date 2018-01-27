@@ -37,9 +37,9 @@ urlpatterns = [
         edit_views.edit_output_variable_site,
         name='create_output_variable_deployment'),
 
-    url(r'^people/create-person/(?:(?P<affiliation_id>\d+)/)?$', edit_views.edit_person,
+    url(r'^people/create-person/(?:(?P<person_id>\d+)/)?$', edit_views.edit_person,
         name='create_person'),
-    url(r'^people/delete-person/(?P<affiliation_id>\d+)/$', edit_views.delete_person,
+    url(r'^people/delete-person/(?P<person_id>\d+)/$', edit_views.delete_person,
         name='delete_person'),
 
     url(r'^people/create-organization/(?:(?P<organization_id>\d+)/)?$', edit_views.edit_vendor,
