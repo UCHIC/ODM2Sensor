@@ -166,7 +166,7 @@ def get_available_equipment(request):
 
         action_type = request.POST.get('action_type')
 
-        if action_type.find("Instrument") > -1:
+        if action_type and action_type.find("Instrument") > -1:
 
             is_instrument = True
         else:
