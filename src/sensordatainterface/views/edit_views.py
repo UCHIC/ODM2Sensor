@@ -290,11 +290,11 @@ def edit_model(request, model_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_person(request, affiliation_id):
+def edit_person(request, person_id):
     action = 'create'
     if request.method == 'POST':
         if request.POST['action'] == 'update':
-            affiliation = Affiliation.objects.get(pk=request.POST['item_id'])
+            affiliation = Affiliation.objects.get(personid=request.POST['item_id'])
 
             person_form = PersonForm(request.POST, instance=affiliation.personid)
             # organization_form = OrganizationForm(request.POST, instance=affiliation.organizationid)
@@ -318,10 +318,10 @@ def edit_person(request, affiliation_id):
             messages.add_message(request, messages.SUCCESS,
                                  'Person record ' + request.POST['action'] + 'd successfully')
             return HttpResponseRedirect(
-                reverse('person_detail', args=[affiliation.affiliationid])
+                reverse('person_detail', args=[person.personid])
             )
-    elif affiliation_id:
-        affiliation = Affiliation.objects.get(pk=affiliation_id)
+    elif person_id:
+        affiliation = Affiliation.objects.get(personid=person_id)
         person_form = PersonForm(instance=affiliation.personid)
         # organization_form = OrganizationForm(instance=affiliation.organizationid)
         affiliation_form = AffiliationForm(instance=affiliation)
@@ -336,14 +336,14 @@ def edit_person(request, affiliation_id):
     return render(
         request,
         'people/person-form.html',
-        {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': affiliation_id}
+        {'render_forms': [person_form, affiliation_form], 'action': action, 'item_id': person_id}
 
     )
 
 
 @login_required(login_url=LOGIN_URL)
-def delete_person(request, affiliation_id):
-    affiliation = Affiliation.objects.get(pk=affiliation_id)
+def delete_person(request, person_id):
+    affiliation = Affiliation.objects.get(personid=person_id)
     person_name = affiliation.personid.personfirstname + " " + affiliation.personid.personlastname
     affiliation.personid.delete()
     affiliation.delete()
