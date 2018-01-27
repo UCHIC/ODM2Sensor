@@ -816,7 +816,6 @@ $(document).ready(function () {
             var selected = field.val();
 
             var currentActionForm = field.parents('tbody');
-            bindDeploymentField($(actionForm));
             handleActionTypeChange(selected, currentActionForm);
         });
     });
@@ -907,7 +906,7 @@ function getDeploymentType(deploymentId, form) {
 
 
 function filterNonRetrievalFields(form) {
-    form.find('[name="equipmentused"]').parents('tr').removeClass('form-required');
+    form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
     form.find('[name="enddatetime"]').parents('tr').hide();
     form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
     form.find('[name="actionfilelink"]').parents('tr').hide()

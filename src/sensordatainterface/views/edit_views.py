@@ -681,14 +681,14 @@ def get_forms_from_request(request, action_id=False):
                                               ],
         }
 
-        # try:
-        #     action_file = request.FILES.getlist('actionfilelink')[i - 1]
-        # except:
-        #     action_file = ''
+        try:
+            action_file = request.FILES.getlist('actionfilelink')[i - 1]
+        except:
+            action_file = ''
 
-        # form_files = {
-        #     'actionfilelink': action_file,
-        # }
+        form_files = {
+            'actionfilelink': action_file,
+        }
 
         equipment_used_position += int(equipment_used_count)
         calibration_standard_position += int(calibration_standard_count)
@@ -699,7 +699,7 @@ def get_forms_from_request(request, action_id=False):
             maintenance_counter += 1
 
         child_action_id = request.POST.getlist('thisactionid')[i - 1]
-        action = ActionForm(form_data, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data)
+        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data)
         action.results = results
         action_form.append(action)
 
@@ -731,7 +731,6 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
     all_forms_valid = site_visit_form.is_valid() and sampling_feature_form.is_valid() and crew_form_valid
 
     for form_elem in action_form:
-        print form_elem.errors
         all_forms_valid = all_forms_valid and form_elem.is_valid()
         # print form_elem.errors
 
