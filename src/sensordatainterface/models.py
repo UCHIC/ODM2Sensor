@@ -549,7 +549,10 @@ class MeasurementResult(models.Model):
                                          db_column='ylocationunitsid', blank=True,
                                          null=True)  # Field name made lowercase.
     zlocation = models.FloatField(db_column='zlocation', blank=True, null=True)  # Field name made lowercase.
-    db_table = 'measurementresults'
+
+    class Meta:
+        managed = False
+        db_table = 'measurementresults'
 
 
 class MethodAnnotation(models.Model):
