@@ -733,11 +733,11 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
             return equipment.pk + "";
         });
 
-        if (selectedEquipment.length) {
-            currentEquipmentSelect.val($.grep(selectedEquipment, function (element) {
-                return $.inArray(element, equipments) !== -1;
-            }));
-        }
+        // if (selectedEquipment.length) {
+        //      currentEquipmentSelect.val($.grep(selectedEquipment, function (element) {
+        //          return $.inArray(element, equipments) !== -1;
+        //      }));
+        //   }
 
         currentEquipmentSelect.children('option').each(function(index, element) {
             if (equipments.indexOf(element.value) === -1) {
@@ -829,7 +829,7 @@ $(document).ready(function () {
             if (!isRetrieval && !isDeployment) {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
             } else if (isDeployment) {
-                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm);
+                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm, actionType);
             }
 
 
@@ -929,7 +929,7 @@ function filterEquipmentUsed(filter, filteringValue, currentForm, formType) {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     } else if (!filterEquipmentCheck.prop('checked')) { // formActionType != "Equipment deployment" && formActionType != "Instrument deployment" &&
         // why was this excluding equipment and instrument deployments? left rest of condition as comment just in case.
-        filter(filteringValue, equipmentUsedSelect, formType);
+        filter(filteringValue, equipmentUsedSelect, formActionType);
     } else {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     }

@@ -842,7 +842,11 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         elif action_type.term == 'equipmentMaintenance':
             if updating:
-                current_action.maintenanceaction.all().delete()
+                try:
+                    MaintenanceAction.objects.get(actionid_id=current_action.actionid).delete()
+                except:
+                    pass
+
             add_maintenance_fields(current_action, action_form[i])
 
         elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
@@ -1222,7 +1226,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        deployment_action = Action.objects.get(pk=request.POST['deploymentaction'])
+        deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
