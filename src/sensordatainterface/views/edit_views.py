@@ -939,6 +939,7 @@ def create_site_visit(request, site_id=None):
 def edit_site_visit(request, action_id):
     action = 'create'
     render_actions = False
+    forms_invalid = False
 
     if request.method == 'POST':
         render_actions = True
@@ -948,7 +949,8 @@ def edit_site_visit(request, action_id):
             site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, True)
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
-
+        else:
+            return HttpResponseRedirect(reverse('edit_site_visit', args=[action_id]))
     else:
         site_visit = Action.objects.get(pk=action_id)
         site_visit_form = SiteVisitForm(instance=site_visit)
