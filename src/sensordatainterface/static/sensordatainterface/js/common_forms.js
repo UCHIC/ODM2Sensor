@@ -663,6 +663,7 @@ function setDeploymentEquipment(deploymentId, equipmentUsedSelect) {
         },
 
         success: function (equipmentId) {
+            equipmentUsedSelect.children('option').removeAttr('disabled');
             equipmentUsedSelect.val(equipmentId);
             equipmentUsedSelect.select2();
         },
@@ -906,7 +907,7 @@ function getDeploymentType(deploymentId, form) {
 
 
 function filterNonRetrievalFields(form) {
-    form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
+    form.find('[name="equipmentused"]').parents('tr').hide();
     form.find('[name="enddatetime"]').parents('tr').hide();
     form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
     form.find('[name="actionfilelink"]').parents('tr').hide()

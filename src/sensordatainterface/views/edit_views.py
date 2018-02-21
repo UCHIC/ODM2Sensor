@@ -732,7 +732,7 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
-        # print form_elem.errors
+        print form_elem.errors
 
     for annotation in annotation_forms:
         annotationid = annotation.data['annotationid']
@@ -961,7 +961,7 @@ def edit_site_visit(request, action_id):
         render_actions = True
         action = 'update'
 
-        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit.actionid, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
         action_form = []
         for child in children_actions:
             initial_action_data = {
