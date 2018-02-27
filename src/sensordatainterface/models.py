@@ -834,8 +834,7 @@ class ReferenceMaterialExternalIdentifier(models.Model):
 
 
 class ReferenceMaterialValue(models.Model):
-    # TODO: Change database table to identity and update here.
-    referencematerialvalueid = models.IntegerField(db_column='referencematerialvalueid',
+    referencematerialvalueid = models.AutoField(db_column='referencematerialvalueid',
                                                    primary_key=True)
     referencematerialid = models.ForeignKey('ReferenceMaterial', related_name='referencematerialvalue',
                                             db_column='referencematerialid')  # Field name made lowercase.
@@ -853,8 +852,7 @@ class ReferenceMaterialValue(models.Model):
 
 
 class ReferenceMaterial(models.Model):
-    # TODO: Change database table to identity and update here.
-    referencematerialid = models.IntegerField(db_column='referencematerialid',
+    referencematerialid = models.AutoField(db_column='referencematerialid',
                                            primary_key=True)  # Field name made lowercase.
     referencematerialmediumcv = models.ForeignKey('CvMedium', db_column='referencematerialmediumcv')  # Field name made lowercase.
     referencematerialorganizationid = models.ForeignKey(Organization,
