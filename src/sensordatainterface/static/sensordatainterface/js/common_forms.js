@@ -663,6 +663,7 @@ function setDeploymentEquipment(deploymentId, equipmentUsedSelect) {
         },
 
         success: function (equipmentId) {
+            equipmentUsedSelect.children('option').removeAttr('disabled');
             equipmentUsedSelect.val(equipmentId);
             equipmentUsedSelect.select2();
         },
@@ -733,11 +734,11 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
             return equipment.pk + "";
         });
 
-        if (selectedEquipment.length) {
-            currentEquipmentSelect.val($.grep(selectedEquipment, function (element) {
-                return $.inArray(element, equipments) !== -1;
-            }));
-        }
+        // if (selectedEquipment.length) {
+        //      currentEquipmentSelect.val($.grep(selectedEquipment, function (element) {
+        //          return $.inArray(element, equipments) !== -1;
+        //      }));
+        //   }
 
         currentEquipmentSelect.children('option').each(function(index, element) {
             if (equipments.indexOf(element.value) === -1) {
@@ -829,7 +830,7 @@ $(document).ready(function () {
             if (!isRetrieval && !isDeployment) {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
             } else if (isDeployment) {
-                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm);
+                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm, actionType);
             }
 
 
@@ -906,7 +907,7 @@ function getDeploymentType(deploymentId, form) {
 
 
 function filterNonRetrievalFields(form) {
-    form.find('[name="equipmentused"]').parents('tr').removeClass('form-required').hide();
+    form.find('[name="equipmentused"]').parents('tr').hide();
     form.find('[name="enddatetime"]').parents('tr').hide();
     form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
     form.find('[name="actionfilelink"]').parents('tr').hide()
@@ -929,7 +930,7 @@ function filterEquipmentUsed(filter, filteringValue, currentForm, formType) {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     } else if (!filterEquipmentCheck.prop('checked')) { // formActionType != "Equipment deployment" && formActionType != "Instrument deployment" &&
         // why was this excluding equipment and instrument deployments? left rest of condition as comment just in case.
-        filter(filteringValue, equipmentUsedSelect, formType);
+        filter(filteringValue, equipmentUsedSelect, formActionType);
     } else {
         equipmentUsedSelect.children('option').removeAttr('disabled');
     }

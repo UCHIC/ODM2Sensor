@@ -732,7 +732,6 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
-        # print form_elem.errors
 
     for annotation in annotation_forms:
         annotationid = annotation.data['annotationid']
@@ -842,7 +841,11 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         elif action_type.term == 'equipmentMaintenance':
             if updating:
-                current_action.maintenanceaction.all().delete()
+                try:
+                    MaintenanceAction.objects.get(actionid_id=current_action.actionid).delete()
+                except:
+                    pass
+
             add_maintenance_fields(current_action, action_form[i])
 
         elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
@@ -935,6 +938,7 @@ def create_site_visit(request, site_id=None):
 def edit_site_visit(request, action_id):
     action = 'create'
     render_actions = False
+    forms_invalid = False
 
     if request.method == 'POST':
         render_actions = True
@@ -944,7 +948,8 @@ def edit_site_visit(request, action_id):
             site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, True)
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
-
+        else:
+            return HttpResponseRedirect(reverse('edit_site_visit', args=[action_id]))
     else:
         site_visit = Action.objects.get(pk=action_id)
         site_visit_form = SiteVisitForm(instance=site_visit)
@@ -955,7 +960,7 @@ def edit_site_visit(request, action_id):
         render_actions = True
         action = 'update'
 
-        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
+        children_actions = RelatedAction.objects.filter(relatedactionid=site_visit.actionid, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
         action_form = []
         for child in children_actions:
             initial_action_data = {
