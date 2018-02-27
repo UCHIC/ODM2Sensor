@@ -1111,6 +1111,7 @@ class SamplingFeatureExternalIdentifier(models.Model):
 class SamplingFeature(models.Model):
     samplingfeatureid = models.AutoField(db_column='samplingfeatureid',
                                          primary_key=True)  # Field name made lowercase.
+    samplingfeatureuuid = models.CharField(db_column='samplingfeatureuuid', max_length=36, default=uuid.uuid4)
     samplingfeaturetypecv = models.ForeignKey('CvSamplingfeaturetype', db_column='samplingfeaturetypecv')  # Field name made lowercase.
     samplingfeaturecode = models.TextField(db_column='samplingfeaturecode')  # Field name made lowercase.
     samplingfeaturename = models.TextField(db_column='samplingfeaturename', blank=True)  # Field name made lowercase.
