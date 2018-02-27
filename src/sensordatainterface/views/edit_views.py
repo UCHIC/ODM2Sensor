@@ -1144,8 +1144,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
             elif action_type.term == 'instrumentCalibration':
                 if updating:
-                    CalibrationAction.objects.get(actionid=child_action).delete()
-                    CalibrationReferenceEquipment.objects.filter(actionid=child_action).delete()
+                    CalibrationAction.objects.get(actionid=child_action.actionid).delete()
+                    CalibrationReferenceEquipment.objects.filter(actionid=child_action.actionid).delete()
                 add_calibration_fields(child_action, action_form)
 
             elif action_type.term == 'equipmentMaintenance':
