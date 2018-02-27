@@ -732,7 +732,6 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
 
     for form_elem in action_form:
         all_forms_valid = all_forms_valid and form_elem.is_valid()
-        print form_elem.errors
 
     for annotation in annotation_forms:
         annotationid = annotation.data['annotationid']
