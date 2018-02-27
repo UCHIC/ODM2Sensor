@@ -126,7 +126,7 @@ def delete_site(request, site_id):
     sp_code = samplingfeature.samplingfeaturecode
     samplingfeature.delete()
     messages.add_message(request, messages.SUCCESS, 'Site ' + sp_code + ' deleted successfully')
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse('sites'))
 
 
 @login_required(login_url=LOGIN_URL)
