@@ -13,8 +13,10 @@ function setOtherActions() {
         actionTypeElem.children('[value="Equipment deployment"]').remove();
         actionTypeElem.children('[value="Instrument deployment"]').remove();
         actionTypeElem.children('[value="Instrument calibration"]').remove();
-        actionTypeElem.children('[value="Equipment retrieval"]').remove();
-        actionTypeElem.children('[value="Instrument retrieval"]').remove();
+        if(!($.find('[name="actionid"]').length)) {
+            actionTypeElem.children('[value="Equipment retrieval"]').remove();
+            actionTypeElem.children('[value="Instrument retrieval"]').remove();
+        }
     } else if (mainForm.hasClass('InstrumentCalibration')) {
         /* Careful when deleting parents of calibration etc tr */
         $('.InstrumentCalibration .maintenance').not('option').parents('tr').remove();
