@@ -1394,4 +1394,4 @@ def delete_action(request, action_id):
     # delete action
     messages.info(request, 'Action successfully deleted!')
 
-    return HttpResponseRedirect('/actions/%s' % action_type)
+    return HttpResponseRedirect(reverse('%s' % action_type))
