@@ -997,7 +997,7 @@ def edit_site_visit(request, action_id):
             child_action_form.results = []
             for result in child.actionid.featureaction.get().result_set.all():
                 result_data = {
-                    'instrumentoutputvariable': result.variableid_id,
+                    'instrumentoutputvariable': InstrumentOutputVariable.objects.get(variableid_id = result.variableid_id),
                     'unitsid': result.unitsid_id,
                     'processing_level_id': result.processinglevelid_id,
                     'sampledmediumcv': result.sampledmediumcv_id
@@ -1017,7 +1017,7 @@ def edit_site_visit(request, action_id):
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
             'mock_annotation_form': AnnotationForm(),
-            'mock_results_form': ResultsForm(),
+            # 'mock_results_form': ResultsForm(),
             'actions_form': action_form,
             'annotation_forms': annotation_forms,
             'render_actions': render_actions,
