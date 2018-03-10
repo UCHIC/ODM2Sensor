@@ -997,7 +997,7 @@ def edit_site_visit(request, action_id):
             child_action_form.results = []
             for result in child.actionid.featureaction.get().result_set.all():
                 result_data = {
-                    'instrumentoutputvariable': InstrumentOutputVariable.objects.get(variableid_id = result.variableid_id),
+                    'instrumentoutputvariable': InstrumentOutputVariable.objects.filter(variableid_id=result.variableid_id).first().pk,
                     'unitsid': result.unitsid_id,
                     'processing_level_id': result.processinglevelid_id,
                     'sampledmediumcv': result.sampledmediumcv_id
@@ -1227,7 +1227,10 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
+        if request.POST.get(deployment_id):
+            deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
+        else:
+            deployment_action = Action.objects.get(pk=request.POST.get('deploymentaction'))
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])
@@ -1367,6 +1370,7 @@ def delete_action(request, action_id):
         action.calibrationaction.calibrationreferenceequipment.all().delete()
         action.calibrationaction.calibrationstandard.all().delete()
         action.calibrationaction.delete()
+
     if hasattr(action, 'maintenanceaction'):
         # delete maintenance action
         action.maintenanceaction.delete()
@@ -1388,6 +1392,9 @@ def delete_action(request, action_id):
 
     # delete equipment used
     action.equipmentused.all().delete()
+
+    # delete main Action
+    action.delete()
 
 
 
