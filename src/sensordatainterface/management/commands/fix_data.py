@@ -74,6 +74,9 @@ class Command(BaseCommand):
             if action.actiontypecv_id == 'Instrument calibration' and not hasattr(action, 'maintenanceaction'):
                 # create one with the default attributes.
                 MaintenanceAction.objects.create(actionid=action.actionid)
+            elif action.actiontypecv_id == 'Instrument calibration' and not hasattr(action, 'calibrationaction'):
+                # Delete an instrument calibration action with no corresponding CalibrationAction
+                self.delete_action(action)
             elif action.actiontypecv_id == 'Calibration action' and not hasattr(action, 'calibrationaction'):
                 # since there's no default instrument output variable, and it's required, delete action :(
                 # TODO: check with amber if we can just get the first output variable from the equipment model and call it a day.
