@@ -996,8 +996,11 @@ def edit_site_visit(request, action_id):
             )
             child_action_form.results = []
             for result in child.actionid.featureaction.get().result_set.all():
+                output_variable = InstrumentOutputVariable.objects.get(
+                    variableid=result.variableid_id, modelid=initial_action_data['equipmentused'].values('equipmentmodelid'))
+
                 result_data = {
-                    'instrumentoutputvariable': InstrumentOutputVariable.objects.filter(variableid_id=result.variableid_id).first().pk,
+                    'instrumentoutputvariable': output_variable.instrumentoutputvariableid,
                     'unitsid': result.unitsid_id,
                     'processing_level_id': result.processinglevelid_id,
                     'sampledmediumcv': result.sampledmediumcv_id
