@@ -1,6 +1,6 @@
 {% extends "base-form.html" %}
 {% block button_value %}{% block item_name %}
-    {% if action_type == 'EquipmentDeployment' %}
+    {% if action_type == 'EquipmentDeployment' or 'InstrumentDeployment'%}
         Deployment
     {% elif action_type == 'InstrumentCalibration' %}
         Calibration

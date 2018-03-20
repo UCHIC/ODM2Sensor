@@ -20,6 +20,21 @@
                 {% for render_form in render_forms %}
                     {{ render_form.as_table }}
                 {% endfor %}
+                     <tbody class="action-fields">
+                     {{ actions_form.as_table }}
+                     </tbody>
+                    {% if actions_form.results|length != 0 %}
+                            {% for curr_result in actions_form.results %}
+                                <tbody class="results-set">
+                                    {% if forloop.first %}
+                                        <tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>
+                                    {% else %}
+                                        <tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>
+                                    {% endif %}
+                                    {{ curr_result.as_table }}
+                                </tbody>
+                            {% endfor %}
+                    {% endif %}
 
                 <tbody>
                     <tr>
