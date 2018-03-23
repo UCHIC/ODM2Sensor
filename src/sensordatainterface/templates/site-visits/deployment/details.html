@@ -13,7 +13,7 @@
             <a class="btn btn-danger btn-block" id="danger-button" >Delete Action</a>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' %}">Create New
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'equipmentDeployment' %}">Create New
                 Deployment</a></div>
         {% with retrieval=Deployment|get_deployment_retrieval %}
             {% if not retrieval %}
@@ -23,7 +23,7 @@
             {% endif %}
         {% endwith %}
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
-            <a class="btn btn-primary btn-block" href="{% url 'create_action' 'EquipmentDeployment' Deployment.actionid %}">Edit Deployment Description</a></div>
+            <a class="btn btn-primary btn-block" href="{% url 'create_action' Deployment.actiontypecv|cut:" "|lower Deployment.actionid %}">Edit Deployment Description</a></div>
     </div>
 
     <!-- deployment details -->

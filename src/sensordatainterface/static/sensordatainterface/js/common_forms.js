@@ -48,6 +48,13 @@ function setOtherActions() {
         $('.Retrieval').find('[name="deploymentaction"]').parents('tr').addClass('form-required').show();
         filterNonRetrievalFields($('.Retrieval'));
     }
+    if (mainForm.hasClass('Instrument Deployment')) {
+        if ($('form').find('[name="action"]').val() !== 'update') {
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            addResultButton.insertAfter(currentForm);
+            addResultForm(addResultButton, true);
+        }
+    }
 
     $('form').find('[name="actionid"]').trigger('change');
 }
@@ -123,9 +130,9 @@ function setFormFields(currentForm) {
 function handleActionTypeChange(formType, currentForm) {
     var requiredEquipmentClasses = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
         'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval'];
-    var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function(option) {
+    var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function (option) {
         return option.value;
-    }).reduce(function(map, actiontype) {
+    }).reduce(function (map, actiontype) {
         map[actiontype] = actiontype.replace(' ', '');
         return map;
     }, {});
@@ -147,8 +154,9 @@ function handleActionTypeChange(formType, currentForm) {
 
     // don't leave this here. or maybe do...
     var methodOptions = methodSelect.find('option:not([disabled])');
-    var methods = $.map(methodOptions, function(option) { return option.value });
-
+    var methods = $.map(methodOptions, function (option) {
+        return option.value
+    });
 
 
     if (methods.indexOf(methodSelect.val()) === -1) {
@@ -202,18 +210,20 @@ function handleActionTypeChange(formType, currentForm) {
         equipmentSelect.select2();
     }
 
-    if (formType == 'Instrument deployment') {
-        if ($('form').find('[name="action"]').val() !== 'update') {
+
+    if (formType !== 'Instrument deployment') {
+        $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
+        $(currentForm).next('tbody.add-result-btn').remove();
+    }
+    if (formType === 'Instrument deployment') {
+        $(currentForm).find('[name="equipmentused"]').trigger('change');
+        if ($(currentForm).find('tr.form-required').first().html() !== $('form').find('tbody.action-fields tr.form-required').first().html()) {
             var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
             addResultButton.insertAfter(currentForm);
             addResultForm(addResultButton, true);
         }
-    } else {
-        $(currentForm).nextUntil('tbody.add-result-btn', '.results-set').remove();
-        $(currentForm).next('tbody.add-result-btn').remove();
     }
-
-    if (formType == 'Instrument calibration') {
+    if (formType === 'Instrument calibration') {
         $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').addClass('form-required');
     } else {
         $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').removeClass('form-required');
@@ -744,7 +754,9 @@ function handle_equ_used_filter_response(objects, equipmentUsedSelectElems) {
 
         currentEquipmentSelect.children('option').each(function(index, element) {
             if (equipments.indexOf(element.value) === -1) {
+
                 $(element).attr('disabled', 'disabled');
+                $(element).attr('hidden', true);
             } else {
                 $(element).removeAttr('disabled');
             }
@@ -789,7 +801,12 @@ $(document).ready(function () {
     setDTPickerClose($('[name="begindatetime"]'));
     setFormFields($('tbody'));
     cacheUnfilteredSelects();
-    bindEquipmentUsedFiltering($('#id_equipmentused'));
+    var currentForm = $('form');
+    var allForms = currentForm.find('tbody').has('[name="actiontypecv"]');
+    for (i = 0 ; i < allForms.length ; i++){
+        bindEquipmentUsedFiltering($(allForms[i]).find('.select-two[name="equipmentused"]'));
+    }
+
 
     var resultSelects = $('#results-form').find('.select-two');
     if (resultSelects.length !== 0) {
@@ -797,8 +814,7 @@ $(document).ready(function () {
         $('#results-form').find(".select2-container").remove();
     }
 
-    var currentForm = $('form');
-    var allForms = currentForm.find('tbody').has('[name="actiontypecv"]');
+
     var filterEquipmentCheck = $('#id_equipment_by_site');
     var siteVisitSelect = currentForm.find('[name="actionid"]');
     console.log(allForms.length)

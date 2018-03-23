@@ -634,7 +634,7 @@ def get_forms_from_request(request, action_id=False):
         calibration_reference_equipment_count = request.POST.getlist('calibrationreferenceequipmentnumber')[i - 1]
 
         if action_type == 'Instrument deployment':
-            output_variable = outputvariables[i + results_counter] # get instrument output variable corresponding to the result
+            output_variable = outputvariables[i + results_counter]  # get instrument output variable corresponding to the result
             while output_variable != u'':
                 result = {
                     'instrument_output_variable': output_variable,
@@ -705,6 +705,12 @@ def get_forms_from_request(request, action_id=False):
 
         if action_type != 'Generic' and not 'Instrument retrieval':
             action_form[-1].fields['equipmentused'].required = True
+        elif action_type == 'Instrument deployment':
+            action_form[-1].fields['instrumentoutputvariable'].required = True
+            action_form[-1].fields['units'].required = True
+        elif action_type == 'Instrument calibration':
+            action_form[-1].fields['instrumentoutputvariable'].required = True
+
 
     if action_id:
         sampling_feature_form = FeatureActionForm(request.POST, instance=FeatureAction.objects.get(actionid=action_id))
@@ -1020,7 +1026,7 @@ def edit_site_visit(request, action_id):
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
             'mock_annotation_form': AnnotationForm(),
-            # 'mock_results_form': ResultsForm(),
+            'mock_results_form': ResultsForm(),
             'actions_form': action_form,
             'annotation_forms': annotation_forms,
             'render_actions': render_actions,
@@ -1183,6 +1189,22 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             instance=child_action,
             initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]}
         )
+        action_form.results = []
+
+        if action_type =='Instrumentdeployment':
+            for result in child_action.featureaction.get().result_set.all():
+                cur_equipment = EquipmentUsed.objects.get(actionid=child_action.actionid)
+                output_variable = InstrumentOutputVariable.objects.get(
+                    variableid=result.variableid_id, modelid=cur_equipment.equipmentid.equipmentmodelid_id)
+
+                result_data = {
+                    'instrumentoutputvariable': output_variable.instrumentoutputvariableid,
+                    'unitsid': result.unitsid_id,
+                    'processing_level_id': result.processinglevelid_id,
+                    'sampledmediumcv': result.sampledmediumcv_id
+                }
+                action_form.results.append(ResultsForm(result_data))
+
 
         if action_type == 'InstrumentCalibration':
             action_form.initial['calibrationstandard'] = [cal_std for cal_std in ReferenceMaterial.objects.filter(calibrationstandard__actionid=action_id)]
@@ -1216,7 +1238,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
     return render(
         request,
         'site-visits/field-activities/other-action-form.html',
-        {'render_forms': [site_visit_form, action_form], 'mock_results_form': ResultsForm(), 'action': action,
+        {'render_forms': [site_visit_form], 'actions_form': action_form, 'mock_results_form': ResultsForm(), 'action': action,
          'item_id': action_id, 'site_id': site_id,
          'action_type': action_type}
     )
