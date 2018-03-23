@@ -1252,7 +1252,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
-        if request.POST.get(deployment_id):
+        if request.POST.get('deployment_id'):
             deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
         else:
             deployment_action = Action.objects.get(pk=request.POST.get('deploymentaction'))
@@ -1341,7 +1341,12 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     elif deployment_id:
         deployment_action = Action.objects.get(pk=deployment_id)
-        site_visit_form = SiteVisitChoiceForm()
+        parent_action_id = RelatedAction.objects.get(
+            relationshiptypecv=child_relationship,
+            actionid=deployment_id
+        )
+        site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
+        site_visit_form = SiteVisitChoiceForm(instance=site_visit)
 
         retrieval_form = ActionForm(
             initial={
