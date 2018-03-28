@@ -222,6 +222,11 @@ function handleActionTypeChange(formType, currentForm) {
             addResultButton.insertAfter(currentForm);
             addResultForm(addResultButton, true);
         }
+        if ($('form').find('[name="action"]').val() !== 'update' && $(currentForm).find('tbody.results-set').length === 0) {
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            addResultButton.insertAfter(currentForm);
+            addResultForm(addResultButton, true);
+        }
     }
     if (formType === 'Instrument calibration') {
         $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').addClass('form-required');
