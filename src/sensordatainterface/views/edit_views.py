@@ -1191,7 +1191,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         )
         action_form.results = []
 
-        if action_type =='Instrumentdeployment':
+        if action_type =='instrumentdeployment':
             for result in child_action.featureaction.get().result_set.all():
                 cur_equipment = EquipmentUsed.objects.get(actionid=child_action.actionid)
                 output_variable = InstrumentOutputVariable.objects.get(
@@ -1341,12 +1341,8 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
     elif deployment_id:
         deployment_action = Action.objects.get(pk=deployment_id)
-        parent_action_id = RelatedAction.objects.get(
-            relationshiptypecv=child_relationship,
-            actionid=deployment_id
-        )
-        site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
-        site_visit_form = SiteVisitChoiceForm(instance=site_visit)
+
+        site_visit_form = SiteVisitChoiceForm()
 
         retrieval_form = ActionForm(
             initial={
