@@ -666,7 +666,7 @@ def get_forms_from_request(request, action_id=False):
             'calibrationstandardnumber': calibration_standard_count,
             'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
             'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-            'instrumentoutputvariable': output_variables[0],
+            'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable'),
             'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
             'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
             'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
@@ -1260,6 +1260,8 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
             deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
         else:
             deployment_action = Action.objects.get(pk=request.POST.get('deploymentaction'))
+        if 'equipmentused' not in request.POST:
+            request.POST['equipmentused'] = ''
 
         if updating:
             site_visit = Action.objects.get(pk=request.POST['actionid'])

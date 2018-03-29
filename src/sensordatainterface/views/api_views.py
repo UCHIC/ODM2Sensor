@@ -234,15 +234,6 @@ def get_equipment_output_variables(request):
     )
 
 
-
-
-
-
-
-
-
-
-
 def get_action_site(request):
     if request.method == 'POST':
         action_id = request.POST.get('action_id')
