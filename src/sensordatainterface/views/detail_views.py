@@ -1,12 +1,18 @@
 from sensordatainterface.base_views import *
 from django.views.generic import DetailView
 from sensordatainterface.forms import *
+from django.http import *
 
 
 # Detail View Generic.
 class GenericDetailView(DetailView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
+        try:
+            action_type = self.context_object_name.lower()
+            action = Action.objects.get(pk=self.kwargs['slug'], actiontypecv__name__icontains=action_type)
+        except:
+            raise Http404()
         return super(GenericDetailView, self).dispatch(*args, **kwargs)
 
 
@@ -17,6 +23,10 @@ class SiteVisitDetailView(DetailView):
     template_name = 'site-visits/details.html'
 
     def get_context_data(self, **kwargs):
+        try:
+            site_visit = Action.objects.get(pk=self.kwargs['slug'], actiontypecv_id='Site visit')
+        except:
+            raise Http404()
         context = super(SiteVisitDetailView, self).get_context_data(**kwargs)
         site_visits = Action.objects.filter(actiontypecv='Site Visit', featureaction__isnull=False)
 
