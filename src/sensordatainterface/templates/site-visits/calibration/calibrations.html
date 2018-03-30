@@ -7,10 +7,17 @@
                 {% if equipment_name %} for Equipment {{ equipment_name.equipmentserialnumber }}
                 {% endif %}</h1>
         </div>
+    {% if equipment_name %}
+        <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
+            <a class="btn btn-primary btn-block new-btn" href="{% url 'create_action_from_equipment' 'InstrumentCalibration' equipment_name.equipmentid%}">New
+                Calibration</a>
+        </div>
+    {% else %}
         <div class="col-xs-12 col-sm-6 col-md-3 pull-right">
             <a class="btn btn-primary btn-block new-btn" href="{% url 'create_action' 'InstrumentCalibration' %}">New
                 Calibration</a>
         </div>
+    {% endif %}
     </div>
     <table class="data-table">
         <thead>

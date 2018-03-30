@@ -1070,7 +1070,7 @@ def edit_site_visit_summary(request, action_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_action(request, action_type, action_id=None, visit_id=None, site_id=None):
+def edit_action(request, action_type, action_id=None, visit_id=None, site_id=None, equipment_id=None):
     action = 'create'
     child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
 
@@ -1179,6 +1179,16 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
             return response
 
+    elif equipment_id:
+        equipment_used = Equipment.objects.filter(pk=equipment_id)
+        site_visit_form = SiteVisitChoiceForm()
+        action_form = ActionForm(
+            initial={'begindatetime': datetime.now(),
+                     'begindatetimeutcoffset': -7,
+                     'enddatetimeutcoffset': -7,
+                     'equipmentused': equipment_used
+                     }
+        )
     elif action_id:
         action = 'update'
         child_action = Action.objects.get(pk=action_id)

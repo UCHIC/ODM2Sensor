@@ -22,6 +22,8 @@ function setOtherActions() {
         $('.InstrumentCalibration .maintenance').not('option').parents('tr').remove();
         actionTypeElem = $('.InstrumentCalibration [name="actiontypecv"]');
         actionTypeElem.select2('val', 'Instrument calibration');
+        $('.InstrumentCalibration [name="equipmentused"]').removeAttr('multiple');
+        $('.InstrumentCalibration [name="equipmentused"]').select2();
         actionTypeElem.parents('tr').hide();
     } else if (mainForm.hasClass('EquipmentDeployment')) {
         var site = $('.EquipmentDeployment').find('[name="site_id"]').val();
