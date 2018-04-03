@@ -666,7 +666,7 @@ def get_forms_from_request(request, action_id=False):
             'calibrationstandardnumber': calibration_standard_count,
             'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
             'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-            'instrumentoutputvariable': request.POST.getlist('instrumentoutputvariable'),
+            'instrumentoutputvariable': outputvariables_clean[i-1][0],
             'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
             'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
             'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
