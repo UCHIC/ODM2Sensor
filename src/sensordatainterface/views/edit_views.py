@@ -604,6 +604,9 @@ def get_forms_from_request(request, action_id=False):
             outputvariables_clean.append([])
         else:
             outputvariables_clean[-1].append(i)
+        if not outputvariables_clean[-1]:
+            outputvariables_clean.pop()
+
 
     action_form = []
     annotation_forms = []
@@ -638,10 +641,12 @@ def get_forms_from_request(request, action_id=False):
         equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
         calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
         calibration_reference_equipment_count = request.POST.getlist('calibrationreferenceequipmentnumber')[i - 1]
+        has_result = False
 
         if action_type == 'Instrument deployment':
             output_variables = outputvariables_clean[i-1]  # get instrument output variable corresponding to the result
             for j in output_variables:
+                has_result = True
                 result = {
                     'instrumentoutputvariable': j,
                     'unitsid': request.POST.getlist('unitsid')[results_counter],
@@ -650,38 +655,71 @@ def get_forms_from_request(request, action_id=False):
                 }
                 results.append(ResultsForm(result))
                 results_counter += 1
+        if has_result:
 
-        form_data = {
-            'actionid': request.POST.getlist('thisactionid')[i - 1],
-            'actiontypecv': action_type,
-            'begindatetime': request.POST.getlist('begindatetime')[i],
-            'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
-            'enddatetime': request.POST.getlist('enddatetime')[i],
-            'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
-            'actiondescription': request.POST.getlist('actiondescription')[i],
-            # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
-            'methodid': request.POST.getlist('methodid')[i - 1],
-            'equipmentusednumber': equipment_used_count,
-            'calibrationreferenceequipmentnumber': calibration_reference_equipment_count,
-            'calibrationstandardnumber': calibration_standard_count,
-            'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
-            'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-            'instrumentoutputvariable': outputvariables_clean[i-1][0],
-            'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
-            'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
-            'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
-            'equipmentused': request.POST.getlist('equipmentused')[
-                             equipment_used_position:int(equipment_used_count) + equipment_used_position
-                             ],
-            'calibrationstandard': request.POST.getlist('calibrationstandard')[
-                                   calibration_standard_position:int(
-                                       calibration_standard_count) + calibration_standard_position
-                                   ],
-            'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
-                                              calibration_reference_equipment_position:int(
-                                              calibration_reference_equipment_count) + calibration_reference_equipment_position
-                                              ],
-        }
+            form_data = {
+                'actionid': request.POST.getlist('thisactionid')[i - 1],
+                'actiontypecv': action_type,
+                'begindatetime': request.POST.getlist('begindatetime')[i],
+                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
+                'enddatetime': request.POST.getlist('enddatetime')[i],
+                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
+                'actiondescription': request.POST.getlist('actiondescription')[i],
+                # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
+                'methodid': request.POST.getlist('methodid')[i - 1],
+                'equipmentusednumber': equipment_used_count,
+                'calibrationreferenceequipmentnumber': calibration_reference_equipment_count,
+                'calibrationstandardnumber': calibration_standard_count,
+                'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
+                'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
+                'instrumentoutputvariable': outputvariables_clean[0][-1],
+                'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
+                'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
+                'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
+                'equipmentused': request.POST.getlist('equipmentused')[
+                                 equipment_used_position:int(equipment_used_count) + equipment_used_position
+                                 ],
+                'calibrationstandard': request.POST.getlist('calibrationstandard')[
+                                       calibration_standard_position:int(
+                                           calibration_standard_count) + calibration_standard_position
+                                       ],
+                'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
+                                                  calibration_reference_equipment_position:int(
+                                                  calibration_reference_equipment_count) + calibration_reference_equipment_position
+                                                  ],
+            }
+        else:
+            form_data = {
+                'actionid': request.POST.getlist('thisactionid')[i - 1],
+                'actiontypecv': action_type,
+                'begindatetime': request.POST.getlist('begindatetime')[i],
+                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
+                'enddatetime': request.POST.getlist('enddatetime')[i],
+                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
+                'actiondescription': request.POST.getlist('actiondescription')[i],
+                # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
+                'methodid': request.POST.getlist('methodid')[i - 1],
+                'equipmentusednumber': equipment_used_count,
+                'calibrationreferenceequipmentnumber': calibration_reference_equipment_count,
+                'calibrationstandardnumber': calibration_standard_count,
+                'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
+                'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
+                'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
+                'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
+                'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
+                'equipmentused': request.POST.getlist('equipmentused')[
+                                 equipment_used_position:int(equipment_used_count) + equipment_used_position
+                                 ],
+                'calibrationstandard': request.POST.getlist('calibrationstandard')[
+                                       calibration_standard_position:int(
+                                           calibration_standard_count) + calibration_standard_position
+                                       ],
+                'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
+                                                 calibration_reference_equipment_position:int(
+                                                     calibration_reference_equipment_count) + calibration_reference_equipment_position
+                                                 ],
+            }
+
 
         try:
             action_file = request.FILES.getlist('actionfilelink')[i - 1]
