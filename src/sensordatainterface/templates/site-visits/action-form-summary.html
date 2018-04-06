@@ -45,9 +45,9 @@
                         {% endfor %}
                         <br/>
                         {% if child_action.actionid.actiontypecv.name == 'Instrument calibration' %}
-                            {% with calibration_action=child_action.actionid.calibrationaction.all.0 %}
+                            {% with calibration_action=child_action.actionid.calibrationaction %}
                                 <strong>Instrument Output Variable:</strong>
-                                {{ calibration_action.instrumentoutputvariableid.variableid.variablenamecv }}
+                                {{ calibration_action.instrumentoutputvariableid.variableid.variablenamecv_id }}
                                 <br/>
                                 <strong>Calibration Check Value:</strong>
                                 {{ calibration_action.calibrationcheckvalue }}

@@ -17,7 +17,7 @@ function setOtherActions() {
             actionTypeElem.children('[value="Equipment retrieval"]').remove();
             actionTypeElem.children('[value="Instrument retrieval"]').remove();
         }
-    } else if (mainForm.hasClass('InstrumentCalibration')) {
+    } else if (mainForm.hasClass('InstrumentCalibration') || mainForm.hasClass('Instrumentcalibration')) {
         /* Careful when deleting parents of calibration etc tr */
         $('.InstrumentCalibration .maintenance').not('option').parents('tr').remove();
         actionTypeElem = $('.InstrumentCalibration [name="actiontypecv"]');
@@ -232,6 +232,7 @@ function handleActionTypeChange(formType, currentForm) {
     }
     if (formType === 'Instrument calibration') {
         $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').addClass('form-required');
+        $(currentForm).find('[name="equipmentused"]').removeAttr('multiple');
     } else {
         $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').removeClass('form-required');
     }
