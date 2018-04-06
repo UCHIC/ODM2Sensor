@@ -598,14 +598,16 @@ def get_forms_from_request(request, action_id=False):
     actions_returned = len(request.POST.getlist('actiontypecv'))
     outputvariables = request.POST.getlist('instrumentoutputvariable')
     annotations = request.POST.getlist('annotationid')
-    outputvariables_clean = [[]]
-    for i in outputvariables[1:]:
+    action_result_counter = 0
+    outputvariables_clean = []
+    for i in outputvariables:
         if i is u'':
             outputvariables_clean.append([])
         else:
             outputvariables_clean[-1].append(i)
-        if not outputvariables_clean[-1]:
-            outputvariables_clean.pop()
+    # for j in outputvariables_clean:
+    #     if not j:
+    #         j.pop()
 
 
     action_form = []
@@ -643,6 +645,7 @@ def get_forms_from_request(request, action_id=False):
         calibration_reference_equipment_count = request.POST.getlist('calibrationreferenceequipmentnumber')[i - 1]
         has_result = False
 
+
         if action_type == 'Instrument deployment':
             output_variables = outputvariables_clean[i-1]  # get instrument output variable corresponding to the result
             for j in output_variables:
@@ -655,8 +658,8 @@ def get_forms_from_request(request, action_id=False):
                 }
                 results.append(ResultsForm(result))
                 results_counter += 1
-        if has_result:
-
+        if has_result or action_type == 'Instrument calibration':
+            action_result_counter += 1
             form_data = {
                 'actionid': request.POST.getlist('thisactionid')[i - 1],
                 'actiontypecv': action_type,
@@ -672,7 +675,7 @@ def get_forms_from_request(request, action_id=False):
                 'calibrationstandardnumber': calibration_standard_count,
                 'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
                 'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-                'instrumentoutputvariable': outputvariables_clean[0][-1],
+                'instrumentoutputvariable': outputvariables_clean[action_result_counter -1][0],
                 'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
                 'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
                 'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
@@ -704,6 +707,7 @@ def get_forms_from_request(request, action_id=False):
                 'calibrationstandardnumber': calibration_standard_count,
                 'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
                 'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
+                # 'instrumentoutputvariable': outputvariables_clean[action_result_counter][0],
                 'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
                 'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
                 'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
@@ -812,7 +816,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
     # set up annotations
     # TODO: Change this to update actions without having to delete every time
-    # lol why? it works.
+    # lol why? it works. -- Because it's BAD and if it fails when trying to save, (i.e. if the data is invalid) it just deletes it. BAD.
     existing_annotations = ActionAnnotation.objects.filter(actionid=site_visit_action)
     for annotation in existing_annotations:
         annotation.delete()
@@ -832,7 +836,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
     # set up child actions
     # temporary fix! TODO: do not leave this like it is right now.
-    site_visit_action.parent_relatedaction.all().delete()  # delete all site visit child relations
+    # site_visit_action.parent_relatedaction.all().delete()  # delete all site visit child relations
     for i in range(0, len(action_form)):
         current_action = action_form[i].instance
         action_type = action_form[i].cleaned_data['actiontypecv']
@@ -843,29 +847,34 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         FeatureAction.objects.get_or_create(samplingfeatureid=sampling_feature, actionid=current_action)
         # bad! this assumes all relations with site visit are previously removed. they are, but shouldn't be.
-        RelatedAction.objects.create(actionid=current_action, relatedactionid=site_visit_action,
-                                     relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
+        RelatedAction.objects.update_or_create(actionid=current_action,
+                                               relatedactionid=site_visit_action,
+                                               relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
 
         if updating:
-            EquipmentUsed.objects.filter(actionid=current_action.actionid).delete()
+            # EquipmentUsed.objects.filter(actionid=current_action.actionid).delete()
+            # #Commented out because now utilizing update or delete
             CalibrationStandard.objects.filter(actionid=current_action.actionid).delete()
 
         equipments = action_form[i].cleaned_data['equipmentused']
         for equ in equipments:
-            EquipmentUsed.objects.create(
+            EquipmentUsed.objects.update_or_create(
                 actionid=current_action,
                 equipmentid=equ
             )
 
         if action_type.term == 'instrumentDeployment':
+            result_id_counter = 0
             feature_action = current_action.featureaction.get(samplingfeatureid=sampling_feature)
             result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
             status = CvStatus.objects.get(term='ongoing')
 
             # TODO: Change this to update actions without having to delete every time
             existing_results = Result.objects.filter(featureactionid=feature_action)
+            existing_results_ids = []
+            results_to_keep = []
             for result in existing_results:
-                result.delete()
+                existing_results_ids.append(result.resultid)
 
             for result in action_form[i].results:
                 if result.is_valid():
@@ -875,15 +884,32 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                     processing_level = ProcessingLevel.objects.get(pk=data['processing_level_id'].pk)
                     medium = CvMedium.objects.get(name=data['sampledmediumcv'].pk)
 
-                    Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
-                                          variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
-                                          resultdatetime=current_action.begindatetime, resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
-                                          statuscv=status, sampledmediumcv=medium, valuecount=0)
+                    result, created = Result.objects.update_or_create(resultid=existing_results_ids[result_id_counter],
+                                                    featureactionid=feature_action,
+                                                    resulttypecv=result_type,
+                                                    variableid=output_variable.variableid,
+                                                    unitsid=units,
+                                                    processinglevelid=processing_level,
+                                                    resultdatetime=current_action.begindatetime,
+                                                    resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                                                    statuscv=status,
+                                                    sampledmediumcv=medium,
+                                                    valuecount=0)
+                    results_to_keep.append(result.resultid)
+                    result_id_counter += 1
+            for result in existing_results:
+                if result.resultid not in results_to_keep:
+                    result.delete()
+
+
 
         elif action_type.term == 'instrumentCalibration':
             if updating:
-                CalibrationAction.objects.get(actionid_id=current_action.actionid).delete()
-                CalibrationReferenceEquipment.objects.filter(actionid_id=current_action.actionid).delete()
+                try:
+                    CalibrationAction.objects.get(actionid_id=current_action.actionid).delete()
+                    CalibrationReferenceEquipment.objects.filter(actionid_id=current_action.actionid).delete()
+                except:
+                    pass
 
             add_calibration_fields(current_action, action_form[i])
 
