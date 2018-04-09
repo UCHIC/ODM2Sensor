@@ -884,17 +884,30 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                     processing_level = ProcessingLevel.objects.get(pk=data['processing_level_id'].pk)
                     medium = CvMedium.objects.get(name=data['sampledmediumcv'].pk)
 
-                    result, created = Result.objects.update_or_create(resultid=existing_results_ids[result_id_counter],
-                                                    featureactionid=feature_action,
-                                                    resulttypecv=result_type,
-                                                    variableid=output_variable.variableid,
-                                                    unitsid=units,
-                                                    processinglevelid=processing_level,
-                                                    resultdatetime=current_action.begindatetime,
-                                                    resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
-                                                    statuscv=status,
-                                                    sampledmediumcv=medium,
-                                                    valuecount=0)
+                    if not existing_results_ids:
+                        result, created = Result.objects.update_or_create(
+                            featureactionid=feature_action,
+                            resulttypecv=result_type,
+                            variableid=output_variable.variableid,
+                            unitsid=units,
+                            processinglevelid=processing_level,
+                            resultdatetime=current_action.begindatetime,
+                            resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                            statuscv=status,
+                            sampledmediumcv=medium,
+                            valuecount=0)
+                    else:
+                        result, created = Result.objects.update_or_create(resultid=existing_results_ids[result_id_counter],
+                                                        featureactionid=feature_action,
+                                                        resulttypecv=result_type,
+                                                        variableid=output_variable.variableid,
+                                                        unitsid=units,
+                                                        processinglevelid=processing_level,
+                                                        resultdatetime=current_action.begindatetime,
+                                                        resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                                                        statuscv=status,
+                                                        sampledmediumcv=medium,
+                                                        valuecount=0)
                     results_to_keep.append(result.resultid)
                     result_id_counter += 1
             for result in existing_results:
