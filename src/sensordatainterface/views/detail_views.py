@@ -1,6 +1,7 @@
 from sensordatainterface.base_views import *
 from django.views.generic import DetailView
 from sensordatainterface.forms import *
+from sensordatainterface.models import *
 from django.http import *
 
 
@@ -8,11 +9,37 @@ from django.http import *
 class GenericDetailView(DetailView):
     @method_decorator(login_required(login_url=LOGIN_URL))
     def dispatch(self, *args, **kwargs):
-        try:
-            action_type = self.context_object_name.lower()
-            action = Action.objects.get(pk=self.kwargs['slug'], actiontypecv__name__icontains=action_type)
-        except:
-            raise Http404()
+        action_type = self.context_object_name.lower()
+        if action_type == 'equipment':
+            try:
+                equ = Equipment.objects.get(pk=self.kwargs['slug'])
+            except:
+                raise Http404()
+        elif action_type == 'outputvariable':
+            try:
+                iov = InstrumentOutputVariable.objects.get(pk=self.kwargs['slug'])
+            except:
+                raise Http404()
+        elif action_type == 'person':
+            try:
+                person = People.objects.get(pk=self.kwargs['slug'])
+            except:
+                raise Http404()
+        elif action_type == 'organization':
+            try:
+                org = Organization.objects.get(pk=self.kwargs['slug'])
+            except:
+                raise Http404()
+        elif action_type == 'model':
+            try:
+                model = EquipmentModel.objects.get(pk=self.kwargs['slug'])
+            except:
+                raise Http404()
+        else:
+            try:
+                action = Action.objects.get(pk=self.kwargs['slug'], actiontypecv__name__icontains=action_type)
+            except:
+                raise Http404()
         return super(GenericDetailView, self).dispatch(*args, **kwargs)
 
 
