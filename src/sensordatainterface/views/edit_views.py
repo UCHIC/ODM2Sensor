@@ -604,11 +604,9 @@ def get_forms_from_request(request, action_id=False):
         if i is u'':
             outputvariables_clean.append([])
         else:
+            if not outputvariables_clean:
+                outputvariables_clean.append([])
             outputvariables_clean[-1].append(i)
-    # for j in outputvariables_clean:
-    #     if not j:
-    #         j.pop()
-
 
     action_form = []
     annotation_forms = []
@@ -885,19 +883,21 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                     medium = CvMedium.objects.get(name=data['sampledmediumcv'].pk)
 
                     if not existing_results_ids:
-                        result, created = Result.objects.update_or_create(
-                            featureactionid=feature_action,
-                            resulttypecv=result_type,
-                            variableid=output_variable.variableid,
-                            unitsid=units,
-                            processinglevelid=processing_level,
-                            resultdatetime=current_action.begindatetime,
-                            resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
-                            statuscv=status,
-                            sampledmediumcv=medium,
-                            valuecount=0)
+                            res = Result.objects.create(
+                                resultid=None,
+                                featureactionid=feature_action,
+                                resulttypecv=result_type,
+                                variableid=output_variable.variableid,
+                                unitsid=units,
+                                processinglevelid=processing_level,
+                                resultdatetime=current_action.begindatetime,
+                                resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                                statuscv=status,
+                                sampledmediumcv=medium,
+                                valuecount=0)
+
                     else:
-                        result, created = Result.objects.update_or_create(resultid=existing_results_ids[result_id_counter],
+                        res, created = Result.objects.update_or_create(resultid=existing_results_ids[result_id_counter],
                                                         featureactionid=feature_action,
                                                         resulttypecv=result_type,
                                                         variableid=output_variable.variableid,
@@ -908,7 +908,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                                                         statuscv=status,
                                                         sampledmediumcv=medium,
                                                         valuecount=0)
-                    results_to_keep.append(result.resultid)
+                    results_to_keep.append(res.resultid)
                     result_id_counter += 1
             for result in existing_results:
                 if result.resultid not in results_to_keep:
@@ -1344,6 +1344,7 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
         if request.POST.get('deployment_id'):
+            deployment_id = request.POST.get('deployment_id')
             deployment_action = Action.objects.get(pk=request.POST.get('deployment_id'))
         else:
             deployment_action = Action.objects.get(pk=request.POST.get('deploymentaction'))
@@ -1361,6 +1362,12 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
             retrieval_form = ActionForm(request.POST, request.FILES)
 
         if site_visit_form.is_valid() and retrieval_form.is_valid():
+            retrieval_action_data = retrieval_form.cleaned_data
+            if not retrieval_action_data['begindatetime'] > deployment_action.enddatetime:
+                response = HttpResponseRedirect(
+                    reverse('create_retrieval_from_deployment', args=deployment_id)
+                )
+                return response
             retrieval_action = retrieval_form.save()
             parent_site_visit = site_visit_form.cleaned_data['actionid']
             if updating:
@@ -1411,6 +1418,11 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
                 reverse('retrieval_detail', args=[retrieval_action.actionid])
             )
 
+            return response
+        else:
+            response = HttpResponseRedirect(
+                reverse('create_retrieval_from_deployment', args=[deployment_id])
+            )
             return response
 
     elif retrieval_id:

@@ -26,10 +26,10 @@
                     <th>UTC Offset:</th>
                     <td>{{ Calibration.begindatetimeutcoffset }}</td>
                     <th>Variable Code:</th>
-                    <td>{{ variable.instrumentoutputvariableid.variableid.variablecode }}</td>
+                    <td>{{ Calibration.calibrationaction.instrumentoutputvariableid.variableid.variablecode }}</td>
                     <th>Check Value:</th>
                     <td>
-                        {{ variable.calibrationcheckvalue|default:" -- " }}
+                        {{ Calibration.calibrationaction.calibrationcheckvalue|default:" -- " }}
                     </td>
                 </tr>
                 <tr>
@@ -40,10 +40,10 @@
                     <th>Action End DateTime:</th>
                     <td>{{ Calibration.enddatetime|default:"present" }}</td>
                     <th>Variable Name:</th>
-                    <td> {{ variable.instrumentoutputvariableid.variableid.variablenamecv }}</td>
+                    <td> {{ Calibration.calibrationaction.instrumentoutputvariableid.variableid.variablenamecv_id }}</td>
                     <th>Calibration Equation:</th>
                     <td>
-                        {{ variable.calibrationequation|default:" -- " }}
+                        {{ Calibration.calibrationaction.calibrationequation|default:" -- " }}
                     </td>
                     <th>Calibration Link:</th>
                     <td><a href="{{ MEDIA_URL }}{{ Calibration.actionfilelink }}">{{ Calibration.actionfilelink|get_media_file_name|default:" -- " }}</a></td>
