@@ -95,6 +95,7 @@ urlpatterns = [
         context_object_name='Model',
         model=EquipmentModel,
         slug_field='equipmentmodelid',
+        queryset=EquipmentModel.objects.prefetch_related('instrumentoutputvariable'),
         template_name='equipment/models/details.html'),
         name='models_detail'),
 
@@ -107,8 +108,8 @@ urlpatterns = [
 
     # Following detail urls are not in the main navigation (i.e. in the navbar)
     # Measured Variable detail
-    url(
-        r'^sites/measured-variable-detail/(?P<pk>[-_\w]+)/(?P<equipmentused>[-_\w]+)/(?P<featureaction>[-_\w]+)/$',
+
+    url(r'^sites/measured-variable-detail/(?P<pk>[-_\w]+)/(?P<equipmentused>[-_\w]+)/(?P<featureaction>[-_\w]+)/$',
         DeploymentMeasVariableDetailView.as_view(),
         name='measured_variable_detail'),
 

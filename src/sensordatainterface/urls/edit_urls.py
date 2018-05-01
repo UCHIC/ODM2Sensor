@@ -25,6 +25,8 @@ urlpatterns = [
 
     url(r'^inventory/create-sensor-output-variable/(?:(?P<outputvar_id>\d+)/)?$', edit_views.edit_output_variable,
         name='create_output_variable'),
+    url(r'^inventory/create-sensor-output-variable/model/(?:(?P<model_id>\d+)/)?$', edit_views.edit_output_variable,
+        name='create_output_variable_equipmentmodel'),
     url(r'^inventory/delete-sensor-output-variable/(?P<outputvar_id>\d+)/$', edit_views.delete_output_variable,
         name='delete_output_variable'),
 

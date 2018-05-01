@@ -103,7 +103,68 @@
                 </tbody>
             </table>
         </div>
+
+
     {% endblock %}
+    {% block variables %}
+{#    <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12 side-dependent-table"#}
+{#                             style="display: none">#}
+{#                            <div class="row">#}
+{#                                <div class="col-sm-12 col-xs-12 col-md-8"><h4>Instrument Measured Variable</h4></div>#}
+{#                                <div class="col-sm-12 col-xs-12 col-md-4 pull-right">#}
+{#                                    <a class="btn btn-block btn-primary"#}
+{#                                       href="{% url 'create_output_variable_deployment' samplingfeature.samplingfeatureid equipment.bridgeid %}">New#}
+{#                                        Deployment Measured Variable</a>#}
+{#                                </div>#}
+{#                            </div>#}
+
+        <div class="row">
+            <div class="col-md-9"><h3>Variables for this Model</h3></div>
+        </div>
+        <hr class="divider">
+
+        <div class="row">
+        <div class="row">
+        <div class="col-sm-12 col-xs-12 col-md-4 pull-right">
+            <a class="btn btn-block btn-primary"
+               href="{% url 'create_output_variable_equipmentmodel' Model.equipmentmodelid %}">New
+                Measured Variable</a>
+        </div>
+        </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Variable Code</th>
+                    <th>Variable Name</th>
+                    <th>Model Name</th>
+                    <th>Method Code</th>
+                    <th>Method Name</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                    {% for variable in Model.instrumentoutputvariable.all %}
+                        {% if variable.modelid.isinstrument %}
+                        <tr>
+                            <td>
+                                {#                                                                    <a href="{% url 'measured_variable_detail' variable.instrumentoutputvariableid Deployment.bridgeid samplingfeature.samplingfeatureid %}">#}
+                                {{ variable.variableid.variablecode }}
+                                {#                                                                    </a>#}
+                            </td>
+                            <td>{{ variable.variableid.variablenamecv_id}}</td>
+                            <td>{{ Model.modelname }}</td>
+                            <td>{{ variable.instrumentmethodid.methodcode }}</td>
+                            <td>{{ variable.instrumentmethodid.methodname }}</td>
+                        </tr>
+                        {% endif %}
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+
+{#                        </div>#}
 
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGtObe6Ic1FeiDvC9Oxt3oWc-HWk8wuTk&sensor=false">
