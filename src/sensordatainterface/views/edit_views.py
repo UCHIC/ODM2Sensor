@@ -482,16 +482,26 @@ def delete_calibration_method(request, method_id):
 
 
 @login_required(login_url=LOGIN_URL)
-def edit_output_variable(request, outputvar_id):
-    modifications = {
-        'instrumentmethodid': ['instrumentmethodid', 'methodid'],
-        'modelid': ['modelid'],
-        'variableid': ['variableid'],
-        'instrumentrawoutputunitsid': ['instrumentrawoutputunitsid', 'unitsid'],
-    }
-    arguments = [request, InstrumentOutputVariable.objects, OutputVariableForm, modifications,
-                 'Instrument Output Variables', 'output_variable_detail', 'instrumentoutputvariableid', outputvar_id,
-                 'equipment/sensor-output-variables/output-variable-form.html']
+def edit_output_variable(request, outputvar_id=None, model_id=None):
+
+    if model_id:
+        modifications = {
+            'modelid': ['equipmentmodelid'],
+        }
+        arguments = [request, EquipmentModel.objects, OutputVariableForm, modifications,
+                     'Instrument Output Variables', 'output_variable_detail', 'instrumentoutputvariableid',
+                     model_id,
+                     'equipment/sensor-output-variables/output-variable-form.html']
+    else:
+        modifications = {
+            'instrumentmethodid': ['instrumentmethodid', 'methodid'],
+            'modelid': ['modelid'],
+            'variableid': ['variableid'],
+            'instrumentrawoutputunitsid': ['instrumentrawoutputunitsid', 'unitsid'],
+        }
+        arguments = [request, InstrumentOutputVariable.objects, OutputVariableForm, modifications,
+                     'Instrument Output Variables', 'output_variable_detail', 'instrumentoutputvariableid', outputvar_id,
+                     'equipment/sensor-output-variables/output-variable-form.html']
 
     return edit_models(*arguments)
 
