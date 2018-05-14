@@ -28,24 +28,26 @@
 
                 {% if render_actions %}
                     <tbody>
-                    {% for action_form in actions_form %}
+                    {{ action_forms.management_form }}
+                    {% for actionform in action_forms %}
                         <tbody class="action-fields">
                         <tr>
                             <th></th>
                             <td><a class="btn btn-danger btn-remove-action col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">-
                                 Remove Action</a></td>
                         </tr>
-                        {{ action_form.as_table }}
+                        {{ actionform }}
                         </tbody>
-                        {% if action_form.results|length != 0 %}
-                            {% for curr_result in action_form.results %}
+                        {% if actionform.nested %}
+                            {{ nested_form.management_form }}
+                            {% for nested_form in actionform.nested.forms %}
                                 <tbody class="results-set">
                                     {% if forloop.first %}
                                         <tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>
                                     {% else %}
                                         <tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>
                                     {% endif %}
-                                    {{ curr_result.as_table }}
+                                {{ nested_form }}
                                 </tbody>
                             {% endfor %}
 

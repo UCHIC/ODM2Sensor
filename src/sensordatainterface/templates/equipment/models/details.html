@@ -148,7 +148,9 @@
                         <tr>
                             <td>
                                 {#                                                                    <a href="{% url 'measured_variable_detail' variable.instrumentoutputvariableid Deployment.bridgeid samplingfeature.samplingfeatureid %}">#}
-                                {{ variable.variableid.variablecode }}
+                                <a href="{% url 'output_variable_detail' variable.variableid_id%}">
+                                    {{ variable.variableid.variablecode }}
+                                </a>
                                 {#                                                                    </a>#}
                             </td>
                             <td>{{ variable.variableid.variablenamecv_id}}</td>

@@ -8,6 +8,7 @@ from copy import deepcopy
 from django import forms
 from datetime import datetime
 from django.apps import apps
+from django.forms.models import modelformset_factory, formset_factory, inlineformset_factory, BaseInlineFormSet
 
 
 @login_required(login_url=LOGIN_URL)
@@ -1058,52 +1059,45 @@ def edit_site_visit(request, action_id):
         action = 'update'
 
         children_actions = RelatedAction.objects.filter(relatedactionid=site_visit.actionid, relationshiptypecv=CvRelationshiptype.objects.get(term='isChildOf'))
-        action_form = []
+        children_ids = []
         for child in children_actions:
-            initial_action_data = {
-                'equipmentused': Equipment.objects.filter(equipmentused__actionid=child.actionid),
-                'thisactionid': child.actionid.actionid
-            }
-
-            if child.actionid.actiontypecv.term == 'instrumentCalibration':
-                calibration_action = CalibrationAction.objects.get(actionid=child.actionid_id)
-                initial_action_data['instrumentoutputvariable'] = calibration_action.instrumentoutputvariableid
-                initial_action_data['calibrationcheckvalue'] = calibration_action.calibrationcheckvalue
-                initial_action_data['calibrationequation'] = calibration_action.calibrationequation
-                initial_action_data['calibrationstandard'] = ReferenceMaterial.objects.filter(
+            children_ids.append(child.actionid_id)
+        action_formset = ActionFormset(queryset=Action.objects.filter(actionid__in=children_ids))
+        # action_form = []
+        instances = action_formset.save(commit=False)
+        form_count = 0
+        for form in action_formset:
+            form.add_fields(form, form_count)
+            form.fields['equipmentused'].initial = Equipment.objects.filter(equipmentused__actionid=form.fields['actionid'].initial)
+            if instances[form_count].actiontypecv_id == 'Instrument calibration':
+                calibration_action = CalibrationAction.objects.get(actionid=form.fields['actionid'].initial)
+                form.fields['instrumentoutputvariable'].initial = calibration_action.instrumentoutputvariableid
+                form.fields['calibrationcheckvalue'].initial = calibration_action.calibrationcheckvalue
+                form.fields['calibrationequation'].initial = calibration_action.calibrationequation
+                form.fields['calibrationstandard'].initial = ReferenceMaterial.objects.filter(
                     calibrationstandard__isnull=False,
                     calibrationstandard__actionid=calibration_action.actionid_id
                 )
-                initial_action_data['calibrationreferenceequipment'] = Equipment.objects.filter(
-                    calibrationreferenceequipment__isnull=False,
-                    calibrationreferenceequipment__actionid=calibration_action.actionid_id
-                )
-            elif child.actionid.actiontypecv.term == 'equipmentMaintenance':
-                maintenance_action = MaintenanceAction.objects.get(actionid=child.actionid)
-                initial_action_data['isfactoryservice'] = maintenance_action.isfactoryservice
-                initial_action_data['maintenancecode'] = maintenance_action.maintenancecode
-                initial_action_data['maintenancereason'] = maintenance_action.maintenancereason
-            elif child.actionid.actiontypecv_id in ['Equipment retrieval', 'Instrument retrieval']:
-                deployment = child.actionid.relatedaction.filter(relationshiptypecv_id='Is retrieval for').get().relatedactionid
-                initial_action_data['deploymentaction'] = deployment
+            elif instances[form_count].actiontypecv.term == 'equipmentMaintenance':
+                maintenance_action = MaintenanceAction.objects.get(actionid=form.fields['actionid'].initial)
+                form.fields['isfactoryservice'].initial = maintenance_action.isfactoryservice
+                form.fields['maintenancecode'].initial = maintenance_action.maintenancecode
+                form.fields['maintenancereason'].initial = maintenance_action.maintenancereason
+            elif instances[form_count].actiontypecv_id in ['Equipment retrieval', 'Instrument retrieval']:
+                deployment = instances[form_count].relatedaction.filter(relationshiptypecv_id='Is retrieval for').get().relatedactionid
+                form.fields['deploymentaction'].initial = deployment
+            if form.nested:
+                nested_form_count = 0
+                nested_form_instances = form.nested.save(commit=False)
+                for nested_form in form.nested.forms:
+                    output_variable = InstrumentOutputVariable.objects.get(
+                        variableid=nested_form_instances[nested_form_count].variableid_id,
+                        modelid=instances[form_count].equipmentused.get().equipmentid.equipmentmodelid_id)
+                    nested_form.fields['instrumentoutputvariable'].initial = output_variable
+                    nested_form.fields['processinglevelid'].initial = nested_form_instances[nested_form_count].processinglevelid_id
 
-            child_action_form = ActionForm(
-                instance=child.actionid,
-                initial=initial_action_data
-            )
-            child_action_form.results = []
-            for result in child.actionid.featureaction.get().result_set.all():
-                output_variable = InstrumentOutputVariable.objects.get(
-                    variableid=result.variableid_id, modelid=initial_action_data['equipmentused'].values('equipmentmodelid'))
+            form_count += 1
 
-                result_data = {
-                    'instrumentoutputvariable': output_variable.instrumentoutputvariableid,
-                    'unitsid': result.unitsid_id,
-                    'processing_level_id': result.processinglevelid_id,
-                    'sampledmediumcv': result.sampledmediumcv_id
-                }
-                child_action_form.results.append(ResultsForm(result_data))
-            action_form.append(child_action_form)
 
         annotations = site_visit.actionannotation_set.all()
         annotation_forms = []
@@ -1117,8 +1111,8 @@ def edit_site_visit(request, action_id):
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
             'mock_annotation_form': AnnotationForm(),
-            'mock_results_form': ResultsForm(),
-            'actions_form': action_form,
+            # 'mock_results_form': ResultsForm(),
+            'action_forms': action_formset,
             'annotation_forms': annotation_forms,
             'render_actions': render_actions,
             'action': action, 'item_id': action_id
@@ -1160,6 +1154,8 @@ def edit_site_visit_summary(request, action_id):
 def edit_action(request, action_type, action_id=None, visit_id=None, site_id=None, equipment_id=None):
     action = 'create'
     child_relationship = CvRelationshiptype.objects.get(term='isChildOf')
+    if action_type == 'FactoryService':
+        return edit_factory_service_event(request, equipment_id)
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'

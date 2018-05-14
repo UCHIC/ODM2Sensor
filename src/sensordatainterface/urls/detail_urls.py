@@ -114,7 +114,7 @@ urlpatterns = [
         name='measured_variable_detail'),
 
 
-    url(r'^vocabularies/person-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
+    url(r'^people/person-detail/(?P<slug>[-_\w]+)/$', GenericDetailView.as_view(
         context_object_name='Person',
         model=People,
         queryset=Affiliation.objects.prefetch_related('personid'),

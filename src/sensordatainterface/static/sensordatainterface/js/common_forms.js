@@ -129,10 +129,10 @@ function setFormFields(currentForm) {
     currentForm.find('.select2-container').css('width', '100%');
 }
 
-function handleActionTypeChange(formType, currentForm) {
+function handleActionTypeChange(formType, currentForm, form_prefix) {
     var requiredEquipmentClasses = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
         'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval'];
-    var formClasses = $.map($(currentForm).find('select[name="actiontypecv"]').children(), function (option) {
+    var formClasses = $.map($(currentForm).find('.select-two[name=' + form_prefix + "actiontypecv" + ']').children(), function (option) {
         return option.value;
     }).reduce(function (map, actiontype) {
         map[actiontype] = actiontype.replace(' ', '');
@@ -174,7 +174,7 @@ function handleActionTypeChange(formType, currentForm) {
     methodSelect.select2();
     $('.select2-container').css('width', '100%');
 
-    var equipmentUsedElem = $(currentForm).find('[name="equipmentused"]');
+    var equipmentUsedElem = $(currentForm).find('[name=' + form_prefix +"equipmentused" + ']');
 
     //Set EquipmentUsed required
     if (requiredEquipmentClasses.indexOf(formType) > -1) {
@@ -187,26 +187,26 @@ function handleActionTypeChange(formType, currentForm) {
     var siteSelect = $('form').find('[name="samplingfeatureid"]');
     var isDeployment = formType == 'Instrument deployment' || formType == 'Equipment deployment';
     var isRetrieval = formType === 'Instrument retrieval' || formType === 'Equipment retrieval';
-    var equipmentSelect = $(currentForm).find('[name="equipmentused"]');
+    var equipmentSelect = $(currentForm).find('[name=' + form_prefix + "equipmentused" + ']');
 
 
     if (isSiteVisit) {
-        filterDeploymentsByType(formType, $(currentForm).find('[name="deploymentaction"]')); //Filter deployments by action type
+        filterDeploymentsByType(formType, $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']')); //Filter deployments by action type
     }
 
     if (isDeployment) {
-        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name="begindatetime"]').val(), $(currentForm), formType);
-        $(currentForm).find('[name="enddatetime"]').parents('tr').hide();
-        $(currentForm).find('[name="enddatetimeutcoffset"]').parents('tr').hide();
+        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name=' + form_prefix + "begindatetime" + ']').val(), $(currentForm), formType);
+        $(currentForm).find('[name=' + form_prefix + "enddatetime" + ']').parents('tr').hide();
+        $(currentForm).find('[name=' + form_prefix + "enddatetimeutcoffset" + ']').parents('tr').hide();
         equipmentSelect.parents('tr').show();
         equipmentSelect.removeAttr('multiple');
         equipmentSelect.select2();
     } else if (isRetrieval) {
-        $(currentForm).find('[name="deploymentaction"]').parents('tr').addClass('form-required');
+        $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']').parents('tr').addClass('form-required');
         filterNonRetrievalFields($(currentForm));
     } else if (!isDeployment && !isRetrieval) {
         filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm), formType);
-        $(currentForm).find('[name="deploymentaction"]').parents('tr').removeClass('form-required');
+        $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']').parents('tr').removeClass('form-required');
         equipmentSelect.attr('multiple', 'multiple');
         showNonRetrievalFields($(currentForm));
         equipmentSelect.select2();
@@ -218,7 +218,7 @@ function handleActionTypeChange(formType, currentForm) {
         $(currentForm).next('tbody.add-result-btn').remove();
     }
     if (formType === 'Instrument deployment') {
-        $(currentForm).find('[name="equipmentused"]').trigger('change');
+        $(currentForm).find('[name=' + form_prefix + "equipmentused" + ']').trigger('change');
         if ($(currentForm).find('tr.form-required').first().html() !== $('form').find('tbody.action-fields tr.form-required').first().html()) {
             var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
             addResultButton.insertAfter(currentForm);
@@ -231,10 +231,10 @@ function handleActionTypeChange(formType, currentForm) {
         }
     }
     if (formType === 'Instrument calibration') {
-        $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').addClass('form-required');
-        $(currentForm).find('[name="equipmentused"]').removeAttr('multiple');
+        $(currentForm).find('[name=' + form_prefix + "instrumentoutputvariable" + ']').parents('tr').addClass('form-required');
+        $(currentForm).find('[name=' + form_prefix + "equipmentused" + ']').removeAttr('multiple');
     } else {
-        $(currentForm).find('[name="instrumentoutputvariable"]').parents('tr').removeClass('form-required');
+        $(currentForm).find('[name=' + form_prefix + "instrumentoutputvariable" + ']').parents('tr').removeClass('form-required');
     }
 }
 
@@ -255,7 +255,7 @@ function addResultForm(that, firstResult) {
 
     fields.find(".select-two").select2();
     fields.insertBefore(btnForm);
-    btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name="equipmentused"]').trigger('change');
+    btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name=' + form_prefix + "equipmentused" + ']').trigger('change');
 }
 
 function removeResultForm(that) {
@@ -265,8 +265,8 @@ function removeResultForm(that) {
 
 function filterVariablesByEquipment(equipmentElement) {
     var siblingForms = equipmentElement.parents('tbody').nextUntil('.action-fields', '.results-set').andSelf();
-    var outputVariablesSelects = siblingForms.find('select[name="instrumentoutputvariable"]');
-    var unitsSelects = siblingForms.find('select[name="unitsid"]');
+    var outputVariablesSelects = siblingForms.find('select[name=' + form_prefix + "instrumentoutputvariable" + ']');
+    var unitsSelects = siblingForms.find('select[name=' + form_prefix + "unitsid" + ']');
 
     var selectedEquipment = equipmentElement.val();
     if (!selectedEquipment) {
@@ -810,7 +810,7 @@ $(document).ready(function () {
     setFormFields($('tbody'));
     cacheUnfilteredSelects();
     var currentForm = $('form');
-    var allForms = currentForm.find('tbody').has('[name="actiontypecv"]');
+    var allForms = currentForm.find('tbody.action-fields');
     for (i = 0 ; i < allForms.length ; i++){
         bindEquipmentUsedFiltering($(allForms[i]).find('.select-two[name="equipmentused"]'));
     }
@@ -833,9 +833,10 @@ $(document).ready(function () {
     }
 
     allForms.each(function(index, actionForm) {
-        var actionType = $(actionForm).find('.select-two[name="actiontypecv"]');
+        var form_prefix = "form-" + index + '-'
+        var actionType = $(actionForm).find('.select-two[name=' + form_prefix + "actiontypecv" + ']')
 
-        handleActionTypeChange(actionType.val(), actionForm);
+        handleActionTypeChange(actionType.val(), actionForm, form_prefix);
         bindDeploymentField($(actionForm));
 
         actionType.change(function(event) {
@@ -843,7 +844,7 @@ $(document).ready(function () {
             var selected = field.val();
 
             var currentActionForm = field.parents('tbody');
-            handleActionTypeChange(selected, currentActionForm);
+            handleActionTypeChange(selected, currentActionForm, form_prefix);
         });
     });
 

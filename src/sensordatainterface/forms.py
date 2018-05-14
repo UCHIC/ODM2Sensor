@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms import ModelForm, TextInput, Textarea, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
     , ModelMultipleChoiceField, FileInput, HiddenInput
-from django.forms.models import modelformset_factory
+from django.forms.models import modelformset_factory, inlineformset_factory, BaseInlineFormSet
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -756,6 +756,33 @@ class SelectWithClassForOptions(Select):
         return option_html[:after_tag] + "class=\"" + class_value + "\"" + option_html[before_tag_close:]
 
 
+
+class ResultsForm(ModelForm):
+    required_css_class = 'form-required'
+    model = Result
+
+    instrumentoutputvariable = InstrumentOutputVariableChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=instrument_output_variable_queryset, label='Instrument Output Variable', required=True)
+
+    unitsid = UnitChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=units_queryset, label='Units', required=True)
+
+    processinglevelid = ProcessingLevelChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=processing_level_queryset, label='Processing Level', required=True)
+
+    sampledmediumcv = forms.ModelChoiceField(
+        widget=forms.Select(attrs={'class': ''}),
+        queryset=cv_medium_queryset, label='Sampled Medium', required=True)
+
+ResultFormset = modelformset_factory(Result, form=ResultsForm,
+                                                     fields=('instrumentoutputvariable',
+                                                             'unitsid',
+                                                             'sampledmediumcv'), extra=0)
+
+
 class ActionForm(ModelForm):
     def __init__(self, *args, **kwargs):
         actiontype = kwargs.pop('actiontype', None)
@@ -799,7 +826,8 @@ class ActionForm(ModelForm):
     calibrationreferenceequipmentnumber = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     isfactoryservice = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={'class': 'Equipmentmaintenance'}), label='Is Factory Service', required=False)
+        widget=forms.CheckboxInput(attrs={'class': 'Equipmentmaintenance'}), label='Is Factory Service',
+        required=False)
     isfactoryservicebool = forms.BooleanField(
         widget=HiddenInput(), initial='False', required=False
     )
@@ -814,10 +842,12 @@ class ActionForm(ModelForm):
         queryset=instrument_output_variable_queryset, label='Instrument Output Variable', required=False)
 
     calibrationcheckvalue = forms.DecimalField(
-        widget=forms.NumberInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Check Value', required=False)
+        widget=forms.NumberInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Check Value',
+        required=False)
 
     calibrationequation = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation', required=False)
+        widget=forms.TextInput(attrs={'class': 'Instrumentcalibration'}), label='Calibration Equation',
+        required=False)
 
     # fields for retrieval
     deploymentaction = DeploymentActionChoiceField(
@@ -869,32 +899,31 @@ class ActionForm(ModelForm):
         equipment = self.data['equipmentused']
         action_type = self.data['actiontypecv']
         required_types = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
-                              'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval']
+                          'Instrument calibration', 'Equipment deployment', 'Instrument deployment',
+                          'Equipment retrieval']
 
         if action_type in required_types and len(equipment) == 0:
             raise ValidationError(_('This field is required'))
 
         return self.cleaned_data['equipmentused']
 
+    def add_fields(self, form, index):
+        form.nested = ResultFormset(
+            queryset=form.instance.featureaction.get().result_set.all(),
+            data=form.data if form.is_bound else None,
+            files=form.files if form.is_bound else None)
 
-class ResultsForm(forms.Form):
-    required_css_class = 'form-required'
 
-    instrumentoutputvariable = InstrumentOutputVariableChoiceField(
-        widget=forms.Select(attrs={'class': ''}),
-        queryset=instrument_output_variable_queryset, label='Instrument Output Variable', required=True)
-
-    unitsid = UnitChoiceField(
-        widget=forms.Select(attrs={'class': ''}),
-        queryset=units_queryset, label='Units', required=True)
-
-    processing_level_id = ProcessingLevelChoiceField(
-        widget=forms.Select(attrs={'class': ''}),
-        queryset=processing_level_queryset, label='Processing Level', required=True)
-
-    sampledmediumcv = forms.ModelChoiceField(
-        widget=forms.Select(attrs={'class': ''}),
-        queryset=cv_medium_queryset, label='Sampled Medium', required=True)
+ActionFormset = modelformset_factory(Action, form=ActionForm,
+                                             fields=('actiontypecv',
+                                                     'begindatetime',
+                                                     'begindatetimeutcoffset',
+                                                     'enddatetime',
+                                                     'enddatetimeutcoffset',
+                                                     'actiondescription',
+                                                     'actionfilelink',
+                                                     'methodid',
+                                                     'equipmentused'), extra=0)
 
 
 class AnnotationForm(forms.ModelForm):

@@ -1054,6 +1054,12 @@ class Result(models.Model):
     sampledmediumcv = models.ForeignKey('CvMedium', db_column='sampledmediumcv')  # Field name made lowercase.
     valuecount = models.IntegerField(db_column='valuecount')  # Field name made lowercase.
 
+    def __str__(self):
+        return self.variableid_id
+
+    def __unicode__(self):
+        return self.variableid_id
+
     class Meta:
         managed = False
         db_table = 'results'
