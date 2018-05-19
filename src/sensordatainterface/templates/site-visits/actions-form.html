@@ -22,24 +22,22 @@
             {% for curr_annotation in annotation_forms %}
 
                 <tbody class="annotation-fields">
-                    <tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javascript:removeAnnotation(this)">- Remove Annotation</a></td></tr>
+                    <tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javasctipy:removeAnnotation(this)">- Remove Annotation</a></td></tr>
                     {{ curr_annotation.as_table }}
             {% endfor %}
 
                 {% if render_actions %}
-                    <tbody>
                     {{ action_forms.management_form }}
                     {% for actionform in action_forms %}
                         <tbody class="action-fields">
                         <tr>
                             <th></th>
-                            <td><a class="btn btn-danger btn-remove-action col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">-
+                            <td><a class="btn btn-danger btn-remove-action col-xs-2 col-sm-2" id='remove_action'>-
                                 Remove Action</a></td>
                         </tr>
                         {{ actionform }}
                         </tbody>
                         {% if actionform.nested %}
-                            {{ nested_form.management_form }}
                             {% for nested_form in actionform.nested.forms %}
                                 <tbody class="results-set">
                                     {% if forloop.first %}
@@ -48,6 +46,8 @@
                                         <tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>
                                     {% endif %}
                                 {{ nested_form }}
+
+                                {{ actionform.nested.management_form }}
                                 </tbody>
                             {% endfor %}
 
@@ -62,7 +62,7 @@
                     <td>
                         <div class="row action_buttons">
                             <a class='btn btn-default col-xs-12 col-sm-12'
-                               onclick='javascript:addActionForm(this)'>+ Add Action</a>
+                               id='add_action'>+ Add Action</a>
                             <a class='btn btn-default col-xs-12 col-sm-12'
                                onclick='javascript:addAnnotationForm(this)'>+ Add Annotation</a>
                         </div>
@@ -91,6 +91,11 @@
             </table>
         </form>
     </div>
+    <div id="empty_form" style="display:none">
+        <tbody class='action-fields'>
+            {{ action_forms.empty_form.as_table }}
+        </tbody>
+</div>
 
     {% block mock_forms %}{{ block.super }}{% endblock %}
 {% endblock %}
@@ -98,4 +103,17 @@
 {% block scripts %}
     {{ block.super }}
     <script src="{% static  "sensordatainterface/js/site_visit_form.js" %}"></script>
+    <script>
+    $('#add_action').click(function() {
+        addActionForm(this, 'actionform');
+    });</script>
+    <script>
+    $('#remove_action').click(function() {
+        deleteActionForm(this, 'actionform');
+    });</script>
+{#    <script>#}
+{#    $('#add_action').click(function() {#}
+{#        addActionFormTest()#}
+{#    });#}
+{#</script>#}
 {% endblock %}

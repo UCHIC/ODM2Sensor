@@ -756,10 +756,8 @@ class SelectWithClassForOptions(Select):
         return option_html[:after_tag] + "class=\"" + class_value + "\"" + option_html[before_tag_close:]
 
 
-
 class ResultsForm(ModelForm):
     required_css_class = 'form-required'
-    model = Result
 
     instrumentoutputvariable = InstrumentOutputVariableChoiceField(
         widget=forms.Select(attrs={'class': ''}),
@@ -776,6 +774,16 @@ class ResultsForm(ModelForm):
     sampledmediumcv = forms.ModelChoiceField(
         widget=forms.Select(attrs={'class': ''}),
         queryset=cv_medium_queryset, label='Sampled Medium', required=True)
+
+    class Meta:
+
+        model = Result
+        fields = [
+            'instrumentoutputvariable',
+            'unitsid',
+            'processinglevelid',
+            'sampledmediumcv'
+        ]
 
 ResultFormset = modelformset_factory(Result, form=ResultsForm,
                                                      fields=('instrumentoutputvariable',
@@ -911,7 +919,31 @@ class ActionForm(ModelForm):
         form.nested = ResultFormset(
             queryset=form.instance.featureaction.get().result_set.all(),
             data=form.data if form.is_bound else None,
-            files=form.files if form.is_bound else None)
+            files=form.files if form.is_bound else None,
+            prefix='resultform')
+
+    def is_valid(self):
+        result = super(ActionForm, self).is_valid()
+
+        for form in self.forms:
+            if hasattr(form, 'nested'):
+                for n in form.nested:
+                    result = result and n.is_valid()
+        return result
+
+    def save_new(self, form, commit=True):
+
+        instance = super(ActionForm, self).save_new(form, commit=commit)
+
+        form.instance = instance
+
+        for nested in form.nested:
+            nested.instance = instance
+
+            for cd in nested.cleaned_data:
+                cd[nested.fk.name] = instance
+
+        return instance
 
 
 ActionFormset = modelformset_factory(Action, form=ActionForm,

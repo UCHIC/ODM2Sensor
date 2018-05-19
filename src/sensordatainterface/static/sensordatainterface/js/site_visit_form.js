@@ -1,34 +1,53 @@
 //var actionNumber = 1;
 
-function addActionForm(that) {
+function addActionForm(that, type) {
     var button = $(that).parents('tbody');
     var form = $('#action-form').children();
     var thisForm = form.clone();
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    total++;
+    $('#id_' + type + '-TOTAL_FORMS').val(total);
+    var form_prefix = 'actionform-' + (total-1).toString() + '-'
     //thisForm.data('action-number', actionNumber++);
 
 
     //Move add button and insert delete button
     thisForm.insertBefore(button);
     button.prev().prepend(
-        '<tr><th></th><td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
+        '<tr><th></th><td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)>- Remove Action</a></td></tr>'
     );
 
     setChildActionDateTimePicker(thisForm);
+    //Set attribute names to match formset.
+    thisForm.find(':input').each(function() {
+        if ($(this).attr('name') !== undefined) {
+            var name = form_prefix.concat($(this).attr('name'))
+            var id = 'id_' + name;
+            $(this).attr('name', name)
+            $(this).attr('id', id)
+        }
 
-    //add handler for when the actiontypecv is changed
-    $(thisForm).find('.select-two[name="actiontypecv"]').change(function() {
-        var selected = $(this).val();
-        var currentActionForm = $(this).parents('tbody');
-        handleActionTypeChange(selected, currentActionForm);
+    });
+    thisForm.find('label').each(function() {
+        var newFor = form_prefix.concat($(this).attr('for'))
+        $(this).attr('for', newFor);
     });
 
-    bindEquipmentUsedFiltering($(thisForm).find('.select-two[name="equipmentused"]'));
+
+    //add handler for when the actiontypecv is changed
+    $(thisForm).find('.select-two[name=' + form_prefix + "actiontypecv" + ']').change(function() {
+        var selected = $(this).val();
+        var currentActionForm = $(this).parents('tbody');
+        handleActionTypeChange(selected, currentActionForm, form_prefix);
+    });
+
+    bindEquipmentUsedFiltering($(thisForm).find('.select-two[name=' + form_prefix + "equipmentused" + ']'), form_prefix);
     $(thisForm).find('[name="equipment_by_site"]').change(function() {
         filterEquipmentUsed(filterEquipmentBySite, $('form').find('[name="samplingfeatureid"]').val(), $(thisForm)); // what is this?
     });
 
-    bindDeploymentField($(thisForm));
-    filterDeployments($('form').find('[name="samplingfeatureid"]').val(), $(thisForm).find('[name="deploymentaction"]'));
+    bindDeploymentField($(thisForm), form_prefix);
+    filterDeployments($('form').find('[name="samplingfeatureid"]').val(), $(thisForm).find('[name=' + form_prefix + "deploymentaction" + ']'));
 
     //Fix error with select2
     $(thisForm).find(".select2-container").remove();
@@ -37,7 +56,7 @@ function addActionForm(that) {
     // This bit of code solves the problem of the checkbox not sending status when is unchecked.
     // ie. it will not send False to the server
     $(thisForm).find('.maintenance[type="checkbox"]').change(setIsFactoryServiceFlag);
-    handleActionTypeChange('Field activity', thisForm);
+    handleActionTypeChange('Field activity', thisForm, form_prefix);
 
     setFormFields($(thisForm));
 
@@ -46,6 +65,26 @@ function addActionForm(that) {
     $(thisForm).find(".maintenance").not('option').parents('tr').hide();
 }
 
+function cloneMore(selector, type) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    newElement.find(':input').each(function() {
+        if ($(this).attr('name') !== undefined) {
+            var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-')
+            var id = 'id_' + name;
+            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            $(this).attr({'name': name, 'id': id}).select()
+        }
+
+    });
+    newElement.find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+        $(this).attr('for', newFor);
+    });
+    total++;
+    $('#id_' + type + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+}
 
 function addAnnotationForm(that) {
     var removeButton = $('<tr class="remove-button"><th></th><td><a class="btn btn-remove-annotation btn-danger col-xs-2 col-sm-2" onclick="javascript:removeAnnotation(this)">- Remove Annotation</a></td></tr>');
@@ -139,13 +178,15 @@ function setIsFactoryServiceFlag() {
     }
 }
 
-function deleteActionForm(that) {
+function deleteActionForm(that, type) {
+    var type = 'actionform'
     var form = $(that).parents('tbody');
     if (form.next('tbody').hasClass('results-set')) {
         form.nextUntil('tbody.add-result-btn', '.results-set').remove();
         form.next('tbody.add-result-btn').remove();
     }
-
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    $('#id_' + type + '-TOTAL_FORMS').val(total-1);
     form.remove();
 }
 

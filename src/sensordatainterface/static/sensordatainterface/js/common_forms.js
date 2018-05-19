@@ -191,11 +191,11 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
 
 
     if (isSiteVisit) {
-        filterDeploymentsByType(formType, $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']')); //Filter deployments by action type
+        filterDeploymentsByType(formType, $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']'), form_prefix); //Filter deployments by action type
     }
 
     if (isDeployment) {
-        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name=' + form_prefix + "begindatetime" + ']').val(), $(currentForm), formType);
+        filterEquipmentUsed(filterEquipmentByDate, $(currentForm).find('[name=' + form_prefix + "begindatetime" + ']').val(), $(currentForm), form_prefix);
         $(currentForm).find('[name=' + form_prefix + "enddatetime" + ']').parents('tr').hide();
         $(currentForm).find('[name=' + form_prefix + "enddatetimeutcoffset" + ']').parents('tr').hide();
         equipmentSelect.parents('tr').show();
@@ -203,12 +203,12 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
         equipmentSelect.select2();
     } else if (isRetrieval) {
         $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']').parents('tr').addClass('form-required');
-        filterNonRetrievalFields($(currentForm));
+        filterNonRetrievalFields($(currentForm), form_prefix);
     } else if (!isDeployment && !isRetrieval) {
-        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm), formType);
+        filterEquipmentUsed(filterEquipmentBySite, siteSelect.val(), $(currentForm), form_prefix);
         $(currentForm).find('[name=' + form_prefix + "deploymentaction" + ']').parents('tr').removeClass('form-required');
         equipmentSelect.attr('multiple', 'multiple');
-        showNonRetrievalFields($(currentForm));
+        showNonRetrievalFields($(currentForm), form_prefix);
         equipmentSelect.select2();
     }
 
@@ -229,6 +229,11 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
             addResultButton.insertAfter(currentForm);
             addResultForm(addResultButton, true);
         }
+        if ($(currentForm).next().attr('class') !== "results-set"){
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            addResultButton.insertAfter(currentForm);
+            addResultForm(addResultButton, true);
+        }
     }
     if (formType === 'Instrument calibration') {
         $(currentForm).find('[name=' + form_prefix + "instrumentoutputvariable" + ']').parents('tr').addClass('form-required');
@@ -241,7 +246,24 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
 function addResultForm(that, firstResult) {
     var removeButton = $('<tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>');
     var fields = $('#results-form').children().clone();
+    var total = $('#id_' + 'resultform' + '-TOTAL_FORMS').val();
+    total++;
+    $('#id_' + 'resultform' + '-TOTAL_FORMS').val(total);
+    var form_prefix = 'resultform-' + (total-1).toString() + '-'
     var btnForm;
+    fields.find(':input').each(function() {
+        if ($(this).attr('name') !== undefined) {
+            var name = form_prefix.concat($(this).attr('name'))
+            var id = 'id_' + name;
+            $(this).attr('name', name)
+            $(this).attr('id', id)
+        }
+
+    });
+    fields.find('label').each(function() {
+        var newFor = form_prefix.concat($(this).attr('for'))
+        $(this).attr('for', newFor);
+    });
 
     if (firstResult) {
         var resultsRow = $('<tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>');
@@ -255,19 +277,26 @@ function addResultForm(that, firstResult) {
 
     fields.find(".select-two").select2();
     fields.insertBefore(btnForm);
+    form_prefix = 'actionform' + ()
     btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name=' + form_prefix + "equipmentused" + ']').trigger('change');
 }
 
 function removeResultForm(that) {
+    var type = 'resultform'
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    $('#id_' + type + '-TOTAL_FORMS').val(total-1);
+    $('#id_' + type + '-' + (total-1) + 'DELETE');
     $(that).parents('tbody').remove();
 }
 
 
-function filterVariablesByEquipment(equipmentElement) {
+function filterVariablesByEquipment(equipmentElement, form_prefix) {
     var siblingForms = equipmentElement.parents('tbody').nextUntil('.action-fields', '.results-set').andSelf();
+    if (siblingForms.last('.result-set').length) {
+        form_prefix = form_prefix.replace('actionform', 'resultform')
+    }
     var outputVariablesSelects = siblingForms.find('select[name=' + form_prefix + "instrumentoutputvariable" + ']');
     var unitsSelects = siblingForms.find('select[name=' + form_prefix + "unitsid" + ']');
-
     var selectedEquipment = equipmentElement.val();
     if (!selectedEquipment) {
         outputVariablesSelects.children('option').removeAttr('disabled');
@@ -436,7 +465,7 @@ function filterEquipmentByDate(date, equipmentUsedSelectElems, formType) {
     });
 }
 
-function filterDeploymentsByType(formType, deploymentsSelect) {
+function filterDeploymentsByType(formType, deploymentsSelect, form_prefix) {
     if (formType !== 'Instrument retrieval' && formType !== 'Equipment retrieval') {
         return;
     }
@@ -696,14 +725,14 @@ function setDeploymentEquipment(deploymentId, equipmentUsedSelect) {
 }
 
 // get site visit dates from get_site_visit_dates, and restrict begindate and enddate
-function filterActionDatesByVisit(siteVisitId) {
+function filterActionDatesByVisit(siteVisitId, form_prefix) {
     if (siteVisitId == '') {
         return;
     }
 
     var apiUrl = $('#site-visit-dates').val();
     var form = $('form');
-    var actionType = form.find('[name="actiontypecv"]').val();
+    var actionType = form.find('[name=' + form_prefix + "actiontypecv" + ']').val();
     var token = form.find('[name="csrfmiddlewaretoken"]').val();
     var isDeployment = form.hasClass('EquipmentDeployment') || actionType == 'Equipment deployment' || actionType == 'Instrument deployment';
 
@@ -787,9 +816,9 @@ function onEquipmentModelChange(event) {
     }
 }
 
-function bindEquipmentUsedFiltering(selectElement) {
+function bindEquipmentUsedFiltering(selectElement, form_prefix) {
     selectElement.change(function(eventData, handler) {
-        filterVariablesByEquipment(selectElement);
+        filterVariablesByEquipment(selectElement, form_prefix);
     });
 }
 
@@ -812,7 +841,8 @@ $(document).ready(function () {
     var currentForm = $('form');
     var allForms = currentForm.find('tbody.action-fields');
     for (i = 0 ; i < allForms.length ; i++){
-        bindEquipmentUsedFiltering($(allForms[i]).find('.select-two[name="equipmentused"]'));
+        var form_prefix = "actionform-" + i + '-'
+        bindEquipmentUsedFiltering($(allForms[i]).find('.select-two[name=' + form_prefix + "equipmentused" + ']'), form_prefix);
     }
 
 
@@ -833,7 +863,7 @@ $(document).ready(function () {
     }
 
     allForms.each(function(index, actionForm) {
-        var form_prefix = "form-" + index + '-'
+        var form_prefix = "actionform-" + index + '-'
         var actionType = $(actionForm).find('.select-two[name=' + form_prefix + "actiontypecv" + ']')
 
         handleActionTypeChange(actionType.val(), actionForm, form_prefix);
@@ -849,7 +879,7 @@ $(document).ready(function () {
     });
 
     if (siteVisitSelect.length !== 0) {
-        var actionType = currentForm.find('[name="actiontypecv"]').val();
+        var actionType = currentForm.find('[name=' + form_prefix + "actiontypecv" + ']').val();
         siteVisitSelect.change(function (eventData, handler) {
             var selectedVisit = siteVisitSelect.val();
             var isRetrieval = actionType == 'Instrument retrieval' || actionType == 'Equipment retrieval';
@@ -857,12 +887,12 @@ $(document).ready(function () {
             if (!isRetrieval && !isDeployment) {
                 filterEquipmentUsed(filterEquipmentByAction, $(this).val(), currentForm);
             } else if (isDeployment) {
-                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name="begindatetime"]').val(), currentForm, actionType);
+                filterEquipmentUsed(filterEquipmentByDate, currentForm.find('[name=' + form_prefix + "begindatetime" + ']').val(), currentForm, actionType);
             }
 
 
-            var deploymentField = currentForm.find('[name="deploymentaction"]');
-            filterActionDatesByVisit(selectedVisit);
+            var deploymentField = currentForm.find('[name=' + form_prefix + "deploymentaction" + ']');
+            filterActionDatesByVisit(selectedVisit, form_prefix);
             if (!deploymentField.prop('disabled') && siteVisitSelect.children('option[disabled]').length === 0) {
                 filterDeploymentsByVisitSite(selectedVisit, deploymentField);
             }
@@ -874,20 +904,20 @@ $(document).ready(function () {
     }
 
 
-    if (currentForm.find('[name="deploymentaction"]').val() !== '') {
-        currentForm.find('[name="deploymentaction"]').trigger('change');
+    if (currentForm.find('[name=' + form_prefix + "deploymentaction" + ']').val() !== '') {
+        currentForm.find('[name=' + form_prefix + "deploymentaction" + ']').trigger('change');
     }
     setOtherActions();
 });
 
 
-function bindDeploymentField(form) {
-    var deploymentSelect = form.find('[name="deploymentaction"]');
+function bindDeploymentField(form, form_prefix) {
+    var deploymentSelect = form.find('[name=' + form_prefix + "deploymentaction" + ']');
     deploymentSelect.change(function() {
         var deploymentId = deploymentSelect.val();
         var siteVisitSelect = form.find('[name="actionid"]');
         getDeploymentType(deploymentId, form);
-        setDeploymentEquipment(deploymentId, form.find('[name="equipmentused"]'));
+        setDeploymentEquipment(deploymentId, form.find('[name=' + form_prefix + "equipmentused" + ']'));
 
         if (siteVisitSelect.length > 0 && deploymentSelect.children('option[disabled]').length === 0) {
             filterVisitsByDeploymentSite(deploymentId, siteVisitSelect);
@@ -933,25 +963,25 @@ function getDeploymentType(deploymentId, form) {
 }
 
 
-function filterNonRetrievalFields(form) {
-    form.find('[name="equipmentused"]').parents('tr').hide();
-    form.find('[name="enddatetime"]').parents('tr').hide();
-    form.find('[name="enddatetimeutcoffset"]').parents('tr').hide();
-    form.find('[name="actionfilelink"]').parents('tr').hide()
+function filterNonRetrievalFields(form, form_prefix) {
+    form.find('[name=' + form_prefix + "equipmentused" + ']').parents('tr').hide();
+    form.find('[name=' + form_prefix + "enddatetime" + ']').parents('tr').hide();
+    form.find('[name=' + form_prefix + "enddatetimeutcoffset" + ']').parents('tr').hide();
+    form.find('[name=' + form_prefix + "actionfilelink" + ']').parents('tr').hide()
 }
 
-function showNonRetrievalFields(form) {
-    form.find('[name="equipmentused"]').parents('tr').show();
-    form.find('[name="enddatetime"]').parents('tr').show();
-    form.find('[name="enddatetimeutcoffset"]').parents('tr').show();
-    form.find('[name="actionfilelink"]').parents('tr').show()
+function showNonRetrievalFields(form, form_prefix) {
+    form.find('[name=' + form_prefix + "equipmentused" + ']').parents('tr').show();
+    form.find('[name=' + form_prefix + "enddatetime" + ']').parents('tr').show();
+    form.find('[name=' + form_prefix + "enddatetimeutcoffset" + ']').parents('tr').show();
+    form.find('[name=' + form_prefix + "actionfilelink" + ']').parents('tr').show()
 }
 
 
-function filterEquipmentUsed(filter, filteringValue, currentForm, formType) {
+function filterEquipmentUsed(filter, filteringValue, currentForm, form_prefix) {
     var filterEquipmentCheck = currentForm.find('#id_equipment_by_site');
-    var formActionType = currentForm.find('[name="actiontypecv"]').val();
-    var equipmentUsedSelect = currentForm.find('[name="equipmentused"]');
+    var formActionType = currentForm.find('[name=' + form_prefix + "actiontypecv" + ']').val();
+    var equipmentUsedSelect = currentForm.find('[name=' + form_prefix + "equipmentused" + ']');
 
     if (formActionType == 'Equipment retrieval' || formActionType == 'Instrument retrieval') {
         equipmentUsedSelect.children('option').removeAttr('disabled');

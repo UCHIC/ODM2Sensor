@@ -606,6 +606,14 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
 
 def get_forms_from_request(request, action_id=False):
+    action_formset = ActionFormset(request.POST, prefix='actionform')
+    # if action_formset.is_valid():
+    for form in action_formset:
+        form.save(commit=False)
+        if form.nested:
+            for nested_form in form.nested.forms:
+                nested_form.save()
+
     actions_returned = len(request.POST.getlist('actiontypecv'))
     outputvariables = request.POST.getlist('instrumentoutputvariable')
     annotations = request.POST.getlist('annotationid')
@@ -1040,6 +1048,14 @@ def edit_site_visit(request, action_id):
 
     if request.method == 'POST':
         render_actions = True
+        # action_formset = ActionFormset(request.POST)
+        # if action_formset.is_valid():
+        #     for form in action_formset:
+        #         form.save(commit=False)
+        #         if form.nested:
+        #             for nested_form in form.nested.forms:
+        #                 nested_form.save()
+
         crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request, action_id)
         all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
         if all_forms_valid:
@@ -1062,7 +1078,7 @@ def edit_site_visit(request, action_id):
         children_ids = []
         for child in children_actions:
             children_ids.append(child.actionid_id)
-        action_formset = ActionFormset(queryset=Action.objects.filter(actionid__in=children_ids))
+        action_formset = ActionFormset(queryset=Action.objects.filter(actionid__in=children_ids), prefix='actionform')
         # action_form = []
         instances = action_formset.save(commit=False)
         form_count = 0
@@ -1098,7 +1114,6 @@ def edit_site_visit(request, action_id):
 
             form_count += 1
 
-
         annotations = site_visit.actionannotation_set.all()
         annotation_forms = []
         for curr_annotation in annotations:
@@ -1111,7 +1126,7 @@ def edit_site_visit(request, action_id):
             'render_forms': [sampling_feature_form, site_visit_form, crew_form],
             'mock_action_form': ActionForm(),
             'mock_annotation_form': AnnotationForm(),
-            # 'mock_results_form': ResultsForm(),
+            'mock_results_form': ResultsForm(),
             'action_forms': action_formset,
             'annotation_forms': annotation_forms,
             'render_actions': render_actions,
