@@ -609,7 +609,14 @@ def get_forms_from_request(request, action_id=False):
     action_formset = ActionFormset(request.POST, prefix='actionform')
     # if action_formset.is_valid():
     for form in action_formset:
-        form.save(commit=False)
+        instance = form.save(commit=False)
+        try:
+            form.nested = ResultFormset(
+                data=form.data if form.is_bound else None,
+                files=form.files if form.is_bound else None,
+                prefix='resultform-%s' % instance.pk)
+        except:
+            pass
         if form.nested:
             for nested_form in form.nested.forms:
                 nested_form.save()
@@ -916,17 +923,18 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                                 valuecount=0)
 
                     else:
-                        res, created = Result.objects.update_or_create(resultid=existing_results_ids[result_id_counter],
-                                                        featureactionid=feature_action,
-                                                        resulttypecv=result_type,
-                                                        variableid=output_variable.variableid,
-                                                        unitsid=units,
-                                                        processinglevelid=processing_level,
-                                                        resultdatetime=current_action.begindatetime,
-                                                        resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
-                                                        statuscv=status,
-                                                        sampledmediumcv=medium,
-                                                        valuecount=0)
+                        res, created = Result.objects.update_or_create(
+                                resultid=existing_results_ids[result_id_counter],
+                                featureactionid=feature_action,
+                                resulttypecv=result_type,
+                                variableid=output_variable.variableid,
+                                unitsid=units,
+                                processinglevelid=processing_level,
+                                resultdatetime=current_action.begindatetime,
+                                resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
+                                statuscv=status,
+                                sampledmediumcv=medium,
+                                valuecount=0)
                     results_to_keep.append(res.resultid)
                     result_id_counter += 1
             for result in existing_results:
@@ -1085,6 +1093,7 @@ def edit_site_visit(request, action_id):
         for form in action_formset:
             form.add_fields(form, form_count)
             form.fields['equipmentused'].initial = Equipment.objects.filter(equipmentused__actionid=form.fields['actionid'].initial)
+            form.fields['actionid'].initial = instances[form_count].actionid
             if instances[form_count].actiontypecv_id == 'Instrument calibration':
                 calibration_action = CalibrationAction.objects.get(actionid=form.fields['actionid'].initial)
                 form.fields['instrumentoutputvariable'].initial = calibration_action.instrumentoutputvariableid

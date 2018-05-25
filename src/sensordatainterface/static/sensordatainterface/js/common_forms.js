@@ -130,6 +130,7 @@ function setFormFields(currentForm) {
 }
 
 function handleActionTypeChange(formType, currentForm, form_prefix) {
+    var actionId = $(currentForm).find('[name=' + form_prefix + "actionid" + ']').val()
     var requiredEquipmentClasses = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
         'Instrument calibration', 'Equipment deployment', 'Instrument deployment', 'Equipment retrieval'];
     var formClasses = $.map($(currentForm).find('.select-two[name=' + form_prefix + "actiontypecv" + ']').children(), function (option) {
@@ -220,19 +221,19 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
     if (formType === 'Instrument deployment') {
         $(currentForm).find('[name=' + form_prefix + "equipmentused" + ']').trigger('change');
         if ($(currentForm).find('tr.form-required').first().html() !== $('form').find('tbody.action-fields tr.form-required').first().html()) {
-            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this, null, " + actionId + ")'>+ Add Result</a></td></tr></tbody>");
             addResultButton.insertAfter(currentForm);
-            addResultForm(addResultButton, true);
+            addResultForm(addResultButton, true, actionId);
         }
         if ($('form').find('[name="action"]').val() !== 'update' && $('form').find('tbody.results-set').length === 0) {
-            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this, null, " + actionId + ")'>+ Add Result</a></td></tr></tbody>");
             addResultButton.insertAfter(currentForm);
-            addResultForm(addResultButton, true);
+            addResultForm(addResultButton, true, actionId);
         }
         if ($(currentForm).next().attr('class') !== "results-set"){
-            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>");
+            var addResultButton = $("<tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this, null, " + actionId + ")'>+ Add Result</a></td></tr></tbody>");
             addResultButton.insertAfter(currentForm);
-            addResultForm(addResultButton, true);
+            addResultForm(addResultButton, true, actionId);
         }
     }
     if (formType === 'Instrument calibration') {
@@ -243,13 +244,14 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
     }
 }
 
-function addResultForm(that, firstResult) {
-    var removeButton = $('<tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>');
+function addResultForm(that, firstResult, actionId) {
+    // var actionId = $(that).parents('tbody.add-result-btn').prevUntil('.action-fields').prev('.action-fields').find('[name=' + form_prefix + "actionid" + ']').val()
+    var removeButton = $('<tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this, ' + actionId + ')">- Remove Result</a></td></tr>');
     var fields = $('#results-form').children().clone();
-    var total = $('#id_' + 'resultform' + '-TOTAL_FORMS').val();
+    var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
     total++;
     $('#id_' + 'resultform' + '-TOTAL_FORMS').val(total);
-    var form_prefix = 'resultform-' + (total-1).toString() + '-'
+    var form_prefix = 'resultform-' + actionId + '-' + (total-1).toString() + '-'
     var btnForm;
     fields.find(':input').each(function() {
         if ($(this).attr('name') !== undefined) {
@@ -277,15 +279,16 @@ function addResultForm(that, firstResult) {
 
     fields.find(".select-two").select2();
     fields.insertBefore(btnForm);
-    form_prefix = 'actionform' + ()
+    form_prefix = 'actionform-' + (total-1) +'-'
     btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name=' + form_prefix + "equipmentused" + ']').trigger('change');
 }
 
-function removeResultForm(that) {
-    var type = 'resultform'
-    var total = $('#id_' + type + '-TOTAL_FORMS').val();
-    $('#id_' + type + '-TOTAL_FORMS').val(total-1);
-    $('#id_' + type + '-' + (total-1) + 'DELETE');
+function removeResultForm(that, actionId) {
+    // var actionId = btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name=' + form_prefix + "actionid" + ']').val()
+    var type = 'resultform-'
+    var total = $('#id_' + type + actionId + '-TOTAL_FORMS').val();
+    $('#id_' + type + actionId + '-TOTAL_FORMS').val(total-1);
+    $('#id_' + type + actionId + '-' +  (total-1) + '-DELETE');
     $(that).parents('tbody').remove();
 }
 

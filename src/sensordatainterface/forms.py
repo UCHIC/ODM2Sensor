@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms import ModelForm, TextInput, Textarea, NumberInput, ModelChoiceField, DateTimeInput, Select, SelectMultiple \
     , ModelMultipleChoiceField, FileInput, HiddenInput
-from django.forms.models import modelformset_factory, inlineformset_factory, BaseInlineFormSet
+from django.forms.models import modelformset_factory, inlineformset_factory, BaseFormSet, BaseModelFormSet, formset_factory
 from sensordatainterface.models import *
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -866,7 +866,7 @@ class ActionForm(ModelForm):
         required=False
     )
 
-    thisactionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+    actionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     class Meta:
         model = Action
@@ -880,6 +880,7 @@ class ActionForm(ModelForm):
             'actiondescription',
             'actionfilelink',
             'methodid',
+            'actionid'
         ]
 
         widgets = {
@@ -901,7 +902,24 @@ class ActionForm(ModelForm):
         }
 
     def clean(self):
-        return super(ActionForm, self).clean()
+        super(ActionForm, self).clean()
+        for form in self.forms:
+            form.instance.equipmentused = form.cleaned_data['equipmentused']
+            form.instance.actionid = form.cleaned_data['actionid']
+            if form.instance.actiontype == 'Instrument Calibration':
+                form.instance.instrumenoutputvariable = form.cleaned_data['instrumentoutputvariable']
+                form.instance.calibrationcheckvalue = form.cleaned_data['calibrationcheckvalue']
+                form.instance.calibrationequation = form.cleaned_data['calibrationequation']
+                form.instance.calibrationstandard = form.cleaned_data['calibrationstandard']
+            elif form.instance.actiontype == 'equipmentMaintenance':
+                form.instance.isfactoryservice = form.cleaned_data['isfactoryservice']
+                form.instance.maintenancecode = form.cleaned_data['maintenancecode']
+                form.instance.maintenancereason = form.cleaned_data['maintenancereason']
+            elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
+                form.instance.deploymentaction = form.cleaned_data['deploymentaction']
+
+
+
 
     def clean_equipmentused(self):
         equipment = self.data['equipmentused']
@@ -916,11 +934,16 @@ class ActionForm(ModelForm):
         return self.cleaned_data['equipmentused']
 
     def add_fields(self, form, index):
+        # super(ActionForm, self).add_fields(form, index)
+
+        instance = form.instance
+        prefix = instance.pk
+
         form.nested = ResultFormset(
             queryset=form.instance.featureaction.get().result_set.all(),
             data=form.data if form.is_bound else None,
             files=form.files if form.is_bound else None,
-            prefix='resultform')
+            prefix='resultform-%s' % prefix)
 
     def is_valid(self):
         result = super(ActionForm, self).is_valid()
