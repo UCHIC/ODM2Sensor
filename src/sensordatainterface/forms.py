@@ -918,8 +918,15 @@ class ActionForm(ModelForm):
             elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
                 form.instance.deploymentaction = form.cleaned_data['deploymentaction']
 
+    def is_valid(self):
+        result = super(ActionForm, self).is_valid()
 
+        for form in self.forms:
+            if hasattr(form, 'nested'):
+                for n in form.nested:
+                    result = result and n.is_valid()
 
+        return result
 
     def clean_equipmentused(self):
         equipment = self.data['equipmentused']
@@ -934,25 +941,19 @@ class ActionForm(ModelForm):
         return self.cleaned_data['equipmentused']
 
     def add_fields(self, form, index):
-        # super(ActionForm, self).add_fields(form, index)
 
-        instance = form.instance
-        prefix = instance.pk
+        try:
+            instance = form.instance
+            prefix = instance.pk
+        except IndexError:
+            instance = None
+            prefix = hash(form.prefix)
 
         form.nested = ResultFormset(
             queryset=form.instance.featureaction.get().result_set.all(),
             data=form.data if form.is_bound else None,
             files=form.files if form.is_bound else None,
             prefix='resultform-%s' % prefix)
-
-    def is_valid(self):
-        result = super(ActionForm, self).is_valid()
-
-        for form in self.forms:
-            if hasattr(form, 'nested'):
-                for n in form.nested:
-                    result = result and n.is_valid()
-        return result
 
     def save_new(self, form, commit=True):
 
@@ -969,8 +970,9 @@ class ActionForm(ModelForm):
         return instance
 
 
-ActionFormset = modelformset_factory(Action, form=ActionForm,
-                                             fields=('actiontypecv',
+ActionFormset = modelformset_factory(Action,
+                                     form=ActionForm,
+                                     fields=('actiontypecv',
                                                      'begindatetime',
                                                      'begindatetimeutcoffset',
                                                      'enddatetime',
@@ -978,7 +980,8 @@ ActionFormset = modelformset_factory(Action, form=ActionForm,
                                                      'actiondescription',
                                                      'actionfilelink',
                                                      'methodid',
-                                                     'equipmentused'), extra=0)
+                                                     'equipmentused'),
+                                     extra=0,)
 
 
 class AnnotationForm(forms.ModelForm):

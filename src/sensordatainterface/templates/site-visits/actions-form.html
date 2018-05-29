@@ -36,6 +36,7 @@
                                 Remove Action</a></td>
                         </tr>
                         {{ actionform }}
+                        {{ actionform.nested.management_form }}
                         </tbody>
                         {% if actionform.nested %}
                             {% for nested_form in actionform.nested.forms %}
@@ -47,7 +48,7 @@
                                     {% endif %}
                                 {{ nested_form }}
 
-                                {{ actionform.nested.management_form }}
+
                                 </tbody>
                             {% endfor %}
 
