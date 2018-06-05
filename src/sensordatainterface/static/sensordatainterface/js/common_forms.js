@@ -279,8 +279,10 @@ function addResultForm(that, firstResult, actionId) {
 
     fields.find(".select-two").select2();
     fields.insertBefore(btnForm);
-    var actionform_prefix = 'actionform-' //todo dynamically pull action form prefix index and set here. 
-    btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name=' + actionform_prefix + "equipmentused" + ']').trigger('change');
+    var siblingAction_prefix = btnForm.prevUntil('.action-fields').prev('.action-fields').find('label').first().attr('for').replace('id_','' ).replace('-actiontypecv', '')
+
+    var actionform_prefix = 'actionform-'
+    btnForm.prevUntil('.action-fields').prev('.action-fields').find('[name=' + siblingAction_prefix + '-' + "equipmentused" + ']').trigger('change');
 }
 
 function removeResultForm(that, actionId) {
@@ -298,7 +300,7 @@ function filterVariablesByEquipment(equipmentElement, form_prefix) {
     var actionId = siblingForms.first().find('[name=' + form_prefix + "actionid" + ']').val()
     var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
     if (siblingForms.last('.result-set').length) {
-        form_prefix = 'resultform-' + actionId + (total-1).toString() + '-'
+        form_prefix = 'resultform-' + actionId + '-' + (total-1).toString() + '-'
     }
     var outputVariablesSelects = siblingForms.find('select[name=' + form_prefix + "instrumentoutputvariable" + ']');
     var unitsSelects = siblingForms.find('select[name=' + form_prefix + "unitsid" + ']');

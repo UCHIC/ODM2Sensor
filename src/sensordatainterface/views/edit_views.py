@@ -607,9 +607,12 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
 
 def get_forms_from_request(request, action_id=False):
     action_formset = ActionFormset(request.POST, prefix='actionform')
-    # if action_formset.is_valid():
+    # if action_formset.formset_is_valid(action_formset):
     for form in action_formset:
+        form.is_valid()
         instance = form.save(commit=False)
+        # if form.cleaned_data['actiontypecv'] != 'Generic' and not 'Instrument retrieval':
+        #     form.fields['action']
         try:
             form.nested = ResultFormset(
                 data=form.data if form.is_bound else None,
@@ -619,37 +622,14 @@ def get_forms_from_request(request, action_id=False):
             pass
         if form.nested:
             for nested_form in form.nested.forms:
-                nested_form.save()
+                nested_form.is_valid()
 
     actions_returned = len(request.POST.getlist('actiontypecv'))
     outputvariables = request.POST.getlist('instrumentoutputvariable')
     annotations = request.POST.getlist('annotationid')
     action_result_counter = 0
     outputvariables_clean = []
-    for i in outputvariables:
-        if i is u'':
-            outputvariables_clean.append([])
-        else:
-            if not outputvariables_clean:
-                outputvariables_clean.append([])
-            outputvariables_clean[-1].append(i)
-
-    action_form = []
     annotation_forms = []
-    results_counter = 0
-    maintenance_counter = 0
-    equipment_used_position = 0
-    calibration_standard_position = 0
-    calibration_reference_equipment_position = 0
-
-    site_visit_data = {
-        'begindatetime': request.POST.getlist('begindatetime')[0],
-        'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
-        'enddatetime': request.POST.getlist('enddatetime')[0],
-        'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
-        'actiondescription': request.POST.getlist('actiondescription')[0],
-    }
-
     for i in range(0, len(annotations)):
         annotation_data = {
             'annotationid': annotations[i],
@@ -660,124 +640,29 @@ def get_forms_from_request(request, action_id=False):
         }
         annotation_form = AnnotationForm(annotation_data)
         annotation_forms.append(annotation_form)
-
-    for i in range(1, actions_returned + 1):
-        results = []
-        action_type = request.POST.getlist('actiontypecv')[i - 1]
-        equipment_used_count = request.POST.getlist('equipmentusednumber')[i - 1]
-        calibration_standard_count = request.POST.getlist('calibrationstandardnumber')[i - 1]
-        calibration_reference_equipment_count = request.POST.getlist('calibrationreferenceequipmentnumber')[i - 1]
-        has_result = False
-
-
-        if action_type == 'Instrument deployment':
-            output_variables = outputvariables_clean[i-1]  # get instrument output variable corresponding to the result
-            for j in output_variables:
-                has_result = True
-                result = {
-                    'instrumentoutputvariable': j,
-                    'unitsid': request.POST.getlist('unitsid')[results_counter],
-                    'processing_level_id': request.POST.getlist('processing_level_id')[results_counter],
-                    'sampledmediumcv': request.POST.getlist('sampledmediumcv')[results_counter],
-                }
-                results.append(ResultsForm(result))
-                results_counter += 1
-        if has_result or action_type == 'Instrument calibration':
-            action_result_counter += 1
-            form_data = {
-                'actionid': request.POST.getlist('thisactionid')[i - 1],
-                'actiontypecv': action_type,
-                'begindatetime': request.POST.getlist('begindatetime')[i],
-                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
-                'enddatetime': request.POST.getlist('enddatetime')[i],
-                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
-                'actiondescription': request.POST.getlist('actiondescription')[i],
-                # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
-                'methodid': request.POST.getlist('methodid')[i - 1],
-                'equipmentusednumber': equipment_used_count,
-                'calibrationreferenceequipmentnumber': calibration_reference_equipment_count,
-                'calibrationstandardnumber': calibration_standard_count,
-                'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
-                'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-                'instrumentoutputvariable': outputvariables_clean[action_result_counter -1][0],
-                'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
-                'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
-                'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
-                'equipmentused': request.POST.getlist('equipmentused')[
-                                 equipment_used_position:int(equipment_used_count) + equipment_used_position
-                                 ],
-                'calibrationstandard': request.POST.getlist('calibrationstandard')[
-                                       calibration_standard_position:int(
-                                           calibration_standard_count) + calibration_standard_position
-                                       ],
-                'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
-                                                  calibration_reference_equipment_position:int(
-                                                  calibration_reference_equipment_count) + calibration_reference_equipment_position
-                                                  ],
-            }
-        else:
-            form_data = {
-                'actionid': request.POST.getlist('thisactionid')[i - 1],
-                'actiontypecv': action_type,
-                'begindatetime': request.POST.getlist('begindatetime')[i],
-                'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[i],
-                'enddatetime': request.POST.getlist('enddatetime')[i],
-                'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[i],
-                'actiondescription': request.POST.getlist('actiondescription')[i],
-                # 'actionfilelink': request.FILES.getlist('actionfilelink')[i - 1],
-                'methodid': request.POST.getlist('methodid')[i - 1],
-                'equipmentusednumber': equipment_used_count,
-                'calibrationreferenceequipmentnumber': calibration_reference_equipment_count,
-                'calibrationstandardnumber': calibration_standard_count,
-                'maintenancecode': request.POST.getlist('maintenancecode')[i - 1],
-                'maintenancereason': request.POST.getlist('maintenancereason')[i - 1],
-                # 'instrumentoutputvariable': outputvariables_clean[action_result_counter][0],
-                'calibrationcheckvalue': request.POST.getlist('calibrationcheckvalue')[i - 1],
-                'calibrationequation': request.POST.getlist('calibrationequation')[i - 1],
-                'deploymentaction': request.POST.getlist('deploymentaction')[i - 1],
-                'equipmentused': request.POST.getlist('equipmentused')[
-                                 equipment_used_position:int(equipment_used_count) + equipment_used_position
-                                 ],
-                'calibrationstandard': request.POST.getlist('calibrationstandard')[
-                                       calibration_standard_position:int(
-                                           calibration_standard_count) + calibration_standard_position
-                                       ],
-                'calibrationreferenceequipment': request.POST.getlist('calibrationreferenceequipment')[
-                                                 calibration_reference_equipment_position:int(
-                                                     calibration_reference_equipment_count) + calibration_reference_equipment_position
-                                                 ],
-            }
-
-
-        try:
-            action_file = request.FILES.getlist('actionfilelink')[i - 1]
-        except:
-            action_file = ''
-
-        form_files = {
-            'actionfilelink': action_file,
-        }
-
-        equipment_used_position += int(equipment_used_count)
-        calibration_standard_position += int(calibration_standard_count)
-        calibration_reference_equipment_position += int(calibration_reference_equipment_count)
-
-        if request.POST.getlist('isfactoryservicebool')[i - 1] == 'True':
-            form_data['isfactoryservice'] = request.POST.getlist('isfactoryservice')[maintenance_counter]
-            maintenance_counter += 1
-
-        child_action_id = request.POST.getlist('thisactionid')[i - 1]
-        action = ActionForm(form_data, form_files, instance=Action.objects.get(pk=child_action_id)) if child_action_id != '0' and child_action_id != '' else ActionForm(form_data)
-        action.results = results
-        action_form.append(action)
-
-        if action_type != 'Generic' and not 'Instrument retrieval':
-            action_form[-1].fields['equipmentused'].required = True
-        elif action_type == 'Instrument deployment':
-            action_form[-1].fields['instrumentoutputvariable'].required = True
-        elif action_type == 'Instrument calibration':
-            action_form[-1].fields['instrumentoutputvariable'].required = True
-
+    # for i in outputvariables:
+    #     if i is u'':
+    #         outputvariables_clean.append([])
+    #     else:
+    #         if not outputvariables_clean:
+    #             outputvariables_clean.append([])
+    #         outputvariables_clean[-1].append(i)
+    #
+    # action_form = []
+    # annotation_forms = []
+    # results_counter = 0
+    # maintenance_counter = 0
+    # equipment_used_position = 0
+    # calibration_standard_position = 0
+    # calibration_reference_equipment_position = 0
+    #
+    site_visit_data = {
+        'begindatetime': request.POST.getlist('begindatetime')[0],
+        'begindatetimeutcoffset': request.POST.getlist('begindatetimeutcoffset')[0],
+        'enddatetime': request.POST.getlist('enddatetime')[0],
+        'enddatetimeutcoffset': request.POST.getlist('enddatetimeutcoffset')[0],
+        'actiondescription': request.POST.getlist('actiondescription')[0],
+    }
 
     if action_id:
         sampling_feature_form = FeatureActionForm(request.POST, instance=FeatureAction.objects.get(actionid=action_id))
@@ -788,7 +673,7 @@ def get_forms_from_request(request, action_id=False):
 
     crew_form = CrewForm(request.POST)
 
-    return crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms
+    return crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms
 
 
 def validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms):
@@ -818,7 +703,7 @@ def validate_action_form(request, crew_form, site_visit_form, sampling_feature_f
     return all_forms_valid
 
 
-def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, updating=False):
+def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms, updating=False):
     # set up site visit
     sampling_feature = sampling_feature_form.cleaned_data['samplingfeatureid']
     site_visit_action = site_visit_form.instance
@@ -861,6 +746,9 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     # set up child actions
     # temporary fix! TODO: do not leave this like it is right now.
     # site_visit_action.parent_relatedaction.all().delete()  # delete all site visit child relations
+    for form in action_formset:
+        instance = action_formset.saver(commit=False)
+        
     for i in range(0, len(action_form)):
         current_action = action_form[i].instance
         action_type = action_form[i].cleaned_data['actiontypecv']
@@ -1064,10 +952,10 @@ def edit_site_visit(request, action_id):
         #             for nested_form in form.nested.forms:
         #                 nested_form.save()
 
-        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request, action_id)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+        crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms = get_forms_from_request(request, action_id)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms)
         if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms, True)
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms, True)
             # **delete action and related action for actionid's left**
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
         else:

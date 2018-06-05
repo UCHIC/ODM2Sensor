@@ -903,8 +903,9 @@ class ActionForm(ModelForm):
 
     def clean(self):
         super(ActionForm, self).clean()
+        form_count = 0
         for form in self.forms:
-            form.instance.equipmentused = form.cleaned_data['equipmentused']
+            form.instance.equipmentused = form.cleaned_data['equipmentused'][form_count]
             form.instance.actionid = form.cleaned_data['actionid']
             if form.instance.actiontype == 'Instrument Calibration':
                 form.instance.instrumenoutputvariable = form.cleaned_data['instrumentoutputvariable']
@@ -917,14 +918,14 @@ class ActionForm(ModelForm):
                 form.instance.maintenancereason = form.cleaned_data['maintenancereason']
             elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
                 form.instance.deploymentaction = form.cleaned_data['deploymentaction']
+            form_count += 1
 
     def is_valid(self):
         result = super(ActionForm, self).is_valid()
 
-        for form in self.forms:
-            if hasattr(form, 'nested'):
-                for n in form.nested:
-                    result = result and n.is_valid()
+        if hasattr(self, 'nested'):
+            for n in self.nested:
+                result = result and n.is_valid()
 
         return result
 
