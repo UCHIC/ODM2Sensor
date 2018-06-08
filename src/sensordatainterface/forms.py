@@ -903,22 +903,23 @@ class ActionForm(ModelForm):
 
     def clean(self):
         super(ActionForm, self).clean()
+        form = self
         form_count = 0
-        for form in self.forms:
-            form.instance.equipmentused = form.cleaned_data['equipmentused'][form_count]
-            form.instance.actionid = form.cleaned_data['actionid']
-            if form.instance.actiontype == 'Instrument Calibration':
-                form.instance.instrumenoutputvariable = form.cleaned_data['instrumentoutputvariable']
-                form.instance.calibrationcheckvalue = form.cleaned_data['calibrationcheckvalue']
-                form.instance.calibrationequation = form.cleaned_data['calibrationequation']
-                form.instance.calibrationstandard = form.cleaned_data['calibrationstandard']
-            elif form.instance.actiontype == 'equipmentMaintenance':
-                form.instance.isfactoryservice = form.cleaned_data['isfactoryservice']
-                form.instance.maintenancecode = form.cleaned_data['maintenancecode']
-                form.instance.maintenancereason = form.cleaned_data['maintenancereason']
-            elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
-                form.instance.deploymentaction = form.cleaned_data['deploymentaction']
-            form_count += 1
+
+        form.instance.equipmentused = form.cleaned_data['equipmentused']
+        form.instance.actionid = form.cleaned_data['actionid']
+        if form.instance.actiontype == 'Instrument Calibration':
+            form.instance.instrumenoutputvariable = form.cleaned_data['instrumentoutputvariable']
+            form.instance.calibrationcheckvalue = form.cleaned_data['calibrationcheckvalue']
+            form.instance.calibrationequation = form.cleaned_data['calibrationequation']
+            form.instance.calibrationstandard = form.cleaned_data['calibrationstandard']
+        elif form.instance.actiontype == 'equipmentMaintenance':
+            form.instance.isfactoryservice = form.cleaned_data['isfactoryservice']
+            form.instance.maintenancecode = form.cleaned_data['maintenancecode']
+            form.instance.maintenancereason = form.cleaned_data['maintenancereason']
+        elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
+            form.instance.deploymentaction = form.cleaned_data['deploymentaction']
+        form_count += 1
 
     def is_valid(self):
         result = super(ActionForm, self).is_valid()
@@ -929,17 +930,6 @@ class ActionForm(ModelForm):
 
         return result
 
-    def clean_equipmentused(self):
-        equipment = self.data['equipmentused']
-        action_type = self.data['actiontypecv']
-        required_types = ['Equipment maintenance', 'Equipment programming', 'Instrument retrieval',
-                          'Instrument calibration', 'Equipment deployment', 'Instrument deployment',
-                          'Equipment retrieval']
-
-        if action_type in required_types and len(equipment) == 0:
-            raise ValidationError(_('This field is required'))
-
-        return self.cleaned_data['equipmentused']
 
     def add_fields(self, form, index):
 

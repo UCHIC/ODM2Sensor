@@ -747,13 +747,18 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     # temporary fix! TODO: do not leave this like it is right now.
     # site_visit_action.parent_relatedaction.all().delete()  # delete all site visit child relations
     for form in action_formset:
-        instance = action_formset.saver(commit=False)
-        
-    for i in range(0, len(action_form)):
-        current_action = action_form[i].instance
-        action_type = action_form[i].cleaned_data['actiontypecv']
-        current_action.actiontypecv = CvActiontype.objects.get(name=action_type)
-        current_action.save()
+        instance = form.save(commit=False)
+        action_type = form.cleaned_data['actiontypecv']
+        instance.actiontypecv = CvActiontype.objects.get(name=action_type)
+        instance.save()
+
+
+    for form in action_formset:
+        instance = form.save(commit=False)
+        current_action = instance
+        action_type = form.cleaned_data['actiontypecv']
+        instance.actiontypecv = CvActiontype.objects.get(name=action_type)
+        instance.save()
         #already_child = site_visit_action.parent_relatedaction.filter(actionid_id=current_action.actionid).exists()
 
 
@@ -768,7 +773,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             # #Commented out because now utilizing update or delete
             CalibrationStandard.objects.filter(actionid=current_action.actionid).delete()
 
-        equipments = action_form[i].cleaned_data['equipmentused']
+        equipments = form.cleaned_data['equipmentused']
         for equ in equipments:
             EquipmentUsed.objects.update_or_create(
                 actionid=current_action,
@@ -777,7 +782,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
 
         if action_type.term == 'instrumentDeployment':
             result_id_counter = 0
-            feature_action = current_action.featureaction.get(samplingfeatureid=sampling_feature)
+            feature_action = instance.featureaction.get(samplingfeatureid=sampling_feature)
             result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
             status = CvStatus.objects.get(term='ongoing')
 
@@ -788,12 +793,12 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             for result in existing_results:
                 existing_results_ids.append(result.resultid)
 
-            for result in action_form[i].results:
-                if result.is_valid():
-                    data = result.cleaned_data
+            for result_form in form.nested:
+                if result_form.is_valid():
+                    data = result_form.cleaned_data
                     output_variable = InstrumentOutputVariable.objects.get(pk=data['instrumentoutputvariable'].pk)
                     units = Units.objects.get(pk=data['unitsid'].pk)
-                    processing_level = ProcessingLevel.objects.get(pk=data['processing_level_id'].pk)
+                    processing_level = ProcessingLevel.objects.get(pk=data['processing_level_id'])
                     medium = CvMedium.objects.get(name=data['sampledmediumcv'].pk)
 
                     if not existing_results_ids:
@@ -829,8 +834,6 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 if result.resultid not in results_to_keep:
                     result.delete()
 
-
-
         elif action_type.term == 'instrumentCalibration':
             if updating:
                 try:
@@ -839,7 +842,7 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 except:
                     pass
 
-            add_calibration_fields(current_action, action_form[i])
+            add_calibration_fields(current_action, form)
 
         elif action_type.term == 'equipmentMaintenance':
             if updating:
@@ -848,11 +851,11 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
                 except:
                     pass
 
-            add_maintenance_fields(current_action, action_form[i])
+            add_maintenance_fields(current_action, form)
 
         elif action_type.term == 'instrumentRetrieval' or action_type.term == 'equipmentRetrieval':
             retrieval_relationship = CvRelationshiptype.objects.get(term='isRetrievalfor')
-            deployment_action = action_form[i].cleaned_data['deploymentaction'].actionid
+            deployment_action = form.cleaned_data['deploymentaction'].actionid
             if updating:
                 retrieval_related_action = RelatedAction.objects.get(actionid=current_action, relationshiptypecv=retrieval_relationship)
                 retrieval_related_action.relatedactionid = deployment_action
