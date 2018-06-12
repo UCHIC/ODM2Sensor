@@ -1073,7 +1073,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
         else:
             site_visit_form = SiteVisitChoiceForm(request.POST)
-            action_form = ActionForm(request.POST, request.FILES)
+            action_form = ActionFormset(request.POST, request.FILES, prefix='actionform')
 
         if site_visit_form.is_valid() and action_form.is_valid():
             child_action = action_form.save()
@@ -1186,7 +1186,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
         equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionFormset(
-            initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]},
+            queryset=Action.objects.filter(pk=action_id),
             prefix='actionform'
         )
         instances = action_form.save(commit=False)
@@ -1239,7 +1239,9 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
-        action_form = ActionFormset(prefix='actionform')
+        action_form = BaseActionFormset(queryset=Action.objects.none(),
+            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'actiontypecv': action_type} for x in range(2)],
+            prefix='actionform')
 
     return render(
         request,

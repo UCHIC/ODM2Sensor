@@ -791,7 +791,7 @@ ResultFormset = modelformset_factory(Result, form=ResultsForm,
                                                              'sampledmediumcv'), extra=0)
 
 
-class ActionForm(ModelForm):
+class ActionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         actiontype = kwargs.pop('actiontype', None)
         super(ActionForm, self).__init__(*args, **kwargs)
@@ -958,6 +958,9 @@ class ActionForm(ModelForm):
                 cd[nested.fk.name] = instance
 
         return instance
+
+
+BaseActionFormset = modelformset_factory(Action, form=ActionForm, fields='__all__', extra=1)
 
 
 ActionFormset = modelformset_factory(Action,
