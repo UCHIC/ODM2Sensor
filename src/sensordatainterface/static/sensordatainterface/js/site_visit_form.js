@@ -14,7 +14,7 @@ function addActionForm(that, type) {
     //Move add button and insert delete button
     thisForm.insertBefore(button);
     button.prev().prepend(
-        '<tr><th></th><td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)>- Remove Action</a></td></tr>'
+        '<tr><th></th><td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
     );
 
     setChildActionDateTimePicker(thisForm);
@@ -178,7 +178,7 @@ function setIsFactoryServiceFlag() {
     }
 }
 
-function deleteActionForm(that, type) {
+function deleteActionForm(that) {
     var type = 'actionform'
     var form = $(that).parents('tbody');
     if (form.next('tbody').hasClass('results-set')) {

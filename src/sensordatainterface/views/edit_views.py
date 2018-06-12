@@ -605,7 +605,7 @@ def edit_output_variable_site(request, outputvar_id, site_id, deployment=None):
     )
 
 
-def get_forms_from_request(request, action_id=False):
+def get_forms_from_request(request, action_id=None):
     action_formset = ActionFormset(request.POST, prefix='actionform')
     # if action_formset.formset_is_valid(action_formset):
     for form in action_formset:
@@ -613,14 +613,17 @@ def get_forms_from_request(request, action_id=False):
         instance = form.save(commit=False)
         # if form.cleaned_data['actiontypecv'] != 'Generic' and not 'Instrument retrieval':
         #     form.fields['action']
+
+        result_formset_nested = ResultFormset(
+            data=form.data,
+            files=form.files,
+            prefix='resultform-%s' % instance.pk)
         try:
-            form.nested = ResultFormset(
-                data=form.data if form.is_bound else None,
-                files=form.files if form.is_bound else None,
-                prefix='resultform-%s' % instance.pk)
+            result_formset_nested.is_valid()
+            form.nested = result_formset_nested
         except:
             pass
-        if form.nested:
+        if hasattr(form, 'nested'):
             for nested_form in form.nested.forms:
                 nested_form.is_valid()
 
@@ -746,19 +749,15 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
     # set up child actions
     # temporary fix! TODO: do not leave this like it is right now.
     # site_visit_action.parent_relatedaction.all().delete()  # delete all site visit child relations
-    for form in action_formset:
-        instance = form.save(commit=False)
-        action_type = form.cleaned_data['actiontypecv']
-        instance.actiontypecv = CvActiontype.objects.get(name=action_type)
-        instance.save()
-
-
+    actions_to_keep = []
+    existing_actions = RelatedAction.objects.filter(relatedactionid=site_visit_action, relationshiptypecv_id="Is child of")
     for form in action_formset:
         instance = form.save(commit=False)
         current_action = instance
         action_type = form.cleaned_data['actiontypecv']
         instance.actiontypecv = CvActiontype.objects.get(name=action_type)
         instance.save()
+        actions_to_keep.append(instance.actionid)
         #already_child = site_visit_action.parent_relatedaction.filter(actionid_id=current_action.actionid).exists()
 
 
@@ -790,44 +789,34 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             existing_results = Result.objects.filter(featureactionid=feature_action)
             existing_results_ids = []
             results_to_keep = []
-            for result in existing_results:
-                existing_results_ids.append(result.resultid)
 
             for result_form in form.nested:
                 if result_form.is_valid():
                     data = result_form.cleaned_data
                     output_variable = InstrumentOutputVariable.objects.get(pk=data['instrumentoutputvariable'].pk)
                     units = Units.objects.get(pk=data['unitsid'].pk)
-                    processing_level = ProcessingLevel.objects.get(pk=data['processing_level_id'])
                     medium = CvMedium.objects.get(name=data['sampledmediumcv'].pk)
+                    try:
+                        res_id = data['resultid'].pk
+                    except AttributeError:
+                        res_id = None
 
-                    if not existing_results_ids:
-                            res = Result.objects.create(
-                                resultid=None,
-                                featureactionid=feature_action,
-                                resulttypecv=result_type,
-                                variableid=output_variable.variableid,
-                                unitsid=units,
-                                processinglevelid=processing_level,
-                                resultdatetime=current_action.begindatetime,
-                                resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
-                                statuscv=status,
-                                sampledmediumcv=medium,
-                                valuecount=0)
+                    res, created = Result.objects.update_or_create(
+                        resultid=res_id,
+                        defaults={
+                            'featureactionid':feature_action,
+                            'resulttypecv': result_type,
+                            'variableid': output_variable.variableid,
+                            'unitsid': units,
+                            'processinglevelid': data['processinglevelid'],
+                            'resultdatetime': current_action.begindatetime,
+                            'resultdatetimeutcoffset': current_action.begindatetimeutcoffset,
+                            'statuscv': status,
+                            'sampledmediumcv': medium,
+                            'valuecount': 0
+                            }
+                        )
 
-                    else:
-                        res, created = Result.objects.update_or_create(
-                                resultid=existing_results_ids[result_id_counter],
-                                featureactionid=feature_action,
-                                resulttypecv=result_type,
-                                variableid=output_variable.variableid,
-                                unitsid=units,
-                                processinglevelid=processing_level,
-                                resultdatetime=current_action.begindatetime,
-                                resultdatetimeutcoffset=current_action.begindatetimeutcoffset,
-                                statuscv=status,
-                                sampledmediumcv=medium,
-                                valuecount=0)
                     results_to_keep.append(res.resultid)
                     result_id_counter += 1
             for result in existing_results:
@@ -869,6 +858,10 @@ def set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_
             deployment_action.enddatetime = current_action.begindatetime
             deployment_action.enddatetimeutcoffset = current_action.begindatetimeutcoffset
             deployment_action.save()
+    for action in existing_actions:
+        if action.actionid_id not in actions_to_keep:
+            action.actionid.delete()
+            action.delete()
 
     return site_visit_action
 
@@ -910,10 +903,11 @@ def create_site_visit(request, site_id=None):
 
     if request.method == 'POST':
         render_actions = True
-        crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms = get_forms_from_request(request)
-        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+        crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms = get_forms_from_request(request)
+        all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms)
         if all_forms_valid:
-            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_form, annotation_forms)
+            site_visit_action = set_up_site_visit(crew_form, site_visit_form, sampling_feature_form, action_formset,
+                                                  annotation_forms, True)
             return HttpResponseRedirect(reverse('create_site_visit_summary', args=[site_visit_action.actionid]))
 
     else:
@@ -921,7 +915,7 @@ def create_site_visit(request, site_id=None):
         site_visit_form = SiteVisitForm(
             initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7})
         crew_form = CrewForm()
-        action_form = ActionForm()
+        action_formset = ActionFormset(prefix='actionform')
 
     return render(
         request,
@@ -931,7 +925,7 @@ def create_site_visit(request, site_id=None):
             'mock_action_form': ActionForm(),
             'mock_results_form': ResultsForm(),
             'mock_annotation_form': AnnotationForm(),
-            'actions_form': action_form,
+            'action_forms': action_formset,
             'render_actions': render_actions,
             'action': action,
             'site_id': site_id,
@@ -947,13 +941,6 @@ def edit_site_visit(request, action_id):
 
     if request.method == 'POST':
         render_actions = True
-        # action_formset = ActionFormset(request.POST)
-        # if action_formset.is_valid():
-        #     for form in action_formset:
-        #         form.save(commit=False)
-        #         if form.nested:
-        #             for nested_form in form.nested.forms:
-        #                 nested_form.save()
 
         crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms = get_forms_from_request(request, action_id)
         all_forms_valid = validate_action_form(request, crew_form, site_visit_form, sampling_feature_form, action_formset, annotation_forms)
@@ -1199,7 +1186,6 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
         equipment_used = child_action.equipmentused.all() #equipment_used = EquipmentUsed.objects.filter(actionid=child_action)
         action_form = ActionFormset(
-            instance=child_action,
             initial={'equipmentused':[equ.equipmentid.equipmentid for equ in equipment_used]},
             prefix='actionform'
         )
@@ -1251,18 +1237,14 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
             form_count += 1
 
-
-
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
-        action_form = ActionForm(
-            initial={'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7}
-        )
+        action_form = ActionFormset(prefix='actionform')
 
     return render(
         request,
         'site-visits/field-activities/other-action-form.html',
-        {'render_forms': [site_visit_form], 'actions_form': action_form, 'mock_results_form': ResultsForm(), 'action': action,
+        {'render_forms': [site_visit_form], 'action_forms': action_form, 'mock_results_form': ResultsForm(), 'action': action,
          'item_id': action_id, 'site_id': site_id,
          'action_type': action_type}
     )

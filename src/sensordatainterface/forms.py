@@ -866,7 +866,7 @@ class ActionForm(ModelForm):
         required=False
     )
 
-    actionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
+    # actionid = forms.IntegerField(widget=HiddenInput(), required=False, initial=0)
 
     class Meta:
         model = Action
@@ -880,7 +880,6 @@ class ActionForm(ModelForm):
             'actiondescription',
             'actionfilelink',
             'methodid',
-            'actionid'
         ]
 
         widgets = {
@@ -906,20 +905,20 @@ class ActionForm(ModelForm):
         form = self
         form_count = 0
 
-        form.instance.equipmentused = form.cleaned_data['equipmentused']
-        form.instance.actionid = form.cleaned_data['actionid']
-        if form.instance.actiontype == 'Instrument Calibration':
-            form.instance.instrumenoutputvariable = form.cleaned_data['instrumentoutputvariable']
-            form.instance.calibrationcheckvalue = form.cleaned_data['calibrationcheckvalue']
-            form.instance.calibrationequation = form.cleaned_data['calibrationequation']
-            form.instance.calibrationstandard = form.cleaned_data['calibrationstandard']
-        elif form.instance.actiontype == 'equipmentMaintenance':
-            form.instance.isfactoryservice = form.cleaned_data['isfactoryservice']
-            form.instance.maintenancecode = form.cleaned_data['maintenancecode']
-            form.instance.maintenancereason = form.cleaned_data['maintenancereason']
-        elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
-            form.instance.deploymentaction = form.cleaned_data['deploymentaction']
-        form_count += 1
+        # form.instance.equipmentused = form.cleaned_data['equipmentused']
+        # form.instance.actionid = form.cleaned_data['actionid']
+        # if form.instance.actiontype == 'Instrument Calibration':
+        #     form.instance.instrumenoutputvariable = form.cleaned_data['instrumentoutputvariable']
+        #     form.instance.calibrationcheckvalue = form.cleaned_data['calibrationcheckvalue']
+        #     form.instance.calibrationequation = form.cleaned_data['calibrationequation']
+        #     form.instance.calibrationstandard = form.cleaned_data['calibrationstandard']
+        # elif form.instance.actiontype == 'equipmentMaintenance':
+        #     form.instance.isfactoryservice = form.cleaned_data['isfactoryservice']
+        #     form.instance.maintenancecode = form.cleaned_data['maintenancecode']
+        #     form.instance.maintenancereason = form.cleaned_data['maintenancereason']
+        # elif form.instance.actiontype in ['Equipment retrieval', 'Instrument retrieval']:
+        #     form.instance.deploymentaction = form.cleaned_data['deploymentaction']
+        # form_count += 1
 
     def is_valid(self):
         result = super(ActionForm, self).is_valid()

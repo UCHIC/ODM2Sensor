@@ -32,15 +32,14 @@
                         <tbody class="action-fields">
                         <tr>
                             <th></th>
-                            <td><a class="btn btn-danger btn-remove-action col-xs-2 col-sm-2" id='remove_action'>-
-                                Remove Action</a></td>
+                            <td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
                         </tr>
                         {{ actionform }}
                         {{ actionform.nested.management_form }}
                         </tbody>
                         {% if actionform.nested %}
                             {% for nested_form in actionform.nested.forms %}
-                                <tbody class="results-set">
+                                <tbody class="results-set" >
                                     {% if forloop.first %}
                                         <tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>
                                     {% else %}
@@ -108,7 +107,7 @@
     });</script>
     <script>
     $('#remove_action').click(function() {
-        deleteActionForm(this, 'actionform');
+        deleteActionForm(this);
     });</script>
 {#    <script>#}
 {#    $('#add_action').click(function() {#}

@@ -532,6 +532,9 @@ tbody.action-fields + tbody.results-set {
 tbody.results-set + tbody.results-set {
     border-top: 1px solid rgba(200, 200, 200, .8) !important;
 }
+tbody.results-set tr {
+    padding-left: 50px;
+}
 
 .add-result-btn + tbody {
     border-top: 2px solid #ddd;

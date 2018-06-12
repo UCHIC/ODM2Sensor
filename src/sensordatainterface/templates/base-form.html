@@ -20,23 +20,32 @@
                 {% for render_form in render_forms %}
                     {{ render_form.as_table }}
                 {% endfor %}
-                     <tbody class="action-fields">
-                     {{ actions_form.as_table }}
-                     </tbody>
-                    {% if actions_form.results|length != 0 %}
-                            {% for curr_result in actions_form.results %}
-                                <tbody class="results-set">
+                    {{ action_forms.management_form }}
+                    {% for actionform in action_forms %}
+                        <tbody class="action-fields">
+                        <tr>
+                            <th></th>
+                            <td><a class="btn btn-remove-action btn-danger col-xs-2 col-sm-2" onclick="javascript:deleteActionForm(this)">- Remove Action</a></td></tr>'
+                        </tr>
+                        {{ actionform }}
+                        {{ actionform.nested.management_form }}
+                        </tbody>
+                        {% if actionform.nested %}
+                            {% for nested_form in actionform.nested.forms %}
+                                <tbody class="results-set" >
                                     {% if forloop.first %}
                                         <tr class="results-row"><td colspan="2" class="results-label"><label>Results</label></td></tr>
                                     {% else %}
-                                        <tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this)">- Remove Result</a></td></tr>
+                                        <tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this, {{ actionform.actionid.value }})">- Remove Result</a></td></tr>
                                     {% endif %}
-                                    {{ curr_result.as_table }}
+                                {{ nested_form }}
                                 </tbody>
                             {% endfor %}
-                        <tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this)'>+ Add Result</a></td></tr></tbody>
-                    {% endif %}
 
+                            <tbody class='add-result-btn'><tr><td></td><td><a class='add-result-btn btn btn-default col-xs-12 col-sm-12' onclick='javascript:addResultForm(this, null, {{ actionform.actionid.value }})'>+ Add Result</a></td></tr></tbody>
+                        {% endif %}
+
+                    {% endfor %}
                 <tbody>
                     <tr>
                         <th></th>

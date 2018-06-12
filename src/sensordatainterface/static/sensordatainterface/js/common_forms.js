@@ -245,7 +245,6 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
 }
 
 function addResultForm(that, firstResult, actionId) {
-    // var actionId = $(that).parents('tbody.add-result-btn').prevUntil('.action-fields').prev('.action-fields').find('[name=' + form_prefix + "actionid" + ']').val()
     var removeButton = $('<tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this, ' + actionId + ')">- Remove Result</a></td></tr>');
     var fields = $('#results-form').children().clone();
     var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
@@ -299,7 +298,7 @@ function filterVariablesByEquipment(equipmentElement, form_prefix) {
     var siblingForms = equipmentElement.parents('tbody').nextUntil('.action-fields', '.results-set').andSelf();
     var actionId = siblingForms.first().find('[name=' + form_prefix + "actionid" + ']').val()
     var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
-    if (siblingForms.last('.result-set').length) {
+    if ($(siblingForms).hasClass('results-set')) {
         form_prefix = 'resultform-' + actionId + '-' + (total-1).toString() + '-'
     }
     var outputVariablesSelects = siblingForms.find('select[name=' + form_prefix + "instrumentoutputvariable" + ']');
