@@ -1283,7 +1283,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
         action_form = BaseActionFormset(queryset=Action.objects.none(),
-            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'actiontypecv': action_type} for x in range(2)],
+            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'actiontypecv': CvActiontype.objects.get(term=action_type)} for x in range(2)],
             prefix='actionform')
 
     return render(
