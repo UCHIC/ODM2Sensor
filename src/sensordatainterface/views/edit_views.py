@@ -1061,6 +1061,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
     if request.method == 'POST':
         updating = request.POST['action'] == 'update'
+        action_form = ActionFormset(request.POST, prefix='actionform')
         if 'equipmentused' not in request.POST:
             request.POST['equipmentused'] = ''
 
@@ -1076,80 +1077,122 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             action_form = ActionFormset(request.POST, request.FILES, prefix='actionform')
 
         if site_visit_form.is_valid() and action_form.is_valid():
-            child_action = action_form.save()
-            parent_site_visit = site_visit_form.cleaned_data['actionid']
-            if updating:
-                related_action = RelatedAction.objects.get(
-                    actionid=child_action,
-                    relationshiptypecv=child_relationship
-                )
-                related_action.relatedactionid=parent_site_visit
-                related_action.save()
-            else:
-                related_action = RelatedAction.objects.create(
-                    actionid=child_action,
-                    relationshiptypecv=child_relationship,
-                    relatedactionid=parent_site_visit
-                )
-
-            sampling_feature = FeatureAction.objects.filter(
-                actionid=parent_site_visit,
-                samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
+            for form in action_form:
+                parent_site_visit = site_visit_form.cleaned_data['actionid']
+                child_action = form.save()
+                sampling_feature = FeatureAction.objects.filter(
+                    actionid=parent_site_visit,
+                    samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
                 )[0].samplingfeatureid
 
-            FeatureAction.objects.get_or_create(
-                actionid=child_action,
-                samplingfeatureid=sampling_feature
-            )
+                FeatureAction.objects.get_or_create(
+                    actionid=child_action,
+                    samplingfeatureid=sampling_feature
+                )
 
-            equipment_used = action_form.cleaned_data['equipmentused']
-            current_equipment = child_action.equipmentused.all()
+                if hasattr(form, 'nested'):
+                    existing_results = Result.objects.filter(featureactionid=feature_action)
+                    existing_results_ids = []
+                    results_to_keep = []
+                    for result_form in form.nested:
 
-            for equipment in equipment_used:
-                EquipmentUsed.objects.get_or_create(actionid=child_action, equipmentid=equipment)
+                        result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
+                        status = CvStatus.objects.get(term='ongoing')
+                        if result_form.is_valid():
+                            instance = result_form.save(commit=False)
+                            data = result_form.cleaned_data
+                            output_variable = InstrumentOutputVariable.objects.get(pk=data['instrumentoutputvariable'].pk)
+                            units = Units.objects.get(pk=data['unitsid'].pk)
+                            medium = CvMedium.objects.get(name=data['sampledmediumcv'].pk)
+                            try:
+                                res_id = data['resultid'].pk
+                            except AttributeError:
+                                res_id = None
 
-            current_equipment.exclude(equipmentid__in=equipment_used).delete()
+                            res, created = Result.objects.update_or_create(
+                                resultid=res_id,
+                                defaults={
+                                    'featureactionid': feature_action,
+                                    'resulttypecv': result_type,
+                                    'variableid': output_variable.variableid,
+                                    'unitsid': units,
+                                    'processinglevelid': data['processinglevelid'],
+                                    'resultdatetime': instance.begindatetime,
+                                    'resultdatetimeutcoffset': instance.begindatetimeutcoffset,
+                                    'statuscv': status,
+                                    'sampledmediumcv': medium,
+                                    'valuecount': 0
+                                }
+                            )
 
-            action_type = action_form.cleaned_data['actiontypecv']
+                        results_to_keep.append(res.resultid)
+                    for result in existing_results:
+                        if result.resultid not in results_to_keep:
+                            result.delete()
 
-            if action_type.term == 'instrumentDeployment':
-                feature_action = child_action.featureaction.get(samplingfeatureid=sampling_feature)
-                result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
-                status = CvStatus.objects.get(term='ongoing')
-
-                results = []
-                output_variables = request.POST.getlist('instrumentoutputvariable')
-
-                for result_index in range(len(output_variables) - 1):
-                    result = {
-                        'instrument_output_variable': output_variables[result_index + 1],
-                        'unit': request.POST.getlist('unitsid')[result_index],
-                        'processing_level': request.POST.getlist('processing_level_id')[result_index],
-                        'sampled_medium': request.POST.getlist('sampledmediumcv')[result_index],
-                    }
-                    results.append(result)
-
-                for result in results:  # wat
-                    output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
-                    units = Units.objects.get(pk=result['unit'])
-                    processing_level = ProcessingLevel.objects.get(pk=result['processing_level'])
-                    medium = CvMedium.objects.get(name=result['sampled_medium'])
-
-                    Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
-                                          variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
-                                          resultdatetime=child_action.begindatetime, resultdatetimeutcoffset=child_action.begindatetimeutcoffset,
-                                          statuscv=status, sampledmediumcv=medium, valuecount=0)
-
-            elif action_type.term == 'instrumentCalibration':
                 if updating:
-                    CalibrationAction.objects.get(actionid=child_action.actionid).delete()
-                    CalibrationReferenceEquipment.objects.filter(actionid=child_action.actionid).delete()
-                add_calibration_fields(child_action, action_form)
+                    related_action = RelatedAction.objects.get(
+                        actionid=child_action,
+                        relationshiptypecv=child_relationship
+                    )
+                    related_action.relatedactionid=parent_site_visit
+                    related_action.save()
+                else:
+                    related_action = RelatedAction.objects.create(
+                        actionid=child_action,
+                        relationshiptypecv=child_relationship,
+                        relatedactionid=parent_site_visit
+                    )
 
-            elif action_type.term == 'equipmentMaintenance':
-                if updating and child_action.maintenanceaction.exists():
-                    MaintenanceAction.objects.get(actionid=child_action).delete()
-                add_maintenance_fields(child_action, action_form)
+
+                equipment_used = form.cleaned_data['equipmentused']
+                current_equipment = child_action.equipmentused.all()
+
+                for equipment in equipment_used:
+                    EquipmentUsed.objects.get_or_create(actionid=child_action, equipmentid=equipment)
+
+                current_equipment.exclude(equipmentid__in=equipment_used).delete()
+
+                action_type = form.cleaned_data['actiontypecv']
+
+            # if action_type.term == 'instrumentDeployment':
+            #     feature_action = child_action.featureaction.get(samplingfeatureid=sampling_feature)
+            #     result_type = CvResulttype.objects.get(term='timeSeriesCoverage')
+            #     status = CvStatus.objects.get(term='ongoing')
+            #
+            #     results = []
+            #     output_variables = request.POST.getlist('instrumentoutputvariable')
+            #
+            #     for result_index in range(len(output_variables) - 1):
+            #         result = {
+            #             'instrument_output_variable': output_variables[result_index + 1],
+            #             'unit': request.POST.getlist('unitsid')[result_index],
+            #             'processing_level': request.POST.getlist('processing_level_id')[result_index],
+            #             'sampled_medium': request.POST.getlist('sampledmediumcv')[result_index],
+            #         }
+            #         results.append(result)
+            #
+            #     for result in results:  # wat
+            #         output_variable = InstrumentOutputVariable.objects.get(pk=result['instrument_output_variable'])
+            #         units = Units.objects.get(pk=result['unit'])
+            #         processing_level = ProcessingLevel.objects.get(pk=result['processing_level'])
+            #         medium = CvMedium.objects.get(name=result['sampled_medium'])
+            #
+            #         Result.objects.create(resultid=None, featureactionid=feature_action, resulttypecv=result_type,
+            #                               variableid=output_variable.variableid, unitsid=units, processinglevelid=processing_level,
+            #                               resultdatetime=child_action.begindatetime, resultdatetimeutcoffset=child_action.begindatetimeutcoffset,
+            #                               statuscv=status, sampledmediumcv=medium, valuecount=0)
+
+                if action_type.term == 'instrumentCalibration':
+                    if updating:
+                        CalibrationAction.objects.get(actionid=child_action.actionid).delete()
+                        CalibrationReferenceEquipment.objects.filter(actionid=child_action.actionid).delete()
+                    add_calibration_fields(child_action, form)
+
+                elif action_type.term == 'equipmentMaintenance':
+                    if updating and child_action.maintenanceaction.exists():
+                        MaintenanceAction.objects.get(actionid=child_action).delete()
+                    add_maintenance_fields(child_action, form)
 
             url_map = {
                 'equipmentDeployment': 'deployment_detail',
@@ -1224,10 +1267,10 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                 form.fields['begindatetime'].initial = datetime.datetime.now()
                 form.fields['actiondescription'].initial = ''
                 action = 'create'
-            if form.nested:
+            if hasattr(form, 'nested'):
                 nested_form_count = 0
                 nested_form_instances = form.nested.save(commit=False)
-                for nested_form in form.nested.forms:
+                for nested_form in form.nested:
                     output_variable = InstrumentOutputVariable.objects.get(
                         variableid=nested_form_instances[nested_form_count].variableid_id,
                         modelid=instances[form_count].equipmentused.get().equipmentid.equipmentmodelid_id)
