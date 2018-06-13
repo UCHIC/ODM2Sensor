@@ -1091,8 +1091,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
                 )
 
                 if hasattr(form, 'nested'):
+                    feature_action = child_action.featureaction.get(samplingfeatureid=sampling_feature)
                     existing_results = Result.objects.filter(featureactionid=feature_action)
-                    existing_results_ids = []
                     results_to_keep = []
                     for result_form in form.nested:
 
@@ -1316,69 +1316,71 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
             retrieval_action = Action.objects.get(pk=request.POST['item_id'])
 
             site_visit_form = SiteVisitChoiceForm(request.POST, instance=site_visit)
-            retrieval_form = ActionForm(request.POST, request.FILES, instance=retrieval_action)
+            retrieval_form = ActionFormset(request.POST, request.FILES, queryset=Action.objects.get(pk=request.POST['item_id']), prefix='actionform')
         else:
             site_visit_form = SiteVisitChoiceForm(request.POST)
-            retrieval_form = ActionForm(request.POST, request.FILES)
+            retrieval_form = ActionFormset(request.POST, request.FILES, prefix='actionform')
 
         if site_visit_form.is_valid() and retrieval_form.is_valid():
-            retrieval_action_data = retrieval_form.cleaned_data
-            if not retrieval_action_data['begindatetime'] > deployment_action.enddatetime:
+            for form in retrieval_form:
+
+                retrieval_action_data = form.cleaned_data
+                if not retrieval_action_data['begindatetime'] > deployment_action.enddatetime:
+                    response = HttpResponseRedirect(
+                        reverse('create_retrieval_from_deployment', args=deployment_id)
+                    )
+                    return response
+                retrieval_action = form.save()
+                parent_site_visit = site_visit_form.cleaned_data['actionid']
+                if updating:
+                    related_action = RelatedAction.objects.get(
+                        actionid=retrieval_action,
+                        relationshiptypecv=child_relationship
+                    )
+                    retrieval_related_action = RelatedAction.objects.get(
+                        actionid=retrieval_action,
+                        relationshiptypecv=retrieval_relationship
+                    )
+                    retrieval_related_action.relatedactionid = deployment_action
+                    related_action.relatedactionid=parent_site_visit
+                    retrieval_related_action.save()
+                    related_action.save()
+                else:
+                    RelatedAction.objects.create(
+                        actionid=retrieval_action,
+                        relationshiptypecv=child_relationship,
+                        relatedactionid=parent_site_visit
+                    )
+                    RelatedAction.objects.create(
+                        actionid=retrieval_action,
+                        relationshiptypecv=retrieval_relationship,
+                        relatedactionid=deployment_action
+                    )
+
+                sampling_feature = FeatureAction.objects.filter(
+                    actionid=parent_site_visit,
+                    samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
+                )[0].samplingfeatureid
+
+                FeatureAction.objects.get_or_create(
+                    actionid=retrieval_action,
+                    samplingfeatureid=sampling_feature
+                )
+
+                equipment_used = deployment_action.equipmentused.get().equipmentid
+                current_equipment = EquipmentUsed.objects.filter(actionid=retrieval_action)
+                EquipmentUsed.objects.update_or_create(actionid=retrieval_action,
+                                                       defaults={'equipmentid': equipment_used})
+
+                deployment_action.enddatetime = retrieval_action.begindatetime
+                deployment_action.enddatetimeutcoffset = retrieval_action.begindatetimeutcoffset
+                deployment_action.save()
+
                 response = HttpResponseRedirect(
-                    reverse('create_retrieval_from_deployment', args=deployment_id)
+                    reverse('retrieval_detail', args=[retrieval_action.actionid])
                 )
+
                 return response
-            retrieval_action = retrieval_form.save()
-            parent_site_visit = site_visit_form.cleaned_data['actionid']
-            if updating:
-                related_action = RelatedAction.objects.get(
-                    actionid=retrieval_action,
-                    relationshiptypecv=child_relationship
-                )
-                retrieval_related_action = RelatedAction.objects.get(
-                    actionid=retrieval_action,
-                    relationshiptypecv=retrieval_relationship
-                )
-                retrieval_related_action.relatedactionid = deployment_action
-                related_action.relatedactionid=parent_site_visit
-                retrieval_related_action.save()
-                related_action.save()
-            else:
-                RelatedAction.objects.create(
-                    actionid=retrieval_action,
-                    relationshiptypecv=child_relationship,
-                    relatedactionid=parent_site_visit
-                )
-                RelatedAction.objects.create(
-                    actionid=retrieval_action,
-                    relationshiptypecv=retrieval_relationship,
-                    relatedactionid=deployment_action
-                )
-
-            sampling_feature = FeatureAction.objects.filter(
-                actionid=parent_site_visit,
-                samplingfeatureid__samplingfeaturetypecv=CvSamplingfeaturetype.objects.get(term='site')
-            )[0].samplingfeatureid
-
-            FeatureAction.objects.get_or_create(
-                actionid=retrieval_action,
-                samplingfeatureid=sampling_feature
-            )
-
-            equipment_used = deployment_action.equipmentused.get().equipmentid
-            current_equipment = EquipmentUsed.objects.filter(actionid=retrieval_action)
-            current_equipment.delete()
-            EquipmentUsed.objects.create(actionid=retrieval_action, equipmentid=equipment_used)
-
-            deployment_action.enddatetime = retrieval_action.begindatetime
-            deployment_action.enddatetimeutcoffset = retrieval_action.begindatetimeutcoffset
-            deployment_action.save()
-
-            response = HttpResponseRedirect(
-                reverse('retrieval_detail', args=[retrieval_action.actionid])
-            )
-
-            return response
         else:
             response = HttpResponseRedirect(
                 reverse('create_retrieval_from_deployment', args=[deployment_id])
@@ -1409,19 +1411,17 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
 
         site_visit_form = SiteVisitChoiceForm()
 
-        retrieval_form = ActionForm(
-            initial={
-                'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'deploymentaction': deployment_id,
-                'actiontypecv': CvActiontype.objects.get(term='equipmentRetrieval' if deployment_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')
-            })
+        retrieval_form = BaseActionFormset(
+            queryset=Action.objects.none(),
+            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'deploymentaction': deployment_id,
+                      'actiontypecv': CvActiontype.objects.get(term='equipmentRetrieval' if deployment_action.actiontypecv.term == 'equipmentDeployment' else 'instrumentRetrieval')} for x in range(2)],
+            prefix='actionform')
 
     else:
         site_visit_form = SiteVisitChoiceForm()
-        retrieval_form = ActionForm(
-            initial={
-                'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7
-            }
-        )
+        retrieval_form = BaseActionFormset(queryset=Action.objects.none(),
+            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7} for x in range(2)],
+            prefix='actionform')
 
     return render(
         request,
