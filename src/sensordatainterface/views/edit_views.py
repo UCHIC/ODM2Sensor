@@ -1282,10 +1282,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
-        if action_type == "Generic":
-            action_type = 'genericNonObservation'
         action_form = BaseActionFormset(queryset=Action.objects.none(),
-            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'actiontypecv': CvActiontype.objects.get(term=action_type)} for x in range(2)],
+            initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'actiontypecv': CvActiontype.objects.get(term__startswith=action_type)} for x in range(2)],
             prefix='actionform')
 
     return render(
