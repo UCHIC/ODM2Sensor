@@ -1070,7 +1070,7 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
             child_action = Action.objects.get(pk=request.POST['item_id'])
 
             site_visit_form = SiteVisitChoiceForm(request.POST, instance=site_visit)
-            action_form = ActionForm(request.POST, request.FILES, instance=child_action)
+            action_form = ActionFormset(request.POST, request.FILES, queryset=Action.objects.get(pk=request.POST['item_id']), prefix='actionform')
 
         else:
             site_visit_form = SiteVisitChoiceForm(request.POST)
@@ -1282,6 +1282,8 @@ def edit_action(request, action_type, action_id=None, visit_id=None, site_id=Non
 
     else:
         site_visit_form = SiteVisitChoiceForm(initial={'actionid': visit_id})
+        if action_type == "Generic":
+            action_type = 'genericNonObservation'
         action_form = BaseActionFormset(queryset=Action.objects.none(),
             initial=[{'begindatetime': datetime.now(), 'begindatetimeutcoffset': -7, 'enddatetimeutcoffset': -7, 'actiontypecv': CvActiontype.objects.get(term=action_type)} for x in range(2)],
             prefix='actionform')
@@ -1397,12 +1399,14 @@ def edit_retrieval(request, deployment_id=None, retrieval_id=None):
         site_visit = Action.objects.get(pk=parent_action_id.relatedactionid.actionid)
         site_visit_form = SiteVisitChoiceForm(instance=site_visit)
         equipment_used = EquipmentUsed.objects.filter(actionid=retrieval_action)
-        retrieval_form = ActionForm(
-            instance=retrieval_action,
+        retrieval_form = ActionFormset(
+            queryset=Action.objects.get(pk=retrieval_id),
             initial={
                 'equipmentused': [equ.equipmentid.equipmentid for equ in equipment_used],
                 'deploymentaction': RelatedAction.objects.get(relationshiptypecv=retrieval_relationship, actionid=retrieval_id).relatedactionid.actionid
-            }
+
+            },
+            prefix='actionform'
         )
         retrieval_form.fields['actionfilelink'].help_text = 'Leave blank to keep file in database, upload new to edit'
 

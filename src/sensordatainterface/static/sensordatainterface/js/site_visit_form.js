@@ -4,7 +4,12 @@ function addActionForm(that, type) {
     var button = $(that).parents('tbody');
     var form = $('#action-form').children();
     var thisForm = form.clone();
-    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    if ($('#id_' + type + '-TOTAL_FORMS').val() > -1){
+         var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    }
+    else{
+        var total = 0
+    }
     total++;
     $('#id_' + type + '-TOTAL_FORMS').val(total);
     var form_prefix = 'actionform-' + (total-1).toString() + '-'

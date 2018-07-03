@@ -247,10 +247,20 @@ function handleActionTypeChange(formType, currentForm, form_prefix) {
 function addResultForm(that, firstResult, actionId) {
     var removeButton = $('<tr><th></th><td><a class="btn btn-remove-result btn-danger col-xs-2 col-sm-2" onclick="javascript:removeResultForm(this, ' + actionId + ')">- Remove Result</a></td></tr>');
     var fields = $('#results-form').children().clone();
-    var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
+    if($('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val() > -1){
+         var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
+    }
+    else{
+        var total = 0
+    }
     total++;
     $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val(total);
-    var form_prefix = 'resultform-' + actionId + '-' + (total-1).toString() + '-'
+    if(actionId > -1){
+        var form_prefix = 'resultform-' + actionId + '-' + (total-1).toString() + '-'
+    }
+    else{
+        var form_prefix = 'resultform-' + (total-1).toString() + '-'
+    }
     var btnForm;
     fields.find(':input').each(function() {
         if ($(this).attr('name') !== undefined) {
@@ -299,7 +309,7 @@ function filterVariablesByEquipment(equipmentElement, form_prefix) {
     var actionId = siblingForms.first().find('[name=' + form_prefix + "actionid" + ']').val()
     var total = $('#id_' + 'resultform-' + actionId  + '-TOTAL_FORMS').val();
     if ($(siblingForms).hasClass('results-set')) {
-        form_prefix = 'resultform-' + actionId + '-' + (total-1).toString() + '-'
+        form_prefix = 'resultform-' + (total-1).toString() + '-'
     }
     var outputVariablesSelects = siblingForms.find('select[name=' + form_prefix + "instrumentoutputvariable" + ']');
     var unitsSelects = siblingForms.find('select[name=' + form_prefix + "unitsid" + ']');
